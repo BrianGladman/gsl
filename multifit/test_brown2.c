@@ -1,22 +1,56 @@
-#define brown2_N  5
-#define brown2_P  5
+#define brown2_N        5
+#define brown2_P        5
+
+#define brown2_NTRIES   3
 
 static double brown2_x0[brown2_P] = { 0.5, 0.5, 0.5, 0.5, 0.5 };
-static double brown2_x[brown2_P] = {
--0.5790430884941158027, -0.5790430884941158027,
--0.5790430884941158027, -0.5790430884941158027,
-8.89521544247057901366 };
-
-#if 0
-static double brown2_x[brown2_P] = {
-0.91635458253384933779, 0.91635458253384933779,
-0.91635458253384933779, 0.91635458253384933779,
-1.41822708733075331107
-};
-#endif
-
-static double brown2_sumsq = 0.0;
 static double brown2_epsrel = 1.0e-12;
+
+static void
+brown2_checksol(const double x[], const double sumsq,
+              const double epsrel, const char *sname,
+              const char *pname)
+{
+  size_t i;
+  double sumsq_exact;
+  double alpha;
+  const double p = (double) brown2_P;
+  double alpha1mp, lhs, lastel;
+
+  if (sumsq < 0.5)
+    {
+      /* sumsq = 0 case */
+
+      sumsq_exact = 0.0;
+      alpha = x[0];
+      alpha1mp = pow(alpha, 1.0 - p);
+      lhs = p*pow(alpha, p) - (p + 1)/alpha1mp;
+      lastel = alpha1mp;
+
+      gsl_test_rel(lhs, -1.0, epsrel, "%s/%s alpha lhs",
+                   sname, pname);
+    }
+  else
+    {
+      /* sumsq = 1 case */
+
+      sumsq_exact = 1.0;
+      alpha = 0.0;
+      lastel = p + 1.0;
+    }
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 1; i < brown2_P - 1; ++i)
+    {
+      gsl_test_rel(x[i], alpha, epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+
+  gsl_test_rel(x[brown2_P - 1], lastel, epsrel, "%s/%s last element",
+               sname, pname);
+}
 
 static int
 brown2_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -86,9 +120,9 @@ static test_fdf_problem brown2_problem =
 {
   "brown_almost_linear",
   brown2_x0,
-  brown2_x,
-  &brown2_sumsq,
   NULL,
   &brown2_epsrel,
+  brown2_NTRIES,
+  &brown2_checksol,
   &brown2_func
 };

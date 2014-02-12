@@ -1,21 +1,13 @@
-#define hahn1_N  236
-#define hahn1_P  7
+#define hahn1_N      236
+#define hahn1_P      7
+
+#define hahn1_NTRIES 1
 
 /* double hahn1_x0[7] = { 10, -1, 0.05, -0.00001, -0.05, 0.001, -0.000001 }; */
 
 static double hahn1_x0[hahn1_P] = { 1, -0.1, 0.005, -0.000001, -0.005, 0.0001, -0.0000001}; 
 
-static double hahn1_x[hahn1_P] = {
-1.0776351733E+00,
--1.2269296921E-01,
-4.0863750610E-03,
--1.4262662514E-06,
--5.7609940901E-03,
-2.4053735503E-04,
--1.2314450199E-07
-};
 
-static double hahn1_sumsq = 1.5324382854E+00;
 static double hahn1_epsrel = 1.0e-5;
 
 static double hahn1_sigma[hahn1_P] = {
@@ -507,6 +499,27 @@ static double hahn1_F0[hahn1_N] = {
    848.23E0
 };
 
+static void
+hahn1_checksol(const double x[], const double sumsq,
+               const double epsrel, const char *sname,
+               const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 1.5324382854E+00;
+  const double hahn1_x[hahn1_P] = {
+     1.0776351733E+00, -1.2269296921E-01, 4.0863750610E-03,
+    -1.4262662514E-06, -5.7609940901E-03, 2.4053735503E-04,
+    -1.2314450199E-07 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < hahn1_P; ++i)
+    {
+      gsl_test_rel(x[i], hahn1_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 hahn1_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -574,9 +587,9 @@ static test_fdf_problem hahn1_problem =
 {
   "hahn1",
   hahn1_x0,
-  hahn1_x,
-  &hahn1_sumsq,
   hahn1_sigma,
   &hahn1_epsrel,
+  hahn1_NTRIES,
+  &hahn1_checksol,
   &hahn1_func
 };

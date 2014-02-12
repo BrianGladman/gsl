@@ -1,11 +1,29 @@
 #define wood_N         6
 #define wood_P         4
 
-static double wood_x0[wood_P] = { -3.0, -1.0, -3.0, -1.0 };
-static double wood_x[wood_P] = { 1.0, 1.0, 1.0, 1.0 };
+#define wood_NTRIES    3
 
-static double wood_sumsq = 0.0;
+static double wood_x0[wood_P] = { -3.0, -1.0, -3.0, -1.0 };
 static double wood_epsrel = 1.0e-12;
+
+static void
+wood_checksol(const double x[], const double sumsq,
+              const double epsrel, const char *sname,
+              const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 0.0;
+  const double wood_x[wood_P] = { 1.0, 1.0, 1.0, 1.0 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < wood_P; ++i)
+    {
+      gsl_test_rel(x[i], wood_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 wood_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -65,9 +83,9 @@ static test_fdf_problem wood_problem =
 {
   "wood",
   wood_x0,
-  wood_x,
-  &wood_sumsq,
   NULL,
   &wood_epsrel,
+  wood_NTRIES,
+  &wood_checksol,
   &wood_func
 };

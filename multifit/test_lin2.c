@@ -1,12 +1,31 @@
 #define lin2_N         20  /* can be anything >= p */
 #define lin2_P         5
 
-static double lin2_x0[lin2_P] = { 1.0, 1.0, 1.0, 1.0, 1.0 };
-/* no unique solution vector */
+#define lin2_NTRIES    3
 
-/* F(x*) = [m(m-1}] / [2(2m + 1)] */
-static double lin2_sumsq = 4.634146341463414e+00;
-static double lin2_epsrel = 1.0e-12;
+static double lin2_x0[lin2_P] = { 1.0, 1.0, 1.0, 1.0, 1.0 };
+static double lin2_epsrel = 1.0e-11;
+
+static void
+lin2_checksol(const double x[], const double sumsq,
+              const double epsrel, const char *sname,
+              const char *pname)
+{
+  size_t i;
+  const double n = (double) lin2_N;
+  const double sumsq_exact = 0.5 * (n*(n - 1.0)) / (2.0*n + 1.0);
+  const double sum_exact = 3.0 / (2.0*n + 1.0);
+  double sum = 0.0;
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < lin2_P; ++i)
+    sum += (i + 1.0) * x[i];
+
+  gsl_test_rel(sum, sum_exact, epsrel, "%s/%s coeff sum",
+               sname, pname);
+}
 
 static int
 lin2_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -62,9 +81,9 @@ static test_fdf_problem lin2_problem =
 {
   "linear_rank1",
   lin2_x0,
-  NULL, /* no unique solution vector */
-  &lin2_sumsq,
   NULL,
   &lin2_epsrel,
+  lin2_NTRIES,
+  &lin2_checksol,
   &lin2_func
 };

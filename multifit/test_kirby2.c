@@ -1,19 +1,12 @@
-#define kirby2_N  151
-#define kirby2_P  5
+#define kirby2_N       151
+#define kirby2_P       5
+
+#define kirby2_NTRIES  1
 
 /* double kirby2_x0[kirby2_P] = { 2, -0.1, 0.003, -0.001, 0.00001 }; */
 
 static double kirby2_x0[kirby2_P] = { 1.5, -0.15, 0.0025, -0.0015, 0.00002 }; 
 
-static double kirby2_x[kirby2_P] = {
-  1.6745063063E+00,
-  -1.3927397867E-01,
-  2.5961181191E-03,
-  -1.7241811870E-03,
-  2.1664802578E-05
-};
-
-static double kirby2_sumsq = 3.9050739624E+00;
 static double kirby2_epsrel = 1.0e-5;
 
 static double kirby2_sigma[kirby2_P] = {
@@ -333,6 +326,26 @@ static double kirby2_F0[kirby2_N] = {
   371.30E0
 };
 
+static void
+kirby2_checksol(const double x[], const double sumsq,
+                const double epsrel, const char *sname,
+                const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 3.9050739624E+00;
+  const double kirby2_x[kirby2_P] = {
+    1.6745063063E+00, -1.3927397867E-01, 2.5961181191E-03,
+   -1.7241811870E-03, 2.1664802578E-05 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < kirby2_P; ++i)
+    {
+      gsl_test_rel(x[i], kirby2_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 kirby2_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -398,9 +411,9 @@ static test_fdf_problem kirby2_problem =
 {
   "nist-kirby2",
   kirby2_x0,
-  kirby2_x,
-  &kirby2_sumsq,
   kirby2_sigma,
   &kirby2_epsrel,
+  kirby2_NTRIES,
+  &kirby2_checksol,
   &kirby2_func
 };

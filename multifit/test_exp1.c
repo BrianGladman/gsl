@@ -1,10 +1,9 @@
 #define exp1_N         45
 #define exp1_P         4
 
-static double exp1_x0[exp1_P] = { -1.0, -2.0, 1.0, -1.0 };
-static double exp1_x[exp1_P] = { -4.0, -5.0, 4.0, -4.0 };
+#define exp1_NTRIES    3
 
-static double exp1_sumsq = 1.0e-2;
+static double exp1_x0[exp1_P] = { -1.0, -2.0, 1.0, -1.0 };
 static double exp1_epsrel = 1.0e-4;
 
 static double exp1_Y[exp1_N] = {
@@ -18,6 +17,25 @@ static double exp1_Y[exp1_N] = {
 0.091868, 0.128926, 0.119273, 0.115997, 0.105831,
 0.075261, 0.068387, 0.090823, 0.085205, 0.067203
 };
+
+static void
+exp1_checksol(const double x[], const double sumsq,
+              const double epsrel, const char *sname,
+              const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 1.0e-2;
+  const double exp1_x[exp1_P] = { -4.0, -5.0, 4.0, -4.0 }; /* approx */
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < exp1_P; ++i)
+    {
+      gsl_test_rel(x[i], exp1_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 exp1_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -79,9 +97,9 @@ static test_fdf_problem exp1_problem =
 {
   "expfit1",
   exp1_x0,
-  exp1_x,
-  &exp1_sumsq,
   NULL,
   &exp1_epsrel,
+  exp1_NTRIES,
+  &exp1_checksol,
   &exp1_func
 };

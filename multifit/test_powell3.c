@@ -1,11 +1,30 @@
 #define powell3_N         2
 #define powell3_P         2
 
-static double powell3_x0[powell3_P] = { 0.0, 1.0 };
-static double powell3_x[powell3_P] = { 1.09815932969975976e-05, 9.10614673986700218 };
+#define powell3_NTRIES    1
 
-static double powell3_sumsq = 0.0;
+static double powell3_x0[powell3_P] = { 0.0, 1.0 };
 static double powell3_epsrel = 1.0e-12;
+
+static void
+powell3_checksol(const double x[], const double sumsq,
+                 const double epsrel, const char *sname,
+                 const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 0.0;
+  const double powell3_x[powell3_P] = { 1.09815932969975976e-05,
+                                        9.10614673986700218 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < powell3_P; ++i)
+    {
+      gsl_test_rel(x[i], powell3_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 powell3_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -50,9 +69,9 @@ static test_fdf_problem powell3_problem =
 {
   "powell_badly_scaled",
   powell3_x0,
-  powell3_x,
-  &powell3_sumsq,
   NULL,
   &powell3_epsrel,
+  powell3_NTRIES,
+  &powell3_checksol,
   &powell3_func
 };

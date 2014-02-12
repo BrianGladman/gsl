@@ -1,11 +1,29 @@
 #define rosenbrock_N         2
 #define rosenbrock_P         2
 
-static double rosenbrock_x0[rosenbrock_P] = { -1.2, 1.0 };
-static double rosenbrock_x[rosenbrock_P] = { 1.0, 1.0 };
+#define rosenbrock_NTRIES    4
 
-static double rosenbrock_sumsq = 0.0;
+static double rosenbrock_x0[rosenbrock_P] = { -1.2, 1.0 };
+
 static double rosenbrock_epsrel = 1.0e-12;
+
+static void
+rosenbrock_checksol(const double x[], const double sumsq,
+                    const double epsrel, const char *sname,
+                    const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 0.0;
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < rosenbrock_P; ++i)
+    {
+      gsl_test_rel(x[i], 1.0, epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 rosenbrock_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -48,9 +66,9 @@ static test_fdf_problem rosenbrock_problem =
 {
   "rosenbrock",
   rosenbrock_x0,
-  rosenbrock_x,
-  &rosenbrock_sumsq,
   NULL,
   &rosenbrock_epsrel,
+  rosenbrock_NTRIES,
+  &rosenbrock_checksol,
   &rosenbrock_func
 };

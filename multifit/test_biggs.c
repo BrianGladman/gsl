@@ -1,11 +1,29 @@
 #define biggs_N         6  /* >= p */
 #define biggs_P         6
 
-static double biggs_x0[biggs_P] = { 1.0, 2.0, 1.0, 1.0, 1.0, 1.0 };
-static double biggs_x[biggs_P] = { 1.0, 10.0, 1.0, 5.0, 4.0, 3.0 };
+#define biggs_NTRIES    1
 
-static double biggs_sumsq = 0.0;
+static double biggs_x0[biggs_P] = { 1.0, 2.0, 1.0, 1.0, 1.0, 1.0 };
 static double biggs_epsrel = 1.0e-9;
+
+static void
+biggs_checksol(const double x[], const double sumsq,
+               const double epsrel, const char *sname,
+               const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 0.0;
+  const double biggs_x[biggs_P] = { 1.0, 10.0, 1.0, 5.0, 4.0, 3.0 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < biggs_P; ++i)
+    {
+      gsl_test_rel(x[i], biggs_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 biggs_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -72,9 +90,9 @@ static test_fdf_problem biggs_problem =
 {
   "biggs",
   biggs_x0,
-  biggs_x,
-  &biggs_sumsq,
   NULL,
   &biggs_epsrel,
+  biggs_NTRIES,
+  &biggs_checksol,
   &biggs_func
 };

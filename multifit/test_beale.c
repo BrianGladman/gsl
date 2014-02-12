@@ -1,13 +1,31 @@
 #define beale_N         3
 #define beale_P         2
 
-static double beale_x0[beale_P] = { 1.0, 1.0 };
-static double beale_x[beale_P] = { 3.0, 0.5 };
+#define beale_NTRIES    1
 
-static double beale_sumsq = 0.0;
+static double beale_x0[beale_P] = { 1.0, 1.0 };
 static double beale_epsrel = 1.0e-12;
 
 static double beale_Y[beale_N] = { 1.5, 2.25, 2.625 };
+
+static void
+beale_checksol(const double x[], const double sumsq,
+               const double epsrel, const char *sname,
+               const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 0.0;
+  const double beale_x[beale_P] = { 3.0, 0.5 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < beale_P; ++i)
+    {
+      gsl_test_rel(x[i], beale_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 beale_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -61,9 +79,9 @@ static test_fdf_problem beale_problem =
 {
   "beale",
   beale_x0,
-  beale_x,
-  &beale_sumsq,
   NULL,
   &beale_epsrel,
+  beale_NTRIES,
+  &beale_checksol,
   &beale_func
 };

@@ -1,12 +1,9 @@
 #define osborne_N         33
 #define osborne_P         5
 
-static double osborne_x0[osborne_P] = { 0.5, 1.5, -1.0, 0.01, 0.02 };
-static double osborne_x[osborne_P] = { 3.754100521058740e-01, 1.935846912585852e+00,
-                                      -1.464687136486099e+00, 1.286753463980110e-02,
-                                      2.212269966218532e-02 };
+#define osborne_NTRIES    3
 
-static double osborne_sumsq = 5.464894697482687e-05;
+static double osborne_x0[osborne_P] = { 0.5, 1.5, -1.0, 0.01, 0.02 };
 static double osborne_epsrel = 1.0e-8;
 
 static double osborne_Y[osborne_N] = {
@@ -16,6 +13,23 @@ static double osborne_Y[osborne_N] = {
 0.490, 0.478, 0.467, 0.457, 0.448, 0.438, 0.431,
 0.424, 0.420, 0.414, 0.411, 0.406
 };
+
+static void
+osborne_checksol(const double x[], const double sumsq,
+                 const double epsrel, const char *sname,
+                 const char *pname)
+{
+  const double sumsq_exact = 5.464894697482687e-05;
+  const double osborne_x[osborne_P] = {
+    3.754100521058740e-01, GSL_NAN, GSL_NAN, GSL_NAN, GSL_NAN };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  /* only the first model parameter is uniquely constrained */
+  gsl_test_rel(x[0], osborne_x[0], epsrel, "%s/%s i=0",
+               sname, pname);
+}
 
 static int
 osborne_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -79,9 +93,9 @@ static test_fdf_problem osborne_problem =
 {
   "osborne",
   osborne_x0,
-  osborne_x,
-  &osborne_sumsq,
   NULL,
   &osborne_epsrel,
+  osborne_NTRIES,
+  &osborne_checksol,
   &osborne_func
 };

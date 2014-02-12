@@ -1,13 +1,32 @@
 #define rosenbrocke_N         8 /* = p */
 #define rosenbrocke_P         8 /* must be even */
 
+#define rosenbrocke_NTRIES    4
+
 static double rosenbrocke_x0[rosenbrocke_P] = { -1.2, 1.0, -1.2, 1.0,
                                                 -1.2, 1.0, -1.2, 1.0 };
-static double rosenbrocke_x[rosenbrocke_P] = { 1.0, 1.0, 1.0, 1.0,
-                                               1.0, 1.0, 1.0, 1.0 };
 
-static double rosenbrocke_sumsq = 0.0;
 static double rosenbrocke_epsrel = 1.0e-12;
+
+static void
+rosenbrocke_checksol(const double x[], const double sumsq,
+                     const double epsrel, const char *sname,
+                     const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 0.0;
+  const double rosenbrocke_x[rosenbrocke_P] = { 1.0, 1.0, 1.0, 1.0,
+                                                1.0, 1.0, 1.0, 1.0 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < rosenbrocke_P; ++i)
+    {
+      gsl_test_rel(x[i], rosenbrocke_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 rosenbrocke_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -61,9 +80,9 @@ static test_fdf_problem rosenbrocke_problem =
 {
   "rosenbrock_extended",
   rosenbrocke_x0,
-  rosenbrocke_x,
-  &rosenbrocke_sumsq,
   NULL,
   &rosenbrocke_epsrel,
+  rosenbrocke_NTRIES,
+  &rosenbrocke_checksol,
   &rosenbrocke_func
 };

@@ -1,13 +1,31 @@
-#define brown1_N  20
-#define brown1_P  4
+#define brown1_N         20
+#define brown1_P         4
+
+#define brown1_NTRIES    3
 
 static double brown1_x0[brown1_P] = { 25, 5, -5, -1 };
-static double brown1_x[brown1_P] = {
--1.159443990239263e+01, 1.320363005221244e+01,
--4.034395456782477e-01, 2.367789088597534e-01 };
-
-static double brown1_sumsq = 8.582220162635628e+04;
 static double brown1_epsrel = 1.0e-6;
+
+static void
+brown1_checksol(const double x[], const double sumsq,
+                const double epsrel, const char *sname,
+                const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 8.582220162635628e+04;
+  const double brown1_x[brown1_P] = {
+    -1.159443990239263e+01, 1.320363005221244e+01,
+    -4.034395456782477e-01, 2.367789088597534e-01 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < brown1_P; ++i)
+    {
+      gsl_test_rel(x[i], brown1_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 brown1_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -70,9 +88,9 @@ static test_fdf_problem brown1_problem =
 {
   "brown_dennis",
   brown1_x0,
-  brown1_x,
-  &brown1_sumsq,
   NULL,
   &brown1_epsrel,
+  brown1_NTRIES,
+  &brown1_checksol,
   &brown1_func
 };

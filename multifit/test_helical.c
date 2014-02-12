@@ -1,12 +1,30 @@
-#define helical_N     3
-#define helical_P     3
+#define helical_N         3
+#define helical_P         3
+
+#define helical_NTRIES    4
 
 static double helical_x0[helical_P] = { -1.0, 0.0, 0.0 };
 static double helical_x[helical_P] = { 1.0, 0.0, 0.0 };
 
-static double helical_sumsq = 0.0;
-
 static double helical_epsrel = 1.0e-12;
+
+static void
+helical_checksol(const double x[], const double sumsq,
+                 const double epsrel, const char *sname,
+                 const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 0.0;
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < helical_P; ++i)
+    {
+      gsl_test_rel(x[i], helical_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 helical_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -65,9 +83,9 @@ static test_fdf_problem helical_problem =
 {
   "helical",
   helical_x0,
-  helical_x,
-  &helical_sumsq,
   NULL,
   &helical_epsrel,
+  helical_NTRIES,
+  &helical_checksol,
   &helical_func
 };

@@ -21,10 +21,12 @@ typedef struct
 {
   const char *name;
   double *x0;       /* initial parameters (size p) */
-  double *x_sol;    /* solution parameters (size p) */
-  double *f_sumsq;  /* ||f(x_sol)||^2 */
   double *sigma;
   double *epsrel;   /* relative tolerance for solution checking */
+  size_t ntries;
+  void (*checksol) (const double x[], const double sumsq,
+                    const double epsrel, const char *sname,
+                    const char *pname);
   gsl_multifit_function_fdf *fdf;
 } test_fdf_problem;
 
@@ -60,8 +62,8 @@ typedef struct
 
 static void test_fdf(const gsl_multifit_fdfsolver_type * T,
                      const double xtol, const double gtol,
-                     const double ftol, const double x0_scale,
-                     test_fdf_problem *problem);
+                     const double ftol, const double epsrel,
+                     const double x0_scale, test_fdf_problem *problem);
 static void test_scale_x0(gsl_vector *x0, const double scale);
 
 /*
@@ -129,49 +131,64 @@ test_nonlinear(void)
   const double xtol = 1e-15;
   const double gtol = 1e-15;
   const double ftol = 0.0;
-  size_t i;
+  size_t i, j;
 
   /* Nielsen tests */
   for (i = 0; test_fdf_nielsen[i] != NULL; ++i)
     {
+      test_fdf_problem *problem = test_fdf_nielsen[i];
       double scale = 1.0;
 
-      test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-               scale, test_fdf_nielsen[i]);
+      for (j = 0; j < problem->ntries; ++j)
+        {
+          double epsrel = *(problem->epsrel) * scale;
+
+          test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                   epsrel, scale, problem);
+          scale *= 10.0;
+        }
     }
 
   /* More tests */
   for (i = 0; test_fdf_more[i] != NULL; ++i)
     {
+      test_fdf_problem *problem = test_fdf_more[i];
       double scale = 1.0;
 
-      test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-               scale, test_fdf_more[i]);
+      for (j = 0; j < problem->ntries; ++j)
+        {
+          double epsrel = *(problem->epsrel) * scale;
+
+          test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                   epsrel, scale, problem);
+          scale *= 10.0;
+        }
     }
 
-  /*
-   * NIST tests - the tolerances for the lmsder/lmder routines must
-   * be set low or they produce errors like "not making progress
-   * toward solution"
-   */
+  /* NIST tests */
   for (i = 0; test_fdf_nist[i] != NULL; ++i)
     {
       test_fdf_problem *problem = test_fdf_nist[i];
       double scale = 1.0;
 
-      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-               scale, problem);
-      test_fdf(gsl_multifit_fdfsolver_lmsder, 1e-5, 1e-5, 0.0, scale,
-               problem);
-      test_fdf(gsl_multifit_fdfsolver_lmder, 1e-5, 1e-5, 0.0, scale,
-               problem);
+      for (j = 0; j < problem->ntries; ++j)
+        {
+          double epsrel = *(problem->epsrel) * scale;
 
-      problem->fdf->df = NULL;
-      problem->fdf->fdf = NULL;
-      test_fdf(gsl_multifit_fdfsolver_lmsder, 1e-5, 1e-5, 0.0, scale,
-               problem);
-      test_fdf(gsl_multifit_fdfsolver_lmder, 1e-5, 1e-5, 0.0, scale,
-               problem);
+          test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                   epsrel, scale, problem);
+          test_fdf(gsl_multifit_fdfsolver_lmder, xtol, gtol, ftol,
+                   epsrel, scale, problem);
+
+          problem->fdf->df = NULL;
+          problem->fdf->fdf = NULL;
+          test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                   epsrel, scale, problem);
+          test_fdf(gsl_multifit_fdfsolver_lmder, xtol, gtol, ftol,
+                   epsrel, scale, problem);
+
+          scale *= 10.0;
+        }
     }
 }
 
@@ -183,6 +200,7 @@ Inputs: T        - solver to use
         xtol     - tolerance in x
         gtol     - tolerance in gradient
         ftol     - tolerance in residual vector
+        epsrel   - relative error tolerance in solution
         x0_scale - to test robustness against starting points,
                    the standard starting point in 'problem' is
                    multiplied by this scale factor:
@@ -195,14 +213,14 @@ Inputs: T        - solver to use
 static void
 test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
          const double gtol, const double ftol,
-         const double x0_scale, test_fdf_problem *problem)
+         const double epsrel, const double x0_scale,
+         test_fdf_problem *problem)
 {
   gsl_multifit_function_fdf *fdf = problem->fdf;
   const size_t n = fdf->n;
   const size_t p = fdf->p;
   const double *sigma = problem->sigma;
-  const double epsrel = *(problem->epsrel);
-  const size_t max_iter = 1000;
+  const size_t max_iter = 1500;
   gsl_vector *x0 = gsl_vector_alloc(p);
   gsl_vector_view x0v = gsl_vector_view_array(problem->x0, p);
   gsl_multifit_fdfsolver *s = gsl_multifit_fdfsolver_alloc (T, n, p);
@@ -217,7 +235,7 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
 
   gsl_multifit_fdfsolver_set(s, fdf, x0);
 
-  printf("working on %s/%s\n", sname, pname);
+  printf("testing %s/%s scale=%g\n", sname, pname, x0_scale);
 
   status = gsl_multifit_fdfsolver_driver(s, max_iter, xtol, gtol,
                                          ftol, &info);
@@ -226,28 +244,19 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
 
   printf("iter = %zu, info = %d\n", s->niter, info);
 
-  /* check computed x = x_sol */
-  if (problem->x_sol)
-    {
-      for (i = 0; i < p; ++i)
-        {
-          double xi = gsl_vector_get(s->x, i);
-          double xi_exact = problem->x_sol[i];
+  /* check solution vector x and sumsq = ||f||^2 */
+  {
+    double sumsq;
 
-          gsl_test_rel(xi, xi_exact, epsrel,
-                       "%s/%s solution i=%zu",
-                       sname, pname, i);
-        }
-    }
+    gsl_blas_ddot(s->f, s->f, &sumsq);
+    (problem->checksol)(s->x->data, sumsq, epsrel, sname, pname);
+  }
 
   {
     double s2;
-    double s2_exact = *(problem->f_sumsq);
 
     /* check computed/exact ||f||^2 */
     gsl_blas_ddot(s->f, s->f, &s2);
-    gsl_test_rel(s2, s2_exact, epsrel,
-                 "%s/%s sumsq", sname, pname);
 
     /* check variances */
     if (sigma)

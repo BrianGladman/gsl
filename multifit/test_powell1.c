@@ -1,12 +1,28 @@
-#define powell1_N     4
-#define powell1_P     4
+#define powell1_N        4
+#define powell1_P        4
+
+#define powell1_NTRIES   4
 
 static double powell1_x0[powell1_P] = { 3.0, -1.0, 0.0, 1.0 };
-static double powell1_x[powell1_P] = { 0.0, 0.0, 0.0, 0.0 };
-
-static double powell1_sumsq = 0.0;
-
 static double powell1_epsrel = 1.0e-5;
+
+static void
+powell1_checksol(const double x[], const double sumsq,
+                 const double epsrel, const char *sname,
+                 const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 0.0;
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < powell1_P; ++i)
+    {
+      gsl_test_rel(x[i], 0.0, epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 powell1_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -71,11 +87,11 @@ static gsl_multifit_function_fdf powell1_func =
 
 static test_fdf_problem powell1_problem =
 {
-  "powell1",
+  "powell_singular",
   powell1_x0,
-  powell1_x,
-  &powell1_sumsq,
   NULL,
   &powell1_epsrel,
+  powell1_NTRIES,
+  &powell1_checksol,
   &powell1_func
 };

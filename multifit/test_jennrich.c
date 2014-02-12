@@ -1,11 +1,30 @@
 #define jennrich_N         10
 #define jennrich_P         2
 
-static double jennrich_x0[jennrich_P] = { 0.3, 0.4 };
-static double jennrich_x[jennrich_P] = { 2.578252139935855e-01, 2.578252133471426e-01 };
+#define jennrich_NTRIES    1
 
-static double jennrich_sumsq = 1.243621823556148e+02;
+static double jennrich_x0[jennrich_P] = { 0.3, 0.4 };
 static double jennrich_epsrel = 1.0e-8;
+
+static void
+jennrich_checksol(const double x[], const double sumsq,
+                  const double epsrel, const char *sname,
+                  const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 1.243621823556148e+02;
+  const double jennrich_x[jennrich_P] = { 2.578252139935855e-01,
+                                          2.578252133471426e-01 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < jennrich_P; ++i)
+    {
+      gsl_test_rel(x[i], jennrich_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 jennrich_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -58,9 +77,9 @@ static test_fdf_problem jennrich_problem =
 {
   "jennrich",
   jennrich_x0,
-  jennrich_x,
-  &jennrich_sumsq,
   NULL,
   &jennrich_epsrel,
+  jennrich_NTRIES,
+  &jennrich_checksol,
   &jennrich_func
 };

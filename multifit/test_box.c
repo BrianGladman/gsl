@@ -1,11 +1,29 @@
 #define box_N         10 /* can be >= p */
 #define box_P         3
 
-static double box_x0[box_P] = { 0.0, 10.0, 20.0 };
-static double box_x[box_P] = { 1.0, 10.0, 1.0 };
+#define box_NTRIES    1
 
-static double box_sumsq = 0.0;
+static double box_x0[box_P] = { 0.0, 10.0, 20.0 };
 static double box_epsrel = 1.0e-12;
+
+static void
+box_checksol(const double x[], const double sumsq,
+              const double epsrel, const char *sname,
+              const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 0.0;
+  const double box_x[box_P] = { 1.0, 10.0, 1.0 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < box_P; ++i)
+    {
+      gsl_test_rel(x[i], box_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 box_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -63,9 +81,9 @@ static test_fdf_problem box_problem =
 {
   "box3d",
   box_x0,
-  box_x,
-  &box_sumsq,
   NULL,
   &box_epsrel,
+  box_NTRIES,
+  &box_checksol,
   &box_func
 };

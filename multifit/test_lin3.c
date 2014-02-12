@@ -1,12 +1,31 @@
 #define lin3_N         50  /* can be anything >= p */
 #define lin3_P         10  /* >= 3 */
 
-static double lin3_x0[lin3_P] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
-/* no unique solution vector */
+#define lin3_NTRIES    3
 
-/* F(x*) = [m^2 + 3m - 6] / [2(2m - 3)] */
-static double lin3_sumsq = 1.362886597938144e+01;
-static double lin3_epsrel = 1.0e-12;
+static double lin3_x0[lin3_P] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
+static double lin3_epsrel = 1.0e-10;
+
+static void
+lin3_checksol(const double x[], const double sumsq,
+              const double epsrel, const char *sname,
+              const char *pname)
+{
+  size_t i;
+  const double n = (double) lin3_N;
+  const double sumsq_exact = 0.5 * (n*n + 3*n - 6.0) / (2*n - 3.0);
+  const double sum_exact = 3.0 / (2.0*n - 3.0);
+  double sum = 0.0;
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 1; i < lin3_P - 1; ++i)
+    sum += (i + 1.0) * x[i];
+
+  gsl_test_rel(sum, sum_exact, epsrel, "%s/%s coeff sum",
+               sname, pname);
+}
 
 static int
 lin3_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -67,9 +86,9 @@ static test_fdf_problem lin3_problem =
 {
   "linear_rank1zeros",
   lin3_x0,
-  NULL, /* no unique solution vector */
-  &lin3_sumsq,
   NULL,
   &lin3_epsrel,
+  lin3_NTRIES,
+  &lin3_checksol,
   &lin3_func
 };

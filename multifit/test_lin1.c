@@ -1,12 +1,28 @@
 #define lin1_N         11  /* can be anything >= p */
 #define lin1_P         5
 
+#define lin1_NTRIES    3
+
 static double lin1_x0[lin1_P] = { 1.0, 1.0, 1.0, 1.0, 1.0 };
-static double lin1_x[lin1_P] = { -1.0, -1.0, -1.0, -1.0, -1.0 };
-
-static double lin1_sumsq = (double) (lin1_N - lin1_P);
-
 static double lin1_epsrel = 1.0e-12;
+
+static void
+lin1_checksol(const double x[], const double sumsq,
+              const double epsrel, const char *sname,
+              const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = (double) (lin1_N - lin1_P);
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < lin1_P; ++i)
+    {
+      gsl_test_rel(x[i], -1.0, epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 lin1_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -66,9 +82,9 @@ static test_fdf_problem lin1_problem =
 {
   "linear_full",
   lin1_x0,
-  lin1_x,
-  &lin1_sumsq,
   NULL,
   &lin1_epsrel,
+  lin1_NTRIES,
+  &lin1_checksol,
   &lin1_func
 };

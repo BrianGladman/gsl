@@ -1,13 +1,31 @@
-#define watson_N  31
-#define watson_P  6
+#define watson_N         31
+#define watson_P         6
+
+#define watson_NTRIES    4
 
 static double watson_x0[watson_P] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-static double watson_x[watson_P] = {
--1.572508640629858e-02,  1.012434869366059e+00, -2.329916259263380e-01,
- 1.260430087686035e+00, -1.513728922580576e+00,  9.929964323646112e-01 };
-
-static double watson_sumsq = 2.287670053552372e-03;
 static double watson_epsrel = 1.0e-7;
+
+static void
+watson_checksol(const double x[], const double sumsq,
+                const double epsrel, const char *sname,
+                const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 2.287670053552372e-03;
+  const double watson_x[watson_P] = {
+    -1.572508640629858e-02,  1.012434869366059e+00, -2.329916259263380e-01,
+     1.260430087686035e+00, -1.513728922580576e+00,  9.929964323646112e-01 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < watson_P; ++i)
+    {
+      gsl_test_rel(x[i], watson_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 watson_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -101,9 +119,9 @@ static test_fdf_problem watson_problem =
 {
   "watson",
   watson_x0,
-  watson_x,
-  &watson_sumsq,
   NULL,
   &watson_epsrel,
+  watson_NTRIES,
+  &watson_checksol,
   &watson_func
 };

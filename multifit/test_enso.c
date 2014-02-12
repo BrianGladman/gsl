@@ -1,21 +1,11 @@
-#define enso_N  168
-#define enso_P  9
+#define enso_N       168
+#define enso_P       9
+
+#define enso_NTRIES  1
 
 static double enso_x0[enso_P] = { 10.0, 3.0, 0.5, 44.0, -1.5, 0.5, 26.0, 0.1, 1.5 };
 
-static double enso_x[enso_P] = {
-  1.0510749193E+01, 
-  3.0762128085E+00,
-  5.3280138227E-01,
-  4.4311088700E+01,
- -1.6231428586E+00,
-  5.2554493756E-01,
-  2.6887614440E+01,
-  2.1232288488E-01,
-  1.4966870418E+00
-};
 
-static double enso_sumsq = 7.8853978668E+02;
 static double enso_epsrel = 1.0e-3;
 
 static double enso_sigma[enso_P] = {
@@ -201,6 +191,28 @@ static double enso_F[enso_N] = {
     14.80000
 };
 
+static void
+enso_checksol(const double x[], const double sumsq,
+              const double epsrel, const char *sname,
+              const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 7.8853978668E+02;
+  const double enso_x[enso_P] = {
+    1.0510749193E+01, 3.0762128085E+00, 5.3280138227E-01,
+    4.4311088700E+01, -1.6231428586E+00, 5.2554493756E-01,
+    2.6887614440E+01, 2.1232288488E-01, 1.4966870418E+00 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < enso_P; ++i)
+    {
+      gsl_test_rel(x[i], enso_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
+
 
 static int
 enso_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -280,9 +292,9 @@ static test_fdf_problem enso_problem =
 {
   "nist-ENSO",
   enso_x0,
-  enso_x,
-  &enso_sumsq,
   enso_sigma,
   &enso_epsrel,
+  enso_NTRIES,
+  &enso_checksol,
   &enso_func
 };

@@ -1,10 +1,9 @@
 #define meyer_N         16
 #define meyer_P         3
 
-static double meyer_x0[meyer_P] = { 0.02, 4000.0, 250.0 };
-static double meyer_x[meyer_P] = { 5.609636471049458e-03, 6.181346346283188e+03, 3.452236346240292e+02 };
+#define meyer_NTRIES    4
 
-static double meyer_sumsq = 8.794585517053883e+01;
+static double meyer_x0[meyer_P] = { 0.02, 4000.0, 250.0 };
 static double meyer_epsrel = 1.0e-10;
 
 static double meyer_Y[meyer_N] = {
@@ -12,6 +11,27 @@ static double meyer_Y[meyer_N] = {
 9744.,  8261.,  7030.,  6005., 5147., 4427., 3820.,
 3307.,  2872.
 };
+
+static void
+meyer_checksol(const double x[], const double sumsq,
+               const double epsrel, const char *sname,
+               const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 8.794585517053883e+01;
+  const double meyer_x[meyer_P] = { 5.609636471049458e-03,
+                                    6.181346346283188e+03,
+                                    3.452236346240292e+02 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < meyer_P; ++i)
+    {
+      gsl_test_rel(x[i], meyer_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 meyer_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -70,9 +90,9 @@ static test_fdf_problem meyer_problem =
 {
   "meyer",
   meyer_x0,
-  meyer_x,
-  &meyer_sumsq,
   NULL,
   &meyer_epsrel,
+  meyer_NTRIES,
+  &meyer_checksol,
   &meyer_func
 };

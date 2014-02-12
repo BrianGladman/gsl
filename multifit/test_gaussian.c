@@ -1,16 +1,37 @@
 #define gaussian_N         15
 #define gaussian_P         3
 
-static double gaussian_x0[gaussian_P] = { 0.4, 1.0, 0.0 };
-static double gaussian_x[gaussian_P] = { 0.398956137838762825, 1.00001908448786647, 0.0 };
+#define gaussian_NTRIES    2
 
-static double gaussian_sumsq = 1.12793276961871985e-08;
+static double gaussian_x0[gaussian_P] = { 0.4, 1.0, 0.0 };
+
 static double gaussian_epsrel = 1.0e-10;
 
 static double gaussian_Y[gaussian_N] = {
 0.0009, 0.0044, 0.0175, 0.0540, 0.1295, 0.2420, 0.3521, 0.3989,
 0.3521, 0.2420, 0.1295, 0.0540, 0.0175, 0.0044, 0.0009
 };
+
+static void
+gaussian_checksol(const double x[], const double sumsq,
+                  const double epsrel, const char *sname,
+                  const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 1.12793276961871985e-08;
+  const double gaussian_x[gaussian_P] = { 0.398956137838762825,
+                                          1.00001908448786647,
+                                          0.0 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < gaussian_P; ++i)
+    {
+      gsl_test_rel(x[i], gaussian_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 gaussian_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -70,9 +91,9 @@ static test_fdf_problem gaussian_problem =
 {
   "gaussian",
   gaussian_x0,
-  gaussian_x,
-  &gaussian_sumsq,
   NULL,
   &gaussian_epsrel,
+  gaussian_NTRIES,
+  &gaussian_checksol,
   &gaussian_func
 };

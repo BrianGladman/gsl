@@ -1,11 +1,29 @@
 #define brown3_N         3
 #define brown3_P         2
 
-static double brown3_x0[brown3_P] = { 1.0, 1.0 };
-static double brown3_x[brown3_P] = { 1.0e6, 2.0e-6 };
+#define brown3_NTRIES    3
 
-static double brown3_sumsq = 0.0;
+static double brown3_x0[brown3_P] = { 1.0, 1.0 };
 static double brown3_epsrel = 1.0e-12;
+
+static void
+brown3_checksol(const double x[], const double sumsq,
+                const double epsrel, const char *sname,
+                const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 0.0;
+  const double brown3_x[brown3_P] = { 1.0e6, 2.0e-6 };
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < brown3_P; ++i)
+    {
+      gsl_test_rel(x[i], brown3_x[i], epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 brown3_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -52,9 +70,9 @@ static test_fdf_problem brown3_problem =
 {
   "brown_badly_scaled",
   brown3_x0,
-  brown3_x,
-  &brown3_sumsq,
   NULL,
   &brown3_epsrel,
+  brown3_NTRIES,
+  &brown3_checksol,
   &brown3_func
 };

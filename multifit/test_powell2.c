@@ -1,12 +1,28 @@
-#define powell2_N     2
-#define powell2_P     2
+#define powell2_N        2
+#define powell2_P        2
+
+#define powell2_NTRIES   3
 
 static double powell2_x0[powell2_P] = { 3.0, 1.0 };
-static double powell2_x[powell2_P] = { 0.0, 0.0 };
-
-static double powell2_sumsq = 0.0;
-
 static double powell2_epsrel = 1.0e-7;
+
+static void
+powell2_checksol(const double x[], const double sumsq,
+                 const double epsrel, const char *sname,
+                 const char *pname)
+{
+  size_t i;
+  const double sumsq_exact = 0.0;
+
+  gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
+               sname, pname);
+
+  for (i = 0; i < powell2_P; ++i)
+    {
+      gsl_test_rel(x[i], 0.0, epsrel, "%s/%s i=%zu",
+                   sname, pname, i);
+    }
+}
 
 static int
 powell2_f (const gsl_vector * x, void *params, gsl_vector * f)
@@ -51,9 +67,9 @@ static test_fdf_problem powell2_problem =
 {
   "powell2",
   powell2_x0,
-  powell2_x,
-  &powell2_sumsq,
   NULL,
   &powell2_epsrel,
+  powell2_NTRIES,
+  &powell2_checksol,
   &powell2_func
 };
