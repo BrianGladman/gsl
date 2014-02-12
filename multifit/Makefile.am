@@ -24,7 +24,6 @@ test_estimator.c        \
 test_exp1.c             \
 test_filip.c            \
 test_gaussian.c         \
-test_gulf.c             \
 test_hahn1.c            \
 test_helical.c          \
 test_jennrich.c         \
@@ -44,7 +43,6 @@ test_pontius.c          \
 test_powell1.c          \
 test_powell2.c          \
 test_powell3.c          \
-test_powell.c           \
 test_ridge.c            \
 test_rosenbrock.c       \
 test_rosenbrocke.c      \
