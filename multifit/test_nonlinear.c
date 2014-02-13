@@ -128,8 +128,8 @@ static test_fdf_problem *test_fdf_nist[] = {
 static void
 test_nonlinear(void)
 {
-  const double xtol = 1e-15;
-  const double gtol = 1e-15;
+  const double xtol = pow(GSL_DBL_EPSILON, 0.9);
+  const double gtol = pow(GSL_DBL_EPSILON, 0.9);
   const double ftol = 0.0;
   size_t i, j;
 

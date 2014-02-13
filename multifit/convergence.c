@@ -29,7 +29,7 @@ static double infnorm(const gsl_vector *v);
 gsl_multifit_test_convergence()
   Convergence tests for nonlinear minimization
 
-(1) ||dx|| <= xtol * ||x||
+(1) ||dx|| <= xtol * (||x|| + xtol)
 (2) ||g||_inf <= gtol
 (3) ||f(x+dx) - f(x)|| <= ftol * max(||f(x)||, 1)
 
@@ -44,17 +44,17 @@ Inputs: s - fdfsolver
 */
 
 int
-gsl_multifit_test_convergence (const gsl_multifit_fdfsolver * s, const double xtol,
-                               const double gtol, const double ftol, int *info)
+gsl_multifit_test_convergence (const gsl_multifit_fdfsolver * s,
+                               const double xtol, const double gtol,
+                               const double ftol, int *info)
 {
-  double xnorm, dxnorm, gnorm;
+  double xnorm = gsl_blas_dnrm2(s->x);
+  double dxnorm = gsl_blas_dnrm2(s->dx);
+  double gnorm;
 
   *info = 0;
 
-  xnorm = gsl_blas_dnrm2(s->x);
-  dxnorm = gsl_blas_dnrm2(s->dx);
-
-  if (dxnorm <= xtol * xnorm)
+  if (dxnorm <= xtol * (xtol + xnorm))
     {
       *info = 1;
       return GSL_SUCCESS;
