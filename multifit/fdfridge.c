@@ -1,0 +1,194 @@
+/* multifit/fdfridge.c
+ * 
+ * Copyright (C) 2014 Patrick Alken
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or (at
+ * your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ */
+
+#include <config.h>
+#include <stdlib.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_multifit_nlin.h>
+
+static int fdfridge_f(const gsl_vector * x, void * params, gsl_vector * f);
+static int fdfridge_df(const gsl_vector * x, void * params, gsl_matrix * J);
+
+gsl_multifit_fdfridge *
+gsl_multifit_fdfridge_alloc (const gsl_multifit_fdfsolver_type * T,
+                             const size_t n, const size_t p)
+{
+  gsl_multifit_fdfridge * work;
+
+  work = calloc(1, sizeof(gsl_multifit_fdfridge));
+  if (work == NULL)
+    {
+      GSL_ERROR_VAL("failed to allocate workspace",
+                    GSL_ENOMEM, 0);
+    }
+
+  work->s = gsl_multifit_fdfsolver_alloc (T, n + p, p);
+  if (work->s == NULL)
+    {
+      gsl_multifit_fdfridge_free(work);
+      GSL_ERROR_VAL("failed to allocate space for fdfsolver",
+                    GSL_ENOMEM, 0);
+    }
+
+  work->n = n;
+  work->p = p;
+  work->lambda = 0.0;
+
+  return work;
+} /* gsl_multifit_fdfridge_alloc() */
+
+void
+gsl_multifit_fdfridge_free(gsl_multifit_fdfridge *work)
+{
+  if (work->s)
+    gsl_multifit_fdfsolver_free(work->s);
+
+  free(work);
+}
+
+const char *
+gsl_multifit_fdfridge_name(const gsl_multifit_fdfridge * w)
+{
+  return gsl_multifit_fdfsolver_name(w->s);
+}
+
+gsl_vector *
+gsl_multifit_fdfridge_position (const gsl_multifit_fdfridge * w)
+{
+  return gsl_multifit_fdfsolver_position(w->s);
+}
+
+int
+gsl_multifit_fdfridge_set (gsl_multifit_fdfridge * w,
+                           gsl_multifit_function_fdf * f,
+                           const gsl_vector * x,
+                           const double lambda)
+{
+  if (w->n != f->n || w->p != f->p)
+    {
+      GSL_ERROR ("function size does not match solver", GSL_EBADLEN);
+    }
+  else if (w->p != x->size)
+    {
+      GSL_ERROR ("vector length does not match solver", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+
+      /* save user defined fdf */
+      w->fdf = f;
+
+      /* build modified fdf for Tikhonov terms */
+      w->fdftik.f = &fdfridge_f;
+      w->fdftik.df = &fdfridge_df;
+      w->fdftik.n = w->n + w->p; /* add p for Tikhonov terms */
+      w->fdftik.p = w->p;
+      w->fdftik.params = (void *) w;
+
+      /* store damping parameter */
+      w->lambda = lambda;
+
+      status = gsl_multifit_fdfsolver_set(w->s, &(w->fdftik), x);
+
+      return status;
+    }
+} /* gsl_multifit_fdfridge_set() */
+
+int
+gsl_multifit_fdfridge_iterate (gsl_multifit_fdfridge * w)
+{
+  int status = gsl_multifit_fdfsolver_iterate(w->s);
+  return status;
+}
+
+int
+gsl_multifit_fdfridge_driver (gsl_multifit_fdfridge * w,
+                              const size_t maxiter,
+                              const double xtol,
+                              const double gtol,
+                              const double ftol,
+                              int *info)
+{
+  int status = gsl_multifit_fdfsolver_driver(w->s, maxiter, xtol,
+                                             gtol, ftol, info);
+  return status;
+} /* gsl_multifit_fdfridge_driver() */
+
+/*
+fdfridge_f()
+  Callback function to provide residuals, including extra p
+Tikhonov terms. The residual vector will have the form:
+
+f~ = [     f     ]
+     [ \lambda x ]
+
+where f is the user supplied residuals, x are the model
+parameters, and \lambda is the Tikhonov damping parameter
+
+Inputs: x      - model parameters (size p)
+        params - pointer to fdfridge workspace
+        f      - (output) (n+p) vector to store f~
+*/
+
+static int
+fdfridge_f(const gsl_vector * x, void * params, gsl_vector * f)
+{
+  int status;
+  gsl_multifit_fdfridge *w = (gsl_multifit_fdfridge *) params;
+  const size_t n = w->n;
+  const size_t p = w->p;
+  gsl_vector_view f_user = gsl_vector_subvector(f, 0, n);
+  gsl_vector_view f_tik = gsl_vector_subvector(f, n, p);
+
+  /* call user callback function to get residual vector f */
+  status = (w->fdf->f)(x, w->fdf->params, &f_user.vector);
+  if (status)
+    return status;
+
+  /* store \lambda x in Tikhonov portion of f~ */
+  gsl_vector_memcpy(&f_tik.vector, x);
+  gsl_vector_scale(&f_tik.vector, w->lambda);
+
+  return GSL_SUCCESS;
+} /* fdfridge_f() */
+
+static int
+fdfridge_df(const gsl_vector * x, void * params, gsl_matrix * J)
+{
+  int status;
+  gsl_multifit_fdfridge *w = (gsl_multifit_fdfridge *) params;
+  const size_t n = w->n;
+  const size_t p = w->p;
+  gsl_matrix_view J_user = gsl_matrix_submatrix(J, 0, 0, n, p);
+  gsl_matrix_view J_tik = gsl_matrix_submatrix(J, n, 0, p, p);
+  gsl_vector_view diag = gsl_matrix_diagonal(&J_tik.matrix);
+
+  /* compute user supplied Jacobian */
+  status = (w->fdf->df)(x, w->fdf->params, &J_user.matrix);
+  if (status)
+    return status;
+
+  /* store \lambda I_p in Tikhonov portion of J */
+  gsl_matrix_set_zero(&J_tik.matrix);
+  gsl_vector_set_all(&diag.vector, w->lambda);
+
+  return GSL_SUCCESS;
+} /* fdfridge_df() */

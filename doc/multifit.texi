@@ -16,6 +16,7 @@ multidimensional nonlinear fitting functions and related declarations.
 
 @menu
 * Overview of Nonlinear Least-Squares Fitting::  
+* Overview of Regularized Nonlinear Least-Squares Fitting::  
 * Initializing the Nonlinear Least-Squares Solver::  
 * Providing the Function to be Minimized::  
 * Finite Difference Jacobian::  
@@ -39,7 +40,7 @@ the minimization of the squared residuals of @math{n} functions,
 @tex
 \beforedisplay
 $$
-\Phi(x)  = {1 \over 2} || F(x) ||^2
+\Phi(x)  = {1 \over 2} || f(x) ||^2
          = {1 \over 2} \sum_{i=1}^{n} f_i (x_1, \dots, x_p)^2
 $$
 \afterdisplay
@@ -47,7 +48,7 @@ $$
 @ifinfo
 
 @example
-\Phi(x) = (1/2) || F(x) ||^2
+\Phi(x) = (1/2) || f(x) ||^2
         = (1/2) \sum_@{i=1@}^@{n@} f_i(x_1, ..., x_p)^2 
 @end example
 
@@ -57,24 +58,24 @@ All algorithms proceed from an initial guess using the linearization,
 @tex
 \beforedisplay
 $$
-\psi(p) = || F(x+p) || \approx || F(x) + J p\, ||
+\psi(\delta) = || f(x+\delta) || \approx || f(x) + J \delta\, ||
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-\psi(p) = || F(x+p) || ~=~ || F(x) + J p ||
+\psi(\delta) = || f(x+\delta) || ~=~ || f(x) + J \delta ||
 @end example
 
 @end ifinfo
 @noindent
-where @math{x} is the initial point, @math{p} is the proposed step
+where @math{x} is the initial point, @math{\delta} is the proposed step
 and @math{J} is the
 Jacobian matrix @c{$J_{ij} = \partial f_i / \partial x_j$}
 @math{J_@{ij@} = d f_i / d x_j}.  
 Additional strategies are used to enlarge the region of convergence.
-These include requiring a decrease in the norm @math{||F||} on each
+These include requiring a decrease in the norm @math{||f||} on each
 step or using a trust region to avoid steps which fall outside the linear 
 regime.
 
@@ -106,6 +107,100 @@ With the definition above the Jacobian is
 @c{$J_{ij} = (1 / \sigma_i) \partial Y_i / \partial x_j$}
 @math{J_@{ij@} =(1 / \sigma_i)  d Y_i / d x_j}, where @math{Y_i = Y(x,t_i)}.  
 
+@node Overview of Regularized Nonlinear Least-Squares Fitting
+@section Regularized Nonlinear Least-Squares
+In cases where the Jacobian @math{J} is rank-deficient or singular,
+standard nonlinear least squares solutions can sometimes converge
+to undesirable and unstable solutions. In these cases, it can
+help to regularize the problem using ridge or Tikhonov regularization.
+In this method, we introduce a term in our minimization function
+which is designed to damp the solution vector @math{x}, or give preference
+to solutions with smaller norms.
+@tex
+\beforedisplay
+$$
+\Phi(x)  = {1 \over 2} || f(x) ||^2 + {1 \over 2} || L x ||^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+\Phi(x) = (1/2) || f(x) ||^2 + (1/2) ||Lx||^2
+@end example
+
+@end ifinfo
+Here, the regularization matrix @math{L} is often set
+as @math{L = \lambda I}, for a positive scalar @math{\lambda}, but can
+also be a general @math{m}-by-@math{p} (where @math{m} is any number
+of rows) matrix depending on the
+structure of the problem to be solved. If we define a new
+@math{(n+m)}-by-1 vector
+@tex
+\beforedisplay
+$$
+\tilde{f}(x) =
+\left[
+\matrix{
+f(x) \cr
+L x
+}
+\right]
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+f~(x) = [ f(x); Lx ]
+@end example
+
+@end ifinfo
+then
+@tex
+\beforedisplay
+$$
+\Phi(x)  = {1 \over 2} || \tilde{f}(x) ||^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+\Phi(x) = (1/2) || f~(x) ||^2
+@end example
+
+@end ifinfo
+which is in the same form as the standard nonlinear least squares
+problem. The corresponding @math{(n+m)}-by-@math{p} Jacobian matrix is
+@tex
+\beforedisplay
+$$
+\tilde{J} =
+\left[
+\matrix{
+J \cr
+L
+}
+\right]
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+F~(x) = [ f(x); Lx ]
+@end example
+
+@end ifinfo
+While the user could explicitly form the @math{\tilde{f}(x)} vector
+and @math{\tilde{J}} matrix, the @code{fdfridge} interface
+described below allows the user to specify the original data vector
+@math{f(x)}, Jacobian @math{J} and regularization matrix
+@math{L}, and automatically forms @math{\tilde{f}(x)} and
+@math{\tilde{J}} to solve the system. This allows switching
+between regularized and non-regularized solutions with minimal
+code changes.
 
 @node Initializing the Nonlinear Least-Squares Solver
 @section Initializing the Solver
@@ -147,6 +242,18 @@ returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
 @end deftypefun
 
+@deftypefun {gsl_multifit_fdfridge *} gsl_multifit_fdfridge_alloc (const gsl_multifit_fdfsolver_type * @var{T}, size_t @var{n}, size_t @var{p})
+@tpindex gsl_multifit_fdfridge
+This function returns a pointer to a newly allocated instance of a
+derivative solver of type @var{T} for @var{n} observations and @var{p}
+parameters. The solver will automatically form the augmented
+system @math{\tilde{f}(x)} and @math{\tilde{J}} for ridge (Tikhonov)
+regression.
+If there is insufficient memory to create the solver then the function
+returns a null pointer and the error handler is invoked with an error
+code of @code{GSL_ENOMEM}.
+@end deftypefun
+
 @deftypefun int gsl_multifit_fsolver_set (gsl_multifit_fsolver * @var{s}, gsl_multifit_function * @var{f}, const gsl_vector * @var{x})
 This function initializes, or reinitializes, an existing solver @var{s}
 to use the function @var{f} and the initial guess @var{x}.
@@ -158,13 +265,22 @@ to use the function and derivative @var{fdf} and the initial guess
 @var{x}.
 @end deftypefun
 
+@deftypefun int gsl_multifit_fdfridge_set (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const double @var{lambda})
+This function initializes, or reinitializes, an existing ridge solver
+@var{s} to use the function and derivative @var{fdf} and the initial guess
+@var{x}. Here, the regularization matrix is set to @math{L = \lambda I},
+with @math{\lambda} specified in @var{lambda}.
+@end deftypefun
+
 @deftypefun void gsl_multifit_fsolver_free (gsl_multifit_fsolver * @var{s})
 @deftypefunx void gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * @var{s})
+@deftypefunx void gsl_multifit_fdfridge_free (gsl_multifit_fdfridge * @var{s})
 These functions free all the memory associated with the solver @var{s}.
 @end deftypefun
 
 @deftypefun {const char *} gsl_multifit_fsolver_name (const gsl_multifit_fsolver * @var{s})
 @deftypefunx {const char *} gsl_multifit_fdfsolver_name (const gsl_multifit_fdfsolver * @var{s})
+@deftypefunx {const char *} gsl_multifit_fdfridge_name (const gsl_multifit_fdfridge * @var{s})
 These functions return a pointer to the name of the solver.  For example,
 
 @example
@@ -288,6 +404,7 @@ the code.
 
 @deftypefun int gsl_multifit_fsolver_iterate (gsl_multifit_fsolver * @var{s})
 @deftypefunx int gsl_multifit_fdfsolver_iterate (gsl_multifit_fdfsolver * @var{s})
+@deftypefunx int gsl_multifit_fdfridge_iterate (gsl_multifit_fdfridge * @var{s})
 These functions perform a single iteration of the solver @var{s}.  If
 the iteration encounters an unexpected problem then an error code will
 be returned.  The solver maintains a current estimate of the best-fit
@@ -318,6 +435,7 @@ auxiliary functions,
 
 @deftypefun {gsl_vector *} gsl_multifit_fsolver_position (const gsl_multifit_fsolver * @var{s})
 @deftypefunx {gsl_vector *} gsl_multifit_fdfsolver_position (const gsl_multifit_fdfsolver * @var{s})
+@deftypefunx {gsl_vector *} gsl_multifit_fdfridge_position (const gsl_multifit_fdfridge * @var{s})
 These functions return the current position (i.e. best-fit parameters)
 @code{s->x} of the solver @var{s}.
 @end deftypefun
@@ -447,7 +565,7 @@ enough.
 
 @deftypefun int gsl_multifit_gradient (const gsl_matrix * @var{J}, const gsl_vector * @var{f}, gsl_vector * @var{g})
 This function computes the gradient @var{g} of @math{\Phi(x) = (1/2)
-||F(x)||^2} from the Jacobian matrix @math{J} and the function values
+||f(x)||^2} from the Jacobian matrix @math{J} and the function values
 @var{f}, using the formula @math{g = J^T f}.
 @end deftypefun
 
@@ -458,11 +576,22 @@ These routines provide a high level wrapper that combine the iteration
 and convergence testing for easy use.
 
 @deftypefun int gsl_multifit_fsolver_driver (gsl_multifit_fsolver * @var{s}, const size_t @var{maxiter}, const double @var{epsabs}, const double @var{epsrel})
-@deftypefunx int gsl_multifit_fdfsolver_driver (gsl_multifit_fdfsolver * @var{s}, const size_t @var{maxiter}, const double @var{epsabs}, const double @var{epsrel})
-These functions iterate the solver @var{s} for a maximum of @var{maxiter}
+This function iterates the solver @var{s} for a maximum of @var{maxiter}
 iterations. After each iteration, the system is tested for convergence
 using @code{gsl_multifit_test_delta} with the error tolerances @var{epsabs}
 and @var{epsrel}.
+@end deftypefun
+
+@deftypefun int gsl_multifit_fdfsolver_driver (gsl_multifit_fdfsolver * @var{s}, const size_t @var{maxiter}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, int * @var{info})
+@deftypefunx int gsl_multifit_fdfridge_driver (gsl_multifit_fdfridge * @var{s}, const size_t @var{maxiter}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, int * @var{info})
+These functions iterate the solver @var{s} for a maximum of @var{maxiter}
+iterations. After each iteration, the system is tested for convergence
+using @code{gsl_multifit_test_convergence} with the error tolerances
+@var{xtol}, @var{gtol} and @var{ftol}. Upon successful convergence,
+the function returns @code{GSL_SUCCESS} and sets @var{info} to
+the reason for convergence (see @code{gsl_multifit_test_convergence}).
+Otherwise, the function returns @code{GSL_EMAXITER} indicating
+the system did not converge after @var{maxiter} iterations.
 @end deftypefun
 
 @node Minimization Algorithms using Derivatives
@@ -488,15 +617,15 @@ and Kenneth E. Hillstrom.
 
 The algorithm uses a generalized trust region to keep each step under
 control.  In order to be accepted a proposed new position @math{x'} must
-satisfy the condition @math{|D (x' - x)| < \delta}, where @math{D} is a
-diagonal scaling matrix and @math{\delta} is the size of the trust
+satisfy the condition @math{|D (x' - x)| < \Delta}, where @math{D} is a
+diagonal scaling matrix and @math{\Delta} is the size of the trust
 region.  The components of @math{D} are computed internally, using the
 column norms of the Jacobian to estimate the sensitivity of the residual
 to each component of @math{x}.  This improves the behavior of the
 algorithm for badly scaled functions.
 
 On each iteration the algorithm attempts to minimize the linear system
-@math{|F + J p|} subject to the constraint @math{|D p| < \Delta}.  The
+@math{|f + J \delta|} subject to the constraint @math{|D \delta| < \Delta}.  The
 solution to this constrained linear system is found using the
 Levenberg-Marquardt method.
 

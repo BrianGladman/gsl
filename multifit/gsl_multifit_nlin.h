@@ -180,6 +180,34 @@ int gsl_multifit_fdfsolver_dif_df(const gsl_vector *x, gsl_multifit_function_fdf
 int gsl_multifit_fdfsolver_dif_fdf(const gsl_vector *x, gsl_multifit_function_fdf *fdf,
                                    gsl_vector *f, gsl_matrix *J);
 
+typedef struct
+{
+  size_t n;                         /* number of data */
+  size_t p;                         /* number of model parameters */
+  double lambda;                    /* damping parameter */
+  gsl_multifit_fdfsolver * s;
+  gsl_multifit_function_fdf *fdf;   /* user defined fdf */
+  gsl_multifit_function_fdf fdftik; /* Tikhonov modified fdf */
+} gsl_multifit_fdfridge;
+
+gsl_multifit_fdfridge *
+gsl_multifit_fdfridge_alloc (const gsl_multifit_fdfsolver_type * T,
+                             const size_t n, const size_t p);
+void gsl_multifit_fdfridge_free(gsl_multifit_fdfridge *work);
+const char *gsl_multifit_fdfridge_name(const gsl_multifit_fdfridge * w);
+gsl_vector *gsl_multifit_fdfridge_position (const gsl_multifit_fdfridge * w);
+int gsl_multifit_fdfridge_set (gsl_multifit_fdfridge * w,
+                               gsl_multifit_function_fdf * f,
+                               const gsl_vector * x,
+                               const double lambda);
+int gsl_multifit_fdfridge_iterate (gsl_multifit_fdfridge * w);
+int gsl_multifit_fdfridge_driver (gsl_multifit_fdfridge * w,
+                                  const size_t maxiter,
+                                  const double xtol,
+                                  const double gtol,
+                                  const double ftol,
+                                  int *info);
+
 /* extern const gsl_multifit_fsolver_type * gsl_multifit_fsolver_gradient; */
 
 GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmsder;
