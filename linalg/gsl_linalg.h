@@ -593,8 +593,9 @@ int gsl_linalg_balance_columns (gsl_matrix * A, gsl_vector * D);
 
 INLINE_DECL void gsl_linalg_givens (const double a, const double b,
                                     double *c, double *s);
-INLINE_DECL void gsl_linalg_givens_gv (gsl_vector * v, size_t i,
-                                       size_t j, double c, double s);
+INLINE_DECL void gsl_linalg_givens_gv (gsl_vector * v, const size_t i,
+                                       const size_t j, const double c,
+                                       const double s);
 
 #ifdef HAVE_INLINE
 
