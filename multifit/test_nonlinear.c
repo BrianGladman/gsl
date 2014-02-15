@@ -235,14 +235,18 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
 
   gsl_multifit_fdfsolver_set(s, fdf, x0);
 
+#ifdef DEBUG
   printf("testing %s/%s scale=%g...", sname, pname, x0_scale);
+#endif
 
   status = gsl_multifit_fdfsolver_driver(s, max_iter, xtol, gtol,
                                          ftol, &info);
   gsl_test(status, "%s/%s did not converge, status=%s",
            sname, pname, gsl_strerror(status));
 
+#ifdef DEBUG
   printf("iter = %zu, info = %d\n", s->niter, info);
+#endif
 
   /* check solution vector x and sumsq = ||f||^2 */
   {
