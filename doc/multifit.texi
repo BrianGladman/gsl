@@ -437,6 +437,14 @@ These functions return the current position (i.e. best-fit parameters)
 @code{s->x} of the solver @var{s}.
 @end deftypefun
 
+@deftypefun size_t gsl_multifit_fdfsolver_niter (const gsl_multifit_fdfsolver * @var{s})
+@deftypefunx size_t gsl_multifit_fdfridge_niter (const gsl_multifit_fdfridge * @var{s})
+These functions return the number of iterations performed so far.
+The iteration counter is updated on each call to the
+@code{_iterate} functions above, and reset to 0 in the
+@code{_set} functions.
+@end deftypefun
+
 @node Search Stopping Parameters for Minimization Algorithms
 @section Search Stopping Parameters
 @cindex nonlinear fitting, stopping parameters

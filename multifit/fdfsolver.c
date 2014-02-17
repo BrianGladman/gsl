@@ -251,3 +251,8 @@ gsl_multifit_fdfsolver_position (const gsl_multifit_fdfsolver * s)
   return s->x;
 }
 
+size_t
+gsl_multifit_fdfsolver_niter (const gsl_multifit_fdfsolver * s)
+{
+  return s->niter;
+}

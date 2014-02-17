@@ -167,6 +167,7 @@ gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * s);
 
 const char * gsl_multifit_fdfsolver_name (const gsl_multifit_fdfsolver * s);
 gsl_vector * gsl_multifit_fdfsolver_position (const gsl_multifit_fdfsolver * s);
+size_t gsl_multifit_fdfsolver_niter (const gsl_multifit_fdfsolver * s);
 
 int gsl_multifit_fdfsolver_test (const gsl_multifit_fdfsolver * s,
                                  const double xtol,
@@ -198,6 +199,7 @@ gsl_multifit_fdfridge_alloc (const gsl_multifit_fdfsolver_type * T,
 void gsl_multifit_fdfridge_free(gsl_multifit_fdfridge *work);
 const char *gsl_multifit_fdfridge_name(const gsl_multifit_fdfridge * w);
 gsl_vector *gsl_multifit_fdfridge_position (const gsl_multifit_fdfridge * w);
+size_t gsl_multifit_fdfridge_niter (const gsl_multifit_fdfridge * w);
 int gsl_multifit_fdfridge_set (gsl_multifit_fdfridge * w,
                                gsl_multifit_function_fdf * f,
                                const gsl_vector * x,
