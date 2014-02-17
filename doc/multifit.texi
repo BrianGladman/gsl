@@ -606,10 +606,10 @@ and @var{epsrel}.
 @deftypefunx int gsl_multifit_fdfridge_driver (gsl_multifit_fdfridge * @var{s}, const size_t @var{maxiter}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, int * @var{info})
 These functions iterate the solver @var{s} for a maximum of @var{maxiter}
 iterations. After each iteration, the system is tested for convergence
-using @code{gsl_multifit_test_convergence} with the error tolerances
-@var{xtol}, @var{gtol} and @var{ftol}. Upon successful convergence,
+with the error tolerances @var{xtol}, @var{gtol} and @var{ftol}.
+Upon successful convergence,
 the function returns @code{GSL_SUCCESS} and sets @var{info} to
-the reason for convergence (see @code{gsl_multifit_test_convergence}).
+the reason for convergence (see @code{gsl_multifit_fdfsolver_test}).
 Otherwise, the function returns @code{GSL_EMAXITER} indicating
 the system did not converge after @var{maxiter} iterations.
 @end deftypefun
