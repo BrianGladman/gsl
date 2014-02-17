@@ -828,9 +828,10 @@ chosen as (0.0, 1.0, 0.0).
 @end example
 
 @noindent
-The iteration terminates when the change in x is smaller than 0.0001, as
-both an absolute and relative change.  Here are the results of running
-the program:
+The iteration terminates when the relative change in x is smaller than
+@math{10^{-8}}, or when the magnitude of the gradient falls below
+@math{10^{-8}}.
+Here are the results of running the program:
 
 @smallexample
 summary from method 'lmsder'
