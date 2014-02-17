@@ -387,10 +387,7 @@ square root of the machine precision @code{GSL_DBL_EPSILON}.
 @end deftypefun
 
 @deftypefun int gsl_multifit_fdfsolver_dif_fdf (const gsl_vector * @var{x}, gsl_multifit_function_fdf * @var{fdf}, gsl_vector * @var{f}, gsl_matrix * @var{J})
-This function computes the vector of function values @var{f} and
-the approximate Jacobian @var{J} at the position vector @var{x} using
-the system described in @var{fdf}. See @code{gsl_multifit_fdfsolver_dif_df}
-for a description of how the Jacobian is computed.
+This function is deprecated and will be removed in a future release.
 @end deftypefun
 
 @node Iteration of the Minimization Algorithm

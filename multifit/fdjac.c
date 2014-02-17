@@ -105,6 +105,8 @@ gsl_multifit_fdfsolver_dif_df(const gsl_vector *x, gsl_multifit_function_fdf *fd
   return fdjac(x, fdf, f, J);
 } /* gsl_multifit_fdfsolver_dif_df() */
 
+#ifndef GSL_DISABLE_DEPRECATED
+
 /*
 gsl_multifit_fdfsolver_dif_fdf()
   Compute function values (analytic) and approximate Jacobian using finite
@@ -134,3 +136,5 @@ gsl_multifit_fdfsolver_dif_fdf(const gsl_vector *x, gsl_multifit_function_fdf *f
 
   return status;
 } /* gsl_multifit_fdfsolver_dif_fdf() */
+
+#endif /* !GSL_DISABLE_DEPRECATED */
