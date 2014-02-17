@@ -354,6 +354,14 @@ the vector @var{x}.
 
 @item void * params
 a pointer to the arbitrary parameters of the function.
+
+@item size_t nevalf
+This does not need to be set by the user. It counts the number of
+function evaluations and is initialized by the @code{_set} function.
+
+@item size_t nevaldf
+This does not need to be set by the user. It counts the number of
+Jacobian evaluations and is initialized by the @code{_set} function.
 @end table
 @end deftp
 
