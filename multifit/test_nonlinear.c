@@ -64,6 +64,15 @@ static void test_fdf(const gsl_multifit_fdfsolver_type * T,
                      const double xtol, const double gtol,
                      const double ftol, const double epsrel,
                      const double x0_scale, test_fdf_problem *problem);
+static void test_fdfridge(const gsl_multifit_fdfsolver_type * T,
+                          const double xtol, const double gtol,
+                          const double ftol, const double epsrel,
+                          const double x0_scale,
+                          test_fdf_problem *problem);
+static void test_fdf_checksol(const char *sname, const char *pname,
+                              const double epsrel,
+                              gsl_multifit_fdfsolver *s,
+                              test_fdf_problem *problem);
 static void test_scale_x0(gsl_vector *x0, const double scale);
 
 /*
@@ -145,6 +154,8 @@ test_nonlinear(void)
 
           test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
                    epsrel, scale, problem);
+          test_fdfridge(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                        epsrel, scale, problem);
           scale *= 10.0;
         }
     }
@@ -219,7 +230,6 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
   gsl_multifit_function_fdf *fdf = problem->fdf;
   const size_t n = fdf->n;
   const size_t p = fdf->p;
-  const double *sigma = problem->sigma;
   const size_t max_iter = 1500;
   gsl_vector *x0 = gsl_vector_alloc(p);
   gsl_vector_view x0v = gsl_vector_view_array(problem->x0, p);
@@ -227,7 +237,6 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
   const char *pname = problem->name;
   const char *sname = gsl_multifit_fdfsolver_name(s);
   int status, info;
-  size_t i;
 
   /* scale starting point x0 */
   gsl_vector_memcpy(x0, &x0v.vector);
@@ -248,39 +257,156 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
   printf("iter = %zu, info = %d\n", s->niter, info);
 #endif
 
-  /* check solution vector x and sumsq = ||f||^2 */
-  {
-    double sumsq;
-
-    gsl_blas_ddot(s->f, s->f, &sumsq);
-    (problem->checksol)(s->x->data, sumsq, epsrel, sname, pname);
-  }
-
-  {
-    double s2;
-
-    /* check computed/exact ||f||^2 */
-    gsl_blas_ddot(s->f, s->f, &s2);
-
-    /* check variances */
-    if (sigma)
-      {
-        gsl_matrix * covar = gsl_matrix_alloc (p, p);
-        gsl_multifit_covar (s->J, 0.0, covar);
-
-        for (i = 0; i < p; i++) 
-          {
-            double ei = sqrt(s2/(n-p))*sqrt(gsl_matrix_get(covar,i,i));
-            gsl_test_rel (ei, sigma[i], epsrel, 
-                          "%s/%s, sigma(%d)", sname, pname, i) ;
-          }
-
-        gsl_matrix_free (covar);
-      }
-  }
+  /* check solution */
+  test_fdf_checksol(sname, pname, epsrel, s, problem);
 
   gsl_multifit_fdfsolver_free(s);
   gsl_vector_free(x0);
+}
+
+/*
+test_fdfridge()
+  Test a nonlinear least squares problem
+
+Inputs: T        - solver to use
+        xtol     - tolerance in x
+        gtol     - tolerance in gradient
+        ftol     - tolerance in residual vector
+        epsrel   - relative error tolerance in solution
+        x0_scale - to test robustness against starting points,
+                   the standard starting point in 'problem' is
+                   multiplied by this scale factor:
+                   x0 <- x0 * x0_scale
+                   If x0 = 0, then all components of x0 are set to
+                   x0_scale
+        problem  - contains the nonlinear problem and solution point
+*/
+
+static void
+test_fdfridge(const gsl_multifit_fdfsolver_type * T, const double xtol,
+              const double gtol, const double ftol,
+              const double epsrel, const double x0_scale,
+              test_fdf_problem *problem)
+{
+  gsl_multifit_function_fdf *fdf = problem->fdf;
+  const size_t n = fdf->n;
+  const size_t p = fdf->p;
+  const size_t max_iter = 1500;
+  gsl_vector *x0 = gsl_vector_alloc(p);
+  gsl_vector_view x0v = gsl_vector_view_array(problem->x0, p);
+  gsl_multifit_fdfridge *w = gsl_multifit_fdfridge_alloc (T, n, p);
+  const char *pname = problem->name;
+  char sname[2048];
+  int status, info;
+  double lambda = 0.0;
+
+  sprintf(sname, "ridge/%s", gsl_multifit_fdfridge_name(w));
+
+  /* scale starting point x0 */
+  gsl_vector_memcpy(x0, &x0v.vector);
+  test_scale_x0(x0, x0_scale);
+
+  /* test undamped case with lambda = 0 */
+  gsl_multifit_fdfridge_set(w, fdf, x0, lambda);
+
+  status = gsl_multifit_fdfridge_driver(w, max_iter, xtol, gtol,
+                                        ftol, &info);
+  gsl_test(status, "%s/%s did not converge, status=%s",
+           sname, pname, gsl_strerror(status));
+
+  /* check solution */
+  test_fdf_checksol(sname, pname, epsrel, w->s, problem);
+
+  /* test for self consisent solution with L = \lambda I */
+  {
+    const double eps = 1.0e-10;
+    gsl_matrix *L = gsl_matrix_calloc(p, p);
+    gsl_vector_view diag = gsl_matrix_diagonal(L);
+    gsl_multifit_fdfridge *w2 = gsl_multifit_fdfridge_alloc (T, n, p);
+    gsl_vector *y0 = gsl_vector_alloc(p);
+    size_t i;
+
+    /* pick some value for lambda and set L = \lambda I */
+    lambda = 5.0;
+    gsl_vector_set_all(&diag.vector, lambda);
+
+    /* scale initial vector */
+    gsl_vector_memcpy(x0, &x0v.vector);
+    test_scale_x0(x0, x0_scale);
+    gsl_vector_memcpy(y0, x0);
+
+    /* solve with scalar lambda routine */
+    gsl_multifit_fdfridge_set(w, fdf, x0, lambda);
+    status = gsl_multifit_fdfridge_driver(w, max_iter, xtol, gtol,
+                                          ftol, &info);
+    gsl_test(status, "%s/lambda/%s did not converge, status=%s",
+             sname, pname, gsl_strerror(status));
+
+    /* solve with general matrix routine */
+    gsl_multifit_fdfridge_set2(w2, fdf, y0, L);
+    status = gsl_multifit_fdfridge_driver(w2, max_iter, xtol, gtol,
+                                          ftol, &info);
+    gsl_test(status, "%s/L/%s did not converge, status=%s",
+             sname, pname, gsl_strerror(status));
+
+    /* test x = y */
+    for (i = 0; i < p; ++i)
+      {
+        double xi = gsl_vector_get(w->s->x, i);
+        double yi = gsl_vector_get(w2->s->x, i);
+
+        if (fabs(xi) < eps)
+          {
+            gsl_test_abs(yi, xi, eps, "%s/%s ridge lambda=%g i=%zu",
+                         sname, pname, lambda, i);
+          }
+        else
+          {
+            gsl_test_rel(yi, xi, eps, "%s/%s ridge lambda=%g i=%zu",
+                         sname, pname, lambda, i);
+          }
+      }
+
+    gsl_matrix_free(L);
+    gsl_vector_free(y0);
+    gsl_multifit_fdfridge_free(w2);
+  }
+
+  gsl_multifit_fdfridge_free(w);
+  gsl_vector_free(x0);
+}
+
+static void
+test_fdf_checksol(const char *sname, const char *pname,
+                  const double epsrel, gsl_multifit_fdfsolver *s,
+                  test_fdf_problem *problem)
+{
+  gsl_multifit_function_fdf *fdf = problem->fdf;
+  const size_t n = fdf->n;
+  const size_t p = fdf->p;
+  const double *sigma = problem->sigma;
+  double sumsq;
+
+  /* check solution vector x and sumsq = ||f||^2 */
+  gsl_blas_ddot(s->f, s->f, &sumsq);
+  (problem->checksol)(s->x->data, sumsq, epsrel, sname, pname);
+
+  /* check variances */
+  if (sigma)
+    {
+      size_t i;
+      gsl_matrix * covar = gsl_matrix_alloc (p, p);
+      gsl_multifit_covar (s->J, 0.0, covar);
+
+      for (i = 0; i < p; i++) 
+        {
+          double ei = sqrt(sumsq/(n-p))*sqrt(gsl_matrix_get(covar,i,i));
+          gsl_test_rel (ei, sigma[i], epsrel, 
+                        "%s/%s, sigma(%d)", sname, pname, i) ;
+        }
+
+      gsl_matrix_free (covar);
+    }
 }
 
 static void

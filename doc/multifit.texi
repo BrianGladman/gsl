@@ -272,6 +272,13 @@ This function initializes, or reinitializes, an existing ridge solver
 with @math{\lambda} specified in @var{lambda}.
 @end deftypefun
 
+@deftypefun int gsl_multifit_fdfridge_set2 (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_matrix * @var{L})
+This function initializes, or reinitializes, an existing ridge solver
+@var{s} to use the function and derivative @var{fdf} and the initial
+guess @var{x}. Here, the regularization matrix is set to @var{L},
+which must have @math{p} columns but may have any number of rows.
+@end deftypefun
+
 @deftypefun void gsl_multifit_fsolver_free (gsl_multifit_fsolver * @var{s})
 @deftypefunx void gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * @var{s})
 @deftypefunx void gsl_multifit_fdfridge_free (gsl_multifit_fdfridge * @var{s})
@@ -486,13 +493,13 @@ Testing for a small step size relative to the current parameter vector
 @tex
 \beforedisplay
 $$
-||p|| \le xtol ||x||
+||\delta|| \le xtol ||x||
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-||p|| <= xtol ||x||
+||\delta|| <= xtol ||x||
 @end example
 @end ifinfo
 If this test succeeds, @var{info} is set to 1 and the function

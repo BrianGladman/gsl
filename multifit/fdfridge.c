@@ -24,6 +24,7 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_multifit_nlin.h>
+#include <gsl/gsl_blas.h>
 
 static int fdfridge_f(const gsl_vector * x, void * params, gsl_vector * f);
 static int fdfridge_df(const gsl_vector * x, void * params, gsl_matrix * J);
@@ -113,12 +114,55 @@ gsl_multifit_fdfridge_set (gsl_multifit_fdfridge * w,
 
       /* store damping parameter */
       w->lambda = lambda;
+      w->L = NULL;
 
       status = gsl_multifit_fdfsolver_set(w->s, &(w->fdftik), x);
 
       return status;
     }
 } /* gsl_multifit_fdfridge_set() */
+
+int
+gsl_multifit_fdfridge_set2 (gsl_multifit_fdfridge * w,
+                            gsl_multifit_function_fdf * f,
+                            const gsl_vector * x,
+                            const gsl_matrix *L)
+{
+  if (w->n != f->n || w->p != f->p)
+    {
+      GSL_ERROR ("function size does not match solver", GSL_EBADLEN);
+    }
+  else if (w->p != x->size)
+    {
+      GSL_ERROR ("vector length does not match solver", GSL_EBADLEN);
+    }
+  else if (L->size2 != w->p)
+    {
+      GSL_ERROR ("L matrix size2 does not match solver", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+
+      /* save user defined fdf */
+      w->fdf = f;
+
+      /* build modified fdf for Tikhonov terms */
+      w->fdftik.f = &fdfridge_f;
+      w->fdftik.df = &fdfridge_df;
+      w->fdftik.n = w->n + w->p; /* add p for Tikhonov terms */
+      w->fdftik.p = w->p;
+      w->fdftik.params = (void *) w;
+
+      /* store damping matrix */
+      w->lambda = 0.0;
+      w->L = L;
+
+      status = gsl_multifit_fdfsolver_set(w->s, &(w->fdftik), x);
+
+      return status;
+    }
+} /* gsl_multifit_fdfridge_set2() */
 
 int
 gsl_multifit_fdfridge_iterate (gsl_multifit_fdfridge * w)
@@ -171,9 +215,17 @@ fdfridge_f(const gsl_vector * x, void * params, gsl_vector * f)
   if (status)
     return status;
 
-  /* store \lambda x in Tikhonov portion of f~ */
-  gsl_vector_memcpy(&f_tik.vector, x);
-  gsl_vector_scale(&f_tik.vector, w->lambda);
+  if (w->L)
+    {
+      /* store Lx in Tikhonov portion of f~ */
+      gsl_blas_dgemv(CblasNoTrans, 1.0, w->L, x, 0.0, &f_tik.vector);
+    }
+  else
+    {
+      /* store \lambda x in Tikhonov portion of f~ */
+      gsl_vector_memcpy(&f_tik.vector, x);
+      gsl_vector_scale(&f_tik.vector, w->lambda);
+    }
 
   return GSL_SUCCESS;
 } /* fdfridge_f() */
@@ -194,9 +246,17 @@ fdfridge_df(const gsl_vector * x, void * params, gsl_matrix * J)
   if (status)
     return status;
 
-  /* store \lambda I_p in Tikhonov portion of J */
-  gsl_matrix_set_zero(&J_tik.matrix);
-  gsl_vector_set_all(&diag.vector, w->lambda);
+  if (w->L)
+    {
+      /* store L in Tikhonov portion of J */
+      gsl_matrix_memcpy(&J_tik.matrix, w->L);
+    }
+  else
+    {
+      /* store \lambda I_p in Tikhonov portion of J */
+      gsl_matrix_set_zero(&J_tik.matrix);
+      gsl_vector_set_all(&diag.vector, w->lambda);
+    }
 
   return GSL_SUCCESS;
 } /* fdfridge_df() */
