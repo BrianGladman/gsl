@@ -68,7 +68,8 @@ main (void)
 
   fprintf(stderr, "summary from method '%s'\n",
           gsl_multifit_fdfsolver_name(s));
-  fprintf(stderr, "number of iterations: %zu\n", s->niter);
+  fprintf(stderr, "number of iterations: %zu\n",
+          gsl_multifit_fdfsolver_niter(s));
   fprintf(stderr, "function evaluations: %zu\n", f.nevalf);
   fprintf(stderr, "Jacobian evaluations: %zu\n", f.nevaldf);
   fprintf(stderr, "reason for stopping: %s\n",
