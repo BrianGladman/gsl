@@ -168,8 +168,10 @@ gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * s);
 const char * gsl_multifit_fdfsolver_name (const gsl_multifit_fdfsolver * s);
 gsl_vector * gsl_multifit_fdfsolver_position (const gsl_multifit_fdfsolver * s);
 
-int gsl_multifit_test_convergence (const gsl_multifit_fdfsolver * s, const double xtol,
-                                   const double gtol, const double ftol, int *info);
+int gsl_multifit_fdfsolver_test (const gsl_multifit_fdfsolver * s,
+                                 const double xtol,
+                                 const double gtol,
+                                 const double ftol, int *info);
 int gsl_multifit_test_delta (const gsl_vector * dx, const gsl_vector * x, 
                              double epsabs, double epsrel);
 

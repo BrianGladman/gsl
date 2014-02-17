@@ -188,7 +188,7 @@ gsl_multifit_fdfsolver_driver (gsl_multifit_fdfsolver * s,
         break;
 
       /* test for convergence */
-      status = gsl_multifit_test_convergence(s, xtol, gtol, ftol, info);
+      status = gsl_multifit_fdfsolver_test(s, xtol, gtol, ftol, info);
     }
   while (status == GSL_CONTINUE && ++iter < maxiter);
 

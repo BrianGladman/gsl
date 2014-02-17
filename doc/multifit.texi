@@ -463,7 +463,7 @@ The handling of these conditions is under user control.  The functions
 below allow the user to test the current estimate of the best-fit
 parameters in several standard ways.
 
-@deftypefun int gsl_multifit_test_convergence (const gsl_multifit_fdfsolver * @var{s}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, int * @var{info})
+@deftypefun int gsl_multifit_fdfsolver_test (const gsl_multifit_fdfsolver * @var{s}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, int * @var{info})
 This function tests for convergence of the minimization method
 using the following criteria:
 
