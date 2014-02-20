@@ -92,7 +92,7 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
-LT_INIT
+LT_INIT([win32-dll])
 
 dnl Check compiler features
 AC_TYPE_SIZE_T
@@ -148,13 +148,19 @@ AC_CHECK_HEADERS(ieeefp.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 
-case "$host_os" in
-     *mingw*)
-	MINGW=true
-	;;
+case $host in
+  *-*-cygwin* | *-*-mingw* )
+  if test "$enable_shared" = yes; then
+    GSLCBLAS_LDFLAGS="$GSLCBLAS_LDFLAGS -no-undefined"
+    GSL_LDFLAGS="$GSL_LDFLAGS -no-undefined"
+    GSL_LIBADD="cblas/libgslcblas.la"
+  fi
+  ;;
 esac
 
-AM_CONDITIONAL(MINGW32_HOST, test "$MINGW" = "true")
+AC_SUBST(GSLCBLAS_LDFLAGS)
+AC_SUBST(GSL_LDFLAGS)
+AC_SUBST(GSL_LIBADD)
 
 dnl Checks for library functions.
 

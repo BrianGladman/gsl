@@ -19,15 +19,9 @@ EXTRA_DIST = autogen.sh gsl-config.in gsl.pc.in configure.ac THANKS BUGS gsl.spe
 
 lib_LTLIBRARIES = libgsl.la
 libgsl_la_SOURCES = version.c
-libgsl_la_LIBADD = $(SUBLIBS)
-libgsl_la_LDFLAGS = -version-info $(GSL_LT_VERSION)
+libgsl_la_LIBADD = $(GSL_LIBADD) $(SUBLIBS)
+libgsl_la_LDFLAGS = $(GSL_LDFLAGS) -version-info $(GSL_LT_VERSION)
 noinst_HEADERS = templates_on.h templates_off.h build.h
-
-MINGW32_HOST = @MINGW32_HOST@
-if MINGW32_HOST
-libgsl_la_LIBADD += cblas/libgslcblas.la
-libgsl_la_LDFLAGS += -no-undefined
-endif
 
 m4datadir = $(datadir)/aclocal
 m4data_DATA = gsl.m4
