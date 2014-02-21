@@ -59,12 +59,12 @@ gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * T,
       GSL_ERROR_VAL ("failed to allocate space for f", GSL_ENOMEM, 0);
     }
 
-  s->J = gsl_matrix_calloc (n,p);
+  s->J = gsl_matrix_alloc (n,p);
 
   if (s->J == 0) 
     {
       gsl_multifit_fdfsolver_free (s);
-      GSL_ERROR_VAL ("failed to allocate space for g", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for J", GSL_ENOMEM, 0);
     }
 
   s->dx = gsl_vector_calloc (p);

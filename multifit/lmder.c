@@ -80,7 +80,7 @@ lmder_alloc (void *vstate, size_t n, size_t p)
    *df, *sdiag, *rptdx, *w, *work1;
   gsl_permutation *perm;
 
-  r = gsl_matrix_calloc (n, p);
+  r = gsl_matrix_alloc (n, p);
 
   if (r == 0)
     {
