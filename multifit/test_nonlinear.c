@@ -156,8 +156,12 @@ test_nonlinear(void)
                    epsrel, scale, problem);
           test_fdfridge(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
                         epsrel, scale, problem);
+
           scale *= 10.0;
         }
+
+      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
+               10.0 * *(problem->epsrel), 1.0, problem);
     }
 
   /* More tests */
@@ -235,8 +239,10 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
   gsl_vector_view x0v = gsl_vector_view_array(problem->x0, p);
   gsl_multifit_fdfsolver *s = gsl_multifit_fdfsolver_alloc (T, n, p);
   const char *pname = problem->name;
-  const char *sname = gsl_multifit_fdfsolver_name(s);
+  char sname[2048];
   int status, info;
+
+  sprintf(sname, "%s/scale=%g", gsl_multifit_fdfsolver_name(s), x0_scale);
 
   /* scale starting point x0 */
   gsl_vector_memcpy(x0, &x0v.vector);

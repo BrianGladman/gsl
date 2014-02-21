@@ -221,6 +221,7 @@ int gsl_multifit_fdfridge_driver (gsl_multifit_fdfridge * w,
 
 GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmsder;
 GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmder;
+GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmniel;
 
 INLINE_DECL int GSL_MULTIFIT_FN_EVAL_F(gsl_multifit_function_fdf *fdf,
                                        const gsl_vector *x, gsl_vector *y);
