@@ -5,6 +5,7 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector *
 
   gsl_matrix *r = state->r;
   gsl_vector *tau = state->tau;
+  gsl_vector *qtf = state->qtf;
   gsl_vector *diag = state->diag;
   gsl_vector *work1 = state->work1;
   gsl_permutation *perm = state->perm;
@@ -15,19 +16,20 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector *
   fdf->nevalf = 0;
   fdf->nevaldf = 0;
 
-  /* Evaluate function at x */
   /* return immediately if evaluation raised error */
   {
     int status;
-    
+
+    /* Evaluate function at x */
     status = GSL_MULTIFIT_FN_EVAL_F (fdf, x, f);
     if (status)
       return status;
 
+    /* Evaluate Jacobian at x and store in state->r */
     if (fdf->df)
-      status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x, J);
+      status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x, r);
     else /* finite difference approximation */
-      status = gsl_multifit_fdfsolver_dif_df(x, fdf, f, J);
+      status = gsl_multifit_fdfsolver_dif_df(x, fdf, f, r);
 
     if (status)
       return status;
@@ -43,7 +45,7 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector *
 
   if (scale)
     {
-      compute_diag (J, diag);
+      compute_diag (r, diag);
     }
   else
     {
@@ -55,10 +57,12 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector *
   state->xnorm = scaled_enorm (diag, x);
   state->delta = compute_delta (diag, x);
 
-  /* Factorize J into QR decomposition */
-
-  gsl_matrix_memcpy (r, J);
+  /* Factorize J = Q R P^T */
   gsl_linalg_QRPT_decomp (r, tau, perm, &signum, work1);
+
+  /* compute qtf = Q^T f */
+  gsl_vector_memcpy (qtf, f);
+  gsl_linalg_QR_QTvec (r, tau, qtf);
 
   gsl_vector_set_zero (state->rptdx);
   gsl_vector_set_zero (state->w);

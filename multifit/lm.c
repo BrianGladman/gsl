@@ -201,7 +201,7 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
-  const size_t p = J->size2;
+  const size_t p = x->size;
   size_t i;
 
   /* initialize counters for function and Jacobian evaluations */
@@ -367,6 +367,15 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   return GSL_SUCCESS;
 } /* lm_iterate() */
 
+static int
+lm_gradient(void *vstate, gsl_vector * g)
+{
+  lm_state_t *state = (lm_state_t *) vstate;
+  gsl_vector_memcpy(g, state->rhs);
+  gsl_vector_scale(g, -1.0);
+  return GSL_SUCCESS;
+}
+
 static const gsl_multifit_fdfsolver_type lm_type =
 {
   "lmniel",
@@ -374,6 +383,7 @@ static const gsl_multifit_fdfsolver_type lm_type =
   &lm_alloc,
   &lm_set,
   &lm_iterate,
+  &lm_gradient,
   &lm_free
 };
 

@@ -31,11 +31,6 @@ iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vect
       return GSL_SUCCESS;
     }
 
-  /* Compute qtf = Q^T f */
-
-  gsl_vector_memcpy (qtf, f);
-  gsl_linalg_QR_QTvec (r, tau, qtf);
-
   /* Compute norm of scaled gradient */
 
   compute_gradient_direction (r, perm, qtf, diag, gradient);
@@ -182,11 +177,12 @@ lm_iteration:
       /* return immediately if evaluation raised error */
       {
         int status;
-        
+
+        /* compute Jacobian at new x and store in state->r */
         if (fdf->df)
-          status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x_trial, J);
+          status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x_trial, r);
         else
-          status = gsl_multifit_fdfsolver_dif_df(x_trial, fdf, f_trial, J);
+          status = gsl_multifit_fdfsolver_dif_df(x_trial, fdf, f_trial, r);
 
         if (status)
           return status;
@@ -201,13 +197,16 @@ lm_iteration:
 
       if (scale)
         {
-          update_diag (J, diag);
+          update_diag (r, diag);
         }
 
+      /* compute J = Q R P^T and qtf = Q^T f */
       {
         int signum;
-        gsl_matrix_memcpy (r, J);
+
         gsl_linalg_QRPT_decomp (r, tau, perm, &signum, work1);
+        gsl_vector_memcpy (qtf, f);
+        gsl_linalg_QR_QTvec (r, tau, qtf);
       }
       
       return GSL_SUCCESS;

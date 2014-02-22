@@ -342,6 +342,15 @@ lmsder_iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, g
   return status;
 }
 
+static int
+lmder_gradient (void *vstate, gsl_vector * g)
+{
+  lmder_state_t *state = (lmder_state_t *) vstate;
+  compute_gradient(state->r, state->qtf, g);
+  /*gsl_vector_memcpy(g, state->gradient);*/
+  return GSL_SUCCESS;
+}
+
 static void
 lmder_free (void *vstate)
 {
@@ -370,6 +379,7 @@ static const gsl_multifit_fdfsolver_type lmder_type =
   &lmder_alloc,
   &lmder_set,
   &lmder_iterate,
+  &lmder_gradient,
   &lmder_free
 };
 
@@ -380,6 +390,7 @@ static const gsl_multifit_fdfsolver_type lmsder_type =
   &lmder_alloc,
   &lmsder_set,
   &lmsder_iterate,
+  &lmder_gradient,
   &lmder_free
 };
 

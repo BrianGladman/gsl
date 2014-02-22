@@ -124,6 +124,7 @@ typedef struct
     int (*alloc) (void *state, size_t n, size_t p);
     int (*set) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
     int (*iterate) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
+    int (*gradient) (void *state, gsl_vector * g);
     void (*free) (void *state);
   }
 gsl_multifit_fdfsolver_type;

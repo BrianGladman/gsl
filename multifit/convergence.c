@@ -60,7 +60,11 @@ gsl_multifit_fdfsolver_test (const gsl_multifit_fdfsolver * s,
       return GSL_SUCCESS;
     }
 
+#if 0
   gsl_multifit_gradient(s->J, s->f, s->g);
+#else
+  (s->type->gradient) (s->state, s->g);
+#endif
   gnorm = infnorm(s->g);
 
   if (gnorm <= gtol)

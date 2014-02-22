@@ -397,6 +397,7 @@ test_fdf_checksol(const char *sname, const char *pname,
   gsl_blas_ddot(s->f, s->f, &sumsq);
   (problem->checksol)(s->x->data, sumsq, epsrel, sname, pname);
 
+#if 0
   /* check variances */
   if (sigma)
     {
@@ -413,6 +414,7 @@ test_fdf_checksol(const char *sname, const char *pname,
 
       gsl_matrix_free (covar);
     }
+#endif
 }
 
 static void
