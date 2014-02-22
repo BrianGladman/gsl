@@ -273,7 +273,11 @@ Args: vstate - lm workspace
       dx     - (output only) parameter step vector
 
 Notes:
-1) On input, the following must be initialized in state: nu, mu
+1) On input, the following must be initialized in state:
+nu, mu, rhs, J
+
+2) On output, the following are updated with the current iterates:
+nu, mu, rhs, J
 */
 
 static int
