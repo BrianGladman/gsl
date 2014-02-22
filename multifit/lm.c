@@ -43,6 +43,7 @@ typedef struct
 {
   gsl_matrix *A;         /* J^T J */
   gsl_matrix *A_copy;    /* copy of J^T J */
+  gsl_matrix *J;         /* Jacobian J(x) */
   gsl_matrix *R;         /* upper triangular R in J = Q R P^T */
   gsl_vector *qrtau;     /* QR householder scalars */
   gsl_permutation *perm; /* permutation matrix P */
@@ -65,11 +66,9 @@ typedef struct
 static int lm_alloc (void *vstate, const size_t n, const size_t p);
 static void lm_free(void *vstate);
 static int lm_set(void *vstate, gsl_multifit_function_fdf *fdf,
-                  gsl_vector *x, gsl_vector *f, gsl_matrix *J,
-                  gsl_vector *dx);
+                  gsl_vector *x, gsl_vector *f, gsl_vector *dx);
 static int lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf,
-                      gsl_vector *x, gsl_vector *f, gsl_matrix *J,
-                      gsl_vector *dx);
+                      gsl_vector *x, gsl_vector *f, gsl_vector *dx);
 
 static int
 lm_alloc (void *vstate, const size_t n, const size_t p)
@@ -80,6 +79,12 @@ lm_alloc (void *vstate, const size_t n, const size_t p)
   if (state->A == NULL)
     {
       GSL_ERROR ("failed to allocate space for A", GSL_ENOMEM);
+    }
+
+  state->J = gsl_matrix_alloc(n, p);
+  if (state->J == NULL)
+    {
+      GSL_ERROR ("failed to allocate space for J", GSL_ENOMEM);
     }
 
   state->R = gsl_matrix_alloc(n, p);
@@ -164,6 +169,9 @@ lm_free(void *vstate)
   if (state->R)
     gsl_matrix_free(state->R);
 
+  if (state->J)
+    gsl_matrix_free(state->J);
+
   if (state->qrtau)
     gsl_vector_free(state->qrtau);
 
@@ -197,7 +205,7 @@ lm_free(void *vstate)
 
 static int
 lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
-       gsl_vector *f, gsl_matrix *J, gsl_vector *dx)
+       gsl_vector *f, gsl_vector *dx)
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
@@ -213,9 +221,12 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   if (status)
    return status;
 
-  status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x, J);
+  status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x, state->J);
   if (status)
     return status;
+
+  /* compute rhs = -J^T f */
+  gsl_blas_dgemv(CblasTrans, -1.0, state->J, f, 0.0, state->rhs);
 
 #if SCALE
   gsl_vector_set_zero(state->diag);
@@ -233,7 +244,7 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   state->mu = -1.0;
   for (i = 0; i < p; ++i)
     {
-      gsl_vector_view c = gsl_matrix_column(J, i);
+      gsl_vector_view c = gsl_matrix_column(state->J, i);
       double result; /* (J^T J)_{ii} */
 
       gsl_blas_ddot(&c.vector, &c.vector, &result);
@@ -259,8 +270,6 @@ Args: vstate - lm workspace
                on output, new parameter vector x + dx
       f      - on input, f(x)
                on output, f(x + dx)
-      J      - on input, J(x)
-               on output, J(x + dx)
       dx     - (output only) parameter step vector
 
 Notes:
@@ -269,7 +278,7 @@ Notes:
 
 static int
 lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
-           gsl_vector *f, gsl_matrix *J, gsl_vector *dx)
+           gsl_vector *f, gsl_vector *dx)
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
@@ -283,17 +292,12 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   int foundstep = 0;                        /* found step dx */
 
   /* compute A = J^T J */
-  status = lm_calc_JTJ(J, A);
-  if (status)
-    return status;
-
-  /* compute rhs = -J^T f */
-  status = gsl_blas_dgemv(CblasTrans, -1.0, J, f, 0.0, state->rhs);
+  status = lm_calc_JTJ(state->J, A);
   if (status)
     return status;
 
 #if SCALE
-  lm_update_diag(J, diag);
+  lm_update_diag(state->J, diag);
 #endif
 
   /* loop until we find an acceptable step dx */
@@ -301,7 +305,7 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
     {
       /* solve (A + mu*I) dx = g */
 #if 0
-      status = lm_calc_dx(state->mu, J, f, dx, state);
+      status = lm_calc_dx(state->mu, state->J, f, dx, state);
 #else
       status = lm_calc_dx2(state->mu, A, rhs, dx, state);
 #endif
@@ -336,7 +340,7 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
           state->nu = 2;
 
           /* compute J <- J(x + dx) */
-          status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x_trial, J);
+          status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x_trial, state->J);
           if (status)
             return status;
 
@@ -345,6 +349,10 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
 
           /* update f <- f(x + dx) */
           gsl_vector_memcpy(f, f_trial);
+
+          /* compute new rhs = -J^T f */
+          gsl_blas_dgemv(CblasTrans, -1.0, state->J, f, 0.0,
+                         state->rhs);
 
           foundstep = 1;
         }

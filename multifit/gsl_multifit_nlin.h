@@ -122,8 +122,8 @@ typedef struct
     const char *name;
     size_t size;
     int (*alloc) (void *state, size_t n, size_t p);
-    int (*set) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
-    int (*iterate) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
+    int (*set) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+    int (*iterate) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
     int (*gradient) (void *state, gsl_vector * g);
     void (*free) (void *state);
   }
@@ -135,7 +135,6 @@ typedef struct
     gsl_multifit_function_fdf * fdf ;
     gsl_vector * x;    /* parameter values x */
     gsl_vector * f;    /* residual vector f(x) */
-    gsl_matrix * J;    /* Jacobian J(x) */
     gsl_vector * dx;   /* step dx */
     gsl_vector * g;    /* gradient J^T f */
     size_t niter;      /* number of iterations performed */

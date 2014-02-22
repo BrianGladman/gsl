@@ -1,5 +1,5 @@
 static int
-set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_matrix * J, gsl_vector * dx, int scale)
+set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx, int scale)
 {
   lmder_state_t *state = (lmder_state_t *) vstate;
 

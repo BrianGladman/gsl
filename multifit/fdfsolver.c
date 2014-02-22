@@ -59,14 +59,6 @@ gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * T,
       GSL_ERROR_VAL ("failed to allocate space for f", GSL_ENOMEM, 0);
     }
 
-  s->J = gsl_matrix_alloc (n,p);
-
-  if (s->J == 0) 
-    {
-      gsl_multifit_fdfsolver_free (s);
-      GSL_ERROR_VAL ("failed to allocate space for J", GSL_ENOMEM, 0);
-    }
-
   s->dx = gsl_vector_calloc (p);
 
   if (s->dx == 0) 
@@ -125,17 +117,17 @@ gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * s,
     }  
 
   s->fdf = f;
-  gsl_vector_memcpy(s->x,x);
+  gsl_vector_memcpy(s->x, x);
   s->niter = 0;
   
-  return (s->type->set) (s->state, s->fdf, s->x, s->f, s->J, s->dx);
+  return (s->type->set) (s->state, s->fdf, s->x, s->f, s->dx);
 }
 
 int
 gsl_multifit_fdfsolver_iterate (gsl_multifit_fdfsolver * s)
 {
   int status =
-    (s->type->iterate) (s->state, s->fdf, s->x, s->f, s->J, s->dx);
+    (s->type->iterate) (s->state, s->fdf, s->x, s->f, s->dx);
 
   s->niter++;
 
@@ -229,9 +221,6 @@ gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * s)
 
   if (s->f)
     gsl_vector_free (s->f);
-
-  if (s->J)
-    gsl_matrix_free (s->J);
 
   if (s->g)
     gsl_vector_free (s->g);
