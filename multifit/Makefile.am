@@ -39,6 +39,8 @@ test_meyerscal.c        \
 test_nelson.c           \
 test_nonlinear.c        \
 test_osborne.c          \
+test_penalty1.c         \
+test_penalty2.c         \
 test_pontius.c          \
 test_powell1.c          \
 test_powell2.c          \
@@ -47,6 +49,7 @@ test_ridge.c            \
 test_rosenbrock.c       \
 test_rosenbrocke.c      \
 test_roth.c             \
+test_vardim.c           \
 test_watson.c           \
 test_wood.c
 

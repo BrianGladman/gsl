@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#define DEBUG 1
+
 typedef struct
 {
   const char *name;
@@ -51,12 +53,15 @@ typedef struct
 #include "test_meyer.c"
 #include "test_meyerscal.c"
 #include "test_osborne.c"
+#include "test_penalty1.c"
+#include "test_penalty2.c"
 #include "test_powell1.c"
 #include "test_powell2.c"
 #include "test_powell3.c"
 #include "test_rosenbrock.c"
 #include "test_rosenbrocke.c"
 #include "test_roth.c"
+#include "test_vardim.c"
 #include "test_watson.c"
 #include "test_wood.c"
 
@@ -122,6 +127,9 @@ static test_fdf_problem *test_fdf_more[] = {
   &wood_problem,         /* 14 */
   &biggs_problem,        /* 18 */
   &rosenbrocke_problem,  /* 21 */
+  &penalty1_problem,     /* 23 */
+  &penalty2_problem,     /* 24 */
+  &vardim_problem,       /* 25 */
 
   NULL
 };
