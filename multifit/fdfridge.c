@@ -146,6 +146,8 @@ gsl_multifit_fdfridge_set2 (gsl_multifit_fdfridge * w,
 
       /* save user defined fdf */
       w->fdf = f;
+      w->fdf->nevalf = 0;
+      w->fdf->nevaldf = 0;
 
       /* build modified fdf for Tikhonov terms */
       w->fdftik.f = &fdfridge_f;
@@ -211,7 +213,8 @@ fdfridge_f(const gsl_vector * x, void * params, gsl_vector * f)
   gsl_vector_view f_tik = gsl_vector_subvector(f, n, p);
 
   /* call user callback function to get residual vector f */
-  status = (w->fdf->f)(x, w->fdf->params, &f_user.vector);
+  /*status = (w->fdf->f)(x, w->fdf->params, &f_user.vector);*/
+  status = GSL_MULTIFIT_FN_EVAL_F(w->fdf, x, &f_user.vector);
   if (status)
     return status;
 
@@ -242,7 +245,7 @@ fdfridge_df(const gsl_vector * x, void * params, gsl_matrix * J)
   gsl_vector_view diag = gsl_matrix_diagonal(&J_tik.matrix);
 
   /* compute user supplied Jacobian */
-  status = (w->fdf->df)(x, w->fdf->params, &J_user.matrix);
+  status = GSL_MULTIFIT_FN_EVAL_DF(w->fdf, x, &J_user.matrix);
   if (status)
     return status;
 
