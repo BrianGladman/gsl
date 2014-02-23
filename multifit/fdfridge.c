@@ -213,7 +213,6 @@ fdfridge_f(const gsl_vector * x, void * params, gsl_vector * f)
   gsl_vector_view f_tik = gsl_vector_subvector(f, n, p);
 
   /* call user callback function to get residual vector f */
-  /*status = (w->fdf->f)(x, w->fdf->params, &f_user.vector);*/
   status = GSL_MULTIFIT_FN_EVAL_F(w->fdf, x, &f_user.vector);
   if (status)
     return status;
