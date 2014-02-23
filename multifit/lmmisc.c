@@ -17,15 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* JTJ = J^T J */
-static int
-lm_calc_JTJ(const gsl_matrix *J, gsl_matrix *JTJ)
-{
-  int status;
-  status = gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, J, J, 0.0, JTJ);
-  return status;
-} /* lm_calc_JTJ() */
-
+/* compute step dx by solving (J^T J + mu*I) dx = -J^T f */
 static int
 lm_calc_dx(const double mu, const gsl_matrix *A, const gsl_vector *rhs,
            gsl_vector *dx, lm_state_t *state)
@@ -34,7 +26,7 @@ lm_calc_dx(const double mu, const gsl_matrix *A, const gsl_vector *rhs,
   gsl_matrix *A_copy = state->A_copy;
   gsl_vector_view diag = gsl_matrix_diagonal(A_copy);
 
-  /* make a copy of matrix */
+  /* make a copy of J^T J matrix */
   gsl_matrix_memcpy(A_copy, A);
 
   /* augment normal equations with LM parameter: A -> A + mu*I */
@@ -51,6 +43,7 @@ lm_calc_dx(const double mu, const gsl_matrix *A, const gsl_vector *rhs,
   return GSL_SUCCESS;
 } /* lm_calc_dx() */
 
+/* compute x_trial = x + dx */
 static void
 lm_trial_step(const gsl_vector * x, const gsl_vector * dx,
               gsl_vector * x_trial)

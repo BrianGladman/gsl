@@ -242,6 +242,7 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
+  gsl_matrix *J = state->J;                 /* Jacobian J(x) */
   gsl_matrix *A = state->A;                 /* J^T J */
   gsl_vector *rhs = state->rhs;             /* -g = -J^T f */
   gsl_vector *x_trial = state->x_trial;     /* trial x + dx */
@@ -252,12 +253,12 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   int foundstep = 0;                        /* found step dx */
 
   /* compute A = J^T J */
-  status = lm_calc_JTJ(state->J, A);
+  status = gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, J, J, 0.0, A);
   if (status)
     return status;
 
 #if SCALE
-  lm_update_diag(state->J, diag);
+  lm_update_diag(J, diag);
 #endif
 
   /* loop until we find an acceptable step dx */
@@ -297,9 +298,9 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
 
           /* compute J <- J(x + dx) */
           if (fdf->df)
-            status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x_trial, state->J);
+            status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x_trial, J);
           else
-            status = gsl_multifit_fdfsolver_dif_df(x_trial, fdf, f_trial, state->J);
+            status = gsl_multifit_fdfsolver_dif_df(x_trial, fdf, f_trial, J);
           if (status)
             return status;
 
@@ -310,8 +311,7 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
           gsl_vector_memcpy(f, f_trial);
 
           /* compute new rhs = -J^T f */
-          gsl_blas_dgemv(CblasTrans, -1.0, state->J, f, 0.0,
-                         state->rhs);
+          gsl_blas_dgemv(CblasTrans, -1.0, J, f, 0.0, rhs);
 
           foundstep = 1;
         }
