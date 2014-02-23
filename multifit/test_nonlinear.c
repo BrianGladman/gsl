@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#define DEBUG 1
+/*#define DEBUG 1*/
 
 typedef struct
 {
@@ -118,18 +118,36 @@ static test_fdf_problem *test_fdf_nielsen[] = {
  * J. J. More, B. S. Garbow and K. E. Hillstrom, Testing
  * Unconstrained Optimization Software, ACM Trans. Math. Soft.
  * Vol 7, No 1, 1981.
+ *
+ * Many of these overlap with the Nielsen tests
  */
 static test_fdf_problem *test_fdf_more[] = {
+  &rosenbrock_problem,   /* 1 */
+  &roth_problem,         /* 2 */
   &powell3_problem,      /* 3 */
   &brown3_problem,       /* 4 */
   &beale_problem,        /* 5 */
+  &jennrich_problem,     /* 6 */
+  &helical_problem,      /* 7 */
+  &bard_problem,         /* 8 */
   &gaussian_problem,     /* 9 */
+  &meyer_problem,        /* 10 */
+  &box_problem,          /* 12 */
+  &powell1_problem,      /* 13 */
   &wood_problem,         /* 14 */
+  &kowalik_problem,      /* 15 */
+  &brown1_problem,       /* 16 */
+  &osborne_problem,      /* 17 */
   &biggs_problem,        /* 18 */
+  &watson_problem,       /* 20 */
   &rosenbrocke_problem,  /* 21 */
   &penalty1_problem,     /* 23 */
   &penalty2_problem,     /* 24 */
   &vardim_problem,       /* 25 */
+  &brown2_problem,       /* 27 */
+  &lin1_problem,         /* 32 */
+  &lin2_problem,         /* 33 */
+  &lin3_problem,         /* 34 */
 
   NULL
 };
@@ -154,36 +172,61 @@ test_nonlinear(void)
   for (i = 0; test_fdf_nielsen[i] != NULL; ++i)
     {
       test_fdf_problem *problem = test_fdf_nielsen[i];
+      double epsrel = *(problem->epsrel);
       double scale = 1.0;
 
       for (j = 0; j < problem->ntries; ++j)
         {
-          double epsrel = *(problem->epsrel) * scale;
+          double eps_scale = epsrel * scale;
 
           test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                   epsrel, scale, problem);
+                   eps_scale, scale, problem);
           test_fdfridge(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                        epsrel, scale, problem);
+                        eps_scale, scale, problem);
+
+          /* test finite difference Jacobian */
+          {
+            gsl_multifit_function_fdf fdf;
+            fdf.df = problem->fdf->df;
+            problem->fdf->df = NULL;
+            test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                     1.0e5 * eps_scale, 1.0, problem);
+            problem->fdf->df = fdf.df;
+          }
 
           scale *= 10.0;
         }
 
       test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-               10.0 * *(problem->epsrel), 1.0, problem);
+               10.0 * epsrel, 1.0, problem);
     }
 
   /* More tests */
   for (i = 0; test_fdf_more[i] != NULL; ++i)
     {
       test_fdf_problem *problem = test_fdf_more[i];
+      double epsrel = *(problem->epsrel);
       double scale = 1.0;
 
       for (j = 0; j < problem->ntries; ++j)
         {
-          double epsrel = *(problem->epsrel) * scale;
+          double eps_scale = epsrel * scale;
 
           test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                   epsrel, scale, problem);
+                   eps_scale, scale, problem);
+          test_fdfridge(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                        eps_scale, scale, problem);
+
+          /* test finite difference Jacobian */
+          {
+            gsl_multifit_function_fdf fdf;
+            fdf.df = problem->fdf->df;
+            problem->fdf->df = NULL;
+            test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                     1.0e5 * eps_scale, 1.0, problem);
+            problem->fdf->df = fdf.df;
+          }
+
           scale *= 10.0;
         }
     }
@@ -204,7 +247,6 @@ test_nonlinear(void)
                    epsrel, scale, problem);
 
           problem->fdf->df = NULL;
-          problem->fdf->fdf = NULL;
           test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
                    epsrel, scale, problem);
           test_fdf(gsl_multifit_fdfsolver_lmder, xtol, gtol, ftol,
@@ -250,7 +292,9 @@ test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
   char sname[2048];
   int status, info;
 
-  sprintf(sname, "%s/scale=%g", gsl_multifit_fdfsolver_name(s), x0_scale);
+  sprintf(sname, "%s/scale=%g%s",
+    gsl_multifit_fdfsolver_name(s), x0_scale,
+    problem->fdf->df ? "" : "/fdiff");
 
   /* scale starting point x0 */
   gsl_vector_memcpy(x0, &x0v.vector);

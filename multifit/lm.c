@@ -221,7 +221,10 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   if (status)
    return status;
 
-  status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x, state->J);
+  if (fdf->df)
+    status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x, state->J);
+  else
+    status = gsl_multifit_fdfsolver_dif_df(x, fdf, f, state->J);
   if (status)
     return status;
 
@@ -344,7 +347,10 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
           state->nu = 2;
 
           /* compute J <- J(x + dx) */
-          status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x_trial, state->J);
+          if (fdf->df)
+            status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x_trial, state->J);
+          else
+            status = gsl_multifit_fdfsolver_dif_df(x_trial, fdf, f_trial, state->J);
           if (status)
             return status;
 
