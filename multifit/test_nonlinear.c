@@ -229,31 +229,44 @@ test_nonlinear(void)
 
           scale *= 10.0;
         }
+
+      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
+               10.0 * epsrel, 1.0, problem);
     }
 
   /* NIST tests */
   for (i = 0; test_fdf_nist[i] != NULL; ++i)
     {
       test_fdf_problem *problem = test_fdf_nist[i];
+      double epsrel = *(problem->epsrel);
       double scale = 1.0;
 
       for (j = 0; j < problem->ntries; ++j)
         {
-          double epsrel = *(problem->epsrel) * scale;
+          double eps_scale = epsrel * scale;
 
           test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                   epsrel, scale, problem);
+                   eps_scale, scale, problem);
           test_fdf(gsl_multifit_fdfsolver_lmder, xtol, gtol, ftol,
-                   epsrel, scale, problem);
+                   eps_scale, scale, problem);
 
-          problem->fdf->df = NULL;
-          test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                   epsrel, scale, problem);
-          test_fdf(gsl_multifit_fdfsolver_lmder, xtol, gtol, ftol,
-                   epsrel, scale, problem);
+          /* test finite difference Jacobian */
+          {
+            gsl_multifit_function_fdf fdf;
+            fdf.df = problem->fdf->df;
+            problem->fdf->df = NULL;
+            test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                     eps_scale, 1.0, problem);
+            test_fdf(gsl_multifit_fdfsolver_lmder, xtol, gtol, ftol,
+                     eps_scale, scale, problem);
+            problem->fdf->df = fdf.df;
+          }
 
           scale *= 10.0;
         }
+
+      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
+               epsrel, 1.0, problem);
     }
 }
 
