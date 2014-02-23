@@ -44,12 +44,7 @@ typedef struct
   gsl_matrix *A;         /* J^T J */
   gsl_matrix *A_copy;    /* copy of J^T J */
   gsl_matrix *J;         /* Jacobian J(x) */
-  gsl_matrix *R;         /* upper triangular R in J = Q R P^T */
-  gsl_vector *qrtau;     /* QR householder scalars */
-  gsl_permutation *perm; /* permutation matrix P */
-  gsl_vector *qtf;       /* -Q^T f */
   gsl_vector *diag;      /* D = diag(J^T J) */
-  gsl_vector *sdiag;
   gsl_vector *rhs;       /* rhs vector = -g = -J^T f */
   gsl_vector *x_trial;   /* trial parameter vector */
   gsl_vector *f_trial;   /* trial function vector */
@@ -87,40 +82,10 @@ lm_alloc (void *vstate, const size_t n, const size_t p)
       GSL_ERROR ("failed to allocate space for J", GSL_ENOMEM);
     }
 
-  state->R = gsl_matrix_alloc(n, p);
-  if (state->R == NULL)
-    {
-      GSL_ERROR ("failed to allocate space for R", GSL_ENOMEM);
-    }
-
-  state->qrtau = gsl_vector_alloc(p);
-  if (state->qrtau == NULL)
-    {
-      GSL_ERROR ("failed to allocate space for qrtau", GSL_ENOMEM);
-    }
-
-  state->qtf = gsl_vector_alloc(n);
-  if (state->qtf == NULL)
-    {
-      GSL_ERROR ("failed to allocate space for qtf", GSL_ENOMEM);
-    }
-
-  state->perm = gsl_permutation_alloc(p);
-  if (state->perm == NULL)
-    {
-      GSL_ERROR ("failed to allocate space for perm", GSL_ENOMEM);
-    }
-
   state->diag = gsl_vector_alloc(p);
   if (state->diag == NULL)
     {
       GSL_ERROR ("failed to allocate space for diag", GSL_ENOMEM);
-    }
-
-  state->sdiag = gsl_vector_alloc(p);
-  if (state->sdiag == NULL)
-    {
-      GSL_ERROR ("failed to allocate space for sdiag", GSL_ENOMEM);
     }
 
   state->rhs = gsl_vector_alloc(p);
@@ -166,26 +131,11 @@ lm_free(void *vstate)
   if (state->A)
     gsl_matrix_free(state->A);
 
-  if (state->R)
-    gsl_matrix_free(state->R);
-
   if (state->J)
     gsl_matrix_free(state->J);
 
-  if (state->qrtau)
-    gsl_vector_free(state->qrtau);
-
-  if (state->qtf)
-    gsl_vector_free(state->qtf);
-
-  if (state->perm)
-    gsl_permutation_free(state->perm);
-
   if (state->diag)
     gsl_vector_free(state->diag);
-
-  if (state->sdiag)
-    gsl_vector_free(state->sdiag);
 
   if (state->rhs)
     gsl_vector_free(state->rhs);
@@ -281,6 +231,9 @@ nu, mu, rhs, J
 
 2) On output, the following are updated with the current iterates:
 nu, mu, rhs, J
+
+rhs needs to be set on each output, so that lm_gradient supplies
+the correct g = J^T f
 */
 
 static int
@@ -311,11 +264,7 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   while (!foundstep)
     {
       /* solve (A + mu*I) dx = g */
-#if 0
-      status = lm_calc_dx(state->mu, state->J, f, dx, state);
-#else
-      status = lm_calc_dx2(state->mu, A, rhs, dx, state);
-#endif
+      status = lm_calc_dx(state->mu, A, rhs, dx, state);
       if (status)
         return status;
 

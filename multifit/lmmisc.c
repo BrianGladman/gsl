@@ -17,8 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "qrsolv.c"
-
 /* JTJ = J^T J */
 static int
 lm_calc_JTJ(const gsl_matrix *J, gsl_matrix *JTJ)
@@ -29,8 +27,8 @@ lm_calc_JTJ(const gsl_matrix *J, gsl_matrix *JTJ)
 } /* lm_calc_JTJ() */
 
 static int
-lm_calc_dx2(const double mu, const gsl_matrix *A, const gsl_vector *rhs,
-            gsl_vector *dx, lm_state_t *state)
+lm_calc_dx(const double mu, const gsl_matrix *A, const gsl_vector *rhs,
+           gsl_vector *dx, lm_state_t *state)
 {
   int status;
   gsl_matrix *A_copy = state->A_copy;
@@ -47,54 +45,6 @@ lm_calc_dx2(const double mu, const gsl_matrix *A, const gsl_vector *rhs,
     return status;
 
   status = gsl_linalg_QR_solve(A_copy, state->work, rhs, dx);
-  if (status)
-    return status;
-
-  return GSL_SUCCESS;
-} /* lm_calc_dx2() */
-
-/*
-lm_calc_dx()
-  Compute the least squares solution dx to the system:
-
-[ J(x)       ] dx =~ [ -f ]
-[ sqrt(mu) I ]       [  0 ]
-
-where mu is the LM parameter. This least squares solution
-is needed in each iteration of LM. J is decomposed into
-J = Q R P^T and then the system which is solved is
-
-[ R P^T      ] dx =~ [ -Q^T f ]
-[ sqrt(mu) I ]       [    0   ]
-*/
-
-static int
-lm_calc_dx(const double mu, const gsl_matrix *J, const gsl_vector *f,
-            gsl_vector *dx, lm_state_t *state)
-{
-  int status;
-  const double sqrt_mu = sqrt(mu);
-  gsl_matrix *R = state->R;
-  gsl_vector *tau = state->qrtau;
-  gsl_permutation *perm = state->perm;
-  gsl_vector *qtf = state->qtf;
-  gsl_vector *diag = state->diag;
-  gsl_vector *sdiag = state->sdiag;
-  int signum;
-
-  /* make a copy of matrix */
-  gsl_matrix_memcpy(R, J);
-
-  status = gsl_linalg_QRPT_decomp(R, tau, perm, &signum, state->work);
-  if (status)
-    return status;
-
-  /* compute -Q^T f */
-  gsl_vector_memcpy(qtf, f);
-  gsl_vector_scale(qtf, -1.0);
-  gsl_linalg_QR_QTvec(R, tau, qtf);
-
-  status = qrsolv(R, perm, sqrt_mu, diag, qtf, dx, sdiag, state->work);
   if (status)
     return status;
 
