@@ -40,6 +40,7 @@ typedef struct
 #include "test_brown1.c"
 #include "test_brown2.c"
 #include "test_brown3.c"
+#include "test_eckerle.c"
 #include "test_enso.c"
 #include "test_exp1.c"
 #include "test_gaussian.c"
@@ -163,6 +164,7 @@ static test_fdf_problem *test_fdf_nist[] = {
   &thurber_problem,
   &boxbod_problem,
   &rat42_problem,
+  &eckerle_problem,
 
   NULL
 };

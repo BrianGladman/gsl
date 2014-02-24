@@ -20,6 +20,7 @@ test_boxbod.c           \
 test_brown1.c           \
 test_brown2.c           \
 test_brown3.c           \
+test_eckerle.c          \
 test_enso.c             \
 test_estimator.c        \
 test_exp1.c             \
