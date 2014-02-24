@@ -16,6 +16,7 @@ test_bard.c             \
 test_beale.c            \
 test_biggs.c            \
 test_box.c              \
+test_boxbod.c           \
 test_brown1.c           \
 test_brown2.c           \
 test_brown3.c           \
@@ -49,6 +50,7 @@ test_ridge.c            \
 test_rosenbrock.c       \
 test_rosenbrocke.c      \
 test_roth.c             \
+test_thurber.c          \
 test_vardim.c           \
 test_watson.c           \
 test_wood.c

@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/*#define DEBUG 1*/
+#define DEBUG 1
 
 typedef struct
 {
@@ -36,6 +36,7 @@ typedef struct
 #include "test_beale.c"
 #include "test_biggs.c"
 #include "test_box.c"
+#include "test_boxbod.c"
 #include "test_brown1.c"
 #include "test_brown2.c"
 #include "test_brown3.c"
@@ -61,6 +62,7 @@ typedef struct
 #include "test_rosenbrock.c"
 #include "test_rosenbrocke.c"
 #include "test_roth.c"
+#include "test_thurber.c"
 #include "test_vardim.c"
 #include "test_watson.c"
 #include "test_wood.c"
@@ -157,6 +159,9 @@ static test_fdf_problem *test_fdf_nist[] = {
   &enso_problem,
   &kirby2_problem,
   &hahn1_problem,
+  &thurber_problem,
+  &boxbod_problem,
+
   NULL
 };
 
