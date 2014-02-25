@@ -18,7 +18,6 @@
  */
 
 #include <config.h>
-#include <math.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
@@ -41,17 +40,18 @@
 
 typedef struct
 {
-  gsl_matrix *A;         /* J^T J */
-  gsl_matrix *A_copy;    /* copy of J^T J */
-  gsl_matrix *J;         /* Jacobian J(x) */
-  gsl_vector *diag;      /* D = diag(J^T J) */
-  gsl_vector *rhs;       /* rhs vector = -g = -J^T f */
-  gsl_vector *x_trial;   /* trial parameter vector */
-  gsl_vector *f_trial;   /* trial function vector */
-  gsl_vector *work;      /* workspace length p */
-  long nu;               /* nu */
-  double mu;             /* LM damping parameter mu */
-  double tau;            /* initial scale factor for mu */
+  gsl_matrix *A;             /* J^T J */
+  gsl_matrix *A_copy;        /* copy of J^T J */
+  gsl_matrix *J;             /* Jacobian J(x) */
+  gsl_vector *diag;          /* D = diag(J^T J) */
+  gsl_vector *rhs;           /* rhs vector = -g = -J^T f */
+  gsl_vector *x_trial;       /* trial parameter vector */
+  gsl_vector *f_trial;       /* trial function vector */
+  const gsl_vector *weights; /* weight matrix W = diag(w1,w2,...,wn) */
+  gsl_vector *work;          /* workspace length p */
+  long nu;                   /* nu */
+  double mu;                 /* LM damping parameter mu */
+  double tau;                /* initial scale factor for mu */
 } lm_state_t;
 
 #include "lmmisc.c"
@@ -61,7 +61,8 @@ typedef struct
 static int lm_alloc (void *vstate, const size_t n, const size_t p);
 static void lm_free(void *vstate);
 static int lm_set(void *vstate, gsl_multifit_function_fdf *fdf,
-                  gsl_vector *x, gsl_vector *f, gsl_vector *dx);
+                  gsl_vector *x, gsl_vector *f, gsl_vector *dx,
+                  const gsl_vector *weights);
 static int lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf,
                       gsl_vector *x, gsl_vector *f, gsl_vector *dx);
 
@@ -155,7 +156,7 @@ lm_free(void *vstate)
 
 static int
 lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
-       gsl_vector *f, gsl_vector *dx)
+       gsl_vector *f, gsl_vector *dx, const gsl_vector *weights)
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
@@ -166,13 +167,16 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   fdf->nevalf = 0;
   fdf->nevaldf = 0;
 
-  /* evaluate function and Jacobian at x */
-  status = GSL_MULTIFIT_FN_EVAL_F (fdf, x, f);
+  /* keep pointer to weight vector */
+  state->weights = weights;
+
+  /* evaluate function and Jacobian at x and apply weight transform */
+  status = gsl_multifit_eval_wf(fdf, x, weights, f);
   if (status)
    return status;
 
   if (fdf->df)
-    status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x, state->J);
+    status = gsl_multifit_eval_wdf(fdf, x, weights, state->J);
   else
     status = gsl_multifit_fdfsolver_dif_df(x, fdf, f, state->J);
   if (status)
@@ -242,15 +246,16 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
-  gsl_matrix *J = state->J;                 /* Jacobian J(x) */
-  gsl_matrix *A = state->A;                 /* J^T J */
-  gsl_vector *rhs = state->rhs;             /* -g = -J^T f */
-  gsl_vector *x_trial = state->x_trial;     /* trial x + dx */
-  gsl_vector *f_trial = state->f_trial;     /* trial f(x + dx) */
-  gsl_vector *diag = state->diag;           /* diag(D) */
-  double dF;                                /* F(x) - F(x + dx) */
-  double dL;                                /* L(0) - L(dx) */
-  int foundstep = 0;                        /* found step dx */
+  gsl_matrix *J = state->J;                   /* Jacobian J(x) */
+  gsl_matrix *A = state->A;                   /* J^T J */
+  gsl_vector *rhs = state->rhs;               /* -g = -J^T f */
+  gsl_vector *x_trial = state->x_trial;       /* trial x + dx */
+  gsl_vector *f_trial = state->f_trial;       /* trial f(x + dx) */
+  gsl_vector *diag = state->diag;             /* diag(D) */
+  const gsl_vector *weights = state->weights; /* data weights */
+  double dF;                                  /* F(x) - F(x + dx) */
+  double dL;                                  /* L(0) - L(dx) */
+  int foundstep = 0;                          /* found step dx */
 
   /* compute A = J^T J */
   status = gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, J, J, 0.0, A);
@@ -273,7 +278,7 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
       lm_trial_step(x, dx, x_trial);
 
       /* compute f(x + dx) */
-      status = GSL_MULTIFIT_FN_EVAL_F (fdf, x_trial, f_trial);
+      status = gsl_multifit_eval_wf(fdf, x_trial, weights, f_trial);
       if (status)
        return status;
 
@@ -298,7 +303,7 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
 
           /* compute J <- J(x + dx) */
           if (fdf->df)
-            status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x_trial, J);
+            status = gsl_multifit_eval_wdf(fdf, x_trial, weights, J);
           else
             status = gsl_multifit_fdfsolver_dif_df(x_trial, fdf, f_trial, J);
           if (status)

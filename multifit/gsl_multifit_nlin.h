@@ -88,8 +88,8 @@ gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * T,
 void gsl_multifit_fsolver_free (gsl_multifit_fsolver * s);
 
 int gsl_multifit_fsolver_set (gsl_multifit_fsolver * s, 
-                                   gsl_multifit_function * f, 
-                                   const gsl_vector * x);
+                              gsl_multifit_function * f, 
+                              const gsl_vector * x);
 
 int gsl_multifit_fsolver_iterate (gsl_multifit_fsolver * s);
 
@@ -122,7 +122,7 @@ typedef struct
     const char *name;
     size_t size;
     int (*alloc) (void *state, size_t n, size_t p);
-    int (*set) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+    int (*set) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx, const gsl_vector * weights);
     int (*iterate) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
     int (*gradient) (void *state, gsl_vector * g);
     void (*free) (void *state);
@@ -151,6 +151,10 @@ int
 gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * s, 
                             gsl_multifit_function_fdf * fdf,
                             const gsl_vector * x);
+int gsl_multifit_fdfsolver_wset (gsl_multifit_fdfsolver * s, 
+                                 gsl_multifit_function_fdf * f, 
+                                 const gsl_vector * x,
+                                 const gsl_vector * wts);
 
 int
 gsl_multifit_fdfsolver_iterate (gsl_multifit_fdfsolver * s);
@@ -168,6 +172,12 @@ gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * s);
 const char * gsl_multifit_fdfsolver_name (const gsl_multifit_fdfsolver * s);
 gsl_vector * gsl_multifit_fdfsolver_position (const gsl_multifit_fdfsolver * s);
 size_t gsl_multifit_fdfsolver_niter (const gsl_multifit_fdfsolver * s);
+int gsl_multifit_eval_wf(gsl_multifit_function_fdf *fdf,
+                         const gsl_vector *x, const gsl_vector *wts,
+                         gsl_vector *y);
+int gsl_multifit_eval_wdf(gsl_multifit_function_fdf *fdf,
+                          const gsl_vector *x, const gsl_vector *wts,
+                          gsl_matrix *dy);
 
 int gsl_multifit_fdfsolver_test (const gsl_multifit_fdfsolver * s,
                                  const double xtol,
@@ -232,7 +242,8 @@ INLINE_DECL int GSL_MULTIFIT_FN_EVAL_DF(gsl_multifit_function_fdf *fdf,
 
 INLINE_FUN
 int
-GSL_MULTIFIT_FN_EVAL_F(gsl_multifit_function_fdf *fdf, const gsl_vector *x, gsl_vector *y)
+GSL_MULTIFIT_FN_EVAL_F(gsl_multifit_function_fdf *fdf, const gsl_vector *x,
+                       gsl_vector *y)
 {
   int s = ((*((fdf)->f)) (x, fdf->params, y));
   ++(fdf->nevalf);

@@ -20,6 +20,7 @@
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_multifit_nlin.h>
 
@@ -106,6 +107,7 @@ gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * s,
                             gsl_multifit_function_fdf * f, 
                             const gsl_vector * x)
 {
+#if 0
   if (s->f->size != f->n)
     {
       GSL_ERROR ("function size does not match solver", GSL_EBADLEN);
@@ -120,7 +122,37 @@ gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * s,
   gsl_vector_memcpy(s->x, x);
   s->niter = 0;
   
-  return (s->type->set) (s->state, s->fdf, s->x, s->f, s->dx);
+  return (s->type->set) (s->state, s->fdf, s->x, s->f, s->dx, NULL);
+#endif
+  return gsl_multifit_fdfsolver_wset(s, f, x, NULL);
+}
+
+int
+gsl_multifit_fdfsolver_wset (gsl_multifit_fdfsolver * s, 
+                             gsl_multifit_function_fdf * f, 
+                             const gsl_vector * x,
+                             const gsl_vector * wts)
+{
+  if (s->f->size != f->n)
+    {
+      GSL_ERROR ("function size does not match solver", GSL_EBADLEN);
+    }
+  else if (s->x->size != x->size)
+    {
+      GSL_ERROR ("vector length does not match solver", GSL_EBADLEN);
+    }
+  else if (wts != NULL && s->f->size != wts->size)
+    {
+      GSL_ERROR ("weight vector length does not match solver", GSL_EBADLEN);
+    }
+  else
+    {
+      s->fdf = f;
+      gsl_vector_memcpy(s->x, x);
+      s->niter = 0;
+  
+      return (s->type->set) (s->state, s->fdf, s->x, s->f, s->dx, wts);
+    }
 }
 
 int
@@ -244,4 +276,84 @@ size_t
 gsl_multifit_fdfsolver_niter (const gsl_multifit_fdfsolver * s)
 {
   return s->niter;
+}
+
+/*
+gsl_multifit_eval_wf()
+  Compute residual vector y with user callback function, and apply
+weighting transform if given:
+
+y~ = sqrt(W) y
+
+Inputs: fdf - callback function
+        x   - model parameters
+        wts - weight matrix W = diag(w1,w2,...,wn)
+              set to NULL for unweighted fit
+        y   - (output) (weighted) residual vector
+              y_i = sqrt(w_i) f_i where f_i is unweighted residual
+*/
+
+int
+gsl_multifit_eval_wf(gsl_multifit_function_fdf *fdf, const gsl_vector *x,
+                     const gsl_vector *wts, gsl_vector *y)
+{
+  int s = ((*((fdf)->f)) (x, fdf->params, y));
+  ++(fdf->nevalf);
+
+  /* y <- sqrt(W) y */
+  if (wts)
+    {
+      const size_t n = wts->size;
+      size_t i;
+
+      for (i = 0; i < n; ++i)
+        {
+          double wi = gsl_vector_get(wts, i);
+          double *yi = gsl_vector_ptr(y, i);
+
+          *yi *= sqrt(wi);
+        }
+    }
+
+  return s;
+}
+
+/*
+gsl_multifit_eval_wdf()
+  Compute Jacobian matrix J with user callback function, and apply
+weighting transform if given:
+
+J~ = sqrt(W) J
+
+Inputs: fdf - callback function
+        x   - model parameters
+        wts - weight matrix W = diag(w1,w2,...,wn)
+              set to NULL for unweighted fit
+        dy  - (output) (weighted) Jacobian matrix
+              dy = sqrt(W) dy where dy is unweighted Jacobian
+*/
+
+int
+gsl_multifit_eval_wdf(gsl_multifit_function_fdf *fdf, const gsl_vector *x,
+                      const gsl_vector *wts, gsl_matrix *dy)
+{
+  int s = ((*((fdf)->df)) (x, fdf->params, dy));
+  ++(fdf->nevaldf);
+
+  /* J <- sqrt(W) J */
+  if (wts)
+    {
+      const size_t n = wts->size;
+      size_t i;
+
+      for (i = 0; i < n; ++i)
+        {
+          double wi = gsl_vector_get(wts, i);
+          gsl_vector_view v = gsl_matrix_row(dy, i);
+
+          gsl_vector_scale(&v.vector, sqrt(wi));
+        }
+    }
+
+  return s;
 }

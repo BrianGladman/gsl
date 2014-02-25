@@ -1,5 +1,7 @@
 static int
-set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx, int scale)
+set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x,
+     gsl_vector * f, gsl_vector * dx, const gsl_vector * weights,
+     int scale)
 {
   lmder_state_t *state = (lmder_state_t *) vstate;
 
@@ -15,6 +17,9 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector *
   /* start counting function and Jacobian evaluations */
   fdf->nevalf = 0;
   fdf->nevaldf = 0;
+
+  /* keep pointer to weight vector */
+  state->weights = weights;
 
   /* return immediately if evaluation raised error */
   {

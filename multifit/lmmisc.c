@@ -109,22 +109,3 @@ lm_calc_dL(const double mu, const gsl_vector *diag,
 
   return dL;
 } /* lm_calc_dL() */
-
-static void
-lm_update_diag(const gsl_matrix *J, gsl_vector *diag)
-{
-  size_t j, p = diag->size;
-
-  for (j = 0; j < p; j++)
-    {
-      double *dj = gsl_vector_ptr (diag, j);
-      gsl_vector_const_view v = gsl_matrix_const_column(J, j);
-      double norm = gsl_blas_dnrm2(&v.vector);
-
-      if (norm == 0.0)
-        norm = 1.0;
-
-      if (norm > *dj)
-        *dj = norm;
-    }
-}

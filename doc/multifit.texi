@@ -16,6 +16,7 @@ multidimensional nonlinear fitting functions and related declarations.
 
 @menu
 * Overview of Nonlinear Least-Squares Fitting::  
+* Overview of Weighted Nonlinear Least-Squares Fitting::  
 * Overview of Regularized Nonlinear Least-Squares Fitting::  
 * Initializing the Nonlinear Least-Squares Solver::  
 * Providing the Function to be Minimized::  
@@ -106,6 +107,36 @@ independent variable of any data to be fitted is denoted by @math{t}.
 With the definition above the Jacobian is 
 @c{$J_{ij} = (1 / \sigma_i) \partial Y_i / \partial x_j$}
 @math{J_@{ij@} =(1 / \sigma_i)  d Y_i / d x_j}, where @math{Y_i = Y(x,t_i)}.  
+
+@node Overview of Weighted Nonlinear Least-Squares Fitting
+@section Weighted Nonlinear Least-Squares
+
+Weighted nonlinear least-squares fitting minimizes the function
+@tex
+\beforedisplay
+$$
+\Phi(x)  = {1 \over 2} f^T W f
+         = {1 \over 2} \sum_{i=1}^{n} w_i f_i (x_1, \dots, x_p)^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+\Phi(x) = (1/2) || f(x) ||^2
+        = (1/2) \sum_@{i=1@}^@{n@} f_i(x_1, ..., x_p)^2 
+@end example
+
+@end ifinfo
+where @math{W = diag(w_1,w_2,...,w_n)} is the weighting matrix,
+and the weights @math{w_i} are commonly set as @math{w_i = 1/\sigma_i^2},
+where @math{\sigma_i} is the error in the @math{i}th measurement.
+A simple change of variables @math{\tilde{f} = \sqrt{W} f} yields
+@math{\Phi(x) = {1 \over 2} ||\tilde{f}||^2}, which is in the
+same form as the unweighted case. The user can either perform this
+transform directly on their function residuals and Jacobian, or use
+the @code{gsl_multifit_fdfsolver_wset} interface which automatically
+performs the correct scaling.
 
 @node Overview of Regularized Nonlinear Least-Squares Fitting
 @section Regularized Nonlinear Least-Squares
@@ -260,9 +291,14 @@ to use the function @var{f} and the initial guess @var{x}.
 @end deftypefun
 
 @deftypefun int gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x})
-This function initializes, or reinitializes, an existing solver @var{s}
+@deftypefunx int gsl_multifit_fdfsolver_wset (gsl_multifit_fdfsolver * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_vector * @var{wts})
+These functions initialize, or reinitialize, an existing solver @var{s}
 to use the function and derivative @var{fdf} and the initial guess
-@var{x}.
+@var{x}. Optionally, a weight vector @var{wts} can be given to perform
+a weighted nonlinear regression. Here, the weighting matrix is
+@math{W = diag(w_1,w_2,...,w_n)}. The @var{wts} vector is referenced
+throughout the iteration so it should not be freed by the caller until
+the iteration terminates.
 @end deftypefun
 
 @deftypefun int gsl_multifit_fdfridge_set (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const double @var{lambda})

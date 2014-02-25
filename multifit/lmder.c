@@ -40,17 +40,18 @@ typedef struct
     double fnorm;
     double delta;
     double par;
-    gsl_matrix *r;
+    gsl_matrix *r;             /* R matrix in J = Q R P^T */
     gsl_vector *tau;
-    gsl_vector *diag;
-    gsl_vector *qtf;
+    gsl_vector *diag;          /* scaling matrix D = diag(d1,...,dp) */
+    gsl_vector *qtf;           /* Q^T f */
     gsl_vector *newton;
-    gsl_vector *gradient;
-    gsl_vector *x_trial;
-    gsl_vector *f_trial;
+    gsl_vector *gradient;      /* gradient g = J^T f */
+    gsl_vector *x_trial;       /* trial step x + dx */
+    gsl_vector *f_trial;       /* trial function f(x + dx) */
     gsl_vector *df;
     gsl_vector *sdiag;
     gsl_vector *rptdx;
+    const gsl_vector *weights; /* data weights */
     gsl_vector *w;
     gsl_vector *work1;
     gsl_permutation * perm;
@@ -58,9 +59,9 @@ typedef struct
 lmder_state_t;
 
 static int lmder_alloc (void *vstate, size_t n, size_t p);
-static int lmder_set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
-static int lmsder_set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
-static int set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx, int scale);
+static int lmder_set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx, const gsl_vector * weights);
+static int lmsder_set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx, const gsl_vector * weights);
+static int set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx, const gsl_vector * weights, int scale);
 static int lmder_iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
 static void lmder_free (void *vstate);
 static int iterate (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx, int scale);
@@ -315,16 +316,17 @@ lmder_alloc (void *vstate, size_t n, size_t p)
 }
 
 static int
-lmder_set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
+lmder_set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x,
+           gsl_vector * f, gsl_vector * dx, const gsl_vector * weights)
 {
-  int status = set (vstate, fdf, x, f, dx, 0);
+  int status = set (vstate, fdf, x, f, dx, weights, 0);
   return status ;
 }
 
 static int
-lmsder_set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx)
+lmsder_set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx, const gsl_vector * weights)
 {
-  int status = set (vstate, fdf, x, f, dx, 1);
+  int status = set (vstate, fdf, x, f, dx, weights, 1);
   return status ;
 }
 
