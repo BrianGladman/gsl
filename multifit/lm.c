@@ -329,8 +329,16 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
           nu2 = state->nu << 1; /* 2*nu */
           if (nu2 <= state->nu)
             {
-              /* nu has wrapped around / overflown */
-              GSL_ERROR("nu parameter has overflown", GSL_EOVRFLW);
+              gsl_vector_view d = gsl_matrix_diagonal(A);
+
+              /*
+               * nu has wrapped around / overflown, reset mu and nu
+               * to original values and break to force another iteration
+               */
+              /*GSL_ERROR("nu parameter has overflown", GSL_EOVRFLW);*/
+              state->nu = 2;
+              state->mu = state->tau * gsl_vector_max(&d.vector);
+              break;
             }
           state->nu = nu2;
         }

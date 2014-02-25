@@ -1,4 +1,4 @@
-/* test ridge regression */
+/* test linear ridge regression */
 static void
 test_ridge(void)
 {
