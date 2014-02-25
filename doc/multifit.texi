@@ -27,6 +27,7 @@ multidimensional nonlinear fitting functions and related declarations.
 * Minimization Algorithms using Derivatives::  
 * Minimization Algorithms without Derivatives::  
 * Computing the covariance matrix of best fit parameters::  
+* Troubleshooting Nonlinear Least Squares::
 * Example programs for Nonlinear Least-Squares Fitting::  
 * References and Further Reading for Nonlinear Least-Squares Fitting::  
 @end menu
@@ -467,15 +468,12 @@ be used to track the progress of the solution:
 The current position.
 
 @item gsl_vector * f
-The function value at the current position.
+The function residual vector at the current position @math{f(x)}.
 
 @item gsl_vector * dx
 The difference between the current position and the previous position,
-i.e. the last step, taken as a vector.
+i.e. the last step @math{\delta}, taken as a vector.
 
-@item gsl_matrix * J
-The Jacobian matrix at the current position (for the
-@code{gsl_multifit_fdfsolver} struct only)
 @end table
 
 The best-fit information also can be accessed with the following
@@ -681,12 +679,41 @@ to each component of @math{x}.  This improves the behavior of the
 algorithm for badly scaled functions.
 
 On each iteration the algorithm attempts to minimize the linear system
-@math{|f + J \delta|} subject to the constraint @math{|D \delta| < \Delta}.  The
-solution to this constrained linear system is found using the
-Levenberg-Marquardt method.
+@math{|f + J \delta|} subject to the constraint @math{|D \delta| < \Delta}.
+The solution to this constrained linear system is found by solving
+the linear least squares system
+@tex
+\beforedisplay
+$$
+\left[
+\matrix{
+J \cr
+\sqrt{\mu} D
+}
+\right]
+\delta =
+-
+\left[
+\matrix{
+f \cr
+0
+}
+\right]
+$$
+\afterdisplay
+@end tex
+@ifinfo
 
-The proposed step is now tested by evaluating the function at the
-resulting point, @math{x'}.  If the step reduces the norm of the
+@example
+[J; sqrt(mu) D] \delta = - [f; 0]
+@end example
+
+@end ifinfo
+where @math{\mu} is the Levenberg-Marquardt parameter. The above
+system is solved using a QR decomposition of @math{J}.
+
+The proposed step @math{\delta} is now tested by evaluating the
+function at the resulting point, @math{x'}.  If the step reduces the norm of the
 function sufficiently, and follows the predicted behavior of the
 function within the trust region, then it is accepted and the size of the
 trust region is increased.  If the proposed step fails to improve the
@@ -727,6 +754,37 @@ This is an unscaled version of the @sc{lmder} algorithm.  The elements of the
 diagonal scaling matrix @math{D} are set to 1.  This algorithm may be
 useful in circumstances where the scaled version of @sc{lmder} converges too
 slowly, or the function is already scaled appropriately.
+@end deffn
+
+@deffn {Derivative Solver} gsl_multifit_fdfsolver_lmniel
+
+This is a Levenberg-Marquardt solver based on a smoother updating
+procedure for the damping parameter @math{\mu} proposed by
+Nielsen, 1999. It does not use a trust region approach and only
+performs rudimentary scaling and is therefore not as robust as
+@code{lmsder}. However, on each iteration it solves the normal
+equation system to compute the next step:
+@tex
+\beforedisplay
+$$
+\left( J^T J + \mu I \right) \delta = - J^T f
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+(J^T J + \mu I) \delta = -J^T f
+@end example
+
+@end ifinfo
+which makes it a much more practical method for problems with a
+large number of residuals (@math{n >> p}), since only the
+@math{p}-by-@math{p} matrix @math{J^T J} is decomposed rather than
+the full @math{n}-by-@math{p} Jacobian. This makes a significant
+difference in efficiency when solving systems with large amounts
+of data. While not as robust as @code{lmsder}, this algorithm has
+proven effective on a wide class of problems.
 @end deffn
 
 @node Minimization Algorithms without Derivatives
@@ -804,6 +862,47 @@ For more information about covariance matrices see @ref{Fitting Overview}.
 @end deftypefun
 
 @comment ============================================================
+
+@node Troubleshooting Nonlinear Least Squares
+@section Troubleshooting
+
+When developing a code to solve a nonlinear least squares problem,
+here are a few considerations to keep in mind.
+
+@enumerate
+
+@item
+The most common difficulty is the accurate implementation of the Jacobian
+matrix. If the analytic Jacobian is not properly provided to the
+solver, this can hinder and many times prevent convergence of the method.
+When developing a new nonlinear least squares code, it often helps
+to compare the program output with the internally computed finite
+difference Jacobian and the user supplied analytic Jacobian. If there
+is a large difference in coefficients, it is likely the analytic
+Jacobian is incorrectly implemented.
+
+@item
+If your code is having difficulty converging, the next thing to
+check is the starting point provided to the solver. The methods
+of this chapter are local methods, meaning if you provide a starting
+point far away from the true minimum, the method may converge to
+a local minimum or not converge at all. Sometimes it is possible
+to solve a linearized approximation to the nonlinear problem,
+and use the linear solution as the starting point to the nonlinear
+problem.
+
+@item
+If the various parameters of the coefficient vector @math{x}
+vary widely in magnitude, then the problem is said to be badly scaled.
+The methods of this chapter do attempt to automatically rescale
+the elements of @math{x} to have roughly the same order of magnitude,
+but in extreme cases this could still cause problems for convergence.
+In these cases it is recommended for the user to scale their
+parameter vector @math{x} so that each parameter spans roughly the
+same range, say @math{[-1,1]}. The solution vector can be backscaled
+to recover the original units of the problem.
+
+@end enumerate
 
 @node Example programs for Nonlinear Least-Squares Fitting
 @section Examples
@@ -916,6 +1015,20 @@ Theory}, Lecture Notes in Mathematics, v630 (1978), ed G. Watson.
 @end itemize
 
 @noindent
+The @code{lmniel} algorithm closely follows the following publications,
+
+@itemize @w{}
+@item
+H. B. Nielsen, ``Damping Parameter in Marquardt's Method'',
+IMM Department of Mathematical Modeling, DTU, Tech. Report IMM-REP-1999-05
+(1999).
+
+@item
+K. Madsen and H. B. Nielsen, ``Introduction to Optimization and Data
+Fitting'', IMM Department of Mathematical Modeling, DTU, 2010.
+@end itemize
+
+@noindent
 The following papers are also relevant to the algorithms described in this
 section,
 
@@ -927,7 +1040,7 @@ Optimization Software'', ACM Transactions on Mathematical Software, Vol
 
 @item 
 H. B. Nielsen, ``UCTP Test Problems for Unconstrained Optimization'',
-IMM Department of Mathematical Modeling, Tech. Report IMM-REP-2000-17
+IMM Department of Mathematical Modeling, DTU, Tech. Report IMM-REP-2000-17
 (2000).
 @end itemize
 
