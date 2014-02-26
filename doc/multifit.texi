@@ -664,7 +664,7 @@ initial guess must be sufficiently close to the minimum for it to work.
 @cindex LMDER algorithm
 @cindex MINPACK, minimization algorithms
 
-This is a version of the Levenberg-Marquardt
+This is a robust and efficient version of the Levenberg-Marquardt
 algorithm as implemented in the scaled @sc{lmder} routine in
 @sc{minpack}.  Minpack was written by Jorge J. Mor@'e, Burton S. Garbow
 and Kenneth E. Hillstrom.
