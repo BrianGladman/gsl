@@ -1,7 +1,6 @@
 static int
-set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x,
-     gsl_vector * f, gsl_vector * dx, const gsl_vector * weights,
-     int scale)
+set (void *vstate, const gsl_vector * wts, gsl_multifit_function_fdf * fdf,
+     gsl_vector * x, gsl_vector * f, gsl_vector * dx, int scale)
 {
   lmder_state_t *state = (lmder_state_t *) vstate;
 
@@ -18,23 +17,20 @@ set (void *vstate, gsl_multifit_function_fdf * fdf, gsl_vector * x,
   fdf->nevalf = 0;
   fdf->nevaldf = 0;
 
-  /* keep pointer to weight vector */
-  state->weights = weights;
-
   /* return immediately if evaluation raised error */
   {
     int status;
 
     /* Evaluate function at x */
-    status = GSL_MULTIFIT_FN_EVAL_F (fdf, x, f);
+    status = gsl_multifit_eval_wf (fdf, x, wts, f);
     if (status)
       return status;
 
     /* Evaluate Jacobian at x and store in state->r */
     if (fdf->df)
-      status = GSL_MULTIFIT_FN_EVAL_DF (fdf, x, r);
+      status = gsl_multifit_eval_wdf (fdf, x, wts, r);
     else /* finite difference approximation */
-      status = gsl_multifit_fdfsolver_dif_df(x, fdf, f, r);
+      status = gsl_multifit_fdfsolver_dif_df(x, wts, fdf, f, r);
 
     if (status)
       return status;

@@ -47,7 +47,6 @@ typedef struct
   gsl_vector *rhs;           /* rhs vector = -g = -J^T f */
   gsl_vector *x_trial;       /* trial parameter vector */
   gsl_vector *f_trial;       /* trial function vector */
-  const gsl_vector *weights; /* weight matrix W = diag(w1,w2,...,wn) */
   gsl_vector *work;          /* workspace length p */
   long nu;                   /* nu */
   double mu;                 /* LM damping parameter mu */
@@ -60,10 +59,11 @@ typedef struct
 
 static int lm_alloc (void *vstate, const size_t n, const size_t p);
 static void lm_free(void *vstate);
-static int lm_set(void *vstate, gsl_multifit_function_fdf *fdf,
-                  gsl_vector *x, gsl_vector *f, gsl_vector *dx,
-                  const gsl_vector *weights);
-static int lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf,
+static int lm_set(void *vstate, const gsl_vector * wts,
+                  gsl_multifit_function_fdf *fdf,
+                  gsl_vector *x, gsl_vector *f, gsl_vector *dx);
+static int lm_iterate(void *vstate, const gsl_vector *wts,
+                      gsl_multifit_function_fdf *fdf,
                       gsl_vector *x, gsl_vector *f, gsl_vector *dx);
 
 static int
@@ -155,8 +155,9 @@ lm_free(void *vstate)
 } /* lm_free() */
 
 static int
-lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
-       gsl_vector *f, gsl_vector *dx, const gsl_vector *weights)
+lm_set(void *vstate, const gsl_vector *wts,
+       gsl_multifit_function_fdf *fdf, gsl_vector *x,
+       gsl_vector *f, gsl_vector *dx)
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
@@ -167,18 +168,15 @@ lm_set(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   fdf->nevalf = 0;
   fdf->nevaldf = 0;
 
-  /* keep pointer to weight vector */
-  state->weights = weights;
-
   /* evaluate function and Jacobian at x and apply weight transform */
-  status = gsl_multifit_eval_wf(fdf, x, weights, f);
+  status = gsl_multifit_eval_wf(fdf, x, wts, f);
   if (status)
    return status;
 
   if (fdf->df)
-    status = gsl_multifit_eval_wdf(fdf, x, weights, state->J);
+    status = gsl_multifit_eval_wdf(fdf, x, wts, state->J);
   else
-    status = gsl_multifit_fdfsolver_dif_df(x, fdf, f, state->J);
+    status = gsl_multifit_fdfsolver_dif_df(x, wts, fdf, f, state->J);
   if (status)
     return status;
 
@@ -222,6 +220,7 @@ find an acceptable step dx, in order to guarantee that each
 function call contains a new input vector x.
 
 Args: vstate - lm workspace
+      wts    - data weights (NULL if unweighted)
       fdf    - function and Jacobian pointers
       x      - on input, current parameter vector
                on output, new parameter vector x + dx
@@ -241,7 +240,8 @@ the correct g = J^T f
 */
 
 static int
-lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
+lm_iterate(void *vstate, const gsl_vector *wts,
+           gsl_multifit_function_fdf *fdf, gsl_vector *x,
            gsl_vector *f, gsl_vector *dx)
 {
   int status;
@@ -252,7 +252,6 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
   gsl_vector *x_trial = state->x_trial;       /* trial x + dx */
   gsl_vector *f_trial = state->f_trial;       /* trial f(x + dx) */
   gsl_vector *diag = state->diag;             /* diag(D) */
-  const gsl_vector *weights = state->weights; /* data weights */
   double dF;                                  /* F(x) - F(x + dx) */
   double dL;                                  /* L(0) - L(dx) */
   int foundstep = 0;                          /* found step dx */
@@ -278,7 +277,7 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
       lm_trial_step(x, dx, x_trial);
 
       /* compute f(x + dx) */
-      status = gsl_multifit_eval_wf(fdf, x_trial, weights, f_trial);
+      status = gsl_multifit_eval_wf(fdf, x_trial, wts, f_trial);
       if (status)
        return status;
 
@@ -303,9 +302,9 @@ lm_iterate(void *vstate, gsl_multifit_function_fdf *fdf, gsl_vector *x,
 
           /* compute J <- J(x + dx) */
           if (fdf->df)
-            status = gsl_multifit_eval_wdf(fdf, x_trial, weights, J);
+            status = gsl_multifit_eval_wdf(fdf, x_trial, wts, J);
           else
-            status = gsl_multifit_fdfsolver_dif_df(x_trial, fdf, f_trial, J);
+            status = gsl_multifit_fdfsolver_dif_df(x_trial, wts, fdf, f_trial, J);
           if (status)
             return status;
 

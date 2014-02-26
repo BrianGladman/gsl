@@ -90,6 +90,16 @@ gsl_multifit_fdfridge_set (gsl_multifit_fdfridge * w,
                            const gsl_vector * x,
                            const double lambda)
 {
+  return gsl_multifit_fdfridge_wset(w, f, x, lambda, NULL);
+} /* gsl_multifit_fdfridge_set() */
+
+int
+gsl_multifit_fdfridge_wset (gsl_multifit_fdfridge * w,
+                            gsl_multifit_function_fdf * f,
+                            const gsl_vector * x,
+                            const double lambda,
+                            const gsl_vector * wts)
+{
   if (w->n != f->n || w->p != f->p)
     {
       GSL_ERROR ("function size does not match solver", GSL_EBADLEN);
@@ -97,6 +107,10 @@ gsl_multifit_fdfridge_set (gsl_multifit_fdfridge * w,
   else if (w->p != x->size)
     {
       GSL_ERROR ("vector length does not match solver", GSL_EBADLEN);
+    }
+  else if (wts != NULL && w->n != wts->size)
+    {
+      GSL_ERROR ("weight vector length does not match solver", GSL_EBADLEN);
     }
   else
     {
@@ -116,17 +130,27 @@ gsl_multifit_fdfridge_set (gsl_multifit_fdfridge * w,
       w->lambda = lambda;
       w->L = NULL;
 
-      status = gsl_multifit_fdfsolver_set(w->s, &(w->fdftik), x);
+      status = gsl_multifit_fdfsolver_wset(w->s, &(w->fdftik), x, wts);
 
       return status;
     }
-} /* gsl_multifit_fdfridge_set() */
+} /* gsl_multifit_fdfridge_wset() */
 
 int
 gsl_multifit_fdfridge_set2 (gsl_multifit_fdfridge * w,
                             gsl_multifit_function_fdf * f,
                             const gsl_vector * x,
-                            const gsl_matrix *L)
+                            const gsl_matrix * L)
+{
+  return gsl_multifit_fdfridge_wset2(w, f, x, L, NULL);
+} /* gsl_multifit_fdfridge_set2() */
+
+int
+gsl_multifit_fdfridge_wset2 (gsl_multifit_fdfridge * w,
+                             gsl_multifit_function_fdf * f,
+                             const gsl_vector * x,
+                             const gsl_matrix * L,
+                             const gsl_vector * wts)
 {
   if (w->n != f->n || w->p != f->p)
     {
@@ -139,6 +163,10 @@ gsl_multifit_fdfridge_set2 (gsl_multifit_fdfridge * w,
   else if (L->size2 != w->p)
     {
       GSL_ERROR ("L matrix size2 does not match solver", GSL_EBADLEN);
+    }
+  else if (wts != NULL && w->n != wts->size)
+    {
+      GSL_ERROR ("weight vector length does not match solver", GSL_EBADLEN);
     }
   else
     {
@@ -160,11 +188,11 @@ gsl_multifit_fdfridge_set2 (gsl_multifit_fdfridge * w,
       w->lambda = 0.0;
       w->L = L;
 
-      status = gsl_multifit_fdfsolver_set(w->s, &(w->fdftik), x);
+      status = gsl_multifit_fdfsolver_wset(w->s, &(w->fdftik), x, wts);
 
       return status;
     }
-} /* gsl_multifit_fdfridge_set2() */
+} /* gsl_multifit_fdfridge_wset2() */
 
 int
 gsl_multifit_fdfridge_iterate (gsl_multifit_fdfridge * w)
@@ -213,7 +241,7 @@ fdfridge_f(const gsl_vector * x, void * params, gsl_vector * f)
   gsl_vector_view f_tik = gsl_vector_subvector(f, n, p);
 
   /* call user callback function to get residual vector f */
-  status = GSL_MULTIFIT_FN_EVAL_F(w->fdf, x, &f_user.vector);
+  status = gsl_multifit_eval_wf(w->fdf, x, w->s->wts, &f_user.vector);
   if (status)
     return status;
 
@@ -244,7 +272,7 @@ fdfridge_df(const gsl_vector * x, void * params, gsl_matrix * J)
   gsl_vector_view diag = gsl_matrix_diagonal(&J_tik.matrix);
 
   /* compute user supplied Jacobian */
-  status = GSL_MULTIFIT_FN_EVAL_DF(w->fdf, x, &J_user.matrix);
+  status = gsl_multifit_eval_wdf(w->fdf, x, w->s->wts, &J_user.matrix);
   if (status)
     return status;
 

@@ -107,23 +107,6 @@ gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * s,
                             gsl_multifit_function_fdf * f, 
                             const gsl_vector * x)
 {
-#if 0
-  if (s->f->size != f->n)
-    {
-      GSL_ERROR ("function size does not match solver", GSL_EBADLEN);
-    }
-
-  if (s->x->size != x->size)
-    {
-      GSL_ERROR ("vector length does not match solver", GSL_EBADLEN);
-    }  
-
-  s->fdf = f;
-  gsl_vector_memcpy(s->x, x);
-  s->niter = 0;
-  
-  return (s->type->set) (s->state, s->fdf, s->x, s->f, s->dx, NULL);
-#endif
   return gsl_multifit_fdfsolver_wset(s, f, x, NULL);
 }
 
@@ -148,10 +131,11 @@ gsl_multifit_fdfsolver_wset (gsl_multifit_fdfsolver * s,
   else
     {
       s->fdf = f;
+      s->wts = wts;
       gsl_vector_memcpy(s->x, x);
       s->niter = 0;
   
-      return (s->type->set) (s->state, s->fdf, s->x, s->f, s->dx, wts);
+      return (s->type->set) (s->state, s->wts, s->fdf, s->x, s->f, s->dx);
     }
 }
 
@@ -159,7 +143,7 @@ int
 gsl_multifit_fdfsolver_iterate (gsl_multifit_fdfsolver * s)
 {
   int status =
-    (s->type->iterate) (s->state, s->fdf, s->x, s->f, s->dx);
+    (s->type->iterate) (s->state, s->wts, s->fdf, s->x, s->f, s->dx);
 
   s->niter++;
 

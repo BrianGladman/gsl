@@ -25,7 +25,6 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
-#include <gsl/gsl_inline.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -122,8 +121,12 @@ typedef struct
     const char *name;
     size_t size;
     int (*alloc) (void *state, size_t n, size_t p);
-    int (*set) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx, const gsl_vector * weights);
-    int (*iterate) (void *state, gsl_multifit_function_fdf * fdf, gsl_vector * x, gsl_vector * f, gsl_vector * dx);
+    int (*set) (void *state, const gsl_vector * wts,
+                gsl_multifit_function_fdf * fdf, gsl_vector * x,
+                gsl_vector * f, gsl_vector * dx);
+    int (*iterate) (void *state, const gsl_vector * wts,
+                    gsl_multifit_function_fdf * fdf, gsl_vector * x,
+                    gsl_vector * f, gsl_vector * dx);
     int (*gradient) (void *state, gsl_vector * g);
     void (*free) (void *state);
   }
@@ -137,6 +140,7 @@ typedef struct
     gsl_vector * f;    /* residual vector f(x) */
     gsl_vector * dx;   /* step dx */
     gsl_vector * g;    /* gradient J^T f */
+    const gsl_vector * wts;  /* pointer to weight vector */
     size_t niter;      /* number of iterations performed */
     void *state;
   }
@@ -188,7 +192,9 @@ int gsl_multifit_test_delta (const gsl_vector * dx, const gsl_vector * x,
 
 int gsl_multifit_test_gradient (const gsl_vector * g, double epsabs);
 
-int gsl_multifit_fdfsolver_dif_df(const gsl_vector *x, gsl_multifit_function_fdf *fdf,
+int gsl_multifit_fdfsolver_dif_df(const gsl_vector *x,
+                                  const gsl_vector *wts,
+                                  gsl_multifit_function_fdf *fdf,
                                   const gsl_vector *f, gsl_matrix *J);
 int gsl_multifit_fdfsolver_dif_fdf(const gsl_vector *x, gsl_multifit_function_fdf *fdf,
                                    gsl_vector *f, gsl_matrix *J);
@@ -215,10 +221,20 @@ int gsl_multifit_fdfridge_set (gsl_multifit_fdfridge * w,
                                gsl_multifit_function_fdf * f,
                                const gsl_vector * x,
                                const double lambda);
+int gsl_multifit_fdfridge_wset (gsl_multifit_fdfridge * w,
+                                gsl_multifit_function_fdf * f,
+                                const gsl_vector * x,
+                                const double lambda,
+                                const gsl_vector * wts);
 int gsl_multifit_fdfridge_set2 (gsl_multifit_fdfridge * w,
                                 gsl_multifit_function_fdf * f,
                                 const gsl_vector * x,
-                                const gsl_matrix *L);
+                                const gsl_matrix * L);
+int gsl_multifit_fdfridge_wset2 (gsl_multifit_fdfridge * w,
+                                 gsl_multifit_function_fdf * f,
+                                 const gsl_vector * x,
+                                 const gsl_matrix * L,
+                                 const gsl_vector * wts);
 int gsl_multifit_fdfridge_iterate (gsl_multifit_fdfridge * w);
 int gsl_multifit_fdfridge_driver (gsl_multifit_fdfridge * w,
                                   const size_t maxiter,
@@ -232,34 +248,6 @@ int gsl_multifit_fdfridge_driver (gsl_multifit_fdfridge * w,
 GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmsder;
 GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmder;
 GSL_VAR const gsl_multifit_fdfsolver_type * gsl_multifit_fdfsolver_lmniel;
-
-INLINE_DECL int GSL_MULTIFIT_FN_EVAL_F(gsl_multifit_function_fdf *fdf,
-                                       const gsl_vector *x, gsl_vector *y);
-INLINE_DECL int GSL_MULTIFIT_FN_EVAL_DF(gsl_multifit_function_fdf *fdf,
-                                        const gsl_vector *x, gsl_matrix *dy);
-
-#ifdef HAVE_INLINE
-
-INLINE_FUN
-int
-GSL_MULTIFIT_FN_EVAL_F(gsl_multifit_function_fdf *fdf, const gsl_vector *x,
-                       gsl_vector *y)
-{
-  int s = ((*((fdf)->f)) (x, fdf->params, y));
-  ++(fdf->nevalf);
-  return s;
-}
-
-INLINE_FUN
-int
-GSL_MULTIFIT_FN_EVAL_DF(gsl_multifit_function_fdf *fdf, const gsl_vector *x, gsl_matrix *dy)
-{
-  int s = ((*((fdf)->df)) (x, fdf->params, dy));
-  ++(fdf->nevaldf);
-  return s;
-}
-
-#endif /* HAVE_INLINE */
 
 __END_DECLS
 

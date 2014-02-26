@@ -295,7 +295,9 @@ to use the function @var{f} and the initial guess @var{x}.
 @deftypefunx int gsl_multifit_fdfsolver_wset (gsl_multifit_fdfsolver * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_vector * @var{wts})
 These functions initialize, or reinitialize, an existing solver @var{s}
 to use the function and derivative @var{fdf} and the initial guess
-@var{x}. Optionally, a weight vector @var{wts} can be given to perform
+@var{x}.
+
+Optionally, a weight vector @var{wts} can be given to perform
 a weighted nonlinear regression. Here, the weighting matrix is
 @math{W = diag(w_1,w_2,...,w_n)}. The @var{wts} vector is referenced
 throughout the iteration so it should not be freed by the caller until
@@ -303,17 +305,31 @@ the iteration terminates.
 @end deftypefun
 
 @deftypefun int gsl_multifit_fdfridge_set (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const double @var{lambda})
+@deftypefunx int gsl_multifit_fdfridge_wset (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const double @var{lambda}, const gsl_vector * @var{wts})
 This function initializes, or reinitializes, an existing ridge solver
 @var{s} to use the function and derivative @var{fdf} and the initial guess
 @var{x}. Here, the regularization matrix is set to @math{L = \lambda I},
 with @math{\lambda} specified in @var{lambda}.
+
+Optionally, a weight vector @var{wts} can be given to perform
+a weighted nonlinear regression. Here, the weighting matrix is
+@math{W = diag(w_1,w_2,...,w_n)}. The @var{wts} vector is referenced
+throughout the iteration so it should not be freed by the caller until
+the iteration terminates.
 @end deftypefun
 
 @deftypefun int gsl_multifit_fdfridge_set2 (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_matrix * @var{L})
+@deftypefunx int gsl_multifit_fdfridge_wset2 (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_matrix * @var{L}, const gsl_vector * @var{wts})
 This function initializes, or reinitializes, an existing ridge solver
 @var{s} to use the function and derivative @var{fdf} and the initial
 guess @var{x}. Here, the regularization matrix is set to @var{L},
 which must have @math{p} columns but may have any number of rows.
+
+Optionally, a weight vector @var{wts} can be given to perform
+a weighted nonlinear regression. Here, the weighting matrix is
+@math{W = diag(w_1,w_2,...,w_n)}. The @var{wts} vector is referenced
+throughout the iteration so it should not be freed by the caller until
+the iteration terminates.
 @end deftypefun
 
 @deftypefun void gsl_multifit_fsolver_free (gsl_multifit_fsolver * @var{s})
@@ -426,15 +442,15 @@ of the @code{gsl_multifit_function_fdf} data type to NULL, however the
 following functions allow the user to access the approximate Jacobian
 directly if needed.
 
-@deftypefun int gsl_multifit_fdfsolver_dif_df (const gsl_vector * @var{x}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{f}, gsl_matrix * @var{J})
-This function takes as input the current position @var{x} with the function
-values computed at the current position @var{f}, along with @var{fdf}
-which specifies the fit function and parameters and approximates the
+@deftypefun int gsl_multifit_fdfsolver_dif_df (const gsl_vector * @var{x}, const gsl_vector * @var{wts}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{f}, gsl_matrix * @var{J})
+This function takes as input the current position @var{x}, weight
+vector @var{wts} and function values computed at the current position
+@var{f}, along with @var{fdf} which specifies the fit function and
+parameters and approximates the
 @var{n}-by-@var{p} Jacobian @var{J} using forward finite differences:
-@c{$J_{ij} = \partial f_i(x,\hbox{\it params}) / \partial x_j \approx (f_i(x^{*}, \hbox{\it params}) - f_i(x, \hbox{\it params})) / \Delta x_j$}
-@math{J_ij = d f_i(x,params) / d x_j = (f_i(x^*,params) - f_i(x,params)) / d x_j}.
-where @math{x^*} has the @math{j}th element perturbed by @math{\Delta x_j}
-and @math{\Delta x_j = \epsilon |x_j|}, where @math{\epsilon} is the
+@c{$J_{ij} = \sqrt{w_i} \partial f_i(x) / \partial x_j \approx \sqrt{w_i} (f_i(x + h_j e_j) - f_i(x)) / h_j$}
+@math{J_ij = sqrt(w_i) d f_i(x) / d x_j = sqrt(w_i) (f_i(x + h_j e_j) - f_i(x)) / h_j}.
+where @math{h_j = \epsilon |x_j|}, and @math{\epsilon} is the
 square root of the machine precision @code{GSL_DBL_EPSILON}.
 @end deftypefun
 
