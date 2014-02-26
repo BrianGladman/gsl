@@ -35,8 +35,8 @@ sparse matrix functions and related declarations.
 @cindex sparse matrices, overview
 
 These routines provide support for constructing and manipulating
-sparse matrices in GSL, using an API similar to the @code{gsl_matrix}
-machinery. The basic structure is called @code{gsl_spmatrix}. There are
+sparse matrices in GSL, using an API similar to @code{gsl_matrix}.
+The basic structure is called @code{gsl_spmatrix}. There are
 two supported storage formats for sparse matrices: the triplet and
 compressed column storage (CCS) formats. The triplet format stores
 triplets @math{(i,j,x)} for each non-zero element of the matrix. This
