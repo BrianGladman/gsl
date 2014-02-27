@@ -1,4 +1,4 @@
-/* multifit/lm.c
+/* multifit/lmniel.c
  * 
  * Copyright (C) 2014 Patrick Alken
  * 
@@ -59,10 +59,10 @@ typedef struct
 
 static int lm_alloc (void *vstate, const size_t n, const size_t p);
 static void lm_free(void *vstate);
-static int lm_set(void *vstate, const gsl_vector * wts,
+static int lm_set(void *vstate, const gsl_vector * swts,
                   gsl_multifit_function_fdf *fdf,
                   gsl_vector *x, gsl_vector *f, gsl_vector *dx);
-static int lm_iterate(void *vstate, const gsl_vector *wts,
+static int lm_iterate(void *vstate, const gsl_vector *swts,
                       gsl_multifit_function_fdf *fdf,
                       gsl_vector *x, gsl_vector *f, gsl_vector *dx);
 
@@ -155,7 +155,7 @@ lm_free(void *vstate)
 } /* lm_free() */
 
 static int
-lm_set(void *vstate, const gsl_vector *wts,
+lm_set(void *vstate, const gsl_vector *swts,
        gsl_multifit_function_fdf *fdf, gsl_vector *x,
        gsl_vector *f, gsl_vector *dx)
 {
@@ -169,14 +169,14 @@ lm_set(void *vstate, const gsl_vector *wts,
   fdf->nevaldf = 0;
 
   /* evaluate function and Jacobian at x and apply weight transform */
-  status = gsl_multifit_eval_wf(fdf, x, wts, f);
+  status = gsl_multifit_eval_wf(fdf, x, swts, f);
   if (status)
    return status;
 
   if (fdf->df)
-    status = gsl_multifit_eval_wdf(fdf, x, wts, state->J);
+    status = gsl_multifit_eval_wdf(fdf, x, swts, state->J);
   else
-    status = gsl_multifit_fdfsolver_dif_df(x, wts, fdf, f, state->J);
+    status = gsl_multifit_fdfsolver_dif_df(x, swts, fdf, f, state->J);
   if (status)
     return status;
 
@@ -220,7 +220,7 @@ find an acceptable step dx, in order to guarantee that each
 function call contains a new input vector x.
 
 Args: vstate - lm workspace
-      wts    - data weights (NULL if unweighted)
+      swts   - data weights (NULL if unweighted)
       fdf    - function and Jacobian pointers
       x      - on input, current parameter vector
                on output, new parameter vector x + dx
@@ -240,7 +240,7 @@ the correct g = J^T f
 */
 
 static int
-lm_iterate(void *vstate, const gsl_vector *wts,
+lm_iterate(void *vstate, const gsl_vector *swts,
            gsl_multifit_function_fdf *fdf, gsl_vector *x,
            gsl_vector *f, gsl_vector *dx)
 {
@@ -277,7 +277,7 @@ lm_iterate(void *vstate, const gsl_vector *wts,
       lm_trial_step(x, dx, x_trial);
 
       /* compute f(x + dx) */
-      status = gsl_multifit_eval_wf(fdf, x_trial, wts, f_trial);
+      status = gsl_multifit_eval_wf(fdf, x_trial, swts, f_trial);
       if (status)
        return status;
 
@@ -302,9 +302,9 @@ lm_iterate(void *vstate, const gsl_vector *wts,
 
           /* compute J <- J(x + dx) */
           if (fdf->df)
-            status = gsl_multifit_eval_wdf(fdf, x_trial, wts, J);
+            status = gsl_multifit_eval_wdf(fdf, x_trial, swts, J);
           else
-            status = gsl_multifit_fdfsolver_dif_df(x_trial, wts, fdf, f_trial, J);
+            status = gsl_multifit_fdfsolver_dif_df(x_trial, swts, fdf, f_trial, J);
           if (status)
             return status;
 

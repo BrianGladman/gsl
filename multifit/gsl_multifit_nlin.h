@@ -136,12 +136,12 @@ typedef struct
   {
     const gsl_multifit_fdfsolver_type * type;
     gsl_multifit_function_fdf * fdf ;
-    gsl_vector * x;    /* parameter values x */
-    gsl_vector * f;    /* residual vector f(x) */
-    gsl_vector * dx;   /* step dx */
-    gsl_vector * g;    /* gradient J^T f */
-    const gsl_vector * wts;  /* pointer to weight vector */
-    size_t niter;      /* number of iterations performed */
+    gsl_vector * x;        /* parameter values x */
+    gsl_vector * f;        /* residual vector f(x) */
+    gsl_vector * dx;       /* step dx */
+    gsl_vector * g;        /* gradient J^T f */
+    gsl_vector * sqrt_wts; /* sqrt(wts) */
+    size_t niter;          /* number of iterations performed */
     void *state;
   }
 gsl_multifit_fdfsolver;

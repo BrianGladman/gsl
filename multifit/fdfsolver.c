@@ -76,6 +76,14 @@ gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * T,
       GSL_ERROR_VAL ("failed to allocate space for g", GSL_ENOMEM, 0);
     }
 
+  s->sqrt_wts = gsl_vector_calloc (n);
+
+  if (s->sqrt_wts == 0) 
+    {
+      gsl_multifit_fdfsolver_free (s);
+      GSL_ERROR_VAL ("failed to allocate space for sqrt_wts", GSL_ENOMEM, 0);
+    }
+
   s->state = malloc (T->size);
 
   if (s->state == 0)
@@ -116,7 +124,9 @@ gsl_multifit_fdfsolver_wset (gsl_multifit_fdfsolver * s,
                              const gsl_vector * x,
                              const gsl_vector * wts)
 {
-  if (s->f->size != f->n)
+  const size_t n = s->f->size;
+
+  if (n != f->n)
     {
       GSL_ERROR ("function size does not match solver", GSL_EBADLEN);
     }
@@ -124,18 +134,30 @@ gsl_multifit_fdfsolver_wset (gsl_multifit_fdfsolver * s,
     {
       GSL_ERROR ("vector length does not match solver", GSL_EBADLEN);
     }
-  else if (wts != NULL && s->f->size != wts->size)
+  else if (wts != NULL && n != wts->size)
     {
       GSL_ERROR ("weight vector length does not match solver", GSL_EBADLEN);
     }
   else
     {
+      size_t i;
+
       s->fdf = f;
-      s->wts = wts;
       gsl_vector_memcpy(s->x, x);
       s->niter = 0;
+
+      if (wts)
+        {
+          for (i = 0; i < n; ++i)
+            {
+              double wi = gsl_vector_get(wts, i);
+              gsl_vector_set(s->sqrt_wts, i, sqrt(wi));
+            }
+        }
+      else
+        gsl_vector_set_all(s->sqrt_wts, 1.0);
   
-      return (s->type->set) (s->state, s->wts, s->fdf, s->x, s->f, s->dx);
+      return (s->type->set) (s->state, s->sqrt_wts, s->fdf, s->x, s->f, s->dx);
     }
 }
 
@@ -143,7 +165,7 @@ int
 gsl_multifit_fdfsolver_iterate (gsl_multifit_fdfsolver * s)
 {
   int status =
-    (s->type->iterate) (s->state, s->wts, s->fdf, s->x, s->f, s->dx);
+    (s->type->iterate) (s->state, s->sqrt_wts, s->fdf, s->x, s->f, s->dx);
 
   s->niter++;
 
@@ -238,6 +260,9 @@ gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * s)
   if (s->f)
     gsl_vector_free (s->f);
 
+  if (s->sqrt_wts)
+    gsl_vector_free (s->sqrt_wts);
+
   if (s->g)
     gsl_vector_free (s->g);
 
@@ -269,35 +294,24 @@ weighting transform if given:
 
 y~ = sqrt(W) y
 
-Inputs: fdf - callback function
-        x   - model parameters
-        wts - weight matrix W = diag(w1,w2,...,wn)
-              set to NULL for unweighted fit
-        y   - (output) (weighted) residual vector
-              y_i = sqrt(w_i) f_i where f_i is unweighted residual
+Inputs: fdf  - callback function
+        x    - model parameters
+        swts - weight matrix sqrt(W) = sqrt(diag(w1,w2,...,wn))
+               set to NULL for unweighted fit
+        y    - (output) (weighted) residual vector
+               y_i = sqrt(w_i) f_i where f_i is unweighted residual
 */
 
 int
 gsl_multifit_eval_wf(gsl_multifit_function_fdf *fdf, const gsl_vector *x,
-                     const gsl_vector *wts, gsl_vector *y)
+                     const gsl_vector *swts, gsl_vector *y)
 {
   int s = ((*((fdf)->f)) (x, fdf->params, y));
   ++(fdf->nevalf);
 
   /* y <- sqrt(W) y */
-  if (wts)
-    {
-      const size_t n = wts->size;
-      size_t i;
-
-      for (i = 0; i < n; ++i)
-        {
-          double wi = gsl_vector_get(wts, i);
-          double *yi = gsl_vector_ptr(y, i);
-
-          *yi *= sqrt(wi);
-        }
-    }
+  if (swts)
+    gsl_vector_mul(y, swts);
 
   return s;
 }
@@ -309,33 +323,33 @@ weighting transform if given:
 
 J~ = sqrt(W) J
 
-Inputs: fdf - callback function
-        x   - model parameters
-        wts - weight matrix W = diag(w1,w2,...,wn)
-              set to NULL for unweighted fit
-        dy  - (output) (weighted) Jacobian matrix
-              dy = sqrt(W) dy where dy is unweighted Jacobian
+Inputs: fdf  - callback function
+        x    - model parameters
+        swts - weight matrix W = diag(w1,w2,...,wn)
+               set to NULL for unweighted fit
+        dy   - (output) (weighted) Jacobian matrix
+               dy = sqrt(W) dy where dy is unweighted Jacobian
 */
 
 int
 gsl_multifit_eval_wdf(gsl_multifit_function_fdf *fdf, const gsl_vector *x,
-                      const gsl_vector *wts, gsl_matrix *dy)
+                      const gsl_vector *swts, gsl_matrix *dy)
 {
   int s = ((*((fdf)->df)) (x, fdf->params, dy));
   ++(fdf->nevaldf);
 
   /* J <- sqrt(W) J */
-  if (wts)
+  if (swts)
     {
-      const size_t n = wts->size;
+      const size_t n = swts->size;
       size_t i;
 
       for (i = 0; i < n; ++i)
         {
-          double wi = gsl_vector_get(wts, i);
+          double swi = gsl_vector_get(swts, i);
           gsl_vector_view v = gsl_matrix_row(dy, i);
 
-          gsl_vector_scale(&v.vector, sqrt(wi));
+          gsl_vector_scale(&v.vector, swi);
         }
     }
 

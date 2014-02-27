@@ -1,5 +1,5 @@
 static int
-iterate (void *vstate, const gsl_vector * wts,
+iterate (void *vstate, const gsl_vector * swts,
          gsl_multifit_function_fdf * fdf, gsl_vector * x,
          gsl_vector * f, gsl_vector * dx, int scale)
 {
@@ -77,7 +77,7 @@ lm_iteration:
   /* Evaluate function at x + p */
   /* return immediately if evaluation raised error */
   {
-    int status = gsl_multifit_eval_wf (fdf, x_trial, wts, f_trial);
+    int status = gsl_multifit_eval_wf (fdf, x_trial, swts, f_trial);
     if (status)
       return status;
   }
@@ -182,9 +182,9 @@ lm_iteration:
 
         /* compute Jacobian at new x and store in state->r */
         if (fdf->df)
-          status = gsl_multifit_eval_wdf (fdf, x_trial, wts, r);
+          status = gsl_multifit_eval_wdf (fdf, x_trial, swts, r);
         else
-          status = gsl_multifit_fdfsolver_dif_df(x_trial, wts, fdf, f_trial, r);
+          status = gsl_multifit_fdfsolver_dif_df(x_trial, swts, fdf, f_trial, r);
 
         if (status)
           return status;
