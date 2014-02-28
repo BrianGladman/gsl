@@ -188,6 +188,27 @@ f~(x) = [ f(x); Lx ]
 @end example
 
 @end ifinfo
+or, in the weighted case,
+@tex
+\beforedisplay
+$$
+\tilde{f}(x) =
+\left[
+\matrix{
+\sqrt{W} f(x) \cr
+L x
+}
+\right]
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+f~(x) = [ sqrt(W) f(x); Lx ]
+@end example
+
+@end ifinfo
 then
 @tex
 \beforedisplay
@@ -221,15 +242,37 @@ $$
 @ifinfo
 
 @example
-F~(x) = [ f(x); Lx ]
+F~(x) = [ J; L ]
+@end example
+
+@end ifinfo
+or for weighted systems
+@tex
+\beforedisplay
+$$
+\tilde{J} =
+\left[
+\matrix{
+\sqrt{W} J \cr
+L
+}
+\right]
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+F~(x) = [ sqrt(W) J; L ]
 @end example
 
 @end ifinfo
 While the user could explicitly form the @math{\tilde{f}(x)} vector
 and @math{\tilde{J}} matrix, the @code{fdfridge} interface
 described below allows the user to specify the original data vector
-@math{f(x)}, Jacobian @math{J} and regularization matrix
-@math{L}, and automatically forms @math{\tilde{f}(x)} and
+@math{f(x)}, Jacobian @math{J}, regularization matrix
+@math{L}, and optional weighting matrix @math{W}, and automatically
+forms @math{\tilde{f}(x)} and
 @math{\tilde{J}} to solve the system. This allows switching
 between regularized and non-regularized solutions with minimal
 code changes.
