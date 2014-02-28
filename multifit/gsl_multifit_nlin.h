@@ -25,6 +25,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_permutation.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -42,6 +43,8 @@ int gsl_multifit_gradient (const gsl_matrix * J, const gsl_vector * f,
                            gsl_vector * g);
 
 int gsl_multifit_covar (const gsl_matrix * J, double epsrel, gsl_matrix * covar);
+int gsl_multifit_covar_QRPT (gsl_matrix * r, gsl_permutation * perm,
+                             const double epsrel, gsl_matrix * covar);
 
 
 /* Definition of vector-valued functions with parameters based on gsl_vector */
@@ -128,6 +131,7 @@ typedef struct
                     gsl_multifit_function_fdf * fdf, gsl_vector * x,
                     gsl_vector * f, gsl_vector * dx);
     int (*gradient) (void *state, gsl_vector * g);
+    int (*covar) (void *state, const double epsrel, gsl_matrix * covar);
     void (*free) (void *state);
   }
 gsl_multifit_fdfsolver_type;
@@ -169,6 +173,9 @@ int gsl_multifit_fdfsolver_driver (gsl_multifit_fdfsolver * s,
                                    const double gtol,
                                    const double ftol,
                                    int *info);
+
+int gsl_multifit_fdfsolver_covar (gsl_multifit_fdfsolver * s,
+                                  const double epsrel, gsl_matrix * covar);
 
 void
 gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * s);

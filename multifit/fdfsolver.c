@@ -240,6 +240,19 @@ gsl_multifit_fdfsolver_driver (gsl_multifit_fdfsolver * s,
   return status;
 } /* gsl_multifit_fdfsolver_driver() */
 
+int
+gsl_multifit_fdfsolver_covar (gsl_multifit_fdfsolver * s,
+                              const double epsrel, gsl_matrix * covar)
+{
+  int status;
+  const size_t n = s->f->size;
+  const size_t p = s->x->size;
+  
+  status = (s->type->covar) (s->state, epsrel, covar);
+
+  return status;
+} /* gsl_multifit_fdfsolver_covar() */
+
 void
 gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * s)
 {

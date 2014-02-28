@@ -4,7 +4,7 @@
 #define rat42_NTRIES  1
 
 static double rat42_x0[rat42_P] = { 100.0, 1.0, 0.1 };
-static double rat42_epsrel = 1.0e-8;
+static double rat42_epsrel = 1.0e-7;
 
 static double rat42_sigma[rat42_P] = {
   1.7340283401E+00, 8.8295217536E-02, 3.4465663377E-03

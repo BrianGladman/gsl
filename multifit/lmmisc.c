@@ -19,8 +19,8 @@
 
 /* compute step dx by solving (J^T J + mu*I) dx = -J^T f */
 static int
-lm_calc_dx(const double mu, const gsl_matrix *A, const gsl_vector *rhs,
-           gsl_vector *dx, lm_state_t *state)
+lmniel_calc_dx(const double mu, const gsl_matrix *A, const gsl_vector *rhs,
+               gsl_vector *dx, lmniel_state_t *state)
 {
   int status;
   gsl_matrix *A_copy = state->A_copy;
@@ -41,12 +41,12 @@ lm_calc_dx(const double mu, const gsl_matrix *A, const gsl_vector *rhs,
     return status;
 
   return GSL_SUCCESS;
-} /* lm_calc_dx() */
+} /* lmniel_calc_dx() */
 
 /* compute x_trial = x + dx */
 static void
-lm_trial_step(const gsl_vector * x, const gsl_vector * dx,
-              gsl_vector * x_trial)
+lmniel_trial_step(const gsl_vector * x, const gsl_vector * dx,
+                  gsl_vector * x_trial)
 {
   size_t i, N = x->size;
 
@@ -56,14 +56,14 @@ lm_trial_step(const gsl_vector * x, const gsl_vector * dx,
       double xi = gsl_vector_get (x, i);
       gsl_vector_set (x_trial, i, xi + dxi);
     }
-} /* lm_trial_step() */
+} /* lmniel_trial_step() */
 
 /*
-lm_calc_dF()
+lmniel_calc_dF()
   Compute dF = F(x) - F(x + dx) = 1/2 (f - f_new)^T (f + f_new)
 */
 static double
-lm_calc_dF(const gsl_vector *f, const gsl_vector *f_new)
+lmniel_calc_dF(const gsl_vector *f, const gsl_vector *f_new)
 {
   const size_t N = f->size;
   size_t i;
@@ -80,17 +80,17 @@ lm_calc_dF(const gsl_vector *f, const gsl_vector *f_new)
   dF *= 0.5;
 
   return dF;
-} /* lm_calc_dF() */
+} /* lmniel_calc_dF() */
 
 /*
-lm_calc_dL()
+lmniel_calc_dL()
   Compute dL = L(0) - L(dx) = 1/2 dx^T (mu * D^T D dx - g)
 Here, the mg input is -g
 */
 
 static double
-lm_calc_dL(const double mu, const gsl_vector *diag,
-           const gsl_vector *dx, const gsl_vector *mg)
+lmniel_calc_dL(const double mu, const gsl_vector *diag,
+               const gsl_vector *dx, const gsl_vector *mg)
 {
   const size_t p = dx->size;
   size_t i;
@@ -108,4 +108,4 @@ lm_calc_dL(const double mu, const gsl_vector *diag,
   dL *= 0.5;
 
   return dL;
-} /* lm_calc_dL() */
+} /* lmniel_calc_dL() */

@@ -6,7 +6,7 @@
 static double thurber_x0[thurber_P] = { 1000.0, 1000.0, 400.0, 40.0,
                                         0.7, 0.3, 0.03 };
 
-static double thurber_epsrel = 1.0e-7;
+static double thurber_epsrel = 1.0e-6;
 
 static double thurber_sigma[thurber_P] = {
   4.6647963344E+00, 3.9571156086E+01, 2.8698696102E+01,

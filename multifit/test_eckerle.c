@@ -4,7 +4,7 @@
 #define eckerle_NTRIES  1
 
 static double eckerle_x0[eckerle_P] = { 1.0, 10.0, 500.0 };
-static double eckerle_epsrel = 1.0e-9;
+static double eckerle_epsrel = 1.0e-7;
 
 static double eckerle_sigma[eckerle_P] = {
   1.5408051163E-02, 4.6803020753E-02, 4.6800518816E-02

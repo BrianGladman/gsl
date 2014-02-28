@@ -4,7 +4,7 @@
 #define boxbod_NTRIES  1
 
 static double boxbod_x0[boxbod_P] = { 100.0, 0.75 };
-static double boxbod_epsrel = 1.0e-8;
+static double boxbod_epsrel = 1.0e-7;
 
 static double boxbod_sigma[boxbod_P] = {
   1.2354515176E+01, 1.0455993237E-01

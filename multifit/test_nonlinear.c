@@ -510,8 +510,6 @@ test_fdf_checksol(const char *sname, const char *pname,
                   test_fdf_problem *problem)
 {
   gsl_multifit_function_fdf *fdf = problem->fdf;
-  const size_t n = fdf->n;
-  const size_t p = fdf->p;
   const double *sigma = problem->sigma;
   double sumsq;
 
@@ -519,13 +517,15 @@ test_fdf_checksol(const char *sname, const char *pname,
   gsl_blas_ddot(s->f, s->f, &sumsq);
   (problem->checksol)(s->x->data, sumsq, epsrel, sname, pname);
 
-#if 0
   /* check variances */
   if (sigma)
     {
+      const size_t n = fdf->n;
+      const size_t p = fdf->p;
       size_t i;
       gsl_matrix * covar = gsl_matrix_alloc (p, p);
-      gsl_multifit_covar (s->J, 0.0, covar);
+
+      gsl_multifit_fdfsolver_covar (s, 0.0, covar);
 
       for (i = 0; i < p; i++) 
         {
@@ -536,7 +536,6 @@ test_fdf_checksol(const char *sname, const char *pname,
 
       gsl_matrix_free (covar);
     }
-#endif
 }
 
 static void

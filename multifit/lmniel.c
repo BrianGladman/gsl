@@ -51,25 +51,25 @@ typedef struct
   long nu;                   /* nu */
   double mu;                 /* LM damping parameter mu */
   double tau;                /* initial scale factor for mu */
-} lm_state_t;
+} lmniel_state_t;
 
 #include "lmmisc.c"
 
 #define LM_ONE_THIRD         (0.333333333333333)
 
-static int lm_alloc (void *vstate, const size_t n, const size_t p);
-static void lm_free(void *vstate);
-static int lm_set(void *vstate, const gsl_vector * swts,
-                  gsl_multifit_function_fdf *fdf,
-                  gsl_vector *x, gsl_vector *f, gsl_vector *dx);
-static int lm_iterate(void *vstate, const gsl_vector *swts,
+static int lmniel_alloc (void *vstate, const size_t n, const size_t p);
+static void lmniel_free(void *vstate);
+static int lmniel_set(void *vstate, const gsl_vector * swts,
                       gsl_multifit_function_fdf *fdf,
                       gsl_vector *x, gsl_vector *f, gsl_vector *dx);
+static int lmniel_iterate(void *vstate, const gsl_vector *swts,
+                          gsl_multifit_function_fdf *fdf,
+                          gsl_vector *x, gsl_vector *f, gsl_vector *dx);
 
 static int
-lm_alloc (void *vstate, const size_t n, const size_t p)
+lmniel_alloc (void *vstate, const size_t n, const size_t p)
 {
-  lm_state_t *state = (lm_state_t *) vstate;
+  lmniel_state_t *state = (lmniel_state_t *) vstate;
 
   state->A = gsl_matrix_alloc(p, p);
   if (state->A == NULL)
@@ -122,12 +122,12 @@ lm_alloc (void *vstate, const size_t n, const size_t p)
   state->tau = 1.0e-3;
 
   return GSL_SUCCESS;
-} /* lm_alloc() */
+} /* lmniel_alloc() */
 
 static void
-lm_free(void *vstate)
+lmniel_free(void *vstate)
 {
-  lm_state_t *state = (lm_state_t *) vstate;
+  lmniel_state_t *state = (lmniel_state_t *) vstate;
 
   if (state->A)
     gsl_matrix_free(state->A);
@@ -152,15 +152,15 @@ lm_free(void *vstate)
 
   if (state->f_trial)
     gsl_vector_free(state->f_trial);
-} /* lm_free() */
+} /* lmniel_free() */
 
 static int
-lm_set(void *vstate, const gsl_vector *swts,
-       gsl_multifit_function_fdf *fdf, gsl_vector *x,
-       gsl_vector *f, gsl_vector *dx)
+lmniel_set(void *vstate, const gsl_vector *swts,
+           gsl_multifit_function_fdf *fdf, gsl_vector *x,
+           gsl_vector *f, gsl_vector *dx)
 {
   int status;
-  lm_state_t *state = (lm_state_t *) vstate;
+  lmniel_state_t *state = (lmniel_state_t *) vstate;
   const size_t p = x->size;
   size_t i;
 
@@ -210,10 +210,10 @@ lm_set(void *vstate, const gsl_vector *swts,
 #endif
 
   return GSL_SUCCESS;
-} /* lm_set() */
+} /* lmniel_set() */
 
 /*
-lm_iterate()
+lmniel_iterate()
   This function performs 1 iteration of the LM algorithm 6.18
 from [1]. The algorithm is slightly modified to loop until we
 find an acceptable step dx, in order to guarantee that each
@@ -235,17 +235,17 @@ nu, mu, rhs, J
 2) On output, the following are updated with the current iterates:
 nu, mu, rhs, J
 
-rhs needs to be set on each output, so that lm_gradient supplies
+rhs needs to be set on each output, so that lmniel_gradient supplies
 the correct g = J^T f
 */
 
 static int
-lm_iterate(void *vstate, const gsl_vector *swts,
-           gsl_multifit_function_fdf *fdf, gsl_vector *x,
-           gsl_vector *f, gsl_vector *dx)
+lmniel_iterate(void *vstate, const gsl_vector *swts,
+               gsl_multifit_function_fdf *fdf, gsl_vector *x,
+               gsl_vector *f, gsl_vector *dx)
 {
   int status;
-  lm_state_t *state = (lm_state_t *) vstate;
+  lmniel_state_t *state = (lmniel_state_t *) vstate;
   gsl_matrix *J = state->J;                   /* Jacobian J(x) */
   gsl_matrix *A = state->A;                   /* J^T J */
   gsl_vector *rhs = state->rhs;               /* -g = -J^T f */
@@ -262,19 +262,19 @@ lm_iterate(void *vstate, const gsl_vector *swts,
     return status;
 
 #if SCALE
-  lm_update_diag(J, diag);
+  lmniel_update_diag(J, diag);
 #endif
 
   /* loop until we find an acceptable step dx */
   while (!foundstep)
     {
       /* solve (A + mu*I) dx = g */
-      status = lm_calc_dx(state->mu, A, rhs, dx, state);
+      status = lmniel_calc_dx(state->mu, A, rhs, dx, state);
       if (status)
         return status;
 
       /* compute x_trial = x + dx */
-      lm_trial_step(x, dx, x_trial);
+      lmniel_trial_step(x, dx, x_trial);
 
       /* compute f(x + dx) */
       status = gsl_multifit_eval_wf(fdf, x_trial, swts, f_trial);
@@ -282,10 +282,10 @@ lm_iterate(void *vstate, const gsl_vector *swts,
        return status;
 
       /* compute dF = F(x) - F(x + dx) */
-      dF = lm_calc_dF(f, f_trial);
+      dF = lmniel_calc_dF(f, f_trial);
 
       /* compute dL = L(0) - L(dx) = dx^T (mu*dx - g) */
-      dL = lm_calc_dL(state->mu, diag, dx, rhs);
+      dL = lmniel_calc_dL(state->mu, diag, dx, rhs);
 
       /* check that rho = dF/dL > 0 */
       if ((dL > 0.0) && (dF >= 0.0))
@@ -344,26 +344,34 @@ lm_iterate(void *vstate, const gsl_vector *swts,
     } /* while (!foundstep) */
 
   return GSL_SUCCESS;
-} /* lm_iterate() */
+} /* lmniel_iterate() */
 
 static int
-lm_gradient(void *vstate, gsl_vector * g)
+lmniel_gradient(void *vstate, gsl_vector * g)
 {
-  lm_state_t *state = (lm_state_t *) vstate;
+  lmniel_state_t *state = (lmniel_state_t *) vstate;
   gsl_vector_memcpy(g, state->rhs);
   gsl_vector_scale(g, -1.0);
   return GSL_SUCCESS;
 }
 
-static const gsl_multifit_fdfsolver_type lm_type =
+static int
+lmniel_covar(void *vstate, const double epsrel, gsl_matrix * covar)
+{
+  lmniel_state_t *state = (lmniel_state_t *) vstate;
+  return gsl_multifit_covar(state->J, epsrel, covar);
+}
+
+static const gsl_multifit_fdfsolver_type lmniel_type =
 {
   "lmniel",
-  sizeof(lm_state_t),
-  &lm_alloc,
-  &lm_set,
-  &lm_iterate,
-  &lm_gradient,
-  &lm_free
+  sizeof(lmniel_state_t),
+  &lmniel_alloc,
+  &lmniel_set,
+  &lmniel_iterate,
+  &lmniel_gradient,
+  &lmniel_covar,
+  &lmniel_free
 };
 
-const gsl_multifit_fdfsolver_type *gsl_multifit_fdfsolver_lmniel = &lm_type;
+const gsl_multifit_fdfsolver_type *gsl_multifit_fdfsolver_lmniel = &lmniel_type;

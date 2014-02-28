@@ -360,6 +360,14 @@ lmder_gradient (void *vstate, gsl_vector * g)
   return GSL_SUCCESS;
 }
 
+static int
+lmder_covar (void *vstate, const double epsrel, gsl_matrix * covar)
+{
+  lmder_state_t *state = (lmder_state_t *) vstate;
+
+  return gsl_multifit_covar_QRPT(state->r, state->perm, epsrel, covar);
+}
+
 static void
 lmder_free (void *vstate)
 {
@@ -389,6 +397,7 @@ static const gsl_multifit_fdfsolver_type lmder_type =
   &lmder_set,
   &lmder_iterate,
   &lmder_gradient,
+  &lmder_covar,
   &lmder_free
 };
 
@@ -400,6 +409,7 @@ static const gsl_multifit_fdfsolver_type lmsder_type =
   &lmsder_set,
   &lmsder_iterate,
   &lmder_gradient,
+  &lmder_covar,
   &lmder_free
 };
 
