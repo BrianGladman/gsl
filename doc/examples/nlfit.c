@@ -49,10 +49,15 @@ main (void)
   for (i = 0; i < n; i++)
     {
       double t = i;
-      y[i] = 1.0 + 5 * exp (-0.1 * t) 
-                 + gsl_ran_gaussian (r, 0.1);
-      sigma[i] = 0.1;
-      printf ("data: %zu %g %g\n", i, y[i], sigma[i]);
+      double yi = 1.0 + 5 * exp (-0.1 * t);
+      double si = 0.1 * yi;
+      double dy = gsl_ran_gaussian(r, si);
+
+      sigma[i] = si;
+      y[i] = yi + dy;
+      /*printf ("data: %zu %g %g\n", i, y[i], sigma[i]);*/
+      printf("%.5e\n", y[i]);
+      /*printf("%.5e\n", 1.0 / (sigma[i] * sigma[i]));*/
     };
 
   s = gsl_multifit_fdfsolver_alloc (T, n, p);
@@ -61,7 +66,7 @@ main (void)
   /* solve the system with a maximum of 500 iterations */
   status = gsl_multifit_fdfsolver_driver(s, 500, xtol, gtol, ftol, &info);
 
-  gsl_multifit_covar (s->J, 0.0, covar);
+  /*gsl_multifit_covar (s->J, 0.0, covar);*/
 
 #define FIT(i) gsl_vector_get(s->x, i)
 #define ERR(i) sqrt(gsl_matrix_get(covar,i,i))
