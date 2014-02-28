@@ -50,9 +50,20 @@ gsl_multifit_fdfridge_alloc (const gsl_multifit_fdfsolver_type * T,
                     GSL_ENOMEM, 0);
     }
 
+  work->wts = gsl_vector_alloc(n + p);
+  if (work->wts == NULL)
+    {
+      gsl_multifit_fdfridge_free(work);
+      GSL_ERROR_VAL("failed to allocate space for weight vector",
+                    GSL_ENOMEM, 0);
+    }
+
   work->n = n;
   work->p = p;
   work->lambda = 0.0;
+
+  /* initialize weights to 1 (for augmented portion of vector) */
+  gsl_vector_set_all(work->wts, 1.0);
 
   return work;
 } /* gsl_multifit_fdfridge_alloc() */
@@ -62,6 +73,9 @@ gsl_multifit_fdfridge_free(gsl_multifit_fdfridge *work)
 {
   if (work->s)
     gsl_multifit_fdfsolver_free(work->s);
+
+  if (work->wts)
+    gsl_vector_free(work->wts);
 
   free(work);
 }
@@ -100,21 +114,25 @@ gsl_multifit_fdfridge_wset (gsl_multifit_fdfridge * w,
                             const double lambda,
                             const gsl_vector * wts)
 {
-  if (w->n != f->n || w->p != f->p)
+  const size_t n = w->n;
+  const size_t p = w->p;
+
+  if (n != f->n || p != f->p)
     {
       GSL_ERROR ("function size does not match solver", GSL_EBADLEN);
     }
-  else if (w->p != x->size)
+  else if (p != x->size)
     {
       GSL_ERROR ("vector length does not match solver", GSL_EBADLEN);
     }
-  else if (wts != NULL && w->n != wts->size)
+  else if (wts != NULL && n != wts->size)
     {
       GSL_ERROR ("weight vector length does not match solver", GSL_EBADLEN);
     }
   else
     {
       int status;
+      gsl_vector_view wv = gsl_vector_subvector(w->wts, 0, n);
 
       /* save user defined fdf */
       w->fdf = f;
@@ -122,15 +140,24 @@ gsl_multifit_fdfridge_wset (gsl_multifit_fdfridge * w,
       /* build modified fdf for Tikhonov terms */
       w->fdftik.f = &fdfridge_f;
       w->fdftik.df = &fdfridge_df;
-      w->fdftik.n = w->n + w->p; /* add p for Tikhonov terms */
-      w->fdftik.p = w->p;
+      w->fdftik.n = n + p; /* add p for Tikhonov terms */
+      w->fdftik.p = p;
       w->fdftik.params = (void *) w;
 
       /* store damping parameter */
       w->lambda = lambda;
       w->L = NULL;
 
-      status = gsl_multifit_fdfsolver_wset(w->s, &(w->fdftik), x, wts);
+      if (wts)
+        {
+          /* copy weight vector into user portion of w->wts */
+          gsl_vector_memcpy(&wv.vector, wts);
+          status = gsl_multifit_fdfsolver_wset(w->s, &(w->fdftik), x, w->wts);
+        }
+      else
+        {
+          status = gsl_multifit_fdfsolver_wset(w->s, &(w->fdftik), x, NULL);
+        }
 
       return status;
     }
@@ -152,25 +179,29 @@ gsl_multifit_fdfridge_wset2 (gsl_multifit_fdfridge * w,
                              const gsl_matrix * L,
                              const gsl_vector * wts)
 {
-  if (w->n != f->n || w->p != f->p)
+  const size_t n = w->n;
+  const size_t p = w->p;
+
+  if (n != f->n || p != f->p)
     {
       GSL_ERROR ("function size does not match solver", GSL_EBADLEN);
     }
-  else if (w->p != x->size)
+  else if (p != x->size)
     {
       GSL_ERROR ("vector length does not match solver", GSL_EBADLEN);
     }
-  else if (L->size2 != w->p)
+  else if (L->size2 != p)
     {
       GSL_ERROR ("L matrix size2 does not match solver", GSL_EBADLEN);
     }
-  else if (wts != NULL && w->n != wts->size)
+  else if (wts != NULL && n != wts->size)
     {
       GSL_ERROR ("weight vector length does not match solver", GSL_EBADLEN);
     }
   else
     {
       int status;
+      gsl_vector_view wv = gsl_vector_subvector(w->wts, 0, n);
 
       /* save user defined fdf */
       w->fdf = f;
@@ -180,15 +211,24 @@ gsl_multifit_fdfridge_wset2 (gsl_multifit_fdfridge * w,
       /* build modified fdf for Tikhonov terms */
       w->fdftik.f = &fdfridge_f;
       w->fdftik.df = &fdfridge_df;
-      w->fdftik.n = w->n + w->p; /* add p for Tikhonov terms */
-      w->fdftik.p = w->p;
+      w->fdftik.n = n + p; /* add p for Tikhonov terms */
+      w->fdftik.p = p;
       w->fdftik.params = (void *) w;
 
       /* store damping matrix */
       w->lambda = 0.0;
       w->L = L;
 
-      status = gsl_multifit_fdfsolver_wset(w->s, &(w->fdftik), x, wts);
+      if (wts)
+        {
+          /* copy weight vector into user portion */
+          gsl_vector_memcpy(&wv.vector, wts);
+          status = gsl_multifit_fdfsolver_wset(w->s, &(w->fdftik), x, w->wts);
+        }
+      else
+        {
+          status = gsl_multifit_fdfsolver_wset(w->s, &(w->fdftik), x, NULL);
+        }
 
       return status;
     }

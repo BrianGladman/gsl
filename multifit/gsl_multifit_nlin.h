@@ -208,10 +208,11 @@ int gsl_multifit_fdfsolver_dif_fdf(const gsl_vector *x, gsl_multifit_function_fd
 
 typedef struct
 {
-  size_t n;                         /* number of data */
+  size_t n;                         /* number of (original) residuals */
   size_t p;                         /* number of model parameters */
   double lambda;                    /* damping parameter */
   const gsl_matrix *L;              /* damping matrix, NULL if not used */
+  gsl_vector *wts;                  /* weight vector for augmented system */
   gsl_multifit_fdfsolver * s;
   gsl_multifit_function_fdf *fdf;   /* user defined fdf */
   gsl_multifit_function_fdf fdftik; /* Tikhonov modified fdf */

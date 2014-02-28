@@ -71,16 +71,16 @@ typedef struct
 
 #include "test_wnlin.c"
 
-static void test_wfdf(const gsl_multifit_fdfsolver_type * T,
-                      const double xtol, const double gtol,
-                      const double ftol, const double epsrel,
-                      const double x0_scale, test_fdf_problem *problem,
-                      const double *wts);
+static void test_fdf(const gsl_multifit_fdfsolver_type * T,
+                     const double xtol, const double gtol,
+                     const double ftol, const double epsrel,
+                     const double x0_scale, test_fdf_problem *problem,
+                     const double *wts);
 static void test_fdfridge(const gsl_multifit_fdfsolver_type * T,
                           const double xtol, const double gtol,
                           const double ftol, const double epsrel,
-                          const double x0_scale,
-                          test_fdf_problem *problem);
+                          const double x0_scale, test_fdf_problem *problem,
+                          const double *wts);
 static void test_fdf_checksol(const char *sname, const char *pname,
                               const double epsrel,
                               gsl_multifit_fdfsolver *s,
@@ -182,15 +182,25 @@ test_nonlinear(void)
 
   /* test weighted nonlinear least squares */
 
-  test_wfdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+  /* internal weighting in _f and _df functions */
+  test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
            wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
-  test_wfdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-            wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
+  test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
+           wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
+  test_fdfridge(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
+  test_fdfridge(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
+                wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
 
-  test_wfdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-            wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
-  test_wfdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-            wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
+  /* weighting through fdfsolver_wset */
+  test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+           wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
+  test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
+           wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
+  test_fdfridge(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
+  test_fdfridge(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
+                wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
 
   /* Nielsen tests */
   for (i = 0; test_fdf_nielsen[i] != NULL; ++i)
@@ -203,26 +213,26 @@ test_nonlinear(void)
         {
           double eps_scale = epsrel * scale;
 
-          test_wfdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                    eps_scale, scale, problem, NULL);
+          test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                   eps_scale, scale, problem, NULL);
           test_fdfridge(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                        eps_scale, scale, problem);
+                        eps_scale, scale, problem, NULL);
 
           /* test finite difference Jacobian */
           {
             gsl_multifit_function_fdf fdf;
             fdf.df = problem->fdf->df;
             problem->fdf->df = NULL;
-            test_wfdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                      1.0e5 * eps_scale, 1.0, problem, NULL);
+            test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                     1.0e5 * eps_scale, 1.0, problem, NULL);
             problem->fdf->df = fdf.df;
           }
 
           scale *= 10.0;
         }
 
-      test_wfdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-                10.0 * epsrel, 1.0, problem, NULL);
+      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
+               10.0 * epsrel, 1.0, problem, NULL);
     }
 
   /* More tests */
@@ -236,26 +246,26 @@ test_nonlinear(void)
         {
           double eps_scale = epsrel * scale;
 
-          test_wfdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                    eps_scale, scale, problem, NULL);
+          test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                   eps_scale, scale, problem, NULL);
           test_fdfridge(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                        eps_scale, scale, problem);
+                        eps_scale, scale, problem, NULL);
 
           /* test finite difference Jacobian */
           {
             gsl_multifit_function_fdf fdf;
             fdf.df = problem->fdf->df;
             problem->fdf->df = NULL;
-            test_wfdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                      1.0e5 * eps_scale, 1.0, problem, NULL);
+            test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                     1.0e5 * eps_scale, 1.0, problem, NULL);
             problem->fdf->df = fdf.df;
           }
 
           scale *= 10.0;
         }
 
-      test_wfdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-                10.0 * epsrel, 1.0, problem, NULL);
+      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
+               10.0 * epsrel, 1.0, problem, NULL);
     }
 
   /* NIST tests */
@@ -269,33 +279,33 @@ test_nonlinear(void)
         {
           double eps_scale = epsrel * scale;
 
-          test_wfdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                    eps_scale, scale, problem, NULL);
-          test_wfdf(gsl_multifit_fdfsolver_lmder, xtol, gtol, ftol,
-                    eps_scale, scale, problem, NULL);
+          test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                   eps_scale, scale, problem, NULL);
+          test_fdf(gsl_multifit_fdfsolver_lmder, xtol, gtol, ftol,
+                   eps_scale, scale, problem, NULL);
 
           /* test finite difference Jacobian */
           {
             gsl_multifit_function_fdf fdf;
             fdf.df = problem->fdf->df;
             problem->fdf->df = NULL;
-            test_wfdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                      eps_scale, 1.0, problem, NULL);
-            test_wfdf(gsl_multifit_fdfsolver_lmder, xtol, gtol, ftol,
-                      eps_scale, scale, problem, NULL);
+            test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                     eps_scale, 1.0, problem, NULL);
+            test_fdf(gsl_multifit_fdfsolver_lmder, xtol, gtol, ftol,
+                     eps_scale, scale, problem, NULL);
             problem->fdf->df = fdf.df;
           }
 
           scale *= 10.0;
         }
 
-      test_wfdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-                epsrel, 1.0, problem, NULL);
+      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
+               epsrel, 1.0, problem, NULL);
     }
 }
 
 /*
-test_wfdf()
+test_fdf()
   Test a weighted nonlinear least squares problem
 
 Inputs: T        - solver to use
@@ -310,15 +320,15 @@ Inputs: T        - solver to use
                    If x0 = 0, then all components of x0 are set to
                    x0_scale
         problem  - contains the nonlinear problem and solution point
-        wts      - weight vector
+        wts      - weight vector (NULL for unweighted)
 */
 
 static void
-test_wfdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
-          const double gtol, const double ftol,
-          const double epsrel, const double x0_scale,
-          test_fdf_problem *problem,
-          const double *wts)
+test_fdf(const gsl_multifit_fdfsolver_type * T, const double xtol,
+         const double gtol, const double ftol,
+         const double epsrel, const double x0_scale,
+         test_fdf_problem *problem,
+         const double *wts)
 {
   gsl_multifit_function_fdf *fdf = problem->fdf;
   const size_t n = fdf->n;
@@ -408,13 +418,14 @@ Inputs: T        - solver to use
                    If x0 = 0, then all components of x0 are set to
                    x0_scale
         problem  - contains the nonlinear problem and solution point
+        wts      - weight vector
 */
 
 static void
 test_fdfridge(const gsl_multifit_fdfsolver_type * T, const double xtol,
               const double gtol, const double ftol,
               const double epsrel, const double x0_scale,
-              test_fdf_problem *problem)
+              test_fdf_problem *problem, const double *wts)
 {
   gsl_multifit_function_fdf *fdf = problem->fdf;
   const size_t n = fdf->n;
@@ -435,7 +446,13 @@ test_fdfridge(const gsl_multifit_fdfsolver_type * T, const double xtol,
   test_scale_x0(x0, x0_scale);
 
   /* test undamped case with lambda = 0 */
-  gsl_multifit_fdfridge_set(w, fdf, x0, lambda);
+  if (wts)
+    {
+      gsl_vector_const_view wv = gsl_vector_const_view_array(wts, n);
+      gsl_multifit_fdfridge_wset(w, fdf, x0, lambda, &wv.vector);
+    }
+  else
+    gsl_multifit_fdfridge_set(w, fdf, x0, lambda);
 
   status = gsl_multifit_fdfridge_driver(w, max_iter, xtol, gtol,
                                         ftol, &info);
@@ -463,15 +480,25 @@ test_fdfridge(const gsl_multifit_fdfsolver_type * T, const double xtol,
     test_scale_x0(x0, x0_scale);
     gsl_vector_memcpy(y0, x0);
 
+    if (wts)
+      {
+        gsl_vector_const_view wv = gsl_vector_const_view_array(wts, n);
+        gsl_multifit_fdfridge_wset(w, fdf, x0, lambda, &wv.vector);
+        gsl_multifit_fdfridge_wset2(w2, fdf, y0, L, &wv.vector);
+      }
+    else
+      {
+        gsl_multifit_fdfridge_set(w, fdf, x0, lambda);
+        gsl_multifit_fdfridge_set2(w2, fdf, y0, L);
+      }
+
     /* solve with scalar lambda routine */
-    gsl_multifit_fdfridge_set(w, fdf, x0, lambda);
     status = gsl_multifit_fdfridge_driver(w, max_iter, xtol, gtol,
                                           ftol, &info);
     gsl_test(status, "%s/lambda/%s did not converge, status=%s",
              sname, pname, gsl_strerror(status));
 
     /* solve with general matrix routine */
-    gsl_multifit_fdfridge_set2(w2, fdf, y0, L);
     status = gsl_multifit_fdfridge_driver(w2, max_iter, xtol, gtol,
                                           ftol, &info);
     gsl_test(status, "%s/L/%s did not converge, status=%s",
