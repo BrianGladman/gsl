@@ -226,7 +226,7 @@ lm_iteration:
     {
       return GSL_ETOLG;
     }
-  else if (iter < 100)
+  else if (iter < 10)
     {
       /* Repeat inner loop if unsuccessful */
       goto lm_iteration;

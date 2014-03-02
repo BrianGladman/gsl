@@ -997,14 +997,14 @@ fitting function is given by,
 @tex
 \beforedisplay
 $$
-f_i = ((A \exp(-\lambda t_i) + b) - y_i)/\sigma_i
+f_i = (A \exp(-\lambda t_i) + b) - y_i
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-f_i = ((A \exp(-\lambda t_i) + b) - y_i)/\sigma_i
+f_i = (A \exp(-\lambda t_i) + b) - y_i
 @end example
 
 @end ifinfo
@@ -1027,7 +1027,8 @@ J_@{ij@} = d f_i / d x_j
 
 @end ifinfo
 @noindent
-where @math{x_0 = A}, @math{x_1 = \lambda} and @math{x_2 = b}.
+where @math{x_0 = A}, @math{x_1 = \lambda} and @math{x_2 = b}. The
+weights are given by @math{w_i = 1/\sigma_i^2}.
 
 @example
 @verbatiminclude examples/expfit.c
@@ -1036,7 +1037,7 @@ where @math{x_0 = A}, @math{x_1 = \lambda} and @math{x_2 = b}.
 @noindent
 The main part of the program sets up a Levenberg-Marquardt solver and
 some simulated random data. The data uses the known parameters
-(1.0,5.0,0.1) combined with Gaussian noise (standard deviation = 0.1)
+(5.0,0.1,1.0) combined with Gaussian noise (standard deviation = 0.1)
 over a range of 40 timesteps. The initial guess for the parameters is
 chosen as (0.0, 1.0, 0.0).
 
@@ -1056,11 +1057,11 @@ number of iterations: 8
 function evaluations: 11
 Jacobian evaluations: 9
 reason for stopping: small step size
-|f(x)| = 5.44397
-chisq/dof = 0.800996
-A      = 5.04536 +/- 0.06028
-lambda = 0.10405 +/- 0.00316
-b      = 1.01925 +/- 0.03782
+|f(x)| = 5.45418
+chisq/dof = 0.804002
+A      = 5.17379 +/- 0.27938
+lambda = 0.11104 +/- 0.00817
+b      = 1.05283 +/- 0.05365
 status = success
 @end smallexample
 

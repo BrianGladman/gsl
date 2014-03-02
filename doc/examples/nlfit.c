@@ -8,6 +8,7 @@
 
 #include "expfit.c"
 
+/* number of data points to fit */
 #define N 40
 
 int
@@ -21,11 +22,12 @@ main (void)
   const size_t p = 3;
 
   gsl_matrix *covar = gsl_matrix_alloc (p, p);
-  double y[N], sigma[N];
-  struct data d = { n, y, sigma};
+  double y[N], weights[N];
+  struct data d = { n, y };
   gsl_multifit_function_fdf f;
   double x_init[3] = { 1.0, 0.0, 0.0 };
   gsl_vector_view x = gsl_vector_view_array (x_init, p);
+  gsl_vector_view w = gsl_vector_view_array(weights, n);
   const gsl_rng_type * type;
   gsl_rng * r;
 
@@ -53,20 +55,20 @@ main (void)
       double si = 0.1 * yi;
       double dy = gsl_ran_gaussian(r, si);
 
-      sigma[i] = si;
+      weights[i] = 1.0 / (si * si);
       y[i] = yi + dy;
-      /*printf ("data: %zu %g %g\n", i, y[i], sigma[i]);*/
-      printf("%.5e\n", y[i]);
-      /*printf("%.5e\n", 1.0 / (sigma[i] * sigma[i]));*/
+      printf ("data: %zu %g %g\n", i, y[i], si);
     };
 
   s = gsl_multifit_fdfsolver_alloc (T, n, p);
-  gsl_multifit_fdfsolver_set (s, &f, &x.vector);
 
-  /* solve the system with a maximum of 500 iterations */
-  status = gsl_multifit_fdfsolver_driver(s, 500, xtol, gtol, ftol, &info);
+  /* initialize solver with starting point and weights */
+  gsl_multifit_fdfsolver_wset (s, &f, &x.vector, &w.vector);
 
-  /*gsl_multifit_covar (s->J, 0.0, covar);*/
+  /* solve the system with a maximum of 20 iterations */
+  status = gsl_multifit_fdfsolver_driver(s, 20, xtol, gtol, ftol, &info);
+
+  gsl_multifit_fdfsolver_covar (s, 0.0, covar);
 
 #define FIT(i) gsl_vector_get(s->x, i)
 #define ERR(i) sqrt(gsl_matrix_get(covar,i,i))
