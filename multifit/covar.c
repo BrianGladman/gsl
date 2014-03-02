@@ -32,7 +32,7 @@
 */
 
 int
-gsl_multifit_covar (const gsl_matrix * J, double epsrel, gsl_matrix * covar)
+gsl_multifit_covar (const gsl_matrix * J, const double epsrel, gsl_matrix * covar)
 {
   int status;
   gsl_matrix * r;

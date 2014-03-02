@@ -42,7 +42,7 @@ __BEGIN_DECLS
 int gsl_multifit_gradient (const gsl_matrix * J, const gsl_vector * f,
                            gsl_vector * g);
 
-int gsl_multifit_covar (const gsl_matrix * J, double epsrel, gsl_matrix * covar);
+int gsl_multifit_covar (const gsl_matrix * J, const double epsrel, gsl_matrix * covar);
 int gsl_multifit_covar_QRPT (gsl_matrix * r, gsl_permutation * perm,
                              const double epsrel, gsl_matrix * covar);
 

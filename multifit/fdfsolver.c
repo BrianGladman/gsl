@@ -244,13 +244,7 @@ int
 gsl_multifit_fdfsolver_covar (gsl_multifit_fdfsolver * s,
                               const double epsrel, gsl_matrix * covar)
 {
-  int status;
-  const size_t n = s->f->size;
-  const size_t p = s->x->size;
-  
-  status = (s->type->covar) (s->state, epsrel, covar);
-
-  return status;
+  return (s->type->covar) (s->state, epsrel, covar);
 } /* gsl_multifit_fdfsolver_covar() */
 
 void
