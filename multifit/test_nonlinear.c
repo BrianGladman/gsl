@@ -61,6 +61,7 @@ typedef struct
 #include "test_powell2.c"
 #include "test_powell3.c"
 #include "test_rat42.c"
+#include "test_rat43.c"
 #include "test_rosenbrock.c"
 #include "test_rosenbrocke.c"
 #include "test_roth.c"
@@ -168,6 +169,7 @@ static test_fdf_problem *test_fdf_nist[] = {
   &boxbod_problem,
   &rat42_problem,
   &eckerle_problem,
+  &rat43_problem,
 
   NULL
 };
