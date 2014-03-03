@@ -142,8 +142,8 @@ performs the correct scaling.
 @node Overview of Regularized Nonlinear Least-Squares Fitting
 @section Regularized Nonlinear Least-Squares
 In cases where the Jacobian @math{J} is rank-deficient or singular,
-standard nonlinear least squares solutions can sometimes converge
-to undesirable and unstable solutions. In these cases, it can
+standard nonlinear least squares can sometimes produce
+undesirable and unstable solutions. In these cases, it can
 help to regularize the problem using ridge or Tikhonov regularization.
 In this method, we introduce a term in our minimization function
 which is designed to damp the solution vector @math{x}, or give preference

@@ -983,6 +983,36 @@ of freedom is 1.4, indicating a reasonable fit to the data.
 @center @image{fit-wlinear2,3.0in}
 @end iftex
 
+The next program demonstrates the difference between ordinary and
+regularized least squares when the design matrix is near-singular.
+In this program, we generate two random normally distributed variables
+@math{u} and @math{v}, with @math{v = u + noise} so that @math{u}
+and @math{v} are nearly colinear. We then set a third dependent
+variable @math{y = u + v + noise} and solve for the coefficients
+@math{c_1,c_2} of the model @math{Y(c_1,c_2) = c_1 u + c_2 v}.
+Since @math{u \approx v}, the design matrix @math{X} is nearly
+singular, leading to unstable ordinary least squares solutions.
+
+@noindent
+Here is the program output:
+@example
+=== Unregularized fit ===
+best fit: y = -259.999 u + 262.007 v
+chisq/dof = 1.59069
+=== Regularized fit ===
+best fit: y = 1.01594 u + 1.02738 v
+chisq/dof = 1.69568
+@end example
+
+@noindent
+We see that the regularized method with @math{\lambda = 1} finds
+the correct solution @math{c_1 \approx c_2 \approx 1}, while the
+ordinary least squares solution is unstable and has a large norm.
+The program is given below.
+@example
+@verbatiminclude examples/ridge.c
+@end example
+
 The next program demonstrates the advantage of robust least squares on
 a dataset with outliers. The program generates linear @math{(x,y)}
 data pairs on the line @math{y = 1.45 x + 3.88}, adds some random
