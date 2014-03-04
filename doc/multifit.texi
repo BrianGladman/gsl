@@ -586,25 +586,34 @@ Testing for a small step size relative to the current parameter vector
 @tex
 \beforedisplay
 $$
-||\delta|| \le xtol ||x||
+|\delta_i| \le xtol (|x_i| + xtol)
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-||\delta|| <= xtol ||x||
+|\delta_i| <= xtol (|x_i| + xtol)
 @end example
 @end ifinfo
+for each @math{0 <= i < p}. Each element of the step vector @math{\delta}
+is tested individually in case the different parameters have widely
+different scales. Adding @var{xtol} to @math{|x_i|} helps the test avoid
+breaking down in situations where the true solution value @math{x_i = 0}.
 If this test succeeds, @var{info} is set to 1 and the function
 returns @code{GSL_SUCCESS}.
 
+A general guideline for selecting the step tolerance is to choose
+@math{xtol = 10^{-d}} where @math{d} is the number of accurate
+decimal digits desired in the solution @math{x}. See Dennis and
+Schnabel for more information.
+
 @item
-Testing for a small gradient (@math{g = J^T f}) indicating a local
-function minimum:
+Testing for a small gradient (@math{g = \nabla \Phi(x) = J^T f})
+indicating a local function minimum:
 @tex
 \beforedisplay
 $$
-||g||_{\infty} \le gtol
+max_i |g_i \times max(x_i, 1)| \le gtol \times max(\Phi(x), 1)
 $$
 \afterdisplay
 @end tex
@@ -613,8 +622,18 @@ $$
 ||g||_inf <= gtol
 @end example
 @end ifinfo
+This expression tests whether the ratio
+@math{(\nabla \Phi)_i x_i / \Phi} is small. Testing this scaled gradient
+is a better than @math{\nabla \Phi} alone since it is a dimensionless
+quantity and so independent of the scale of the problem. The
+@code{max} arguments help ensure the test doesn't break down in
+regions where @math{x_i} or @math{\Phi(x)} are close to 0.
 If this test succeeds, @var{info} is set to 2 and the function
 returns @code{GSL_SUCCESS}.
+
+A general guideline for choosing the gradient tolerance is to set
+@code{gtol = GSL_DBL_EPSILON^(1/3)}. See Dennis and Schnabel for
+more information.
 
 @end itemize
 
@@ -1112,10 +1131,14 @@ Fitting'', IMM Department of Mathematical Modeling, DTU, 2010.
 @end itemize
 
 @noindent
-The following papers are also relevant to the algorithms described in this
-section,
+The following publications are also relevant to the algorithms described
+in this section,
 
 @itemize @w{}
+@item
+J. E. Dennis and R. B. Schnabel, Numerical Methods for Unconstrained
+Optimization and Nonlinear Equations, SIAM, 1996.
+
 @item 
 J.J. Mor@'e, B.S. Garbow, K.E. Hillstrom, ``Testing Unconstrained
 Optimization Software'', ACM Transactions on Mathematical Software, Vol

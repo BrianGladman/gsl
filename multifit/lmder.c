@@ -356,7 +356,6 @@ lmder_gradient (void *vstate, gsl_vector * g)
 {
   lmder_state_t *state = (lmder_state_t *) vstate;
   compute_gradient(state->r, state->qtf, g);
-  /*gsl_vector_memcpy(g, state->gradient);*/
   return GSL_SUCCESS;
 }
 

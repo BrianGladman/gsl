@@ -23,14 +23,14 @@
 #include <gsl/gsl_multifit_nlin.h>
 #include <gsl/gsl_blas.h>
 
-static double infnorm(const gsl_vector *v);
+static double scaled_infnorm(const gsl_vector *x, const gsl_vector *g);
 
 /*
 gsl_multifit_fdfsolver_test()
   Convergence tests for nonlinear minimization
 
-(1) ||dx|| <= xtol * (||x|| + xtol)
-(2) ||g||_inf <= gtol
+(1) |dx_i| <= xtol * (1 + |x_i|) for all i
+(2) || g .* x ||_inf <= gtol ||f||^2
 (3) ||f(x+dx) - f(x)|| <= ftol * max(||f(x)||, 1)
 
 Inputs: s - fdfsolver
@@ -48,22 +48,29 @@ gsl_multifit_fdfsolver_test (const gsl_multifit_fdfsolver * s,
                              const double xtol, const double gtol,
                              const double ftol, int *info)
 {
-  double xnorm = gsl_blas_dnrm2(s->x);
-  double dxnorm = gsl_blas_dnrm2(s->dx);
-  double gnorm;
+  int status;
+  double gnorm, fnorm, phi;
 
   *info = 0;
 
-  if (dxnorm <= xtol * (xtol + xnorm))
+  status = gsl_multifit_test_delta(s->dx, s->x, xtol*xtol, xtol);
+  if (status == GSL_SUCCESS)
     {
       *info = 1;
       return GSL_SUCCESS;
     }
 
+  /* compute gradient g = J^T f */
   (s->type->gradient) (s->state, s->g);
-  gnorm = infnorm(s->g);
 
-  if (gnorm <= gtol)
+  /* compute gnorm = max_i( g_i * max(x_i, 1) ) */
+  gnorm = scaled_infnorm(s->x, s->g);
+
+  /* compute fnorm = ||f|| */
+  fnorm = gsl_blas_dnrm2(s->f);
+  phi = 0.5 * fnorm * fnorm;
+
+  if (gnorm <= gtol * GSL_MAX(phi, 1.0))
     {
       *info = 2;
       return GSL_SUCCESS;
@@ -147,8 +154,21 @@ gsl_multifit_test_gradient (const gsl_vector * g, double epsabs)
 }
 
 static double
-infnorm(const gsl_vector *v)
+scaled_infnorm(const gsl_vector *x, const gsl_vector *g)
 {
-  CBLAS_INDEX_t idx = gsl_blas_idamax(v);
-  return fabs(gsl_vector_get(v, idx));
+  const size_t n = x->size;
+  size_t i;
+  double norm = 0.0;
+
+  for (i = 0; i < n; ++i)
+    {
+      double xi = GSL_MAX(gsl_vector_get(x, i), 1.0);
+      double gi = gsl_vector_get(g, i);
+      double tmp = fabs(xi * gi);
+
+      if (tmp > norm)
+        norm = tmp;
+    }
+
+  return norm;
 }

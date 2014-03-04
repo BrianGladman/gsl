@@ -1,7 +1,7 @@
 #define meyer_N         16
 #define meyer_P         3
 
-#define meyer_NTRIES    4
+#define meyer_NTRIES    1
 
 static double meyer_x0[meyer_P] = { 0.02, 4000.0, 250.0 };
 static double meyer_epsrel = 1.0e-8;
