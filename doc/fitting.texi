@@ -765,6 +765,12 @@ Decreasing the tuning constant increases the downweight assigned to large residu
 the tuning constant decreases the downweight assigned to large residuals.
 @end deftypefun
 
+@deftypefun int gsl_multifit_robust_maxiter (const size_t @var{maxiter}, gsl_multifit_robust_workspace * @var{w})
+This function sets the maximum number of iterations in the iteratively
+reweighted least squares algorithm to @var{maxiter}. By default,
+this value is set to 100 by @code{gsl_multifit_robust_alloc}.
+@end deftypefun
+
 @deftypefun int gsl_multifit_robust_weights (const gsl_vector * @var{r}, gsl_vector * @var{wts}, gsl_multifit_robust_workspace * @var{w})
 This function assigns weights to the vector @var{wts} using the residual vector @var{r} and
 previously specified weighting function. The output weights are given by @math{wts_i = w(r_i / (t \sigma))},
@@ -787,6 +793,12 @@ regression. Special care must be taken when estimating @math{\sigma} and
 other statistics such as @math{R^2}, and so these
 are computed internally and are available by calling the function
 @code{gsl_multifit_robust_statistics}.
+
+If the coefficients do not converge within the maximum iteration
+limit, the function returns @code{GSL_EMAXITER}. In this case,
+the current estimates of the coefficients and covariance matrix
+are returned in @var{c} and @var{cov} and the internal fit statistics
+are computed with these estimates.
 @end deftypefun
 
 @deftypefun int gsl_multifit_robust_est (const gsl_vector * @var{x}, const gsl_vector * @var{c}, const gsl_matrix * @var{cov}, double * @var{y}, double * @var{y_err})

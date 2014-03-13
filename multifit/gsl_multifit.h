@@ -208,7 +208,10 @@ GSL_VAR const gsl_multifit_robust_type * gsl_multifit_robust_welsch;
 gsl_multifit_robust_workspace *gsl_multifit_robust_alloc(const gsl_multifit_robust_type *T,
                                                          const size_t n, const size_t p);
 void gsl_multifit_robust_free(gsl_multifit_robust_workspace *w);
-int gsl_multifit_robust_tune(const double tune, gsl_multifit_robust_workspace *w);
+int gsl_multifit_robust_tune(const double tune,
+                             gsl_multifit_robust_workspace *w);
+int gsl_multifit_robust_maxiter(const size_t maxiter,
+                                gsl_multifit_robust_workspace *w);
 const char *gsl_multifit_robust_name(const gsl_multifit_robust_workspace *w);
 gsl_multifit_robust_stats gsl_multifit_robust_statistics(const gsl_multifit_robust_workspace *w);
 int gsl_multifit_robust_weights(const gsl_vector *r, gsl_vector *wts,

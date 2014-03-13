@@ -212,6 +212,21 @@ gsl_multifit_robust_tune(const double tune, gsl_multifit_robust_workspace *w)
   return GSL_SUCCESS;
 }
 
+int
+gsl_multifit_robust_maxiter(const size_t maxiter,
+                            gsl_multifit_robust_workspace *w)
+{
+  if (w->maxiter == 0)
+    {
+      GSL_ERROR("maxiter must be greater than 0", GSL_EINVAL);
+    }
+  else
+    {
+      w->maxiter = maxiter;
+      return GSL_SUCCESS;
+    }
+}
+
 const char *
 gsl_multifit_robust_name(const gsl_multifit_robust_workspace *w)
 {
