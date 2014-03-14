@@ -486,12 +486,12 @@ test_fdfridge(const gsl_multifit_fdfsolver_type * T, const double xtol,
       {
         gsl_vector_const_view wv = gsl_vector_const_view_array(wts, n);
         gsl_multifit_fdfridge_wset(w, fdf, x0, lambda, &wv.vector);
-        gsl_multifit_fdfridge_wset2(w2, fdf, y0, L, &wv.vector);
+        gsl_multifit_fdfridge_wset3(w2, fdf, y0, L, &wv.vector);
       }
     else
       {
         gsl_multifit_fdfridge_set(w, fdf, x0, lambda);
-        gsl_multifit_fdfridge_set2(w2, fdf, y0, L);
+        gsl_multifit_fdfridge_set3(w2, fdf, y0, L);
       }
 
     /* solve with scalar lambda routine */

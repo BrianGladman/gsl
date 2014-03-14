@@ -211,6 +211,7 @@ typedef struct
   size_t n;                         /* number of (original) residuals */
   size_t p;                         /* number of model parameters */
   double lambda;                    /* damping parameter */
+  const gsl_vector *L_diag;         /* damping matrix, NULL if not used */
   const gsl_matrix *L;              /* damping matrix, NULL if not used */
   gsl_vector *wts;                  /* weight vector for augmented system */
   gsl_multifit_fdfsolver * s;
@@ -237,8 +238,17 @@ int gsl_multifit_fdfridge_wset (gsl_multifit_fdfridge * w,
 int gsl_multifit_fdfridge_set2 (gsl_multifit_fdfridge * w,
                                 gsl_multifit_function_fdf * f,
                                 const gsl_vector * x,
-                                const gsl_matrix * L);
+                                const gsl_vector * lambda);
 int gsl_multifit_fdfridge_wset2 (gsl_multifit_fdfridge * w,
+                                 gsl_multifit_function_fdf * f,
+                                 const gsl_vector * x,
+                                 const gsl_vector * lambda,
+                                 const gsl_vector * wts);
+int gsl_multifit_fdfridge_set3 (gsl_multifit_fdfridge * w,
+                                gsl_multifit_function_fdf * f,
+                                const gsl_vector * x,
+                                const gsl_matrix * L);
+int gsl_multifit_fdfridge_wset3 (gsl_multifit_fdfridge * w,
                                  gsl_multifit_function_fdf * f,
                                  const gsl_vector * x,
                                  const gsl_matrix * L,

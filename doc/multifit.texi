@@ -358,8 +358,23 @@ throughout the iteration so it should not be freed by the caller until
 the iteration terminates.
 @end deftypefun
 
-@deftypefun int gsl_multifit_fdfridge_set2 (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_matrix * @var{L})
-@deftypefunx int gsl_multifit_fdfridge_wset2 (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_matrix * @var{L}, const gsl_vector * @var{wts})
+@deftypefun int gsl_multifit_fdfridge_set2 (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_vector * @var{lambda})
+@deftypefunx int gsl_multifit_fdfridge_wset2 (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_vector * @var{lambda}, const gsl_vector * @var{wts})
+This function initializes, or reinitializes, an existing ridge solver
+@var{s} to use the function and derivative @var{fdf} and the initial
+guess @var{x}. Here, the regularization matrix is set to
+@math{L = diag(\lambda_1,\lambda_2,...,\lambda_p)}, where
+the @math{\lambda_i} are given in @var{lambda}.
+
+Optionally, a weight vector @var{wts} can be given to perform
+a weighted nonlinear regression. Here, the weighting matrix is
+@math{W = diag(w_1,w_2,...,w_n)}. The @var{wts} vector is referenced
+throughout the iteration so it should not be freed by the caller until
+the iteration terminates.
+@end deftypefun
+
+@deftypefun int gsl_multifit_fdfridge_set3 (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_matrix * @var{L})
+@deftypefunx int gsl_multifit_fdfridge_wset3 (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_matrix * @var{L}, const gsl_vector * @var{wts})
 This function initializes, or reinitializes, an existing ridge solver
 @var{s} to use the function and derivative @var{fdf} and the initial
 guess @var{x}. Here, the regularization matrix is set to @var{L},

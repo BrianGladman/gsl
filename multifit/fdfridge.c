@@ -167,13 +167,85 @@ int
 gsl_multifit_fdfridge_set2 (gsl_multifit_fdfridge * w,
                             gsl_multifit_function_fdf * f,
                             const gsl_vector * x,
-                            const gsl_matrix * L)
+                            const gsl_vector * lambda)
 {
-  return gsl_multifit_fdfridge_wset2(w, f, x, L, NULL);
+  return gsl_multifit_fdfridge_wset2(w, f, x, lambda, NULL);
 } /* gsl_multifit_fdfridge_set2() */
 
 int
 gsl_multifit_fdfridge_wset2 (gsl_multifit_fdfridge * w,
+                             gsl_multifit_function_fdf * f,
+                             const gsl_vector * x,
+                             const gsl_vector * lambda,
+                             const gsl_vector * wts)
+{
+  const size_t n = w->n;
+  const size_t p = w->p;
+
+  if (n != f->n || p != f->p)
+    {
+      GSL_ERROR ("function size does not match solver", GSL_EBADLEN);
+    }
+  else if (p != x->size)
+    {
+      GSL_ERROR ("vector length does not match solver", GSL_EBADLEN);
+    }
+  else if (lambda->size != p)
+    {
+      GSL_ERROR ("lambda vector size does not match solver", GSL_EBADLEN);
+    }
+  else if (wts != NULL && n != wts->size)
+    {
+      GSL_ERROR ("weight vector length does not match solver", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+      gsl_vector_view wv = gsl_vector_subvector(w->wts, 0, n);
+
+      /* save user defined fdf */
+      w->fdf = f;
+      w->fdf->nevalf = 0;
+      w->fdf->nevaldf = 0;
+
+      /* build modified fdf for Tikhonov terms */
+      w->fdftik.f = &fdfridge_f;
+      w->fdftik.df = &fdfridge_df;
+      w->fdftik.n = n + p; /* add p for Tikhonov terms */
+      w->fdftik.p = p;
+      w->fdftik.params = (void *) w;
+
+      /* store damping matrix */
+      w->lambda = 0.0;
+      w->L_diag = lambda;
+      w->L = NULL;
+
+      if (wts)
+        {
+          /* copy weight vector into user portion */
+          gsl_vector_memcpy(&wv.vector, wts);
+          status = gsl_multifit_fdfsolver_wset(w->s, &(w->fdftik), x, w->wts);
+        }
+      else
+        {
+          status = gsl_multifit_fdfsolver_wset(w->s, &(w->fdftik), x, NULL);
+        }
+
+      return status;
+    }
+} /* gsl_multifit_fdfridge_wset2() */
+
+int
+gsl_multifit_fdfridge_set3 (gsl_multifit_fdfridge * w,
+                            gsl_multifit_function_fdf * f,
+                            const gsl_vector * x,
+                            const gsl_matrix * L)
+{
+  return gsl_multifit_fdfridge_wset3(w, f, x, L, NULL);
+} /* gsl_multifit_fdfridge_set3() */
+
+int
+gsl_multifit_fdfridge_wset3 (gsl_multifit_fdfridge * w,
                              gsl_multifit_function_fdf * f,
                              const gsl_vector * x,
                              const gsl_matrix * L,
@@ -217,6 +289,7 @@ gsl_multifit_fdfridge_wset2 (gsl_multifit_fdfridge * w,
 
       /* store damping matrix */
       w->lambda = 0.0;
+      w->L_diag = NULL;
       w->L = L;
 
       if (wts)
@@ -232,7 +305,7 @@ gsl_multifit_fdfridge_wset2 (gsl_multifit_fdfridge * w,
 
       return status;
     }
-} /* gsl_multifit_fdfridge_wset2() */
+} /* gsl_multifit_fdfridge_wset3() */
 
 int
 gsl_multifit_fdfridge_iterate (gsl_multifit_fdfridge * w)
@@ -285,7 +358,13 @@ fdfridge_f(const gsl_vector * x, void * params, gsl_vector * f)
   if (status)
     return status;
 
-  if (w->L)
+  if (w->L_diag)
+    {
+      /* store diag(L_diag) x in Tikhonov portion of f~ */
+      gsl_vector_memcpy(&f_tik.vector, x);
+      gsl_vector_mul(&f_tik.vector, w->L_diag);
+    }
+  else if (w->L)
     {
       /* store Lx in Tikhonov portion of f~ */
       gsl_blas_dgemv(CblasNoTrans, 1.0, w->L, x, 0.0, &f_tik.vector);
@@ -316,7 +395,13 @@ fdfridge_df(const gsl_vector * x, void * params, gsl_matrix * J)
   if (status)
     return status;
 
-  if (w->L)
+  if (w->L_diag)
+    {
+      /* store diag(L_diag) in Tikhonov portion of J */
+      gsl_matrix_set_zero(&J_tik.matrix);
+      gsl_vector_memcpy(&diag.vector, w->L_diag);
+    }
+  else if (w->L)
     {
       /* store L in Tikhonov portion of J */
       gsl_matrix_memcpy(&J_tik.matrix, w->L);
