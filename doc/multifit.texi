@@ -553,8 +553,8 @@ auxiliary functions,
 @deftypefun {gsl_vector *} gsl_multifit_fsolver_position (const gsl_multifit_fsolver * @var{s})
 @deftypefunx {gsl_vector *} gsl_multifit_fdfsolver_position (const gsl_multifit_fdfsolver * @var{s})
 @deftypefunx {gsl_vector *} gsl_multifit_fdfridge_position (const gsl_multifit_fdfridge * @var{s})
-These functions return the current position (i.e. best-fit parameters)
-@code{s->x} of the solver @var{s}.
+These functions return the current position @math{x} (i.e. best-fit
+parameters) of the solver @var{s}.
 @end deftypefun
 
 @deftypefun {gsl_vector *} gsl_multifit_fdfsolver_residual (const gsl_multifit_fdfsolver * @var{s})
@@ -1096,7 +1096,8 @@ number of iterations: 8
 function evaluations: 11
 Jacobian evaluations: 9
 reason for stopping: small step size
-|f(x)| = 5.45418
+initial |f(x)| = 31.1919
+final   |f(x)| = 5.45418
 chisq/dof = 0.804002
 A      = 5.17379 +/- 0.27938
 lambda = 0.11104 +/- 0.00817

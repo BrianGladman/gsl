@@ -30,6 +30,8 @@ main (void)
   gsl_vector_view w = gsl_vector_view_array(weights, n);
   const gsl_rng_type * type;
   gsl_rng * r;
+  gsl_vector *res_f;
+  double chi, chi0;
 
   const double xtol = 1e-8;
   const double gtol = 1e-8;
@@ -65,10 +67,17 @@ main (void)
   /* initialize solver with starting point and weights */
   gsl_multifit_fdfsolver_wset (s, &f, &x.vector, &w.vector);
 
+  /* compute initial residual norm */
+  res_f = gsl_multifit_fdfsolver_residual(s);
+  chi0 = gsl_blas_dnrm2(res_f);
+
   /* solve the system with a maximum of 20 iterations */
   status = gsl_multifit_fdfsolver_driver(s, 20, xtol, gtol, ftol, &info);
 
   gsl_multifit_fdfsolver_covar (s, 0.0, covar);
+
+  /* compute final residual norm */
+  chi = gsl_blas_dnrm2(res_f);
 
 #define FIT(i) gsl_vector_get(s->x, i)
 #define ERR(i) sqrt(gsl_matrix_get(covar,i,i))
@@ -81,10 +90,10 @@ main (void)
   fprintf(stderr, "Jacobian evaluations: %zu\n", f.nevaldf);
   fprintf(stderr, "reason for stopping: %s\n",
           (info == 1) ? "small step size" : "small gradient");
-  fprintf(stderr, "|f(x)| = %g\n", gsl_blas_dnrm2(s->f));
+  fprintf(stderr, "initial |f(x)| = %g\n", chi0);
+  fprintf(stderr, "final   |f(x)| = %g\n", chi);
 
   { 
-    double chi = gsl_blas_dnrm2(s->f);
     double dof = n - p;
     double c = GSL_MAX_DBL(1, chi / sqrt(dof)); 
 
