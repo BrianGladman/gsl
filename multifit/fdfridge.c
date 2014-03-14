@@ -165,6 +165,10 @@ gsl_multifit_fdfridge_wset (gsl_multifit_fdfridge * w,
           status = gsl_multifit_fdfsolver_wset(w->s, &(w->fdftik), x, NULL);
         }
 
+      /* update function/Jacobian evaluations */
+      f->nevalf = w->fdftik.nevalf;
+      f->nevaldf = w->fdftik.nevaldf;
+
       return status;
     }
 } /* gsl_multifit_fdfridge_wset() */
@@ -236,6 +240,10 @@ gsl_multifit_fdfridge_wset2 (gsl_multifit_fdfridge * w,
         {
           status = gsl_multifit_fdfsolver_wset(w->s, &(w->fdftik), x, NULL);
         }
+
+      /* update function/Jacobian evaluations */
+      f->nevalf = w->fdftik.nevalf;
+      f->nevaldf = w->fdftik.nevaldf;
 
       return status;
     }
@@ -309,6 +317,10 @@ gsl_multifit_fdfridge_wset3 (gsl_multifit_fdfridge * w,
           status = gsl_multifit_fdfsolver_wset(w->s, &(w->fdftik), x, NULL);
         }
 
+      /* update function/Jacobian evaluations */
+      f->nevalf = w->fdftik.nevalf;
+      f->nevaldf = w->fdftik.nevaldf;
+
       return status;
     }
 } /* gsl_multifit_fdfridge_wset3() */
@@ -317,6 +329,11 @@ int
 gsl_multifit_fdfridge_iterate (gsl_multifit_fdfridge * w)
 {
   int status = gsl_multifit_fdfsolver_iterate(w->s);
+
+  /* update function/Jacobian evaluations */
+  w->fdf->nevalf = w->fdftik.nevalf;
+  w->fdf->nevaldf = w->fdftik.nevaldf;
+
   return status;
 }
 
