@@ -182,6 +182,7 @@ gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * s);
 
 const char * gsl_multifit_fdfsolver_name (const gsl_multifit_fdfsolver * s);
 gsl_vector * gsl_multifit_fdfsolver_position (const gsl_multifit_fdfsolver * s);
+gsl_vector * gsl_multifit_fdfsolver_residual (const gsl_multifit_fdfsolver * s);
 size_t gsl_multifit_fdfsolver_niter (const gsl_multifit_fdfsolver * s);
 int gsl_multifit_eval_wf(gsl_multifit_function_fdf *fdf,
                          const gsl_vector *x, const gsl_vector *wts,
@@ -211,8 +212,8 @@ typedef struct
   size_t n;                         /* number of (original) residuals */
   size_t p;                         /* number of model parameters */
   double lambda;                    /* damping parameter */
-  const gsl_vector *L_diag;         /* damping matrix, NULL if not used */
-  const gsl_matrix *L;              /* damping matrix, NULL if not used */
+  const gsl_vector *L_diag;         /* diagonal damping matrix or NULL */
+  const gsl_matrix *L;              /* general damping matrix or NULL */
   gsl_vector *wts;                  /* weight vector for augmented system */
   gsl_multifit_fdfsolver * s;
   gsl_multifit_function_fdf *fdf;   /* user defined fdf */
@@ -225,6 +226,7 @@ gsl_multifit_fdfridge_alloc (const gsl_multifit_fdfsolver_type * T,
 void gsl_multifit_fdfridge_free(gsl_multifit_fdfridge *work);
 const char *gsl_multifit_fdfridge_name(const gsl_multifit_fdfridge * w);
 gsl_vector *gsl_multifit_fdfridge_position (const gsl_multifit_fdfridge * w);
+gsl_vector *gsl_multifit_fdfridge_residual (const gsl_multifit_fdfridge * w);
 size_t gsl_multifit_fdfridge_niter (const gsl_multifit_fdfridge * w);
 int gsl_multifit_fdfridge_set (gsl_multifit_fdfridge * w,
                                gsl_multifit_function_fdf * f,

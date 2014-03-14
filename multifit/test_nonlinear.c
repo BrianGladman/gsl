@@ -540,11 +540,13 @@ test_fdf_checksol(const char *sname, const char *pname,
 {
   gsl_multifit_function_fdf *fdf = problem->fdf;
   const double *sigma = problem->sigma;
+  gsl_vector *f = gsl_multifit_fdfsolver_residual(s);
+  gsl_vector *x = gsl_multifit_fdfsolver_position(s);
   double sumsq;
 
   /* check solution vector x and sumsq = ||f||^2 */
-  gsl_blas_ddot(s->f, s->f, &sumsq);
-  (problem->checksol)(s->x->data, sumsq, epsrel, sname, pname);
+  gsl_blas_ddot(f, f, &sumsq);
+  (problem->checksol)(x->data, sumsq, epsrel, sname, pname);
 
   /* check variances */
   if (sigma)

@@ -92,6 +92,12 @@ gsl_multifit_fdfridge_position (const gsl_multifit_fdfridge * w)
   return gsl_multifit_fdfsolver_position(w->s);
 }
 
+gsl_vector *
+gsl_multifit_fdfridge_residual (const gsl_multifit_fdfridge * w)
+{
+  return gsl_multifit_fdfsolver_residual(w->s);
+}
+
 size_t
 gsl_multifit_fdfridge_niter (const gsl_multifit_fdfridge * w)
 {

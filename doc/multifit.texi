@@ -557,6 +557,14 @@ These functions return the current position (i.e. best-fit parameters)
 @code{s->x} of the solver @var{s}.
 @end deftypefun
 
+@deftypefun {gsl_vector *} gsl_multifit_fdfsolver_residual (const gsl_multifit_fdfsolver * @var{s})
+@deftypefunx {gsl_vector *} gsl_multifit_fdfridge_residual (const gsl_multifit_fdfridge * @var{s})
+These functions return the current residual vector @math{f} of the
+solver @var{s}.  For weighted cases, the residual vector includes the
+weighting factor @math{\sqrt{W}}. For ridge regression, the residual
+vector is the augmented vector @math{\tilde{f}}.
+@end deftypefun
+
 @deftypefun size_t gsl_multifit_fdfsolver_niter (const gsl_multifit_fdfsolver * @var{s})
 @deftypefunx size_t gsl_multifit_fdfridge_niter (const gsl_multifit_fdfridge * @var{s})
 These functions return the number of iterations performed so far.
