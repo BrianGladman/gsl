@@ -35,9 +35,9 @@ $$
 A x = b
 @end example
 @end ifinfo
-where @math{A} is a square @math{n}-by-@math{n} non-singular sparse matrix,
-@math{x} is an unknown @math{n}-by-@math{1} vector, and @math{b}
-is a given @math{n}-by-1 right hand side vector. There exist
+where @math{A} is a general square @math{n}-by-@math{n} non-singular
+sparse matrix, @math{x} is an unknown @math{n}-by-@math{1} vector, and
+@math{b} is a given @math{n}-by-1 right hand side vector. There exist
 many methods for solving such sparse linear systems, which broadly
 fall into either direct or iterative categories. Direct methods include
 LU and QR decompositions, while iterative methods start with an
@@ -149,7 +149,7 @@ This function returns a string pointer to the name of the solver.
 @deftypefun int gsl_splinalg_itersolve_iterate (const gsl_spmatrix *@var{A}, const gsl_vector *@var{b}, const double @var{tol}, gsl_vector *@var{x}, gsl_splinalg_itersolve *@var{w})
 This function performs one iteration of the iterative method for
 the sparse linear system specfied by the matrix @var{A}, right hand
-side vector @var{b} and solution vector @var{x}. On the first call, @var{x}
+side vector @var{b} and solution vector @var{x}. On input, @var{x}
 must be set to an initial guess for the solution. On output,
 @var{x} is updated to give the current solution estimate. The
 parameter @var{tol} specifies the relative tolerance between the residual
