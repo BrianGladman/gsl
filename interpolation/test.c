@@ -30,6 +30,8 @@
 #include <gsl/gsl_interp.h>
 #include <gsl/gsl_ieee_utils.h>
 
+#include "test2d.c"
+
 int
 test_bsearch(void)
 {
@@ -982,6 +984,8 @@ main (int argc, char **argv)
   status += test_csplinep();
   status += test_csplinep2();
   status += test_akima();
+
+  status += test_interp2d_main();
 
   exit (gsl_test_summary());
 }

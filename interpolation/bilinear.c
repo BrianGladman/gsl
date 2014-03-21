@@ -20,7 +20,6 @@
 #include <config.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_interp.h>
-#include <gsl/gsl_interp.h>
 #include <gsl/gsl_interp2d.h>
 
 static int
