@@ -200,6 +200,8 @@ run under valgrind giving misleading results.
   * gsl-X.Y.tar.gz.sig           (generate with gpg -b gsl-X.Y.tar.gz)
   * gsl-X.Y.tar.gz.directive.asc (generate with gpg --clearsign gsl-X.Y.tar.gz.directive)
 
+  Ensure that the directive file contains the correct symlink for gsl-latest.tar.gz
+
 * Submit updated entry to GNU Free Software Directory.
 
 * Update webpages, including the link to the NEWS file (see below)
