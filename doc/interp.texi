@@ -340,6 +340,11 @@ the cubic and Akima curves exhibit undesirable oscillations.
 @center @image{interp_compare,6in}
 @end iftex
 
+@noindent
+Both the cubic and Akima methods exhibit a local maxima feature
+between the 6th and 7th data points, while Steffen preserves
+monotonicity in this interval.
+
 @node Interpolation References and Further Reading
 @section References and Further Reading
 
