@@ -327,6 +327,19 @@ The result shows a periodic interpolation of the original points. The
 slope of the fitted curve is the same at the beginning and end of the
 data, and the second derivative is also.
 
+The next program illustrates the difference between the cubic spline,
+Akima, and Steffen interpolation types on a difficult dataset. Both
+the cubic and Akima curves exhibit undesirable oscillations.
+
+@example
+@verbatiminclude examples/interp_compare.c
+@end example
+
+@iftex
+@sp 1
+@center @image{interp_compare,6in}
+@end iftex
+
 @node Interpolation References and Further Reading
 @section References and Further Reading
 
