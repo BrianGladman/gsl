@@ -114,7 +114,7 @@ uses the non-rounded corner algorithm of Wodicka.
 
 @deffn {Interpolation Type} gsl_interp_steffen
 Steffen's method for monotonic interpolation (not allowing minima or maxima
-to occur between adjacent data points). The resulting curve is
+to occur between adjacent grid points). The resulting curve is
 piecewise cubic on each interval with the slope at each grid point
 chosen to ensure monotonicity and prevent undesired oscillations. The
 first-order derivative is everywhere continuous.
