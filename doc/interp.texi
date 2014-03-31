@@ -112,6 +112,14 @@ Non-rounded Akima spline with periodic boundary conditions.  This method
 uses the non-rounded corner algorithm of Wodicka.
 @end deffn
 
+@deffn {Interpolation Type} gsl_interp_steffen
+Steffen's method for monotonic interpolation (not allowing minima or maxima
+to occur between adjacent data points). The resulting curve is
+piecewise cubic on each interval with the slope at each grid point
+chosen to ensure monotonicity and prevent undesired oscillations. The
+first-order derivative is everywhere continuous.
+@end deffn
+
 The following related functions are available:
 
 @deftypefun {const char *} gsl_interp_name (const gsl_interp * @var{interp})
@@ -323,16 +331,20 @@ data, and the second derivative is also.
 @section References and Further Reading
 
 Descriptions of the interpolation algorithms and further references can
-be found in the following books:
+be found in the following publications:
 
 @itemize @w{}
 @item C.W. Ueberhuber,
 @cite{Numerical Computation (Volume 1), Chapter 9 ``Interpolation''},
 Springer (1997), ISBN 3-540-62058-3.
 
-@item D.M. Young, R.T. Gregory
+@item D.M. Young, R.T. Gregory,
 @cite{A Survey of Numerical Mathematics (Volume 1), Chapter 6.8},
 Dover (1988), ISBN 0-486-65691-8.
+
+@item M. Steffen,
+@cite{A simple method for monotonic interpolation in one dimension},
+Astron. Astrophys. 239, 443-450, 1990.
 @end itemize
 
 @noindent
