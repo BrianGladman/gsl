@@ -65,7 +65,7 @@ This function frees the interpolation object @var{interp}.
 @node Interpolation Types
 @section Interpolation Types
 @tpindex gsl_interp_type
-The interpolation library provides six interpolation types:
+The interpolation library provides the following interpolation types:
 
 @deffn {Interpolation Type} gsl_interp_linear
 @cindex linear interpolation
@@ -120,6 +120,7 @@ chosen to ensure monotonicity and prevent undesired oscillations. The
 first-order derivative is everywhere continuous.
 @end deffn
 
+@noindent
 The following related functions are available:
 
 @deftypefun {const char *} gsl_interp_name (const gsl_interp * @var{interp})
@@ -341,9 +342,10 @@ the cubic and Akima curves exhibit undesirable oscillations.
 @end iftex
 
 @noindent
-Both the cubic and Akima methods exhibit a local maxima feature
-between the 6th and 7th data points, while Steffen preserves
-monotonicity in this interval.
+The cubic method exhibits a local maxima between the 6th and 7th data points
+and continues oscillating for the rest of the data. Akima also shows a
+local maxima but recovers and follows the data well after the 7th grid point.
+Steffen preserves monotonicity in all intervals and does not exhibit oscillations.
 
 @node Interpolation References and Further Reading
 @section References and Further Reading
