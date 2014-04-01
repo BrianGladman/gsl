@@ -345,7 +345,8 @@ the cubic and Akima curves exhibit undesirable oscillations.
 The cubic method exhibits a local maxima between the 6th and 7th data points
 and continues oscillating for the rest of the data. Akima also shows a
 local maxima but recovers and follows the data well after the 7th grid point.
-Steffen preserves monotonicity in all intervals and does not exhibit oscillations.
+Steffen preserves monotonicity in all intervals and does not exhibit oscillations,
+at the expense of having a discontinuous second derivative.
 
 @node Interpolation References and Further Reading
 @section References and Further Reading
