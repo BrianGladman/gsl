@@ -2,8 +2,8 @@
 @cindex spline
 
 This chapter describes functions for performing interpolation.  The
-library provides a variety of interpolation methods, including Cubic
-splines and Akima splines.  The interpolation types are interchangeable,
+library provides a variety of interpolation methods, including Cubic,
+Akima, and Steffen splines.  The interpolation types are interchangeable,
 allowing different methods to be used without recompiling.
 Interpolations can be defined for both normal and periodic boundary
 conditions.  Additional functions are available for computing
@@ -329,8 +329,7 @@ slope of the fitted curve is the same at the beginning and end of the
 data, and the second derivative is also.
 
 The next program illustrates the difference between the cubic spline,
-Akima, and Steffen interpolation types on a difficult dataset. Both
-the cubic and Akima curves exhibit undesirable oscillations.
+Akima, and Steffen interpolation types on a difficult dataset.
 
 @example
 @verbatiminclude examples/interp_compare.c
