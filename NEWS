@@ -1,5 +1,7 @@
 * What is new in gsl-2.0:
 
+** added Steffen monotonic interpolation method (Jean-François Caron)
+
 ** added new nonlinear least squares solver 'lmniel' suitable for
    systems with large numbers of residuals
 
