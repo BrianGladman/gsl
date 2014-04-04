@@ -86,5 +86,5 @@ gsl_splinalg_itersolve_iterate(const gsl_spmatrix *A, const gsl_vector *b,
 double
 gsl_splinalg_itersolve_normr(const gsl_splinalg_itersolve *w)
 {
-  return w->type->normr(w->state);
+  return w->normr;
 }

@@ -217,7 +217,7 @@ $$
 Defining a grid of @math{N} points, @math{h = 1/(N-1)}. In the finite
 difference equation above, @math{u_0 = u_{N-1} = 0} are known from
 the boundary conditions, so we will only put the equations for
-@math{i = 1 ... N-2} into the matrix system. The resulting
+@math{i = 1, ..., N-2} into the matrix system. The resulting
 @math{(N-2) \times (N-2)} matrix equation is
 @tex
 \beforedisplay

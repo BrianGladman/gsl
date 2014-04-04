@@ -75,7 +75,7 @@ representation, @var{i}, @var{p}, and @var{data} are arrays of size @var{nz}
 which contain the row indices, column indices, and element value, respectively.
 So if @math{data[k] = A(i,j)}, then @math{i = i[k]} and @math{j = p[k]}.
 For compressed column storage, @var{i} and @var{data} are arrays of size
-@var{nz} containing the row indices and element values, similar to the triplet
+@var{nz} containing the row indices and element values, identical to the triplet
 case. @var{p} is an array of size @math{size2 + 1} where @math{p[j]} points
 to the index in @var{data} of the start of column @var{j}. Thus, if
 @math{data[k] = A(i,j)}, then @math{i = i[k]} and @math{p[j] <= k < p[j+1]}.
