@@ -48,13 +48,10 @@ typedef struct
   double * d;
 
   /*
-   * these arrays will hold the temporary values needed to
+   * this array will hold the temporary values needed to
    * calculate the a, b, c and d parameters
    */
-  double * s;
-  double * h;
   double * y_prime;
-  double * p;
 } steffen_state_t;
 
 static void steffen_free (void * vstate);
@@ -104,32 +101,11 @@ steffen_alloc (size_t size)
       GSL_ERROR_NULL("failed to allocate space for d", GSL_ENOMEM);
     }
 
-  state->s = (double *) malloc (size * sizeof (double));
-  if (state->s == NULL)
-    {
-      steffen_free(state);
-      GSL_ERROR_NULL("failed to allocate space for s", GSL_ENOMEM);
-    }
-
-  state->h = (double *) malloc (size * sizeof (double));
-  if (state->h == NULL)
-    {
-      steffen_free(state);
-      GSL_ERROR_NULL("failed to allocate space for h", GSL_ENOMEM);
-    }
-
   state->y_prime = (double *) malloc (size * sizeof (double));
   if (state->y_prime == NULL)
     {
       steffen_free(state);
       GSL_ERROR_NULL("failed to allocate space for y_prime", GSL_ENOMEM);
-    }
-
-  state->p = (double *) malloc (size * sizeof (double));
-  if (state->p == NULL)
-    {
-      steffen_free(state);
-      GSL_ERROR_NULL("failed to allocate space for p", GSL_ENOMEM);
     }
 
   return state;
@@ -145,42 +121,60 @@ steffen_init (void * vstate, const double x_array[],
   double *b = state->b;
   double *c = state->c;
   double *d = state->d;
-  double *s = state->s;
-  double *h = state->h;
   double *y_prime = state->y_prime;
-  double *p = state->p;
 
-  /* First assign the interval and slopes for the left boundary. */
-  /* We use the "simplest possibility" method described in the paper in section 2.2 */
-  h[0] = (x_array[1] - x_array[0]);
-  s[0] = (y_array[1] - y_array[0])/h[0];
-  y_prime[0] = s[0];
+  /*
+   * first assign the interval and slopes for the left boundary.
+   * We use the "simplest possibility" method described in the paper
+   * in section 2.2
+   */
+  double h0 = (x_array[1] - x_array[0]);
+  double s0 = (y_array[1] - y_array[0]) / h0;
+
+  y_prime[0] = s0;
 
   /* Now we calculate all the necessary s, h, p, and y' variables 
      from 1 to N-2 (0 to size - 2 inclusive) */
   for (i = 1; i < (size - 1); i++)
     {
-      h[i] = (x_array[i+1] - x_array[i]);                  /* Equation 6 in the paper. */
-      s[i] = (y_array[i+1] - y_array[i])/h[i];             /* Equation 7 in the paper. */
+      double pi;
 
-      p[i] = (s[i-1]*h[i] + s[i]*h[i-1]) / (h[i-1] + h[i]);/* Equation 8 in the paper. */
+      /* equation 6 in the paper */
+      double hi = (x_array[i+1] - x_array[i]);
+      double him1 = (x_array[i] - x_array[i - 1]);
+
+      /* equation 7 in the paper */
+      double si = (y_array[i+1] - y_array[i]) / hi;
+      double sim1 = (y_array[i] - y_array[i - 1]) / him1;
+
+      /* equation 8 in the paper */
+      pi = (sim1*hi + si*him1) / (him1 + hi);
 
       /* This is a C equivalent of the FORTRAN statement below eqn 11 */
-      y_prime[i] = (steffen_copysign(1.0,s[i-1]) + steffen_copysign(1.0,s[i])) *
-                    GSL_MIN(fabs(s[i-1]),
-                            GSL_MIN(fabs(s[i]), 0.5*fabs(p[i]))); 
+      y_prime[i] = (steffen_copysign(1.0,sim1) + steffen_copysign(1.0,si)) *
+                    GSL_MIN(fabs(sim1),
+                            GSL_MIN(fabs(si), 0.5*fabs(pi))); 
     }
 
-  /* We also need y' for the rightmost boundary. */
-  /* We use the "simplest possibility" method described in the paper in section 2.2 */
-  y_prime[size-1] = s[size-2];
+  /*
+   * we also need y' for the rightmost boundary; we use the
+   * "simplest possibility" method described in the paper in
+   * section 2.2
+   *
+   * y' = s_{n-1}
+   */
+  y_prime[size-1] = (y_array[size - 1] - y_array[size - 2]) /
+                    (x_array[size - 1] - x_array[size - 2]);
 
   /* Now we can calculate all the coefficients for the whole range. */
   for (i = 0; i < (size - 1); i++)
     {
+      double hi = (x_array[i+1] - x_array[i]);
+      double si = (y_array[i+1] - y_array[i]) / hi;
+
       /* These are from equations 2-5 in the paper. */
-      a[i] = (y_prime[i] + y_prime[i+1] - 2*s[i])/h[i]/h[i];
-      b[i] = (3*s[i] - 2*y_prime[i] - y_prime[i+1])/h[i];
+      a[i] = (y_prime[i] + y_prime[i+1] - 2*si) / hi / hi;
+      b[i] = (3*si - 2*y_prime[i] - y_prime[i+1]) / hi;
       c[i] = y_prime[i];
       d[i] = y_array[i];
     }
@@ -207,17 +201,8 @@ steffen_free (void * vstate)
   if (state->d)
     free (state->d);
 
-  if (state->s)
-    free (state->s);
-
-  if (state->h)
-    free (state->h);
-
   if (state->y_prime)
     free (state->y_prime);
-
-  if (state->p)
-    free (state->p);
 
   free (state);
 }
