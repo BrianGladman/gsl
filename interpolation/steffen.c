@@ -35,6 +35,7 @@
 #include <config.h>
 #include <stdlib.h>
 #include <math.h>
+#include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
 #include "integ_eval.h"
 #include <gsl/gsl_interp.h>
@@ -45,14 +46,26 @@ typedef struct
   double * b;
   double * c;
   double * d;
+
+  /*
+   * these arrays will hold the temporary values needed to
+   * calculate the a, b, c and d parameters
+   */
+  double * s;
+  double * h;
+  double * y_prime;
+  double * p;
 } steffen_state_t;
 
+static void steffen_free (void * vstate);
+static double steffen_copysign(const double x, const double y);
 
-/* common creation */
 static void *
 steffen_alloc (size_t size)
 {
-  steffen_state_t *state = (steffen_state_t *) malloc (sizeof (steffen_state_t));
+  steffen_state_t *state;
+  
+  state = (steffen_state_t *) calloc (1, sizeof (steffen_state_t));
   
   if (state == NULL)
     {
@@ -63,7 +76,7 @@ steffen_alloc (size_t size)
   
   if (state->a == NULL)
     {
-      free (state);
+      steffen_free(state);
       GSL_ERROR_NULL("failed to allocate space for a", GSL_ENOMEM);
     }
   
@@ -71,8 +84,7 @@ steffen_alloc (size_t size)
   
   if (state->b == NULL)
     {
-      free (state->a);
-      free (state);
+      steffen_free(state);
       GSL_ERROR_NULL("failed to allocate space for b", GSL_ENOMEM);
     }
   
@@ -80,9 +92,7 @@ steffen_alloc (size_t size)
   
   if (state->c == NULL)
     {
-      free (state->b);
-      free (state->a);
-      free (state);
+      steffen_free(state);
       GSL_ERROR_NULL("failed to allocate space for c", GSL_ENOMEM);
     }
   
@@ -90,27 +100,55 @@ steffen_alloc (size_t size)
   
   if (state->d == NULL)
     {
-      free (state->c);
-      free (state->b);
-      free (state->a);
-      free (state);
+      steffen_free(state);
       GSL_ERROR_NULL("failed to allocate space for d", GSL_ENOMEM);
+    }
+
+  state->s = (double *) malloc (size * sizeof (double));
+  if (state->s == NULL)
+    {
+      steffen_free(state);
+      GSL_ERROR_NULL("failed to allocate space for s", GSL_ENOMEM);
+    }
+
+  state->h = (double *) malloc (size * sizeof (double));
+  if (state->h == NULL)
+    {
+      steffen_free(state);
+      GSL_ERROR_NULL("failed to allocate space for h", GSL_ENOMEM);
+    }
+
+  state->y_prime = (double *) malloc (size * sizeof (double));
+  if (state->y_prime == NULL)
+    {
+      steffen_free(state);
+      GSL_ERROR_NULL("failed to allocate space for y_prime", GSL_ENOMEM);
+    }
+
+  state->p = (double *) malloc (size * sizeof (double));
+  if (state->p == NULL)
+    {
+      steffen_free(state);
+      GSL_ERROR_NULL("failed to allocate space for p", GSL_ENOMEM);
     }
 
   return state;
 }
 
-
-/* common calculation */
-static void
-steffen_calc (const double x_array[], const double y_array[], double a[], double b[], double c[], double d[], size_t size)
+static int
+steffen_init (void * vstate, const double x_array[],
+              const double y_array[], size_t size)
 {
-  /* Just an index for looping.  Don't confuse size_t and size (a variable of type size_t)! */
+  steffen_state_t *state = (steffen_state_t *) vstate;
   size_t i;
-
-  /* These arrays will hold the temporary values needed to calculate the a,b,c and d */
-  /* parameters for the interpolation. */
-  double s[size], h[size],y_prime[size], p[size];
+  double *a = state->a;
+  double *b = state->b;
+  double *c = state->c;
+  double *d = state->d;
+  double *s = state->s;
+  double *h = state->h;
+  double *y_prime = state->y_prime;
+  double *p = state->p;
 
   /* First assign the interval and slopes for the left boundary. */
   /* We use the "simplest possibility" method described in the paper in section 2.2 */
@@ -128,8 +166,9 @@ steffen_calc (const double x_array[], const double y_array[], double a[], double
       p[i] = (s[i-1]*h[i] + s[i]*h[i-1]) / (h[i-1] + h[i]);/* Equation 8 in the paper. */
 
       /* This is a C equivalent of the FORTRAN statement below eqn 11 */
-      y_prime[i] = (copysign(1.0,s[i-1]) + copysign(1.0,s[i])) *
-	fmin(fabs(s[i-1]), fmin(fabs(s[i]), 0.5*fabs(p[i]))); 
+      y_prime[i] = (steffen_copysign(1.0,s[i-1]) + steffen_copysign(1.0,s[i])) *
+                    GSL_MIN(fabs(s[i-1]),
+                            GSL_MIN(fabs(s[i]), 0.5*fabs(p[i]))); 
     }
 
   /* We also need y' for the rightmost boundary. */
@@ -145,42 +184,49 @@ steffen_calc (const double x_array[], const double y_array[], double a[], double
       c[i] = y_prime[i];
       d[i] = y_array[i];
     }
-  
-}
 
-
-static int
-steffen_init (void * vstate, const double x_array[], const double y_array[],
-            size_t size)
-{
-  steffen_state_t *state = (steffen_state_t *) vstate;
-
-  steffen_calc (x_array, y_array, state->a, state->b, state->c, state->d, size);
-  
   return GSL_SUCCESS;
 }
-
 
 static void
 steffen_free (void * vstate)
 {
   steffen_state_t *state = (steffen_state_t *) vstate;
 
-  free (state->a);
-  free (state->b);
-  free (state->c);
-  free (state->d);
+  RETURN_IF_NULL(state);
+
+  if (state->a)
+    free (state->a);
+
+  if (state->b)
+    free (state->b);
+
+  if (state->c)
+    free (state->c);
+
+  if (state->d)
+    free (state->d);
+
+  if (state->s)
+    free (state->s);
+
+  if (state->h)
+    free (state->h);
+
+  if (state->y_prime)
+    free (state->y_prime);
+
+  if (state->p)
+    free (state->p);
+
   free (state);
 }
 
 
-static
-int
+static int
 steffen_eval (const void * vstate,
-            const double x_array[], const double y_array[], size_t size,
-            double x,
-            gsl_interp_accel * a,
-            double *y)
+              const double x_array[], const double y_array[], size_t size,
+              double x, gsl_interp_accel * a, double *y)
 {
   const steffen_state_t *state = (const steffen_state_t *) vstate;
 
@@ -214,10 +260,8 @@ steffen_eval (const void * vstate,
 
 static int
 steffen_eval_deriv (const void * vstate,
-                  const double x_array[], const double y_array[], size_t size,
-                  double x,
-                  gsl_interp_accel * a,
-                  double *dydx)
+                    const double x_array[], const double y_array[], size_t size,
+                    double x, gsl_interp_accel * a, double *dydx)
 {
   const steffen_state_t *state = (const steffen_state_t *) vstate;
 
@@ -249,13 +293,10 @@ steffen_eval_deriv (const void * vstate,
 }
 
 
-static
-int
+static int
 steffen_eval_deriv2 (const void * vstate,
-                   const double x_array[], const double y_array[], size_t size,
-                   double x,
-                   gsl_interp_accel * a,
-                   double *y_pp)
+                     const double x_array[], const double y_array[], size_t size,
+                     double x, gsl_interp_accel * a, double *y_pp)
 {
   const steffen_state_t *state = (const steffen_state_t *) vstate;
 
@@ -284,14 +325,13 @@ steffen_eval_deriv2 (const void * vstate,
 }
 
 
-static
-int
+static int
 steffen_eval_integ (const void * vstate,
-                  const double x_array[], const double y_array[], size_t size,
-                  gsl_interp_accel * acc,
-                  double a, double b,
-                  double * result)
-{ /* a and b are the boundaries of the integration. */
+                    const double x_array[], const double y_array[], size_t size,
+                    gsl_interp_accel * acc, double a, double b,
+                    double * result)
+{
+  /* a and b are the boundaries of the integration. */
   
   const steffen_state_t *state = (const steffen_state_t *) vstate;
 
@@ -317,33 +357,41 @@ steffen_eval_integ (const void * vstate,
   /* contributions into result. */
   for(i=index_a; i<=index_b; i++) 
     {
-    const double x_hi = x_array[i + 1];
-    const double x_lo = x_array[i];
-    const double y_lo = y_array[i];
-    const double dx = x_hi - x_lo;
-    if(dx != 0.0) 
-      {
+      const double x_hi = x_array[i + 1];
+      const double x_lo = x_array[i];
+      const double dx = x_hi - x_lo;
+      if(dx != 0.0) 
+        {
+          /*
+           * check if we are at a boundary point, so take the
+           * a and b parameters instead of the data points.
+           */
+          double x1 = (i == index_a) ? a-x_lo : 0.0;
+          double x2 = (i == index_b) ? b-x_lo : x_hi-x_lo;
 
-	/* Check if we are at a boundary point, so take the a and b parameters */
-	/* instead of the data points. */
-	double x1 = (i == index_a) ? a-x_lo : 0.0;
-	double x2 = (i == index_b) ? b-x_lo : x_hi-x_lo;
-
-	*result += (1.0/4.0)*state->a[i]*(x2*x2*x2*x2 - x1*x1*x1*x1)
-	  +(1.0/3.0)*state->b[i]*(x2*x2*x2 - x1*x1*x1)
-	  +(1.0/2.0)*state->c[i]*(x2*x2 - x1*x1)
-	  +state->d[i]*(x2-x1);
-      }
-    else /* if the interval was zero, i.e. consecutive x values in data. */
-      {
-	*result = 0.0;
-	return GSL_EINVAL;
-      }
+          *result += (1.0/4.0)*state->a[i]*(x2*x2*x2*x2 - x1*x1*x1*x1)
+                    +(1.0/3.0)*state->b[i]*(x2*x2*x2 - x1*x1*x1)
+                    +(1.0/2.0)*state->c[i]*(x2*x2 - x1*x1)
+                    +state->d[i]*(x2-x1);
+        }
+      else /* if the interval was zero, i.e. consecutive x values in data. */
+        {
+          *result = 0.0;
+          return GSL_EINVAL;
+        }
     }
   
   return GSL_SUCCESS;
 }
 
+static double
+steffen_copysign(const double x, const double y)
+{
+  if ((x < 0 && y > 0) || (x > 0 && y < 0))
+    return -x;
+
+  return x;
+}
 
 static const gsl_interp_type steffen_type = 
 {
