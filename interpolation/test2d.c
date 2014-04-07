@@ -162,6 +162,7 @@ test_interp2d(const double xarr[], const double yarr[], const double zarr[], /* 
           test_single_high_level(&gsl_spline2d_eval, &gsl_spline2d_eval_e, interp_s, x, y, xa, ya, zarr, zi);
         }
     }
+
   // Then check additional points provided
   for (i = 0; i < test_size; i++)
     {
@@ -184,9 +185,11 @@ test_interp2d(const double xarr[], const double yarr[], const double zarr[], /* 
 
       test_single_low_level(&gsl_interp2d_eval_no_bndchk, &gsl_interp2d_eval_e_no_bndchk, interp, xarr, yarr, zarr, x, y, xa, ya, zval, i);
     }
+
   gsl_interp_accel_free(xa);
   gsl_interp_accel_free(ya);
   gsl_interp2d_free(interp);
+  gsl_spline2d_free(interp_s);
 
   return status;
 }

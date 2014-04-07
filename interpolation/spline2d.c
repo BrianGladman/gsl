@@ -19,6 +19,7 @@
 
 #include <config.h>
 #include <string.h>
+#include <stdlib.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_interp.h>
@@ -36,7 +37,7 @@ gsl_spline2d_alloc(const gsl_interp2d_type * T, size_t xsize, size_t ysize)
       GSL_ERROR_NULL("insufficient number of points for interpolation type", GSL_EINVAL);
     }
 
-  interp = (gsl_spline2d *)malloc(sizeof(gsl_spline2d));
+  interp = calloc(1, sizeof(gsl_spline2d));
   if (interp == NULL)
     {
       GSL_ERROR_NULL("failed to allocate space for gsl_spline2d struct", GSL_ENOMEM);
@@ -54,7 +55,7 @@ gsl_spline2d_alloc(const gsl_interp2d_type * T, size_t xsize, size_t ysize)
       interp->interp_object.state = interp->interp_object.type->alloc(xsize, ysize);
       if (interp->interp_object.state == NULL)
         {
-          free(interp);
+          gsl_spline2d_free(interp);
           GSL_ERROR_NULL("failed to allocate space for gsl_spline2d state", GSL_ENOMEM);
         }
     }
@@ -67,8 +68,7 @@ gsl_spline2d_alloc(const gsl_interp2d_type * T, size_t xsize, size_t ysize)
   array_mem = (double *)calloc(xsize + ysize + xsize * ysize, sizeof(double));
   if (array_mem == NULL)
     {
-      interp->interp_object.type->free(interp->interp_object.state);
-      free(interp);
+      gsl_spline2d_free(interp);
       GSL_ERROR_NULL("failed to allocate space for data arrays", GSL_ENOMEM);
     }
 
