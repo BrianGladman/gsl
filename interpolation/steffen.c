@@ -42,16 +42,12 @@
 
 typedef struct
 {
-  double * a;
+  double * a;       /* eqs 2-5 of paper */
   double * b;
   double * c;
   double * d;
 
-  /*
-   * this array will hold the temporary values needed to
-   * calculate the a, b, c and d parameters
-   */
-  double * y_prime;
+  double * y_prime; /* eq 11 of paper */
 } steffen_state_t;
 
 static void steffen_free (void * vstate);
@@ -207,7 +203,6 @@ steffen_free (void * vstate)
   free (state);
 }
 
-
 static int
 steffen_eval (const void * vstate,
               const double x_array[], const double y_array[], size_t size,
@@ -241,7 +236,6 @@ steffen_eval (const void * vstate,
     return GSL_SUCCESS;
   }
 }
-
 
 static int
 steffen_eval_deriv (const void * vstate,
@@ -277,7 +271,6 @@ steffen_eval_deriv (const void * vstate,
   }
 }
 
-
 static int
 steffen_eval_deriv2 (const void * vstate,
                      const double x_array[], const double y_array[], size_t size,
@@ -308,7 +301,6 @@ steffen_eval_deriv2 (const void * vstate,
     return GSL_SUCCESS;
   }
 }
-
 
 static int
 steffen_eval_integ (const void * vstate,
