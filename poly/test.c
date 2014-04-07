@@ -579,8 +579,8 @@ main (void)
 
     for (i = 0; i<15; i++)
       {
-        gsl_test_abs (z[2*i], expected[2*i], 1e-7, "z%d.real, 15th-order polynomial", i);
-        gsl_test_abs (z[2*i+1], expected[2*i+1], 1e-7, "z%d.imag, 15th-order polynomial", i);
+        gsl_test_rel (z[2*i], expected[2*i], 1e-7, "z%d.real, 15th-order polynomial", i);
+        gsl_test_rel (z[2*i+1], expected[2*i+1], 1e-7, "z%d.imag, 15th-order polynomial", i);
       }
   }
 
