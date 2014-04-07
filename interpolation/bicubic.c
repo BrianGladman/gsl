@@ -24,11 +24,15 @@
 #include <gsl/gsl_interp.h>
 #include <gsl/gsl_interp2d.h>
 
+#define IDX2D(i, j, w) ((j) * ((w)->xsize) + (i))
+
 typedef struct
 {
   double * zx;
   double * zy;
   double * zxy;
+  size_t xsize;
+  size_t ysize;
 } bicubic_state_t;
 
 static void bicubic_free (void * vstate);
@@ -65,6 +69,9 @@ bicubic_alloc(size_t xsize, size_t ysize)
       bicubic_free(state);
       GSL_ERROR_NULL("failed to allocate space for zxy", GSL_ENOMEM);
     }
+
+  state->xsize = xsize;
+  state->ysize = ysize;
 
   return state;
 } /* bicubic_alloc() */
@@ -108,12 +115,12 @@ bicubic_init(void * vstate, const double xa[], const double ya[],
       for (i = 0; i <= xsize - 1; i++)
         {
           gsl_vector_set(x, i, xa[i]);
-          gsl_vector_set(y, i, za[INDEX_2D(i, j, xsize, ysize)]);
+          gsl_vector_set(y, i, za[IDX2D(i, j, state)]);
         }
       gsl_spline_init(spline, x->data, y->data, xsize);
       for (i = 0; i <= xsize - 1; i++)
         {
-          state->zx[INDEX_2D(i, j, xsize, ysize)] = gsl_spline_eval_deriv(spline, xa[i], acc);
+          state->zx[IDX2D(i, j, state)] = gsl_spline_eval_deriv(spline, xa[i], acc);
         }
     }
   gsl_vector_free(x);
@@ -129,12 +136,12 @@ bicubic_init(void * vstate, const double xa[], const double ya[],
       for (j = 0; j <= ysize - 1; j++)
         {
           gsl_vector_set(x, j, ya[j]);
-          gsl_vector_set(y, j, za[INDEX_2D(i, j, xsize, ysize)]);
+          gsl_vector_set(y, j, za[IDX2D(i, j, state)]);
         }
       gsl_spline_init(spline, x->data, y->data, ysize);
       for (j = 0; j <= ysize - 1; j++)
         {
-          state->zy[INDEX_2D(i, j, xsize, ysize)] = gsl_spline_eval_deriv(spline, ya[j], acc);
+          state->zy[IDX2D(i, j, state)] = gsl_spline_eval_deriv(spline, ya[j], acc);
         }
     }
   gsl_vector_free(x);
@@ -150,12 +157,12 @@ bicubic_init(void * vstate, const double xa[], const double ya[],
       for (i = 0; i <= xsize - 1; i++)
         {
           gsl_vector_set(x, i, xa[i]);
-          gsl_vector_set(y, i, state->zy[INDEX_2D(i, j, xsize, ysize)]);
+          gsl_vector_set(y, i, state->zy[IDX2D(i, j, state)]);
         }
       gsl_spline_init(spline, x->data, y->data, xsize);
       for (i = 0; i <= xsize - 1; i++)
         {
-          state->zxy[INDEX_2D(i, j, xsize, ysize)] = gsl_spline_eval_deriv(spline, xa[i], acc);
+          state->zxy[IDX2D(i, j, state)] = gsl_spline_eval_deriv(spline, xa[i], acc);
         }
     }
   gsl_vector_free(x);
@@ -209,10 +216,10 @@ bicubic_eval(const void * vstate, const double xarr[], const double yarr[],
   xmax = xarr[xi + 1];
   ymin = yarr[yi];
   ymax = yarr[yi + 1];
-  zminmin = zarr[INDEX_2D(xi, yi, xsize, ysize)];
-  zminmax = zarr[INDEX_2D(xi, yi + 1, xsize, ysize)];
-  zmaxmin = zarr[INDEX_2D(xi + 1, yi, xsize, ysize)];
-  zmaxmax = zarr[INDEX_2D(xi + 1, yi + 1, xsize, ysize)];
+  zminmin = zarr[IDX2D(xi, yi, state)];
+  zminmax = zarr[IDX2D(xi, yi + 1, state)];
+  zmaxmin = zarr[IDX2D(xi + 1, yi, state)];
+  zmaxmax = zarr[IDX2D(xi + 1, yi + 1, state)];
   // Get the width and height of the grid cell
   dx = xmax - xmin;
   dy = ymax - ymin;
@@ -220,18 +227,18 @@ bicubic_eval(const void * vstate, const double xarr[], const double yarr[],
   u = (y - ymin)/dy;
   dt = 1./dx; // partial t / partial x
   du = 1./dy; // partial u / partial y
-  zxminmin = state->zx[INDEX_2D(xi, yi, xsize, ysize)]/dt;
-  zxminmax = state->zx[INDEX_2D(xi, yi + 1, xsize, ysize)]/dt;
-  zxmaxmin = state->zx[INDEX_2D(xi + 1, yi, xsize, ysize)]/dt;
-  zxmaxmax = state->zx[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/dt;
-  zyminmin = state->zy[INDEX_2D(xi, yi, xsize, ysize)]/du;
-  zyminmax = state->zy[INDEX_2D(xi, yi + 1, xsize, ysize)]/du;
-  zymaxmin = state->zy[INDEX_2D(xi + 1, yi, xsize, ysize)]/du;
-  zymaxmax = state->zy[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/du;
-  zxyminmin = state->zxy[INDEX_2D(xi, yi, xsize, ysize)]/(dt*du);
-  zxyminmax = state->zxy[INDEX_2D(xi, yi + 1, xsize, ysize)]/(dt*du);
-  zxymaxmin = state->zxy[INDEX_2D(xi + 1, yi, xsize, ysize)]/(dt*du);
-  zxymaxmax = state->zxy[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/(dt*du);
+  zxminmin = state->zx[IDX2D(xi, yi, state)]/dt;
+  zxminmax = state->zx[IDX2D(xi, yi + 1, state)]/dt;
+  zxmaxmin = state->zx[IDX2D(xi + 1, yi, state)]/dt;
+  zxmaxmax = state->zx[IDX2D(xi + 1, yi + 1, state)]/dt;
+  zyminmin = state->zy[IDX2D(xi, yi, state)]/du;
+  zyminmax = state->zy[IDX2D(xi, yi + 1, state)]/du;
+  zymaxmin = state->zy[IDX2D(xi + 1, yi, state)]/du;
+  zymaxmax = state->zy[IDX2D(xi + 1, yi + 1, state)]/du;
+  zxyminmin = state->zxy[IDX2D(xi, yi, state)]/(dt*du);
+  zxyminmax = state->zxy[IDX2D(xi, yi + 1, state)]/(dt*du);
+  zxymaxmin = state->zxy[IDX2D(xi + 1, yi, state)]/(dt*du);
+  zxymaxmax = state->zxy[IDX2D(xi + 1, yi + 1, state)]/(dt*du);
   t0 = 1;
   t1 = t;
   t2 = t*t;
@@ -319,10 +326,10 @@ bicubic_deriv_x(const void * vstate, const double xarr[], const double yarr[],
   xmax = xarr[xi + 1];
   ymin = yarr[yi];
   ymax = yarr[yi + 1];
-  zminmin = zarr[INDEX_2D(xi, yi, xsize, ysize)];
-  zminmax = zarr[INDEX_2D(xi, yi + 1, xsize, ysize)];
-  zmaxmin = zarr[INDEX_2D(xi + 1, yi, xsize, ysize)];
-  zmaxmax = zarr[INDEX_2D(xi + 1, yi + 1, xsize, ysize)];
+  zminmin = zarr[IDX2D(xi, yi, state)];
+  zminmax = zarr[IDX2D(xi, yi + 1, state)];
+  zmaxmin = zarr[IDX2D(xi + 1, yi, state)];
+  zmaxmax = zarr[IDX2D(xi + 1, yi + 1, state)];
 
   /* get the width and height of the grid cell */
   dx = xmax - xmin;
@@ -332,18 +339,18 @@ bicubic_deriv_x(const void * vstate, const double xarr[], const double yarr[],
   dt = 1./dx; // partial t / partial x
   du = 1./dy; // partial u / partial y
 
-  zxminmin = state->zx[INDEX_2D(xi, yi, xsize, ysize)]/dt;
-  zxminmax = state->zx[INDEX_2D(xi, yi + 1, xsize, ysize)]/dt;
-  zxmaxmin = state->zx[INDEX_2D(xi + 1, yi, xsize, ysize)]/dt;
-  zxmaxmax = state->zx[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/dt;
-  zyminmin = state->zy[INDEX_2D(xi, yi, xsize, ysize)]/du;
-  zyminmax = state->zy[INDEX_2D(xi, yi + 1, xsize, ysize)]/du;
-  zymaxmin = state->zy[INDEX_2D(xi + 1, yi, xsize, ysize)]/du;
-  zymaxmax = state->zy[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/du;
-  zxyminmin = state->zxy[INDEX_2D(xi, yi, xsize, ysize)]/(dt*du);
-  zxyminmax = state->zxy[INDEX_2D(xi, yi + 1, xsize, ysize)]/(dt*du);
-  zxymaxmin = state->zxy[INDEX_2D(xi + 1, yi, xsize, ysize)]/(dt*du);
-  zxymaxmax = state->zxy[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/(dt*du);
+  zxminmin = state->zx[IDX2D(xi, yi, state)]/dt;
+  zxminmax = state->zx[IDX2D(xi, yi + 1, state)]/dt;
+  zxmaxmin = state->zx[IDX2D(xi + 1, yi, state)]/dt;
+  zxmaxmax = state->zx[IDX2D(xi + 1, yi + 1, state)]/dt;
+  zyminmin = state->zy[IDX2D(xi, yi, state)]/du;
+  zyminmax = state->zy[IDX2D(xi, yi + 1, state)]/du;
+  zymaxmin = state->zy[IDX2D(xi + 1, yi, state)]/du;
+  zymaxmax = state->zy[IDX2D(xi + 1, yi + 1, state)]/du;
+  zxyminmin = state->zxy[IDX2D(xi, yi, state)]/(dt*du);
+  zxyminmax = state->zxy[IDX2D(xi, yi + 1, state)]/(dt*du);
+  zxymaxmin = state->zxy[IDX2D(xi + 1, yi, state)]/(dt*du);
+  zxymaxmax = state->zxy[IDX2D(xi + 1, yi + 1, state)]/(dt*du);
 
   t0 = 1;
   t1 = t;
@@ -422,10 +429,10 @@ bicubic_deriv_y(const void * vstate, const double xarr[], const double yarr[],
   xmax = xarr[xi + 1];
   ymin = yarr[yi];
   ymax = yarr[yi + 1];
-  zminmin = zarr[INDEX_2D(xi, yi, xsize, ysize)];
-  zminmax = zarr[INDEX_2D(xi, yi + 1, xsize, ysize)];
-  zmaxmin = zarr[INDEX_2D(xi + 1, yi, xsize, ysize)];
-  zmaxmax = zarr[INDEX_2D(xi + 1, yi + 1, xsize, ysize)];
+  zminmin = zarr[IDX2D(xi, yi, state)];
+  zminmax = zarr[IDX2D(xi, yi + 1, state)];
+  zmaxmin = zarr[IDX2D(xi + 1, yi, state)];
+  zmaxmax = zarr[IDX2D(xi + 1, yi + 1, state)];
 
   /* get the width and height of the grid cell */
   dx = xmax - xmin;
@@ -435,18 +442,18 @@ bicubic_deriv_y(const void * vstate, const double xarr[], const double yarr[],
   dt = 1./dx; // partial t / partial x
   du = 1./dy; // partial u / partial y
 
-  zxminmin = state->zx[INDEX_2D(xi, yi, xsize, ysize)]/dt;
-  zxminmax = state->zx[INDEX_2D(xi, yi + 1, xsize, ysize)]/dt;
-  zxmaxmin = state->zx[INDEX_2D(xi + 1, yi, xsize, ysize)]/dt;
-  zxmaxmax = state->zx[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/dt;
-  zyminmin = state->zy[INDEX_2D(xi, yi, xsize, ysize)]/du;
-  zyminmax = state->zy[INDEX_2D(xi, yi + 1, xsize, ysize)]/du;
-  zymaxmin = state->zy[INDEX_2D(xi + 1, yi, xsize, ysize)]/du;
-  zymaxmax = state->zy[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/du;
-  zxyminmin = state->zxy[INDEX_2D(xi, yi, xsize, ysize)]/(dt*du);
-  zxyminmax = state->zxy[INDEX_2D(xi, yi + 1, xsize, ysize)]/(dt*du);
-  zxymaxmin = state->zxy[INDEX_2D(xi + 1, yi, xsize, ysize)]/(dt*du);
-  zxymaxmax = state->zxy[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/(dt*du);
+  zxminmin = state->zx[IDX2D(xi, yi, state)]/dt;
+  zxminmax = state->zx[IDX2D(xi, yi + 1, state)]/dt;
+  zxmaxmin = state->zx[IDX2D(xi + 1, yi, state)]/dt;
+  zxmaxmax = state->zx[IDX2D(xi + 1, yi + 1, state)]/dt;
+  zyminmin = state->zy[IDX2D(xi, yi, state)]/du;
+  zyminmax = state->zy[IDX2D(xi, yi + 1, state)]/du;
+  zymaxmin = state->zy[IDX2D(xi + 1, yi, state)]/du;
+  zymaxmax = state->zy[IDX2D(xi + 1, yi + 1, state)]/du;
+  zxyminmin = state->zxy[IDX2D(xi, yi, state)]/(dt*du);
+  zxyminmax = state->zxy[IDX2D(xi, yi + 1, state)]/(dt*du);
+  zxymaxmin = state->zxy[IDX2D(xi + 1, yi, state)]/(dt*du);
+  zxymaxmax = state->zxy[IDX2D(xi + 1, yi + 1, state)]/(dt*du);
 
   t0 = 1;
   t1 = t;
@@ -528,10 +535,10 @@ bicubic_deriv_xx(const void * vstate, const double xarr[], const double yarr[],
   xmax = xarr[xi + 1];
   ymin = yarr[yi];
   ymax = yarr[yi + 1];
-  zminmin = zarr[INDEX_2D(xi, yi, xsize, ysize)];
-  zminmax = zarr[INDEX_2D(xi, yi + 1, xsize, ysize)];
-  zmaxmin = zarr[INDEX_2D(xi + 1, yi, xsize, ysize)];
-  zmaxmax = zarr[INDEX_2D(xi + 1, yi + 1, xsize, ysize)];
+  zminmin = zarr[IDX2D(xi, yi, state)];
+  zminmax = zarr[IDX2D(xi, yi + 1, state)];
+  zmaxmin = zarr[IDX2D(xi + 1, yi, state)];
+  zmaxmax = zarr[IDX2D(xi + 1, yi + 1, state)];
 
   /* get the width and height of the grid cell */
   dx = xmax - xmin;
@@ -541,18 +548,18 @@ bicubic_deriv_xx(const void * vstate, const double xarr[], const double yarr[],
   dt = 1./dx; // partial t / partial x
   du = 1./dy; // partial u / partial y
 
-  zxminmin = state->zx[INDEX_2D(xi, yi, xsize, ysize)]/dt;
-  zxminmax = state->zx[INDEX_2D(xi, yi + 1, xsize, ysize)]/dt;
-  zxmaxmin = state->zx[INDEX_2D(xi + 1, yi, xsize, ysize)]/dt;
-  zxmaxmax = state->zx[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/dt;
-  zyminmin = state->zy[INDEX_2D(xi, yi, xsize, ysize)]/du;
-  zyminmax = state->zy[INDEX_2D(xi, yi + 1, xsize, ysize)]/du;
-  zymaxmin = state->zy[INDEX_2D(xi + 1, yi, xsize, ysize)]/du;
-  zymaxmax = state->zy[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/du;
-  zxyminmin = state->zxy[INDEX_2D(xi, yi, xsize, ysize)]/(dt*du);
-  zxyminmax = state->zxy[INDEX_2D(xi, yi + 1, xsize, ysize)]/(dt*du);
-  zxymaxmin = state->zxy[INDEX_2D(xi + 1, yi, xsize, ysize)]/(dt*du);
-  zxymaxmax = state->zxy[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/(dt*du);
+  zxminmin = state->zx[IDX2D(xi, yi, state)]/dt;
+  zxminmax = state->zx[IDX2D(xi, yi + 1, state)]/dt;
+  zxmaxmin = state->zx[IDX2D(xi + 1, yi, state)]/dt;
+  zxmaxmax = state->zx[IDX2D(xi + 1, yi + 1, state)]/dt;
+  zyminmin = state->zy[IDX2D(xi, yi, state)]/du;
+  zyminmax = state->zy[IDX2D(xi, yi + 1, state)]/du;
+  zymaxmin = state->zy[IDX2D(xi + 1, yi, state)]/du;
+  zymaxmax = state->zy[IDX2D(xi + 1, yi + 1, state)]/du;
+  zxyminmin = state->zxy[IDX2D(xi, yi, state)]/(dt*du);
+  zxyminmax = state->zxy[IDX2D(xi, yi + 1, state)]/(dt*du);
+  zxymaxmin = state->zxy[IDX2D(xi + 1, yi, state)]/(dt*du);
+  zxymaxmax = state->zxy[IDX2D(xi + 1, yi + 1, state)]/(dt*du);
 
   t0 = 1;
   t1 = t;
@@ -625,10 +632,10 @@ bicubic_deriv_xy(const void * vstate, const double xarr[], const double yarr[],
   xmax = xarr[xi + 1];
   ymin = yarr[yi];
   ymax = yarr[yi + 1];
-  zminmin = zarr[INDEX_2D(xi, yi, xsize, ysize)];
-  zminmax = zarr[INDEX_2D(xi, yi + 1, xsize, ysize)];
-  zmaxmin = zarr[INDEX_2D(xi + 1, yi, xsize, ysize)];
-  zmaxmax = zarr[INDEX_2D(xi + 1, yi + 1, xsize, ysize)];
+  zminmin = zarr[IDX2D(xi, yi, state)];
+  zminmax = zarr[IDX2D(xi, yi + 1, state)];
+  zmaxmin = zarr[IDX2D(xi + 1, yi, state)];
+  zmaxmax = zarr[IDX2D(xi + 1, yi + 1, state)];
 
   /* get the width and height of the grid cell */
   dx = xmax - xmin;
@@ -638,18 +645,18 @@ bicubic_deriv_xy(const void * vstate, const double xarr[], const double yarr[],
   dt = 1./dx; // partial t / partial x
   du = 1./dy; // partial u / partial y
 
-  zxminmin = state->zx[INDEX_2D(xi, yi, xsize, ysize)]/dt;
-  zxminmax = state->zx[INDEX_2D(xi, yi + 1, xsize, ysize)]/dt;
-  zxmaxmin = state->zx[INDEX_2D(xi + 1, yi, xsize, ysize)]/dt;
-  zxmaxmax = state->zx[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/dt;
-  zyminmin = state->zy[INDEX_2D(xi, yi, xsize, ysize)]/du;
-  zyminmax = state->zy[INDEX_2D(xi, yi + 1, xsize, ysize)]/du;
-  zymaxmin = state->zy[INDEX_2D(xi + 1, yi, xsize, ysize)]/du;
-  zymaxmax = state->zy[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/du;
-  zxyminmin = state->zxy[INDEX_2D(xi, yi, xsize, ysize)]/(dt*du);
-  zxyminmax = state->zxy[INDEX_2D(xi, yi + 1, xsize, ysize)]/(dt*du);
-  zxymaxmin = state->zxy[INDEX_2D(xi + 1, yi, xsize, ysize)]/(dt*du);
-  zxymaxmax = state->zxy[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/(dt*du);
+  zxminmin = state->zx[IDX2D(xi, yi, state)]/dt;
+  zxminmax = state->zx[IDX2D(xi, yi + 1, state)]/dt;
+  zxmaxmin = state->zx[IDX2D(xi + 1, yi, state)]/dt;
+  zxmaxmax = state->zx[IDX2D(xi + 1, yi + 1, state)]/dt;
+  zyminmin = state->zy[IDX2D(xi, yi, state)]/du;
+  zyminmax = state->zy[IDX2D(xi, yi + 1, state)]/du;
+  zymaxmin = state->zy[IDX2D(xi + 1, yi, state)]/du;
+  zymaxmax = state->zy[IDX2D(xi + 1, yi + 1, state)]/du;
+  zxyminmin = state->zxy[IDX2D(xi, yi, state)]/(dt*du);
+  zxyminmax = state->zxy[IDX2D(xi, yi + 1, state)]/(dt*du);
+  zxymaxmin = state->zxy[IDX2D(xi + 1, yi, state)]/(dt*du);
+  zxymaxmax = state->zxy[IDX2D(xi + 1, yi + 1, state)]/(dt*du);
 
   t0 = 1;
   t1 = t;
@@ -724,10 +731,10 @@ bicubic_deriv_yy(const void * vstate, const double xarr[], const double yarr[],
   xmax = xarr[xi + 1];
   ymin = yarr[yi];
   ymax = yarr[yi + 1];
-  zminmin = zarr[INDEX_2D(xi, yi, xsize, ysize)];
-  zminmax = zarr[INDEX_2D(xi, yi + 1, xsize, ysize)];
-  zmaxmin = zarr[INDEX_2D(xi + 1, yi, xsize, ysize)];
-  zmaxmax = zarr[INDEX_2D(xi + 1, yi + 1, xsize, ysize)];
+  zminmin = zarr[IDX2D(xi, yi, state)];
+  zminmax = zarr[IDX2D(xi, yi + 1, state)];
+  zmaxmin = zarr[IDX2D(xi + 1, yi, state)];
+  zmaxmax = zarr[IDX2D(xi + 1, yi + 1, state)];
 
   /* get the width and height of the grid cell */
   dx = xmax - xmin;
@@ -737,18 +744,18 @@ bicubic_deriv_yy(const void * vstate, const double xarr[], const double yarr[],
   dt = 1./dx; // partial t / partial x
   du = 1./dy; // partial u / partial y
 
-  zxminmin = state->zx[INDEX_2D(xi, yi, xsize, ysize)]/dt;
-  zxminmax = state->zx[INDEX_2D(xi, yi + 1, xsize, ysize)]/dt;
-  zxmaxmin = state->zx[INDEX_2D(xi + 1, yi, xsize, ysize)]/dt;
-  zxmaxmax = state->zx[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/dt;
-  zyminmin = state->zy[INDEX_2D(xi, yi, xsize, ysize)]/du;
-  zyminmax = state->zy[INDEX_2D(xi, yi + 1, xsize, ysize)]/du;
-  zymaxmin = state->zy[INDEX_2D(xi + 1, yi, xsize, ysize)]/du;
-  zymaxmax = state->zy[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/du;
-  zxyminmin = state->zxy[INDEX_2D(xi, yi, xsize, ysize)]/(dt*du);
-  zxyminmax = state->zxy[INDEX_2D(xi, yi + 1, xsize, ysize)]/(dt*du);
-  zxymaxmin = state->zxy[INDEX_2D(xi + 1, yi, xsize, ysize)]/(dt*du);
-  zxymaxmax = state->zxy[INDEX_2D(xi + 1, yi + 1, xsize, ysize)]/(dt*du);
+  zxminmin = state->zx[IDX2D(xi, yi, state)]/dt;
+  zxminmax = state->zx[IDX2D(xi, yi + 1, state)]/dt;
+  zxmaxmin = state->zx[IDX2D(xi + 1, yi, state)]/dt;
+  zxmaxmax = state->zx[IDX2D(xi + 1, yi + 1, state)]/dt;
+  zyminmin = state->zy[IDX2D(xi, yi, state)]/du;
+  zyminmax = state->zy[IDX2D(xi, yi + 1, state)]/du;
+  zymaxmin = state->zy[IDX2D(xi + 1, yi, state)]/du;
+  zymaxmax = state->zy[IDX2D(xi + 1, yi + 1, state)]/du;
+  zxyminmin = state->zxy[IDX2D(xi, yi, state)]/(dt*du);
+  zxyminmax = state->zxy[IDX2D(xi, yi + 1, state)]/(dt*du);
+  zxymaxmin = state->zxy[IDX2D(xi + 1, yi, state)]/(dt*du);
+  zxymaxmax = state->zxy[IDX2D(xi + 1, yi + 1, state)]/(dt*du);
 
   t0 = 1;
   t1 = t;
@@ -794,3 +801,5 @@ static const gsl_interp2d_type bicubic_type = {
 };
 
 const gsl_interp2d_type * gsl_interp2d_bicubic = &bicubic_type;
+
+#undef IDX2D

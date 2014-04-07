@@ -156,9 +156,9 @@ test_interp2d(const double xarr[], const double yarr[], const double zarr[], /* 
         {
           double y = yarr[yi];
           
-          zi = INDEX_2D(xi, yi, xsize, ysize);
+          zi = gsl_interp2d_idx(interp, xi, yi);
           test_single_low_level(&gsl_interp2d_eval, &gsl_interp2d_eval_e, interp, xarr, yarr, zarr, x, y, xa, ya, zarr, zi);
-          test_single_low_level(&gsl_interp2d_eval_no_bndchk, &gsl_interp2d_eval_e_no_bndchk, interp, xarr, yarr, zarr, x, y, xa, ya, zarr, zi);
+          test_single_low_level(&gsl_interp2d_eval_extrap, &gsl_interp2d_eval_e_extrap, interp, xarr, yarr, zarr, x, y, xa, ya, zarr, zi);
           test_single_high_level(&gsl_spline2d_eval, &gsl_spline2d_eval_e, interp_s, x, y, xa, ya, zarr, zi);
         }
     }
@@ -183,7 +183,7 @@ test_interp2d(const double xarr[], const double yarr[], const double zarr[], /* 
       test_single_high_level(&gsl_spline2d_eval_deriv_yy,&gsl_spline2d_eval_deriv_yy_e, interp_s, x, y, xa, ya, zyyval, i);
       test_single_high_level(&gsl_spline2d_eval_deriv_xy,&gsl_spline2d_eval_deriv_xy_e, interp_s, x, y, xa, ya, zxyval, i);
 
-      test_single_low_level(&gsl_interp2d_eval_no_bndchk, &gsl_interp2d_eval_e_no_bndchk, interp, xarr, yarr, zarr, x, y, xa, ya, zval, i);
+      test_single_low_level(&gsl_interp2d_eval_extrap, &gsl_interp2d_eval_e_extrap, interp, xarr, yarr, zarr, x, y, xa, ya, zval, i);
     }
 
   gsl_interp_accel_free(xa);

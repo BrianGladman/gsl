@@ -22,6 +22,8 @@
 #include <gsl/gsl_interp.h>
 #include <gsl/gsl_interp2d.h>
 
+#define IDX2D(i, j, xsize, ysize) ((j) * (xsize) + (i))
+
 static int
 bilinear_init(void * state, const double xa[], const double ya[],
               const double za[], size_t xsize, size_t ysize)
@@ -54,10 +56,10 @@ bilinear_eval(const void * state, const double xarr[], const double yarr[],
   xmax = xarr[xi + 1];
   ymin = yarr[yi];
   ymax = yarr[yi + 1];
-  zminmin = zarr[INDEX_2D(xi, yi, xsize, ysize)];
-  zminmax = zarr[INDEX_2D(xi, yi + 1, xsize, ysize)];
-  zmaxmin = zarr[INDEX_2D(xi + 1, yi, xsize, ysize)];
-  zmaxmax = zarr[INDEX_2D(xi + 1, yi + 1, xsize, ysize)];
+  zminmin = zarr[IDX2D(xi, yi, xsize, ysize)];
+  zminmax = zarr[IDX2D(xi, yi + 1, xsize, ysize)];
+  zmaxmin = zarr[IDX2D(xi + 1, yi, xsize, ysize)];
+  zmaxmax = zarr[IDX2D(xi + 1, yi + 1, xsize, ysize)];
   dx = xmax - xmin;
   dy = ymax - ymin;
   t = (x - xmin)/dx;
@@ -92,10 +94,10 @@ bilinear_deriv_x(const void * state, const double xarr[],
   xmax = xarr[xi + 1];
   ymin = yarr[yi];
   ymax = yarr[yi + 1];
-  zminmin = zarr[INDEX_2D(xi, yi, xsize, ysize)];
-  zminmax = zarr[INDEX_2D(xi, yi + 1, xsize, ysize)];
-  zmaxmin = zarr[INDEX_2D(xi + 1, yi, xsize, ysize)];
-  zmaxmax = zarr[INDEX_2D(xi + 1, yi + 1, xsize, ysize)];
+  zminmin = zarr[IDX2D(xi, yi, xsize, ysize)];
+  zminmax = zarr[IDX2D(xi, yi + 1, xsize, ysize)];
+  zmaxmin = zarr[IDX2D(xi + 1, yi, xsize, ysize)];
+  zmaxmax = zarr[IDX2D(xi + 1, yi + 1, xsize, ysize)];
   dx = xmax - xmin;
   dy = ymax - ymin;
   dt = 1./dx; /* partial t / partial x */
@@ -130,10 +132,10 @@ bilinear_deriv_y(const void * state, const double xarr[],
   xmax = xarr[xi + 1];
   ymin = yarr[yi];
   ymax = yarr[yi + 1];
-  zminmin = zarr[INDEX_2D(xi, yi, xsize, ysize)];
-  zminmax = zarr[INDEX_2D(xi, yi + 1, xsize, ysize)];
-  zmaxmin = zarr[INDEX_2D(xi + 1, yi, xsize, ysize)];
-  zmaxmax = zarr[INDEX_2D(xi + 1, yi + 1, xsize, ysize)];
+  zminmin = zarr[IDX2D(xi, yi, xsize, ysize)];
+  zminmax = zarr[IDX2D(xi, yi + 1, xsize, ysize)];
+  zmaxmin = zarr[IDX2D(xi + 1, yi, xsize, ysize)];
+  zmaxmax = zarr[IDX2D(xi + 1, yi + 1, xsize, ysize)];
   dx = xmax - xmin;
   dy = ymax - ymin;
   t = (x - xmin)/dx;
@@ -178,10 +180,10 @@ bilinear_derivxy(const void * state, const double xarr[],
   xmax = xarr[xi + 1];
   ymin = yarr[yi];
   ymax = yarr[yi + 1];
-  zminmin = zarr[INDEX_2D(xi, yi, xsize, ysize)];
-  zminmax = zarr[INDEX_2D(xi, yi + 1, xsize, ysize)];
-  zmaxmin = zarr[INDEX_2D(xi + 1, yi, xsize, ysize)];
-  zmaxmax = zarr[INDEX_2D(xi + 1, yi + 1, xsize, ysize)];
+  zminmin = zarr[IDX2D(xi, yi, xsize, ysize)];
+  zminmax = zarr[IDX2D(xi, yi + 1, xsize, ysize)];
+  zmaxmin = zarr[IDX2D(xi + 1, yi, xsize, ysize)];
+  zmaxmax = zarr[IDX2D(xi + 1, yi + 1, xsize, ysize)];
   dx = xmax - xmin;
   dy = ymax - ymin;
   dt = 1./dx; /* partial t / partial x */
@@ -206,3 +208,5 @@ static const gsl_interp2d_type bilinear_type = {
 };
 
 const gsl_interp2d_type * gsl_interp2d_bilinear = &bilinear_type;
+
+#undef IDX2D
