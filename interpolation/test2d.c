@@ -37,37 +37,22 @@ test_single_low_level(
                      gsl_interp_accel *, gsl_interp_accel *, double *),
   const gsl_interp2d * interp, const double xarr[], const double yarr[],
   const double zarr[], const double x, const double y,
-  gsl_interp_accel * xa, gsl_interp_accel * ya, const double expected_results[],
-  size_t i)
+  gsl_interp_accel * xa, gsl_interp_accel * ya,
+  const double expected_results[], size_t i)
 {
   if (expected_results != NULL)
     {
-      int failures = 0;
       int status;
       double result = evaluator(interp, xarr, yarr, zarr, x, y, xa, ya);
-      gsl_test_abs(result, expected_results[i], 1e-10, "low level %s %d", gsl_interp2d_name(interp), i);
-      if (fabs(result - expected_results[i]) > 1e-10)
-        {
-          // test failed
-          failures++;
-        }
-      status = evaluator_e(interp, xarr, yarr, zarr, x, y, xa, ya, &result);
-      if (status != GSL_SUCCESS)
-        {
-          // something went wrong
-          failures++;
-        }
-      else
-        {
-          gsl_test_abs(result, expected_results[i], 1e-10, "low level POSIX %s %d", gsl_interp2d_name(interp), i);
-          if (fabs(result - expected_results[i]) > 1e-10)
-            {
-              // test failed - wrong result
-              failures++;
-            }
-        }
+      gsl_test_rel(result, expected_results[i], 1e-10,
+                   "low level %s %d", gsl_interp2d_name(interp), i);
 
-      return failures;
+      status = evaluator_e(interp, xarr, yarr, zarr, x, y, xa, ya, &result);
+      if (status == GSL_SUCCESS)
+        {
+          gsl_test_rel(result, expected_results[i], 1e-10,
+                       "low level _e %s %d", gsl_interp2d_name(interp), i);
+        }
     }
 
   return 0;
@@ -81,56 +66,42 @@ test_single_high_level(
     int (*evaluator_e)(const gsl_spline2d *, const double, const double,
                        gsl_interp_accel *, gsl_interp_accel *, double *),
     const gsl_spline2d * interp, const double x, const double y,
-    gsl_interp_accel * xa, gsl_interp_accel * ya, const double expected_results[],
-    size_t i)
+    gsl_interp_accel * xa, gsl_interp_accel * ya,
+    const double expected_results[], size_t i)
 {
   if (expected_results != NULL)
     {
-      int failures = 0;
       int status;
       double result = evaluator(interp, x, y, xa, ya);
 
-      gsl_test_abs(result, expected_results[i], 1e-10, "high level %s %d", gsl_spline2d_name(interp), i);
-      if (fabs(result - expected_results[i]) > 1e-10)
-        {
-          // test failed
-          failures++;
-        }
+      gsl_test_rel(result, expected_results[i], 1e-10,
+                   "high level %s %d", gsl_spline2d_name(interp), i);
 
       status = evaluator_e(interp, x, y, xa, ya, &result);
-      if (status != GSL_SUCCESS)
+      if (status == GSL_SUCCESS)
         {
-          // something went wrong
-          failures++;
+          gsl_test_rel(result, expected_results[i], 1e-10,
+                       "high level _e %s %d", gsl_spline2d_name(interp), i);
         }
-      else
-        {
-          gsl_test_abs(result, expected_results[i], 1e-10, "high level POSIX %s %d", gsl_spline2d_name(interp), i);
-          if (fabs(result - expected_results[i]) > 1e-10)
-            {
-              // test failed - wrong result
-              failures++;
-            }
-        }
-
-      return failures;
     }
 
   return 0;
 }
 
 /*
- * Tests that a given interpolation type reproduces the data points it is given,
- * and then tests that it correctly reproduces additional values.
+ * Tests that a given interpolation type reproduces the data points
+ * it is given, and then tests that it correctly reproduces additional
+ * values.
  */
 static int
-test_interp2d(const double xarr[], const double yarr[], const double zarr[], /* interpolation data */
-              size_t xsize, size_t ysize,                                    /* sizes of xarr and yarr */
-              const double xval[], const double yval[],                      /* test points */
-              const double zval[],                                           /* expected results */
+test_interp2d(
+const double xarr[], const double yarr[], const double zarr[], /* data */
+              size_t xsize, size_t ysize,                /* array sizes */
+              const double xval[], const double yval[],  /* test points */
+              const double zval[],                       /* expected results */
               const double zxval[], const double zyval[],
               const double zxxval[], const double zyyval[], const double zxyval[],
-              size_t test_size,                                              /* number of test points */
+              size_t test_size,                          /* number of test points */
               const gsl_interp2d_type * T)
 {
   gsl_interp_accel *xa, *ya;
@@ -157,9 +128,14 @@ test_interp2d(const double xarr[], const double yarr[], const double zarr[], /* 
           double y = yarr[yi];
           
           zi = gsl_interp2d_idx(interp, xi, yi);
-          test_single_low_level(&gsl_interp2d_eval, &gsl_interp2d_eval_e, interp, xarr, yarr, zarr, x, y, xa, ya, zarr, zi);
-          test_single_low_level(&gsl_interp2d_eval_extrap, &gsl_interp2d_eval_e_extrap, interp, xarr, yarr, zarr, x, y, xa, ya, zarr, zi);
-          test_single_high_level(&gsl_spline2d_eval, &gsl_spline2d_eval_e, interp_s, x, y, xa, ya, zarr, zi);
+          test_single_low_level(&gsl_interp2d_eval, &gsl_interp2d_eval_e,
+                                interp, xarr, yarr, zarr, x, y,
+                                xa, ya, zarr, zi);
+          test_single_low_level(&gsl_interp2d_eval_extrap,
+                                &gsl_interp2d_eval_e_extrap, interp,
+                                xarr, yarr, zarr, x, y, xa, ya, zarr, zi);
+          test_single_high_level(&gsl_spline2d_eval, &gsl_spline2d_eval_e,
+                                 interp_s, x, y, xa, ya, zarr, zi);
         }
     }
 
@@ -196,8 +172,8 @@ test_interp2d(const double xarr[], const double yarr[], const double zarr[], /* 
 
 /*
  * Tests bilinear interpolation using a symmetric function, f(x,y)==f(y,x),
- * and diagonal interpolation points (x,y) where x==y. If these tests don't pass,
- * something is seriously broken.
+ * and diagonal interpolation points (x,y) where x==y. If these tests don't
+ * pass, something is seriously broken.
  */
 static int
 test_bilinear_symmetric()
@@ -217,16 +193,17 @@ test_bilinear_symmetric()
   size_t test_size = sizeof(xval) / sizeof(xval[0]);
 
   status = test_interp2d(xarr, yarr, zarr, xsize, ysize, xval, yval, zval,
-                         NULL, NULL, NULL, NULL, NULL, test_size, gsl_interp2d_bilinear);
+                         NULL, NULL, NULL, NULL, NULL, test_size,
+                         gsl_interp2d_bilinear);
   gsl_test(status, "bilinear interpolation with symmetric values");
 
   return status;
 }
 
 /*
- * Tests bilinear interpolation using an asymmetric function, f(x,y)!=f(y,x),
- * and off-diagonal interpolation points (x,y) where x and y may or may not be
- * equal.
+ * Tests bilinear interpolation with an asymmetric function, f(x,y)!=f(y,x),
+ * and off-diagonal interpolation points (x,y) where x and y may or may not
+ * be equal.
  */
 static int
 test_bilinear_asymmetric_z()
@@ -254,7 +231,8 @@ test_bilinear_asymmetric_z()
   size_t test_size = sizeof(xval) / sizeof(xval[0]);
 
   status = test_interp2d(xarr, yarr, zarr, xsize, ysize, xval, yval, zval,
-                         NULL, NULL, NULL, NULL, NULL, test_size, gsl_interp2d_bilinear);
+                         NULL, NULL, NULL, NULL, NULL, test_size,
+                         gsl_interp2d_bilinear);
   gsl_test(status, "bilinear interpolation with asymmetric z values");
 
   return status;
@@ -278,7 +256,8 @@ test_bicubic()
   size_t test_size = sizeof(xval) / sizeof(xval[0]);
 
   status = test_interp2d(xarr, yarr, zarr, xsize, ysize, xval, yval, zval,
-                         NULL, NULL, NULL, NULL, NULL, test_size, gsl_interp2d_bicubic);
+                         NULL, NULL, NULL, NULL, NULL, test_size,
+                         gsl_interp2d_bicubic);
   gsl_test(status, "bicubic interpolation on linear function");
 
   return status;
@@ -309,7 +288,8 @@ test_bicubic_nonlinear()
   size_t test_size = sizeof(xval) / sizeof(xval[0]);
 
   status = test_interp2d(xarr, yarr, zarr, xsize, ysize, xval, yval, zval,
-                         NULL, NULL, NULL, NULL, NULL, test_size, gsl_interp2d_bicubic);
+                         NULL, NULL, NULL, NULL, NULL, test_size,
+                         gsl_interp2d_bicubic);
   gsl_test(status, "bicubic interpolation on nonlinear symmetric function");
 
   return status;
@@ -342,7 +322,8 @@ test_bicubic_nonlinear_nonsq()
   size_t test_size = sizeof(xval) / sizeof(xval[0]);
 
   status = test_interp2d(xarr, yarr, zarr, xsize, ysize, xval, yval, zval,
-                         NULL, NULL, NULL, NULL, NULL, test_size, gsl_interp2d_bicubic);
+                         NULL, NULL, NULL, NULL, NULL, test_size,
+                         gsl_interp2d_bicubic);
   gsl_test(status, "bicubic interpolation on nonlinear symmetric function");
 
   return status;
