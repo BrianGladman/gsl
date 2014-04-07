@@ -4,7 +4,7 @@
 #define lin1_NTRIES    3
 
 static double lin1_x0[lin1_P] = { 1.0, 1.0, 1.0, 1.0, 1.0 };
-static double lin1_epsrel = 1.0e-12;
+static double lin1_epsrel = 1.0e-10;
 
 static void
 lin1_checksol(const double x[], const double sumsq,
