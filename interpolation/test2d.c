@@ -119,7 +119,7 @@ const double xarr[], const double yarr[], const double zarr[], /* data */
   gsl_interp2d_init(interp, xarr, yarr, zarr, xsize, ysize);
   gsl_spline2d_init(interp_s, xarr, yarr, zarr, xsize, ysize);
 
-  // First check that the interpolation reproduces the given points
+  /* First check that the interpolation reproduces the given points */
   for (xi = 0; xi < xsize; xi++)
     {
       double x = xarr[xi];
@@ -139,7 +139,7 @@ const double xarr[], const double yarr[], const double zarr[], /* data */
         }
     }
 
-  // Then check additional points provided
+  /* Then check additional points provided */
   for (i = 0; i < test_size; i++)
     {
       double x = xval[i];
@@ -269,7 +269,8 @@ test_bicubic_nonlinear()
   int status;
   double xarr[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
   double yarr[] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
-  double zarr[] = { 1,  2,  3,  4,  5,  6,  7,  8, // least common multiple of x and y
+  /* least common multiple of x and y */
+  double zarr[] = { 1,  2,  3,  4,  5,  6,  7,  8,
                     2,  2,  6,  4, 10,  6, 14,  8,
                     3,  6,  3, 12, 15,  6, 21, 24,
                     4,  4, 12,  4, 20, 12, 28,  8,
@@ -295,7 +296,7 @@ test_bicubic_nonlinear()
   return status;
 }
 
-// This function contributed by Andrew W. Steiner <awsteiner@gmail.com>
+/* This function contributed by Andrew W. Steiner <awsteiner@gmail.com> */
 static int
 test_bicubic_nonlinear_nonsq()
 {

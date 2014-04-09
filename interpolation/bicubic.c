@@ -220,13 +220,13 @@ bicubic_eval(const void * vstate, const double xarr[], const double yarr[],
   zminmax = zarr[IDX2D(xi, yi + 1, state)];
   zmaxmin = zarr[IDX2D(xi + 1, yi, state)];
   zmaxmax = zarr[IDX2D(xi + 1, yi + 1, state)];
-  // Get the width and height of the grid cell
+  /* Get the width and height of the grid cell */
   dx = xmax - xmin;
   dy = ymax - ymin;
   t = (x - xmin)/dx;
   u = (y - ymin)/dy;
-  dt = 1./dx; // partial t / partial x
-  du = 1./dy; // partial u / partial y
+  dt = 1./dx; /* partial t / partial x */
+  du = 1./dy; /* partial u / partial y */
   zxminmin = state->zx[IDX2D(xi, yi, state)]/dt;
   zxminmax = state->zx[IDX2D(xi, yi + 1, state)]/dt;
   zxmaxmin = state->zx[IDX2D(xi + 1, yi, state)]/dt;
@@ -336,8 +336,8 @@ bicubic_deriv_x(const void * vstate, const double xarr[], const double yarr[],
   dy = ymax - ymin;
   t = (x - xmin)/dx;
   u = (y - ymin)/dy;
-  dt = 1./dx; // partial t / partial x
-  du = 1./dy; // partial u / partial y
+  dt = 1./dx; /* partial t / partial x */
+  du = 1./dy; /* partial u / partial y */
 
   zxminmin = state->zx[IDX2D(xi, yi, state)]/dt;
   zxminmax = state->zx[IDX2D(xi, yi + 1, state)]/dt;
@@ -403,11 +403,11 @@ bicubic_deriv_y(const void * vstate, const double xarr[], const double yarr[],
   double zxminmin, zxminmax, zxmaxmin, zxmaxmax;
   double zyminmin, zyminmax, zymaxmin, zymaxmax;
   double zxyminmin, zxyminmax, zxymaxmin, zxymaxmax;
-  // dx and dy are the size of the grid cell
+  /* dx and dy are the size of the grid cell */
   double dx, dy;
   double dt, du;
-  // t and u are the positions within the grid cell at which we are computing
-  // the interpolation, in units of grid cell size
+  /* t and u are the positions within the grid cell at which we are
+   * computing the interpolation, in units of grid cell size */
   double t, u;
   double t0, t1, t2, t3, u0, u1, u2;
   double v;
@@ -439,8 +439,8 @@ bicubic_deriv_y(const void * vstate, const double xarr[], const double yarr[],
   dy = ymax - ymin;
   t = (x - xmin)/dx;
   u = (y - ymin)/dy;
-  dt = 1./dx; // partial t / partial x
-  du = 1./dy; // partial u / partial y
+  dt = 1./dx; /* partial t / partial x */
+  du = 1./dy; /* partial u / partial y */
 
   zxminmin = state->zx[IDX2D(xi, yi, state)]/dt;
   zxminmax = state->zx[IDX2D(xi, yi + 1, state)]/dt;
@@ -545,8 +545,8 @@ bicubic_deriv_xx(const void * vstate, const double xarr[], const double yarr[],
   dy = ymax - ymin;
   t = (x - xmin)/dx;
   u = (y - ymin)/dy;
-  dt = 1./dx; // partial t / partial x
-  du = 1./dy; // partial u / partial y
+  dt = 1./dx; /* partial t / partial x */
+  du = 1./dy; /* partial u / partial y */
 
   zxminmin = state->zx[IDX2D(xi, yi, state)]/dt;
   zxminmax = state->zx[IDX2D(xi, yi + 1, state)]/dt;
@@ -642,8 +642,8 @@ bicubic_deriv_xy(const void * vstate, const double xarr[], const double yarr[],
   dy = ymax - ymin;
   t = (x - xmin)/dx;
   u = (y - ymin)/dy;
-  dt = 1./dx; // partial t / partial x
-  du = 1./dy; // partial u / partial y
+  dt = 1./dx; /* partial t / partial x */
+  du = 1./dy; /* partial u / partial y */
 
   zxminmin = state->zx[IDX2D(xi, yi, state)]/dt;
   zxminmax = state->zx[IDX2D(xi, yi + 1, state)]/dt;
@@ -741,8 +741,8 @@ bicubic_deriv_yy(const void * vstate, const double xarr[], const double yarr[],
   dy = ymax - ymin;
   t = (x - xmin)/dx;
   u = (y - ymin)/dy;
-  dt = 1./dx; // partial t / partial x
-  du = 1./dy; // partial u / partial y
+  dt = 1./dx; /* partial t / partial x */
+  du = 1./dy; /* partial u / partial y */
 
   zxminmin = state->zx[IDX2D(xi, yi, state)]/dt;
   zxminmax = state->zx[IDX2D(xi, yi + 1, state)]/dt;
@@ -787,17 +787,17 @@ bicubic_deriv_yy(const void * vstate, const double xarr[], const double yarr[],
 }
 
 static const gsl_interp2d_type bicubic_type = {
-    "bicubic",
-    4,
-    bicubic_alloc,
-    bicubic_init,
-    bicubic_eval,
-    bicubic_deriv_x,
-    bicubic_deriv_y,
-    bicubic_deriv_xx,
-    bicubic_deriv_xy,
-    bicubic_deriv_yy,
-    bicubic_free
+  "bicubic",
+  4,
+  &bicubic_alloc,
+  &bicubic_init,
+  &bicubic_eval,
+  &bicubic_deriv_x,
+  &bicubic_deriv_y,
+  &bicubic_deriv_xx,
+  &bicubic_deriv_xy,
+  &bicubic_deriv_yy,
+  &bicubic_free
 };
 
 const gsl_interp2d_type * gsl_interp2d_bicubic = &bicubic_type;
