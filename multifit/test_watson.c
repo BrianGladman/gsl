@@ -4,7 +4,7 @@
 #define watson_NTRIES    4
 
 static double watson_x0[watson_P] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-static double watson_epsrel = 1.0e-7;
+static double watson_epsrel = 1.0e-6;
 
 static void
 watson_checksol(const double x[], const double sumsq,

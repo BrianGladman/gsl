@@ -54,7 +54,7 @@ create_random_sparse(const size_t M, const size_t N, const double density,
                      const gsl_rng *r)
 {
   gsl_spmatrix *m = gsl_spmatrix_alloc(M, N);
-  size_t nnzwanted = (size_t) round(M * N * GSL_MIN(density, 1.0));
+  size_t nnzwanted = (size_t) floor(M * N * GSL_MIN(density, 1.0));
   size_t n = 0;
 
   while (n <= nnzwanted)
