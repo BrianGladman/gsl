@@ -377,13 +377,13 @@ minimizes the residual
 @tex
 \beforedisplay
 $$
-\chi^2 = || Xc - y ||^2
+\chi^2 = || y - Xc ||^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-\chi^2 = || Xc - y ||^2
+\chi^2 = || y - Xc ||^2
 @end example
 @end ifinfo
 In cases where the least squares matrix @math{X} is ill-conditioned,
@@ -393,13 +393,13 @@ to include a regularization term in the least squares minimization
 @tex
 \beforedisplay
 $$
-\chi^2 = || Xc - y ||^2 + || L c ||^2
+\chi^2 = || y - Xc ||^2 + || L c ||^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-\chi^2 = || Xc - y ||^2 + || L c ||^2
+\chi^2 = || y - Xc ||^2 + || L c ||^2
 @end example
 @end ifinfo
 for a suitably chosen matrix @math{L}. In many cases,
