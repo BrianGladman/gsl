@@ -1,5 +1,8 @@
 * What is new in gsl-2.0:
 
+** added function gsl_multifit_robust_residuals to compute robust
+   fit residuals
+
 ** added Steffen monotonic interpolation method (Jean-François Caron)
 
 ** added new nonlinear least squares solver 'lmniel' suitable for
