@@ -479,6 +479,68 @@ gsl_multifit_robust_est(const gsl_vector * x, const gsl_vector * c,
   return s;
 }
 
+/*
+gsl_multifit_robust_residuals()
+  Compute robust / studentized residuals from fit
+
+r_i = (y_i - Y_i) / (sigma * sqrt(1 - h_i))
+
+Inputs: X - design matrix
+        y - rhs vector
+        c - fit coefficients
+        r - (output) studentized residuals
+        w - workspace
+
+Notes:
+1) gsl_multifit_robust() must first be called to compute the coefficients
+c, the leverage factors in w->resfac, and sigma in w->stats.sigma
+*/
+
+int
+gsl_multifit_robust_residuals(const gsl_matrix * X, const gsl_vector * y,
+                              const gsl_vector * c, gsl_vector * r,
+                              gsl_multifit_robust_workspace * w)
+{
+  if (X->size1 != y->size)
+    {
+      GSL_ERROR
+        ("number of observations in y does not match rows of matrix X",
+         GSL_EBADLEN);
+    }
+  else if (X->size2 != c->size)
+    {
+      GSL_ERROR ("number of parameters c does not match columns of matrix X",
+                 GSL_EBADLEN);
+    }
+  else if (y->size != r->size)
+    {
+      GSL_ERROR ("number of observations in y does not match number of residuals",
+                 GSL_EBADLEN);
+    }
+  else
+    {
+      const double sigma = w->stats.sigma; /* previously calculated sigma */
+      int s;
+      size_t i;
+
+      /* compute r = y - X c */
+      s = gsl_multifit_linear_residuals(X, y, c, r);
+      if (s)
+        return s;
+
+      for (i = 0; i < r->size; ++i)
+        {
+          double hfac = gsl_vector_get(w->resfac, i); /* 1/sqrt(1 - h_i) */
+          double *ri = gsl_vector_ptr(r, i);
+
+          /* multiply residual by 1 / (sigma * sqrt(1 - h_i)) */
+          *ri *= hfac / sigma;
+        }
+
+      return s;
+    }
+} /* gsl_multifit_robust_residuals() */
+
 /***********************************
  * INTERNAL ROUTINES               *
  ***********************************/

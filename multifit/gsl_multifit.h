@@ -221,6 +221,10 @@ int gsl_multifit_robust(const gsl_matrix * X, const gsl_vector * y,
                         gsl_multifit_robust_workspace *w);
 int gsl_multifit_robust_est(const gsl_vector * x, const gsl_vector * c,
                             const gsl_matrix * cov, double *y, double *y_err);
+int gsl_multifit_robust_residuals(const gsl_matrix * X,
+                                  const gsl_vector * y,
+                                  const gsl_vector * c, gsl_vector * r,
+                                  gsl_multifit_robust_workspace * w);
 
 __END_DECLS
 
