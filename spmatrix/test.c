@@ -135,8 +135,8 @@ test_getset(const size_t M, const size_t N, const gsl_rng *r)
 
     nnz = gsl_spmatrix_nnz(m);
     status = nnz != expected_nnz;
-    gsl_test(status, "test_getset: duplicate test, nnz=%zu, expected=%zu",
-             nnz, expected_nnz);
+    gsl_test(status, "test_getset: duplicate test M=%zu N=%zu nnz=%zu, expected=%zu",
+             M, N, nnz, expected_nnz);
 
     gsl_spmatrix_free(m);
   }
