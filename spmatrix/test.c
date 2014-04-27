@@ -109,6 +109,31 @@ test_getset(const size_t M, const size_t N, const gsl_rng *r)
     gsl_spmatrix_free(m);
   }
 
+  /* test duplicate values are handled correctly */
+  {
+    size_t min = GSL_MIN(M, N);
+    size_t expected_nnz = min;
+    size_t nnz;
+    size_t k = 0;
+    gsl_spmatrix *m = gsl_spmatrix_alloc(M, N);
+
+    for (i = 0; i < min; ++i)
+      {
+        for (j = 0; j < 5; ++j)
+          {
+            double x = (double) ++k;
+            gsl_spmatrix_set(m, i, i, x);
+          }
+      }
+
+    nnz = gsl_spmatrix_nnz(m);
+    status = nnz != expected_nnz;
+    gsl_test(status, "test_getset: duplicate value test, nnz=%zu, expected=%zu",
+             nnz, expected_nnz);
+
+    gsl_spmatrix_free(m);
+  }
+
   /* test compressed version of gsl_spmatrix_get() */
   {
     gsl_spmatrix *T = create_random_sparse(M, N, 0.3, r);

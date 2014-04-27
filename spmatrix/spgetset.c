@@ -90,11 +90,25 @@ gsl_spmatrix_set(gsl_spmatrix *m, const size_t i, const size_t j,
       GSL_ERROR("matrix not in triplet representation", GSL_EINVAL);
     }
   else if (x == 0.0)
-    return GSL_SUCCESS;
+    {
+      return GSL_SUCCESS;
+    }
   else
     {
       int s = GSL_SUCCESS;
+      size_t n;
 
+      /* first check if (i,j) already exists in matrix */
+      for (n = 0; n < m->nz; ++n)
+        {
+          if (m->i[n] == i && m->p[n] == j)
+            {
+              m->data[n] = x;
+              return s;
+            }
+        }
+
+      /* adding a new element, check if matrix needs to be realloced */
       if (m->nz >= m->nzmax)
         {
           s = gsl_spmatrix_realloc(2 * m->nzmax, m);
