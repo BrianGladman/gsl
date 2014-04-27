@@ -98,7 +98,6 @@ test_getset(const size_t M, const size_t N, const gsl_rng *r)
 
             gsl_spmatrix_set(m, i, j, x);
             y = gsl_spmatrix_get(m, i, j);
-
             if (x != y)
               status = 1;
           }
@@ -117,18 +116,26 @@ test_getset(const size_t M, const size_t N, const gsl_rng *r)
     size_t k = 0;
     gsl_spmatrix *m = gsl_spmatrix_alloc(M, N);
 
+    status = 0;
     for (i = 0; i < min; ++i)
       {
         for (j = 0; j < 5; ++j)
           {
             double x = (double) ++k;
+            double y;
+
             gsl_spmatrix_set(m, i, i, x);
+            y = gsl_spmatrix_get(m, i, i);
+            if (x != y)
+              status = 1;
           }
       }
 
+    gsl_test(status, "test_getset: duplicate test M=%zu N=%zu _get != _set", M, N);
+
     nnz = gsl_spmatrix_nnz(m);
     status = nnz != expected_nnz;
-    gsl_test(status, "test_getset: duplicate value test, nnz=%zu, expected=%zu",
+    gsl_test(status, "test_getset: duplicate test, nnz=%zu, expected=%zu",
              nnz, expected_nnz);
 
     gsl_spmatrix_free(m);
