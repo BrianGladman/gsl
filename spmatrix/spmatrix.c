@@ -339,15 +339,10 @@ static int
 compare_triplet(const void *pa, const void *pb, void *param)
 {
   gsl_spmatrix *m = (gsl_spmatrix *) param;
-  const double *a = pa;
-  const double *b = pb;
 
   /* pointer arithmetic to find indices in data array */
-  const size_t idxa = a - m->data;
-  const size_t idxb = b - m->data;
+  const size_t idxa = (double *) pa - m->data;
+  const size_t idxb = (double *) pb - m->data;
 
-  const size_t *mi = m->i;
-  const size_t *mj = m->p;
-
-  return gsl_spmatrix_compare_idx(mi[idxa], mj[idxa], mi[idxb], mj[idxb]);
+  return gsl_spmatrix_compare_idx(m->i[idxa], m->p[idxa], m->i[idxb], m->p[idxb]);
 } /* compare_triplet() */
