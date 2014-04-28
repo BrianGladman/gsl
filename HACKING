@@ -185,9 +185,15 @@ variable
 
   $ TESTS_ENVIRONMENT="valgrind --tool=memcheck" make check
 
+or
+
+  $ scripts/runvalgrind.sh
+
 Note that this only works if configure was run with --disable-shared,
 because otherwise the shared library libtool scripts themselves are
-run under valgrind giving misleading results.
+run under valgrind giving misleading results. Also, compile everything
+with: make CFLAGS="-g -Wall" since optimization can cause valgrind to
+report uninitialized memory errors which don't really exist.
 
 * Tag release with: bzr tag release-X-Y
 

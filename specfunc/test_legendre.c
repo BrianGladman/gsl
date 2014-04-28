@@ -510,28 +510,20 @@ test_legendre_all(const size_t lmax)
 {
   int s = 0;
 
-  fprintf(stderr, "test_legendre: testing schmidt (lmax=%zu)...", lmax);
   s += test_legendre_schmidt(lmax, 1.0, "schmidt csphase=1");
   s += test_legendre_schmidt(lmax, -1.0, "schmidt csphase=-1");
-  fprintf(stderr, "done (s = %d)\n", s);
 
-  fprintf(stderr, "test_legendre: testing spharm (lmax=%zu)...", lmax);
   s += test_legendre_norm(GSL_SF_LEGENDRE_SPHARM, lmax, 1.0,
                           "spharm csphase=1");
   s += test_legendre_norm(GSL_SF_LEGENDRE_SPHARM, lmax, -1.0,
                           "spharm csphase=-1");
-  fprintf(stderr, "done (s = %d)\n", s);
 
-  fprintf(stderr, "test_legendre: testing full (lmax=%zu)...", lmax);
   s += test_legendre_norm(GSL_SF_LEGENDRE_FULL, lmax, 1.0,
                           "full csphase=1");
   s += test_legendre_norm(GSL_SF_LEGENDRE_FULL, lmax, -1.0,
                           "full csphase=-1");
-  fprintf(stderr, "done (s = %d)\n", s);
 
-  fprintf(stderr, "test_legendre: testing unnorm (lmax=%zu)...", lmax);
   s += test_legendre_unnorm(lmax, "unnorm csphase=1");
-  fprintf(stderr, "done (s = %d)\n", s);
 
   return s;
 } /* test_legendre_all() */

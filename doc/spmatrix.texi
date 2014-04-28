@@ -83,8 +83,8 @@ to the index in @var{data} of the start of column @var{j}. Thus, if
 
 @noindent
 The parameter @var{btree} is a binary tree structure used in the triplet
-representation. This speeds up element searches and duplicate detection
-during the matrix assembly process.
+representation, specifically a balanced AVL tree. This speeds up element
+searches and duplicate detection during the matrix assembly process.
 The parameter @var{work} is additional workspace needed for various operations like
 converting from triplet to compressed column storage. @var{sptype} indicates
 the type of storage format being used (triplet or compressed column).
