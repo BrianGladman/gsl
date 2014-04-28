@@ -53,25 +53,20 @@ static gsl_spmatrix *
 create_random_sparse(const size_t M, const size_t N, const double density,
                      const gsl_rng *r)
 {
-  gsl_spmatrix *m = gsl_spmatrix_alloc(M, N);
   size_t nnzwanted = (size_t) floor(M * N * GSL_MIN(density, 1.0));
-  size_t n = 0;
+  gsl_spmatrix *m = gsl_spmatrix_alloc_nzmax(M, N,
+                                             nnzwanted,
+                                             GSL_SPMATRIX_TRIPLET);
 
-  while (n <= nnzwanted)
+  while (gsl_spmatrix_nnz(m) < nnzwanted)
     {
       /* generate a random row and column */
       size_t i = gsl_rng_uniform(r) * M;
       size_t j = gsl_rng_uniform(r) * N;
-      double x;
-
-      /* check if this position is already filled */
-      if (gsl_spmatrix_get(m, i, j) != 0.0)
-        continue;
 
       /* generate random m_{ij} and add it */
-      x = gsl_rng_uniform(r);
+      double x = gsl_rng_uniform(r);
       gsl_spmatrix_set(m, i, j, x);
-      ++n;
     }
 
   return m;
