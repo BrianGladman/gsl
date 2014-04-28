@@ -59,8 +59,6 @@ typedef struct
   size_t size1;  /* number of rows */
   size_t size2;  /* number of columns */
 
-  void *btree;   /* binary tree for sorting triplet data */
-
   size_t *i;     /* row indices of size nzmax */
   double *data;  /* matrix elements of size nzmax */
 
@@ -75,6 +73,8 @@ typedef struct
 
   size_t nzmax;  /* maximum number of matrix elements */
   size_t nz;     /* number of non-zero values in matrix */
+
+  void *btree;   /* binary tree for sorting triplet data */
 
   /*
    * workspace of size MAX(size1,size2)*MAX(sizeof(double),sizeof(size_t))

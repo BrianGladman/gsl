@@ -63,6 +63,7 @@ typedef struct
   size_t *p;
   size_t nzmax;
   size_t nz;
+  void *btree;
   void *work;
   size_t sptype;
 @} gsl_spmatrix;
@@ -81,7 +82,10 @@ to the index in @var{data} of the start of column @var{j}. Thus, if
 @math{data[k] = A(i,j)}, then @math{i = i[k]} and @math{p[j] <= k < p[j+1]}.
 
 @noindent
-@var{work} is additional workspace needed for various operations like
+The parameter @var{btree} is a binary tree structure used in the triplet
+representation. This speeds up element searches and duplicate detection
+during the matrix assembly process.
+The parameter @var{work} is additional workspace needed for various operations like
 converting from triplet to compressed column storage. @var{sptype} indicates
 the type of storage format being used (triplet or compressed column).
 
