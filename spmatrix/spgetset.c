@@ -25,6 +25,10 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_spmatrix.h>
 
+#include "avl.c"
+
+static void *tree_find(const gsl_spmatrix *m, const size_t i, const size_t j);
+
 double
 gsl_spmatrix_get(const gsl_spmatrix *m, const size_t i, const size_t j)
 {
@@ -38,20 +42,18 @@ gsl_spmatrix_get(const gsl_spmatrix *m, const size_t i, const size_t j)
     }
   else
     {
-      const size_t *mi = m->i;
-      const size_t *mp = m->p;
-
       if (GSL_SPMATRIX_ISTRIPLET(m))
         {
-          size_t n;
-          for (n = 0; n < m->nz; ++n)
-            {
-              if (mi[n] == i && mp[n] == j)
-                return m->data[n];
-            }
+          /* traverse binary tree to search for (i,j) element */
+          void *ptr = tree_find(m, i, j);
+          double x = ptr ? *(double *) ptr : 0.0;
+
+          return x;
         }
       else if (GSL_SPMATRIX_ISCCS(m))
         {
+          const size_t *mi = m->i;
+          const size_t *mp = m->p;
           size_t p;
 
           /* loop over column j and search for row index i */
@@ -91,24 +93,26 @@ gsl_spmatrix_set(gsl_spmatrix *m, const size_t i, const size_t j,
     }
   else if (x == 0.0)
     {
+      /* traverse binary tree to search for (i,j) element */
+      void *ptr = tree_find(m, i, j);
+
+      /*
+       * just set the data element to 0; it would be easy to
+       * delete the node from the tree with avl_delete(), but
+       * we'd also have to delete it from the data arrays which
+       * is less simple
+       */
+      if (ptr != NULL)
+        *(double *) ptr = 0.0;
+
       return GSL_SUCCESS;
     }
   else
     {
       int s = GSL_SUCCESS;
-      size_t n;
+      void *ptr;
 
-      /* first check if (i,j) already exists in matrix */
-      for (n = 0; n < m->nz; ++n)
-        {
-          if (m->i[n] == i && m->p[n] == j)
-            {
-              m->data[n] = x;
-              return s;
-            }
-        }
-
-      /* adding a new element, check if matrix needs to be realloced */
+      /* check if matrix needs to be realloced */
       if (m->nz >= m->nzmax)
         {
           s = gsl_spmatrix_realloc(2 * m->nzmax, m);
@@ -121,12 +125,59 @@ gsl_spmatrix_set(gsl_spmatrix *m, const size_t i, const size_t j,
       m->p[m->nz] = j;
       m->data[m->nz] = x;
 
-      /* increase matrix dimensions if needed */
-      m->size1 = GSL_MAX(m->size1, i + 1);
-      m->size2 = GSL_MAX(m->size2, j + 1);
+      ptr = avl_insert(m->btree, &m->data[m->nz]);
+      if (ptr != NULL)
+        {
+          /* found duplicate entry (i,j), replace with new x */
+          *((double *) ptr) = x;
+        }
+      else
+        {
+          /* no duplicate (i,j) found, update indices as needed */
 
-      ++(m->nz);
+          /* increase matrix dimensions if needed */
+          m->size1 = GSL_MAX(m->size1, i + 1);
+          m->size2 = GSL_MAX(m->size2, j + 1);
+
+          ++(m->nz);
+        }
 
       return s;
     }
 } /* gsl_spmatrix_set() */
+
+/*
+tree_find()
+  Find node in tree corresponding to matrix entry (i,j). Adapted
+from avl_find()
+
+Inputs: m - spmatrix
+        i - row index
+        j - column index
+
+Return: pointer to tree node data if found, NULL if not found
+*/
+
+static void *
+tree_find(const gsl_spmatrix *m, const size_t i, const size_t j)
+{
+  const struct avl_table *tree = (struct avl_table *) m->btree;
+  const struct avl_node *p;
+
+  for (p = tree->avl_root; p != NULL; )
+    {
+      size_t n = (double *) p->avl_data - m->data;
+      size_t pi = m->i[n];
+      size_t pj = m->p[n];
+      int cmp = gsl_spmatrix_compare_idx(i, j, pi, pj);
+
+      if (cmp < 0)
+        p = p->avl_link[0];
+      else if (cmp > 0)
+        p = p->avl_link[1];
+      else /* |cmp == 0| */
+        return p->avl_data;
+    }
+
+  return NULL;
+} /* tree_find() */

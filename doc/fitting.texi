@@ -809,7 +809,7 @@ This function uses the best-fit robust regression coefficients
 at the point @var{x}.
 @end deftypefun
 
-@deftypefun int gsl_multifit_robust_residuals (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, const gsl_vector * @var{c}, gsl_vector * @var{r}, @var gsl_multifit_robust_workspace * @var{w})
+@deftypefun int gsl_multifit_robust_residuals (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, const gsl_vector * @var{c}, gsl_vector * @var{r}, gsl_multifit_robust_workspace * @var{w})
 This function computes the vector of studentized residuals
 @math{r_i = {y_i - (X c)_i \over \sigma \sqrt{1 - h_i}}} for
 the observations @var{y}, coefficients @var{c} and matrix of predictor

@@ -26,6 +26,8 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_spmatrix.h>
 
+#include "avl.c"
+
 int
 gsl_spmatrix_transpose_memcpy(gsl_spmatrix *dest, const gsl_spmatrix *src)
 {
@@ -57,12 +59,20 @@ gsl_spmatrix_transpose_memcpy(gsl_spmatrix *dest, const gsl_spmatrix *src)
       if (GSL_SPMATRIX_ISTRIPLET(src))
         {
           size_t n;
+          void *ptr;
 
           for (n = 0; n < nz; ++n)
             {
               dest->i[n] = src->p[n];
               dest->p[n] = src->i[n];
               dest->data[n] = src->data[n];
+
+              /* copy binary tree data */
+              ptr = avl_insert(dest->btree, &dest->data[n]);
+              if (ptr != NULL)
+                {
+                  GSL_ERROR("detected duplicate entry", GSL_EINVAL);
+                }
             }
         }
       else if (GSL_SPMATRIX_ISCCS(src))

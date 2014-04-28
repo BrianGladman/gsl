@@ -25,6 +25,10 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_spmatrix.h>
 
+#include "avl.c"
+
+static int compare_triplet(const void *pa, const void *pb, void *param);
+
 /*
 gsl_spmatrix_alloc()
   Allocate a sparse matrix in triplet representation
@@ -108,6 +112,14 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
           GSL_ERROR_VAL("failed to allocate space for column indices",
                         GSL_ENOMEM, 0);
         }
+
+      m->btree = avl_create(compare_triplet, (void *) m, NULL);
+      if (!m->btree)
+        {
+          gsl_spmatrix_free(m);
+          GSL_ERROR_VAL("failed to allocate space for AVL tree",
+                        GSL_ENOMEM, 0);
+        }
     }
   else if (sptype == GSL_SPMATRIX_CCS)
     {
@@ -152,6 +164,9 @@ gsl_spmatrix_free(gsl_spmatrix *m)
 
   if (m->work)
     free(m->work);
+
+  if (m->btree)
+    avl_destroy(m->btree, NULL);
 
   free(m);
 } /* gsl_spmatrix_free() */
@@ -203,6 +218,29 @@ gsl_spmatrix_realloc(const size_t nzmax, gsl_spmatrix *m)
 
   m->nzmax = nzmax;
 
+  /* rebuild binary tree */
+  if (GSL_SPMATRIX_ISTRIPLET(m))
+    {
+      size_t n;
+
+      avl_destroy(m->btree, NULL);
+      m->btree = avl_create(compare_triplet, (void *) m, NULL);
+      if (!m->btree)
+        {
+          gsl_spmatrix_free(m);
+          GSL_ERROR("failed to allocate space for AVL tree", GSL_ENOMEM);
+        }
+
+      for (n = 0; n < m->nz; ++n)
+        {
+          void *ptr = avl_insert(m->btree, &m->data[n]);
+          if (ptr != NULL)
+            {
+              GSL_ERROR("detected duplicate entry", GSL_EINVAL);
+            }
+        }
+    }
+
   return s;
 } /* gsl_spmatrix_realloc() */
 
@@ -227,3 +265,89 @@ gsl_spmatrix_fprintf(FILE *stream, const gsl_spmatrix *m,
 
   return s;
 } /* gsl_spmatrix_fprintf() */
+
+/*
+gsl_spmatrix_compare_idx()
+  Comparison function for searching binary tree in triplet
+representation.
+
+To detect duplicate elements in the tree, we want to determine
+if there already exists an entry for (i,j) in the tree. Since
+the actual tree node stores only the data elements data[n],
+we will do pointer arithmetic to get from the given data[n]
+to the row/column indices i[n] and j[n].
+
+This compare function will sort the tree first by row i,
+and for equal rows, it will then sort by column j
+
+Inputs: ia - row index of element a
+        ja - column index of element a
+        ib - row index of element b
+        jb - column index of element b
+
+Return:
+  -1 if pa < pb: (ia,ja) < (ib,jb)
+  +1 if pa > pb: (ia,ja) > (ib,jb)
+   0 if pa = pb: (ia,ja) == (ib,jb)
+*/
+
+int
+gsl_spmatrix_compare_idx(const size_t ia, const size_t ja,
+                         const size_t ib, const size_t jb)
+{
+  if (ia < ib)
+    return -1;
+  else if (ia > ib)
+    return 1;
+  else
+    {
+      /* row indices are equal, sort by column index */
+      if (ja < jb)
+        return -1;
+      else if (ja > jb)
+        return 1;
+      else
+        return 0; /* row and column indices are equal */
+    }
+}
+
+/*
+compare_triplet()
+  Comparison function for searching binary tree in triplet
+representation.
+
+To detect duplicate elements in the tree, we want to determine
+if there already exists an entry for (i,j) in the tree. Since
+the actual tree node stores only the data elements data[n],
+we will do pointer arithmetic to get from the given data[n]
+to the row/column indices i[n] and j[n].
+
+This compare function will sort the tree first by row i,
+and for equal rows, it will then sort by column j
+
+Inputs: pa    - element 1 for comparison (double *) 
+        pb    - element 2 for comparison (double *)
+        param - parameter (gsl_spmatrix)
+
+Return:
+  -1 if pa < pb: (ia,ja) < (ib,jb)
+  +1 if pa > pb: (ia,ja) > (ib,jb)
+   0 if pa = pb: (ia,ja) == (ib,jb)
+*/
+
+static int
+compare_triplet(const void *pa, const void *pb, void *param)
+{
+  gsl_spmatrix *m = (gsl_spmatrix *) param;
+  const double *a = pa;
+  const double *b = pb;
+
+  /* pointer arithmetic to find indices in data array */
+  const size_t idxa = a - m->data;
+  const size_t idxb = b - m->data;
+
+  const size_t *mi = m->i;
+  const size_t *mj = m->p;
+
+  return gsl_spmatrix_compare_idx(mi[idxa], mj[idxa], mi[idxb], mj[idxb]);
+} /* compare_triplet() */

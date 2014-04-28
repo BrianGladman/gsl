@@ -56,11 +56,13 @@ __BEGIN_DECLS
 
 typedef struct
 {
-  size_t size1; /* number of rows */
-  size_t size2; /* number of columns */
+  size_t size1;  /* number of rows */
+  size_t size2;  /* number of columns */
 
-  size_t *i;    /* row indices of size nzmax */
-  double *data; /* matrix elements of size nzmax */
+  void *btree;   /* binary tree for sorting triplet data */
+
+  size_t *i;     /* row indices of size nzmax */
+  double *data;  /* matrix elements of size nzmax */
 
   /*
    * p contains the column indices (triplet) or column pointers (compcol)
@@ -71,8 +73,8 @@ typedef struct
    */
   size_t *p;
 
-  size_t nzmax; /* maximum number of matrix elements */
-  size_t nz;    /* number of non-zero values in matrix */
+  size_t nzmax;  /* maximum number of matrix elements */
+  size_t nz;     /* number of non-zero values in matrix */
 
   /*
    * workspace of size MAX(size1,size2)*MAX(sizeof(double),sizeof(size_t))
@@ -80,7 +82,7 @@ typedef struct
    */
   void *work;
 
-  size_t sptype;
+  size_t sptype; /* sparse storage type */
 } gsl_spmatrix;
 
 #define GSL_SPMATRIX_TRIPLET      (0)
@@ -100,6 +102,8 @@ void gsl_spmatrix_free(gsl_spmatrix *m);
 int gsl_spmatrix_realloc(const size_t nzmax, gsl_spmatrix *m);
 int gsl_spmatrix_set_zero(gsl_spmatrix *m);
 size_t gsl_spmatrix_nnz(const gsl_spmatrix *m);
+int gsl_spmatrix_compare_idx(const size_t ia, const size_t ja,
+                             const size_t ib, const size_t jb);
 
 /* spcopy.c */
 int gsl_spmatrix_memcpy(gsl_spmatrix *dest, const gsl_spmatrix *src);
