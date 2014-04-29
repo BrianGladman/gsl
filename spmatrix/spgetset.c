@@ -125,7 +125,7 @@ gsl_spmatrix_set(gsl_spmatrix *m, const size_t i, const size_t j,
       m->p[m->nz] = j;
       m->data[m->nz] = x;
 
-      ptr = avl_insert(m->btree, &m->data[m->nz]);
+      ptr = avl_insert(m->tree_data->tree, &m->data[m->nz]);
       if (ptr != NULL)
         {
           /* found duplicate entry (i,j), replace with new x */
@@ -161,7 +161,7 @@ Return: pointer to tree node data if found, NULL if not found
 static void *
 tree_find(const gsl_spmatrix *m, const size_t i, const size_t j)
 {
-  const struct avl_table *tree = (struct avl_table *) m->btree;
+  const struct avl_table *tree = (struct avl_table *) m->tree_data->tree;
   const struct avl_node *p;
 
   for (p = tree->avl_root; p != NULL; )

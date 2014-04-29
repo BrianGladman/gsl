@@ -39,6 +39,18 @@
 __BEGIN_DECLS
 
 /*
+ * Binary tree data structure for storing sparse matrix elements
+ * in triplet format. This is used for efficiently detecting
+ * duplicates and element retrieval via gsl_spmatrix_get
+ */
+typedef struct
+{
+  void *tree;       /* tree structure */
+  void *node_array; /* preallocated array of tree nodes */
+  size_t n;         /* number of tree nodes in use (<= nzmax) */
+} gsl_spmatrix_tree;
+
+/*
  * Triplet format:
  *
  * If data[n] = A_{ij}, then:
@@ -74,7 +86,7 @@ typedef struct
   size_t nzmax;  /* maximum number of matrix elements */
   size_t nz;     /* number of non-zero values in matrix */
 
-  void *btree;   /* binary tree for sorting triplet data */
+  gsl_spmatrix_tree *tree_data; /* binary tree for sorting triplet data */
 
   /*
    * workspace of size MAX(size1,size2)*MAX(sizeof(double),sizeof(size_t))

@@ -28,6 +28,14 @@
 #include "avl.c"
 
 static int compare_triplet(const void *pa, const void *pb, void *param);
+static void *avl_spmalloc (size_t size, void *param);
+static void avl_spfree (void *block, void *param);
+
+static struct libavl_allocator avl_allocator_spmatrix =
+{
+  avl_spmalloc,
+  avl_spfree
+};
 
 /*
 gsl_spmatrix_alloc()
@@ -105,19 +113,40 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
 
   if (sptype == GSL_SPMATRIX_TRIPLET)
     {
+      m->tree_data = malloc(sizeof(gsl_spmatrix_tree));
+      if (!m->tree_data)
+        {
+          gsl_spmatrix_free(m);
+          GSL_ERROR_VAL("failed to allocate space for AVL tree struct",
+                        GSL_ENOMEM, 0);
+        }
+
+      m->tree_data->n = 0;
+
+      /* allocate tree data structure */
+      m->tree_data->tree = avl_create(compare_triplet, (void *) m,
+                                      &avl_allocator_spmatrix);
+      if (!m->tree_data->tree)
+        {
+          gsl_spmatrix_free(m);
+          GSL_ERROR_VAL("failed to allocate space for AVL tree",
+                        GSL_ENOMEM, 0);
+        }
+
+      /* preallocate nzmax tree nodes */
+      m->tree_data->node_array = malloc(m->nzmax * sizeof(struct avl_node));
+      if (!m->tree_data->node_array)
+        {
+          gsl_spmatrix_free(m);
+          GSL_ERROR_VAL("failed to allocate space for AVL tree nodes",
+                        GSL_ENOMEM, 0);
+        }
+
       m->p = malloc(m->nzmax * sizeof(size_t));
       if (!m->p)
         {
           gsl_spmatrix_free(m);
           GSL_ERROR_VAL("failed to allocate space for column indices",
-                        GSL_ENOMEM, 0);
-        }
-
-      m->btree = avl_create(compare_triplet, (void *) m, NULL);
-      if (!m->btree)
-        {
-          gsl_spmatrix_free(m);
-          GSL_ERROR_VAL("failed to allocate space for AVL tree",
                         GSL_ENOMEM, 0);
         }
     }
@@ -165,8 +194,16 @@ gsl_spmatrix_free(gsl_spmatrix *m)
   if (m->work)
     free(m->work);
 
-  if (m->btree)
-    avl_destroy(m->btree, NULL);
+  if (m->tree_data)
+    {
+      if (m->tree_data->tree)
+        avl_destroy(m->tree_data->tree, NULL);
+
+      if (m->tree_data->node_array)
+        free(m->tree_data->node_array);
+
+      free(m->tree_data);
+    }
 
   free(m);
 } /* gsl_spmatrix_free() */
@@ -216,30 +253,50 @@ gsl_spmatrix_realloc(const size_t nzmax, gsl_spmatrix *m)
 
   m->data = (double *) ptr;
 
-  m->nzmax = nzmax;
-
   /* rebuild binary tree */
   if (GSL_SPMATRIX_ISTRIPLET(m))
     {
       size_t n;
 
-      avl_destroy(m->btree, NULL);
-      m->btree = avl_create(compare_triplet, (void *) m, NULL);
-      if (!m->btree)
+      /* free old tree - this call must come before node_array is
+       * realloced, since it will traverse the current tree to free
+       * each node
+       */
+      avl_destroy(m->tree_data->tree, NULL);
+
+      ptr = realloc(m->tree_data->node_array, nzmax * sizeof(struct avl_node));
+      if (!ptr)
+        {
+          GSL_ERROR("failed to allocate space for AVL tree nodes", GSL_ENOMEM);
+        }
+
+      m->tree_data->node_array = ptr;
+
+      /*
+       * need to reinsert all tree elements since the m->data addresses
+       * have changed
+       */
+      m->tree_data->tree = avl_create(compare_triplet, (void *) m,
+                                      &avl_allocator_spmatrix);
+      if (!m->tree_data->tree)
         {
           gsl_spmatrix_free(m);
           GSL_ERROR("failed to allocate space for AVL tree", GSL_ENOMEM);
         }
 
+      m->tree_data->n = 0;
       for (n = 0; n < m->nz; ++n)
         {
-          void *ptr = avl_insert(m->btree, &m->data[n]);
+          void *ptr = avl_insert(m->tree_data->tree, &m->data[n]);
           if (ptr != NULL)
             {
               GSL_ERROR("detected duplicate entry", GSL_EINVAL);
             }
         }
     }
+
+  /* update to new nzmax */
+  m->nzmax = nzmax;
 
   return s;
 } /* gsl_spmatrix_realloc() */
@@ -346,3 +403,37 @@ compare_triplet(const void *pa, const void *pb, void *param)
 
   return gsl_spmatrix_compare_idx(m->i[idxa], m->p[idxa], m->i[idxb], m->p[idxb]);
 } /* compare_triplet() */
+
+static void *
+avl_spmalloc (size_t size, void *param)
+{
+  gsl_spmatrix *m = (gsl_spmatrix *) param;
+
+  /*
+   * return the next available avl_node slot; index
+   * m->tree_data->n keeps track of next open slot
+   */
+  if (m->tree_data->n < m->nzmax)
+    {
+      size_t offset = m->tree_data->n * sizeof(struct avl_node);
+      ++(m->tree_data->n);
+      return m->tree_data->node_array + offset;
+    }
+  else
+    {
+      /*
+       * we should never get here - gsl_spmatrix_realloc() should
+       * be called before exceeding nzmax nodes
+       */
+      GSL_ERROR_VOID("attemping to allocate tree node past nzmax", GSL_EINVAL);
+    }
+}
+
+static void
+avl_spfree (void *block, void *param)
+{
+  /*
+   * do nothing - instead of allocating/freeing individual nodes,
+   * we malloc and free nzmax nodes at a time
+   */
+}

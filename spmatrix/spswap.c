@@ -68,7 +68,7 @@ gsl_spmatrix_transpose_memcpy(gsl_spmatrix *dest, const gsl_spmatrix *src)
               dest->data[n] = src->data[n];
 
               /* copy binary tree data */
-              ptr = avl_insert(dest->btree, &dest->data[n]);
+              ptr = avl_insert(dest->tree_data->tree, &dest->data[n]);
               if (ptr != NULL)
                 {
                   GSL_ERROR("detected duplicate entry", GSL_EINVAL);

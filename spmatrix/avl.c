@@ -19,6 +19,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/*
+ * This code is originally from GNU libavl. The memory management
+ * was slightly modified for use with preallocating GSL sparse matrices
+ *
+ * The allocator->libavl_malloc function is called only for creating
+ * a new avl_node (tree node). This allows GSL to preallocate some number
+ * of avl_node structs and then return pointers to them while the tree
+ * is being assembled, avoiding multiple malloc calls
+ */
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,30 +44,19 @@ typedef void *avl_copy_func (void *avl_item, void *avl_param);
 /* Memory allocator. */
 struct libavl_allocator
   {
-    void *(*libavl_malloc) (struct libavl_allocator *, size_t libavl_size);
-    void (*libavl_free) (struct libavl_allocator *, void *libavl_block);
+    void *(*libavl_malloc) (size_t libavl_size, void *param);
+    void (*libavl_free) (void *libavl_block, void *param);
   };
 
 /* Default memory allocator. */
 static struct libavl_allocator avl_allocator_default;
-static void *avl_malloc (struct libavl_allocator *, size_t);
-static void avl_free (struct libavl_allocator *, void *);
+static void *avl_malloc (size_t, void *param);
+static void avl_free (void *, void *param);
 
 /* Maximum AVL tree height. */
 #ifndef AVL_MAX_HEIGHT
 #define AVL_MAX_HEIGHT 92
 #endif
-
-/* Tree data structure. */
-struct avl_table
-  {
-    struct avl_node *avl_root;          /* Tree's root. */
-    avl_comparison_func *avl_compare;   /* Comparison function. */
-    void *avl_param;                    /* Extra argument to |avl_compare|. */
-    struct libavl_allocator *avl_alloc; /* Memory allocator. */
-    size_t avl_count;                   /* Number of items in tree. */
-    unsigned long avl_generation;       /* Generation number. */
-  };
 
 /* An AVL tree node. */
 struct avl_node
@@ -67,14 +66,14 @@ struct avl_node
     signed char avl_balance;       /* Balance factor. */
   };
 
-/* AVL traverser structure. */
-struct avl_traverser
+/* Tree data structure. */
+struct avl_table
   {
-    struct avl_table *avl_table;        /* Tree being traversed. */
-    struct avl_node *avl_node;          /* Current node in tree. */
-    struct avl_node *avl_stack[AVL_MAX_HEIGHT];
-                                        /* All the nodes above |avl_node|. */
-    size_t avl_height;                  /* Number of nodes in |avl_parent|. */
+    struct avl_node *avl_root;          /* Tree's root. */
+    avl_comparison_func *avl_compare;   /* Comparison function. */
+    void *avl_param;                    /* Extra argument to |avl_compare|. */
+    struct libavl_allocator *avl_alloc; /* Memory allocator. */
+    size_t avl_count;                   /* Number of items in tree. */
     unsigned long avl_generation;       /* Generation number. */
   };
 
@@ -89,8 +88,6 @@ static void *avl_insert (struct avl_table *, void *);
 static void *avl_replace (struct avl_table *, void *);
 static void *avl_delete (struct avl_table *, const void *);
 static void *avl_find (const struct avl_table *, const void *);
-
-#define avl_count(table) ((size_t) (table)->avl_count)
 
 /* Creates and returns a new table
    with comparison function |compare| using parameter |param|
@@ -107,7 +104,8 @@ avl_create (avl_comparison_func *compare, void *param,
   if (allocator == NULL)
     allocator = &avl_allocator_default;
 
-  tree = allocator->libavl_malloc (allocator, sizeof *tree);
+  /*tree = allocator->libavl_malloc (allocator, sizeof *tree);*/
+  tree = malloc(sizeof *tree);
   if (tree == NULL)
     return NULL;
 
@@ -177,7 +175,7 @@ avl_probe (struct avl_table *tree, void *item)
     }
 
   n = q->avl_link[dir] =
-    tree->avl_alloc->libavl_malloc (tree->avl_alloc, sizeof *n);
+    tree->avl_alloc->libavl_malloc (sizeof *n, tree->avl_param);
   if (n == NULL)
     return NULL;
 
@@ -356,7 +354,7 @@ avl_delete (struct avl_table *tree, const void *item)
         }
     }
 
-  tree->avl_alloc->libavl_free (tree->avl_alloc, p);
+  tree->avl_alloc->libavl_free (p, tree->avl_param);
 
   assert (k > 0);
   while (--k > 0)
@@ -506,8 +504,8 @@ avl_copy (const struct avl_table *org, avl_copy_func *copy,
           assert (height < 2 * (AVL_MAX_HEIGHT + 1));
 
           y->avl_link[0] =
-            new->avl_alloc->libavl_malloc (new->avl_alloc,
-                                           sizeof *y->avl_link[0]);
+            new->avl_alloc->libavl_malloc (sizeof *y->avl_link[0],
+                                           new->avl_param);
           if (y->avl_link[0] == NULL)
             {
               if (y != (struct avl_node *) &new->avl_root)
@@ -546,8 +544,8 @@ avl_copy (const struct avl_table *org, avl_copy_func *copy,
           if (x->avl_link[1] != NULL)
             {
               y->avl_link[1] =
-                new->avl_alloc->libavl_malloc (new->avl_alloc,
-                                               sizeof *y->avl_link[1]);
+                new->avl_alloc->libavl_malloc (sizeof *y->avl_link[1],
+                                               new->avl_param);
               if (y->avl_link[1] == NULL)
                 {
                   copy_error_recovery (stack, height, new, destroy);
@@ -585,7 +583,7 @@ avl_destroy (struct avl_table *tree, avl_item_func *destroy)
         q = p->avl_link[1];
         if (destroy != NULL && p->avl_data != NULL)
           destroy (p->avl_data, tree->avl_param);
-        tree->avl_alloc->libavl_free (tree->avl_alloc, p);
+        tree->avl_alloc->libavl_free (p, tree->avl_param);
       }
     else
       {
@@ -594,23 +592,21 @@ avl_destroy (struct avl_table *tree, avl_item_func *destroy)
         q->avl_link[1] = p;
       }
 
-  tree->avl_alloc->libavl_free (tree->avl_alloc, tree);
+  free(tree);
 }
 
 /* Allocates |size| bytes of space using |malloc()|.
    Returns a null pointer if allocation fails. */
 static void *
-avl_malloc (struct libavl_allocator *allocator, size_t size)
+avl_malloc (size_t size, void *param)
 {
-  assert (allocator != NULL && size > 0);
   return malloc (size);
 }
 
 /* Frees |block|. */
 static void
-avl_free (struct libavl_allocator *allocator, void *block)
+avl_free (void *block, void *param)
 {
-  assert (allocator != NULL && block != NULL);
   free (block);
 }
 

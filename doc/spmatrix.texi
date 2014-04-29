@@ -63,7 +63,7 @@ typedef struct
   size_t *p;
   size_t nzmax;
   size_t nz;
-  void *btree;
+  gsl_spmatrix_tree *tree_data;
   void *work;
   size_t sptype;
 @} gsl_spmatrix;
@@ -82,7 +82,7 @@ to the index in @var{data} of the start of column @var{j}. Thus, if
 @math{data[k] = A(i,j)}, then @math{i = i[k]} and @math{p[j] <= k < p[j+1]}.
 
 @noindent
-The parameter @var{btree} is a binary tree structure used in the triplet
+The parameter @var{tree_data} is a binary tree structure used in the triplet
 representation, specifically a balanced AVL tree. This speeds up element
 searches and duplicate detection during the matrix assembly process.
 The parameter @var{work} is additional workspace needed for various operations like
