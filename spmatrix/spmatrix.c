@@ -401,7 +401,8 @@ compare_triplet(const void *pa, const void *pb, void *param)
   const size_t idxa = (double *) pa - m->data;
   const size_t idxb = (double *) pb - m->data;
 
-  return gsl_spmatrix_compare_idx(m->i[idxa], m->p[idxa], m->i[idxb], m->p[idxb]);
+  return gsl_spmatrix_compare_idx(m->i[idxa], m->p[idxa],
+                                  m->i[idxb], m->p[idxb]);
 } /* compare_triplet() */
 
 static void *
