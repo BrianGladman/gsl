@@ -71,7 +71,7 @@ size_t gsl_interp2d_min_size(const gsl_interp2d * interp);
 size_t gsl_interp2d_type_min_size(const gsl_interp2d_type * T);
 int gsl_interp2d_set(const gsl_interp2d * interp, double zarr[],
                      const size_t i, const size_t j, const double z);
-double gsl_interp2d_get(const gsl_interp2d * interp, double zarr[],
+double gsl_interp2d_get(const gsl_interp2d * interp, const double zarr[],
                         const size_t i, const size_t j);
 size_t gsl_interp2d_idx(const gsl_interp2d * interp,
                         const size_t i, const size_t j);

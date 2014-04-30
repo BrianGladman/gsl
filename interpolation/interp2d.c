@@ -188,13 +188,13 @@ gsl_interp2d_eval (const gsl_interp2d * interp, const double xarr[],
 
 double
 gsl_interp2d_eval_extrap (const gsl_interp2d * interp,
-                             const double xarr[],
-                             const double yarr[],
-                             const double zarr[],
-                             const double x,
-                             const double y,
-                             gsl_interp_accel * xa,
-                             gsl_interp_accel * ya)
+                          const double xarr[],
+                          const double yarr[],
+                          const double zarr[],
+                          const double x,
+                          const double y,
+                          gsl_interp_accel * xa,
+                          gsl_interp_accel * ya)
 {
   double z;
   int status =
@@ -391,7 +391,7 @@ gsl_interp2d_set(const gsl_interp2d * interp, double zarr[],
 } /* gsl_interp2d_set() */
 
 double
-gsl_interp2d_get(const gsl_interp2d * interp, double zarr[],
+gsl_interp2d_get(const gsl_interp2d * interp, const double zarr[],
                  const size_t i, const size_t j)
 {
   if (i >= interp->xsize)
