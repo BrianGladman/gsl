@@ -28,8 +28,10 @@ The functions described in this section are declared in the header files
 * 1D Interpolation References and Further Reading::  
 * 2D Introduction to Interpolation::  
 * 2D Interpolation Functions::     
+* 2D Interpolation Grids::     
 * 2D Interpolation Types::         
 * 2D Evaluation of Interpolating Functions::  
+* 2D Higher-level Interface::      
 @end menu
 
 @node 1D Introduction to Interpolation
@@ -413,6 +415,45 @@ the behavior for other arrangements is not defined.
 This function frees the interpolation object @var{interp}.
 @end deftypefun
 
+@node 2D Interpolation Grids
+@section 2D Interpolation Grids
+
+The 2D interpolation routines access the function values @math{z_{ij}}
+with the following ordering:
+@tex
+\beforedisplay
+$$
+z_{ij} = za[j*xsize + i]
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+z_ij = za[j*xsize + i]
+@end example
+
+@end ifinfo
+with @math{i = 0,...,xsize-1} and @math{j = 0,...,ysize-1}. However,
+for ease of use, the following functions are provided to add and retrieve
+elements from the function grid without requiring knowledge of the
+internal ordering.
+
+@deftypefun int gsl_interp2d_set (const gsl_interp2d * @var{interp}, double @var{za}[], const size_t @var{i}, const size_t @var{j}, const double @var{z})
+This function sets the value @math{z_{ij}} for grid point
+(@var{i},@var{j}) of the array @var{za} to @var{z}.
+@end deftypefun
+
+@deftypefun double gsl_interp2d_get (const gsl_interp2d * @var{interp}, const double @var{za}[], const size_t @var{i}, const size_t @var{j})
+This function returns the value @math{z_{ij}} for grid point
+(@var{i},@var{j}) stored in the array @var{za}.
+@end deftypefun
+
+@deftypefun size_t gsl_interp2d_idx (const gsl_interp2d * @var{interp}, const size_t @var{i}, const size_t @var{j})
+This function returns the index corresponding to the grid point
+(@var{i},@var{j}). The index is given by @math{j*xsize + i}.
+@end deftypefun
+
 @node 2D Interpolation Types
 @section 2D Interpolation Types
 @tpindex gsl_interp2d_type
@@ -429,6 +470,30 @@ additional memory.
 Bicubic interpolation.
 @end deffn
 
+@deftypefun {const char *} gsl_interp2d_name (const gsl_interp2d * @var{interp})
+This function returns the name of the interpolation type used by @var{interp}.
+For example,
+
+@example
+printf ("interp uses '%s' interpolation.\n", 
+        gsl_interp2d_name (interp));
+@end example
+
+@noindent
+would print something like,
+
+@example
+interp uses 'bilinear' interpolation.
+@end example
+@end deftypefun
+
+@deftypefun {unsigned int} gsl_interp2d_min_size (const gsl_interp2d * @var{interp})
+@deftypefunx {unsigned int} gsl_interp2d_type_min_size (const gsl_interp2d_type * @var{T})
+These functions return the minimum number of points required by the
+interpolation object @var{interp} or interpolation type @var{T}.  For
+example, bicubic interpolation requires a minimum of 4 points.
+@end deftypefun
+
 @node 2D Evaluation of Interpolating Functions
 @section 2D Evaluation of Interpolating Functions
 
@@ -440,4 +505,120 @@ arrays @var{xa}, @var{ya}, and @var{za} and the accelerators @var{xacc}
 and @var{yacc}.  When @var{x} is outside the range of @var{xa} or @var{y}
 is outside the range of @var{ya}, the error code
 @code{GSL_EDOM} is returned.
+@end deftypefun
+
+@deftypefun double gsl_interp2d_eval_extrap (const gsl_interp2d * @var{interp}, const double @var{xa}[], const double @var{ya}[], const double @var{za}[], const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc})
+@deftypefunx int gsl_interp2d_eval_extrap_e (const gsl_interp2d * @var{interp}, const double @var{xa}[], const double @var{ya}[], const double @var{za}[], const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc}, double * @var{z})
+These functions return the interpolated value of @var{z} for a given
+point (@var{x},@var{y}), using the interpolation object @var{interp}, data
+arrays @var{xa}, @var{ya}, and @var{za} and the accelerators @var{xacc}
+and @var{yacc}. The functions perform no bounds checking, so
+when @var{x} is outside the range of @var{xa} or @var{y}
+is outside the range of @var{ya}, extrapolation is performed.
+@end deftypefun
+
+@deftypefun double gsl_interp2d_eval_deriv_x (const gsl_interp2d * @var{interp}, const double @var{xa}[], const double @var{ya}[], const double @var{za}[], const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc})
+@deftypefunx int gsl_interp2d_eval_deriv_x_e (const gsl_interp2d * @var{interp}, const double @var{xa}[], const double @var{ya}[], const double @var{za}[], const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc}, double * @var{d})
+These functions return the interpolated value @var{d}
+@math{= \partial z / \partial x} for a given point (@var{x},@var{y}),
+using the interpolation object @var{interp}, data
+arrays @var{xa}, @var{ya}, and @var{za} and the accelerators @var{xacc}
+and @var{yacc}.  When @var{x} is outside the range of @var{xa} or @var{y}
+is outside the range of @var{ya}, the error code
+@code{GSL_EDOM} is returned.
+@end deftypefun
+
+@deftypefun double gsl_interp2d_eval_deriv_y (const gsl_interp2d * @var{interp}, const double @var{xa}[], const double @var{ya}[], const double @var{za}[], const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc})
+@deftypefunx int gsl_interp2d_eval_deriv_y_e (const gsl_interp2d * @var{interp}, const double @var{xa}[], const double @var{ya}[], const double @var{za}[], const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc}, double * @var{d})
+These functions return the interpolated value @var{d}
+@math{= \partial z / \partial y} for a given point (@var{x},@var{y}),
+using the interpolation object @var{interp}, data
+arrays @var{xa}, @var{ya}, and @var{za} and the accelerators @var{xacc}
+and @var{yacc}.  When @var{x} is outside the range of @var{xa} or @var{y}
+is outside the range of @var{ya}, the error code
+@code{GSL_EDOM} is returned.
+@end deftypefun
+
+@deftypefun double gsl_interp2d_eval_deriv_xx (const gsl_interp2d * @var{interp}, const double @var{xa}[], const double @var{ya}[], const double @var{za}[], const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc})
+@deftypefunx int gsl_interp2d_eval_deriv_xx_e (const gsl_interp2d * @var{interp}, const double @var{xa}[], const double @var{ya}[], const double @var{za}[], const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc}, double * @var{d})
+These functions return the interpolated value @var{d}
+@math{= \partial^2 z / \partial x^2} for a given point (@var{x},@var{y}),
+using the interpolation object @var{interp}, data
+arrays @var{xa}, @var{ya}, and @var{za} and the accelerators @var{xacc}
+and @var{yacc}.  When @var{x} is outside the range of @var{xa} or @var{y}
+is outside the range of @var{ya}, the error code
+@code{GSL_EDOM} is returned.
+@end deftypefun
+
+@deftypefun double gsl_interp2d_eval_deriv_yy (const gsl_interp2d * @var{interp}, const double @var{xa}[], const double @var{ya}[], const double @var{za}[], const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc})
+@deftypefunx int gsl_interp2d_eval_deriv_yy_e (const gsl_interp2d * @var{interp}, const double @var{xa}[], const double @var{ya}[], const double @var{za}[], const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc}, double * @var{d})
+These functions return the interpolated value @var{d}
+@math{= \partial^2 z / \partial y^2} for a given point (@var{x},@var{y}),
+using the interpolation object @var{interp}, data
+arrays @var{xa}, @var{ya}, and @var{za} and the accelerators @var{xacc}
+and @var{yacc}.  When @var{x} is outside the range of @var{xa} or @var{y}
+is outside the range of @var{ya}, the error code
+@code{GSL_EDOM} is returned.
+@end deftypefun
+
+@deftypefun double gsl_interp2d_eval_deriv_xy (const gsl_interp2d * @var{interp}, const double @var{xa}[], const double @var{ya}[], const double @var{za}[], const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc})
+@deftypefunx int gsl_interp2d_eval_deriv_xy_e (const gsl_interp2d * @var{interp}, const double @var{xa}[], const double @var{ya}[], const double @var{za}[], const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc}, double * @var{d})
+These functions return the interpolated value @var{d}
+@math{= \partial^2 z / \partial x \partial y} for a given point (@var{x},@var{y}),
+using the interpolation object @var{interp}, data
+arrays @var{xa}, @var{ya}, and @var{za} and the accelerators @var{xacc}
+and @var{yacc}.  When @var{x} is outside the range of @var{xa} or @var{y}
+is outside the range of @var{ya}, the error code
+@code{GSL_EDOM} is returned.
+@end deftypefun
+
+@node 2D Higher-level Interface
+@section 2D Higher-level Interface
+
+The functions described in the previous sections required the user to
+supply pointers to the @math{x}, @math{y}, and @math{z} arrays on each call.
+The following functions are equivalent to the corresponding
+@code{gsl_interp2d} functions but maintain a copy of this data in the
+@code{gsl_spline2d} object.  This removes the need to pass @var{xa},
+@var{ya}, and @var{za} as arguments on each evaluation. These functions are
+defined in the header file @file{gsl_spline2d.h}.
+
+@deftypefun {gsl_spline2d *} gsl_spline2d_alloc (const gsl_interp2d_type * @var{T}, size_t @var{xsize}, size_t @var{ysize})
+@tpindex gsl_spline2d
+@end deftypefun
+
+@deftypefun int gsl_spline2d_init (gsl_spline2d * @var{spline}, const double @var{xa}[], const double @var{ya}[], const double @var{za}[], size_t @var{xsize}, size_t @var{ysize})
+@end deftypefun
+
+@deftypefun void gsl_spline2d_free (gsl_spline2d * @var{spline})
+@end deftypefun
+
+@deftypefun {const char *} gsl_spline2d_name (const gsl_spline2d * @var{spline})
+@end deftypefun
+
+@deftypefun {unsigned int} gsl_spline2d_min_size (const gsl_spline2d * @var{spline})
+@end deftypefun
+
+@deftypefun double gsl_spline2d_eval (const gsl_spline2d * @var{spline}, const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc})
+@deftypefunx int gsl_spline2d_eval_e (const gsl_spline2d * @var{spline}, const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc}, double * @var{z})
+@end deftypefun
+
+@deftypefun double gsl_spline2d_eval_deriv_x (const gsl_spline2d * @var{spline}, const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc})
+@deftypefunx int gsl_spline2d_eval_deriv_x_e (const gsl_spline2d * @var{spline}, const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc}, double * @var{d})
+@end deftypefun
+
+@deftypefun double gsl_spline2d_eval_deriv_y (const gsl_spline2d * @var{spline}, const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc})
+@deftypefunx int gsl_spline2d_eval_deriv_y_e (const gsl_spline2d * @var{spline}, const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc}, double * @var{d})
+@end deftypefun
+
+@deftypefun double gsl_spline2d_eval_deriv_xx (const gsl_spline2d * @var{spline}, const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc})
+@deftypefunx int gsl_spline2d_eval_deriv_xx_e (const gsl_spline2d * @var{spline}, const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc}, double * @var{d})
+@end deftypefun
+
+@deftypefun double gsl_spline2d_eval_deriv_yy (const gsl_spline2d * @var{spline}, const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc})
+@deftypefunx int gsl_spline2d_eval_deriv_yy_e (const gsl_spline2d * @var{spline}, const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc}, double * @var{d})
+@end deftypefun
+
+@deftypefun double gsl_spline2d_eval_deriv_xy (const gsl_spline2d * @var{spline}, const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc})
+@deftypefunx int gsl_spline2d_eval_deriv_xy_e (const gsl_spline2d * @var{spline}, const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc}, double * @var{d})
 @end deftypefun
