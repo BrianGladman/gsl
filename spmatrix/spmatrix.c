@@ -410,6 +410,11 @@ avl_spmalloc (size_t size, void *param)
 {
   gsl_spmatrix *m = (gsl_spmatrix *) param;
 
+  if (size != sizeof(struct avl_node))
+    {
+      GSL_ERROR_NULL("attemping to allocate incorrect node size", GSL_EBADLEN);
+    }
+
   /*
    * return the next available avl_node slot; index
    * m->tree_data->n keeps track of next open slot
@@ -426,7 +431,7 @@ avl_spmalloc (size_t size, void *param)
        * we should never get here - gsl_spmatrix_realloc() should
        * be called before exceeding nzmax nodes
        */
-      GSL_ERROR_VOID("attemping to allocate tree node past nzmax", GSL_EINVAL);
+      GSL_ERROR_NULL("attemping to allocate tree node past nzmax", GSL_EINVAL);
     }
 }
 
