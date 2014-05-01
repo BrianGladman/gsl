@@ -649,5 +649,5 @@ where the corners are labeled with their fixed @math{z} values.
 
 @iftex
 @sp 1
-@center @image{interp2d,5in}
+@center @image{interp2d,6in}
 @end iftex
