@@ -32,6 +32,7 @@ The functions described in this section are declared in the header files
 * 2D Interpolation Types::         
 * 2D Evaluation of Interpolating Functions::  
 * 2D Higher-level Interface::      
+* 2D Interpolation Example programs::  
 @end menu
 
 @node 1D Introduction to Interpolation
@@ -622,3 +623,30 @@ defined in the header file @file{gsl_spline2d.h}.
 @deftypefun double gsl_spline2d_eval_deriv_xy (const gsl_spline2d * @var{spline}, const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc})
 @deftypefunx int gsl_spline2d_eval_deriv_xy_e (const gsl_spline2d * @var{spline}, const double @var{x}, const double @var{y}, gsl_interp_accel * @var{xacc}, gsl_interp_accel * @var{yacc}, double * @var{d})
 @end deftypefun
+
+@deftypefun int gsl_spline2d_set (const gsl_spline2d * @var{spline}, double @var{za}[], const size_t @var{i}, const size_t @var{j}, const double @var{z})
+@end deftypefun
+
+@deftypefun double gsl_spline2d_get (const gsl_spline2d * @var{spline}, const double @var{za}[], const size_t @var{i}, const size_t @var{j})
+This function returns the value @math{z_{ij}} for grid point
+(@var{i},@var{j}) stored in the array @var{za}.
+@end deftypefun
+
+@node 2D Interpolation Example programs
+@section 2D Interpolation Example programs
+
+The following example performs bilinear interpolation on the unit
+square, using @math{z} values of @math{(0,1,0.5,1)} going clockwise
+around the square.
+
+@example
+@verbatiminclude examples/interp2d.c
+@end example
+
+@noindent
+The results are shown in the following plot.
+
+@iftex
+@sp 1
+@center @image{interp2d,5in}
+@end iftex

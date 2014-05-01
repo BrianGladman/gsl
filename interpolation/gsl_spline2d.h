@@ -103,6 +103,11 @@ size_t gsl_spline2d_min_size(const gsl_spline2d * interp);
 
 const char * gsl_spline2d_name(const gsl_spline2d * interp);
 
+int gsl_spline2d_set(const gsl_spline2d * interp, double zarr[],
+                     const size_t i, const size_t j, const double z);
+double gsl_spline2d_get(const gsl_spline2d * interp, const double zarr[],
+                        const size_t i, const size_t j);
+
 __END_DECLS
 
 #endif /* __GSL_SPLINE2D_H__ */

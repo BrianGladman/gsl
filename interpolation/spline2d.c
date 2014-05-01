@@ -225,3 +225,17 @@ gsl_spline2d_name(const gsl_spline2d * interp)
 {
   return gsl_interp2d_name(&(interp->interp_object));
 }
+
+int
+gsl_spline2d_set(const gsl_spline2d * interp, double zarr[],
+                 const size_t i, const size_t j, const double z)
+{
+  return gsl_interp2d_set(&(interp->interp_object), zarr, i, j, z);
+} /* gsl_spline2d_set() */
+
+double
+gsl_spline2d_get(const gsl_spline2d * interp, const double zarr[],
+                 const size_t i, const size_t j)
+{
+  return gsl_interp2d_get(&(interp->interp_object), zarr, i, j);
+} /* gsl_spline2d_get() */
