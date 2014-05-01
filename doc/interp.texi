@@ -644,7 +644,8 @@ around the square.
 @end example
 
 @noindent
-The results are shown in the following plot.
+The results of the interpolation are shown in the following plot,
+where the corners are labeled with their fixed @math{z} values.
 
 @iftex
 @sp 1

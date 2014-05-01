@@ -10,10 +10,10 @@ main()
 {
   const gsl_interp2d_type *T = gsl_interp2d_bilinear;
   const size_t N = 100;             /* number of points to interpolate */
-  const size_t nx = 2;              /* x grid points */
-  const size_t ny = 2;              /* y grid points */
   const double xa[] = { 0.0, 1.0 }; /* define unit square */
   const double ya[] = { 0.0, 1.0 };
+  const size_t nx = sizeof(xa) / sizeof(double); /* x grid points */
+  const size_t ny = sizeof(ya) / sizeof(double); /* y grid points */
   double *za = malloc(nx * ny * sizeof(double));
   gsl_spline2d *spline = gsl_spline2d_alloc(T, nx, ny);
   gsl_interp_accel *xacc = gsl_interp_accel_alloc();
@@ -22,9 +22,9 @@ main()
 
   /* set z grid values */
   gsl_spline2d_set(spline, za, 0, 0, 0.0);
-  gsl_spline2d_set(spline, za, 1, 0, 1.0);
   gsl_spline2d_set(spline, za, 0, 1, 1.0);
   gsl_spline2d_set(spline, za, 1, 1, 0.5);
+  gsl_spline2d_set(spline, za, 1, 0, 1.0);
 
   /* initialize interpolation */
   gsl_spline2d_init(spline, xa, ya, za, nx, ny);
