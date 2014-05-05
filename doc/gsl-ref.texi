@@ -544,7 +544,7 @@ Implementation of the Mathieu functions.
 
 @item Patrick Alken
 Implementation of nonsymmetric and generalized eigensystems, B-splines,
-and robust linear regression.
+robust linear regression, and sparse matrices.
 
 @item Rhys Ulerich 
 Wrote the multiset routines.
