@@ -108,6 +108,28 @@ test_getset(const size_t M, const size_t N, const gsl_rng *r)
     gsl_test(status, "test_getset: M=%zu N=%zu m(0,0) = %f",
              M, N, gsl_spmatrix_get(m, 0, 0));
 
+    /* test gsl_spmatrix_set_zero() */
+    gsl_spmatrix_set(m, 0, 0, 1.0);
+    gsl_spmatrix_set_zero(m);
+    status = gsl_spmatrix_get(m, 0, 0) != 0.0;
+    gsl_test(status, "test_getset: M=%zu N=%zu set_zero m(0,0) = %f",
+             M, N, gsl_spmatrix_get(m, 0, 0));
+
+    /* resassemble matrix to ensure nz is calculated correctly */
+    k = 0;
+    for (i = 0; i < M; ++i)
+      {
+        for (j = 0; j < N; ++j)
+          {
+            double x = (double) ++k;
+            gsl_spmatrix_set(m, i, j, x);
+          }
+      }
+
+    status = gsl_spmatrix_nnz(m) != M * N;
+    gsl_test(status, "test_getset: M=%zu N=%zu set_zero nz = %zu",
+             M, N, gsl_spmatrix_nnz(m));
+
     gsl_spmatrix_free(m);
   }
 

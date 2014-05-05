@@ -82,6 +82,7 @@ static struct avl_table *avl_create (avl_comparison_func *, void *,
                                      struct libavl_allocator *);
 static struct avl_table *avl_copy (const struct avl_table *, avl_copy_func *,
                                    avl_item_func *, struct libavl_allocator *);
+static void avl_empty (struct avl_table *, avl_item_func *);
 static void avl_destroy (struct avl_table *, avl_item_func *);
 static void **avl_probe (struct avl_table *, void *);
 static void *avl_insert (struct avl_table *, void *);
@@ -568,14 +569,11 @@ avl_copy (const struct avl_table *org, avl_copy_func *copy,
     }
 }
 
-/* Frees storage allocated for |tree|.
-   If |destroy != NULL|, applies it to each data item in inorder. */
+/* empty tree (delete all nodes) but do not free the tree itself */
 static void
-avl_destroy (struct avl_table *tree, avl_item_func *destroy)
+avl_empty (struct avl_table *tree, avl_item_func *destroy)
 {
   struct avl_node *p, *q;
-
-  assert (tree != NULL);
 
   for (p = tree->avl_root; p != NULL; p = q)
     if (p->avl_link[0] == NULL)
@@ -592,6 +590,17 @@ avl_destroy (struct avl_table *tree, avl_item_func *destroy)
         q->avl_link[1] = p;
       }
 
+  tree->avl_root = NULL;
+  tree->avl_count = 0;
+  tree->avl_generation = 0;
+}
+
+/* Frees storage allocated for |tree|.
+   If |destroy != NULL|, applies it to each data item in inorder. */
+static void
+avl_destroy (struct avl_table *tree, avl_item_func *destroy)
+{
+  avl_empty(tree, destroy);
   free(tree);
 }
 

@@ -258,11 +258,9 @@ gsl_spmatrix_realloc(const size_t nzmax, gsl_spmatrix *m)
     {
       size_t n;
 
-      /* free old tree - this call must come before node_array is
-       * realloced, since it will traverse the current tree to free
-       * each node
-       */
-      avl_destroy(m->tree_data->tree, NULL);
+      /* reset tree to empty state, but don't free root tree ptr */
+      avl_empty(m->tree_data->tree, NULL);
+      m->tree_data->n = 0;
 
       ptr = realloc(m->tree_data->node_array, nzmax * sizeof(struct avl_node));
       if (!ptr)
@@ -276,15 +274,6 @@ gsl_spmatrix_realloc(const size_t nzmax, gsl_spmatrix *m)
        * need to reinsert all tree elements since the m->data addresses
        * have changed
        */
-      m->tree_data->tree = avl_create(compare_triplet, (void *) m,
-                                      &avl_allocator_spmatrix);
-      if (!m->tree_data->tree)
-        {
-          gsl_spmatrix_free(m);
-          GSL_ERROR("failed to allocate space for AVL tree", GSL_ENOMEM);
-        }
-
-      m->tree_data->n = 0;
       for (n = 0; n < m->nz; ++n)
         {
           void *ptr = avl_insert(m->tree_data->tree, &m->data[n]);
@@ -305,6 +294,14 @@ int
 gsl_spmatrix_set_zero(gsl_spmatrix *m)
 {
   m->nz = 0;
+
+  if (GSL_SPMATRIX_ISTRIPLET(m))
+    {
+      /* reset tree to empty state and node index pointer to 0 */
+      avl_empty(m->tree_data->tree, NULL);
+      m->tree_data->n = 0;
+    }
+
   return GSL_SUCCESS;
 } /* gsl_spmatrix_set_zero() */
 
