@@ -29,7 +29,6 @@
  * is being assembled, avoiding multiple malloc calls
  */
 
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
@@ -100,8 +99,6 @@ avl_create (avl_comparison_func *compare, void *param,
 {
   struct avl_table *tree;
 
-  assert (compare != NULL);
-
   if (allocator == NULL)
     allocator = &avl_allocator_default;
 
@@ -127,7 +124,6 @@ avl_find (const struct avl_table *tree, const void *item)
 {
   const struct avl_node *p;
 
-  assert (tree != NULL && item != NULL);
   for (p = tree->avl_root; p != NULL; )
     {
       int cmp = tree->avl_compare (item, p->avl_data, tree->avl_param);
@@ -158,8 +154,6 @@ avl_probe (struct avl_table *tree, void *item)
 
   unsigned char da[AVL_MAX_HEIGHT]; /* Cached comparison results. */
   int k = 0;              /* Number of cached results. */
-
-  assert (tree != NULL && item != NULL);
 
   z = (struct avl_node *) &tree->avl_root;
   y = tree->avl_root;
@@ -205,7 +199,6 @@ avl_probe (struct avl_table *tree, void *item)
         }
       else
         {
-          assert (x->avl_balance == +1);
           w = x->avl_link[1];
           x->avl_link[1] = w->avl_link[0];
           w->avl_link[0] = x;
@@ -232,7 +225,6 @@ avl_probe (struct avl_table *tree, void *item)
         }
       else
         {
-          assert (x->avl_balance == -1);
           w = x->avl_link[0];
           x->avl_link[0] = w->avl_link[1];
           w->avl_link[1] = x;
@@ -297,8 +289,6 @@ avl_delete (struct avl_table *tree, const void *item)
   struct avl_node *p;   /* Traverses tree to find node to delete. */
   int cmp;              /* Result of comparison between |item| and |p|. */
 
-  assert (tree != NULL && item != NULL);
-
   k = 0;
   p = (struct avl_node *) &tree->avl_root;
   for (cmp = -1; cmp != 0;
@@ -357,7 +347,6 @@ avl_delete (struct avl_table *tree, const void *item)
 
   tree->avl_alloc->libavl_free (p, tree->avl_param);
 
-  assert (k > 0);
   while (--k > 0)
     {
       struct avl_node *y = pa[k];
@@ -373,7 +362,6 @@ avl_delete (struct avl_table *tree, const void *item)
               if (x->avl_balance == -1)
                 {
                   struct avl_node *w;
-                  assert (x->avl_balance == -1);
                   w = x->avl_link[0];
                   x->avl_link[0] = w->avl_link[1];
                   w->avl_link[1] = x;
@@ -415,7 +403,6 @@ avl_delete (struct avl_table *tree, const void *item)
               if (x->avl_balance == +1)
                 {
                   struct avl_node *w;
-                  assert (x->avl_balance == +1);
                   w = x->avl_link[1];
                   x->avl_link[1] = w->avl_link[0];
                   w->avl_link[0] = x;
@@ -460,8 +447,6 @@ static void
 copy_error_recovery (struct avl_node **stack, int height,
                      struct avl_table *new, avl_item_func *destroy)
 {
-  assert (stack != NULL && height >= 0 && new != NULL);
-
   for (; height > 2; height -= 2)
     stack[height - 1]->avl_link[1] = NULL;
   avl_destroy (new, destroy);
@@ -487,7 +472,6 @@ avl_copy (const struct avl_table *org, avl_copy_func *copy,
   const struct avl_node *x;
   struct avl_node *y;
 
-  assert (org != NULL);
   new = avl_create (org->avl_compare, org->avl_param,
                     allocator != NULL ? allocator : org->avl_alloc);
   if (new == NULL)
@@ -502,8 +486,6 @@ avl_copy (const struct avl_table *org, avl_copy_func *copy,
     {
       while (x->avl_link[0] != NULL)
         {
-          assert (height < 2 * (AVL_MAX_HEIGHT + 1));
-
           y->avl_link[0] =
             new->avl_alloc->libavl_malloc (sizeof *y->avl_link[0],
                                            new->avl_param);
