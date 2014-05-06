@@ -276,7 +276,7 @@ gsl_spmatrix_realloc(const size_t nzmax, gsl_spmatrix *m)
        */
       for (n = 0; n < m->nz; ++n)
         {
-          void *ptr = avl_insert(m->tree_data->tree, &m->data[n]);
+          ptr = avl_insert(m->tree_data->tree, &m->data[n]);
           if (ptr != NULL)
             {
               GSL_ERROR("detected duplicate entry", GSL_EINVAL);
@@ -395,8 +395,8 @@ compare_triplet(const void *pa, const void *pb, void *param)
   gsl_spmatrix *m = (gsl_spmatrix *) param;
 
   /* pointer arithmetic to find indices in data array */
-  const size_t idxa = (double *) pa - m->data;
-  const size_t idxb = (double *) pb - m->data;
+  const size_t idxa = (const double *) pa - m->data;
+  const size_t idxb = (const double *) pb - m->data;
 
   return gsl_spmatrix_compare_idx(m->i[idxa], m->p[idxa],
                                   m->i[idxb], m->p[idxb]);
@@ -418,9 +418,13 @@ avl_spmalloc (size_t size, void *param)
    */
   if (m->tree_data->n < m->nzmax)
     {
-      size_t offset = m->tree_data->n * sizeof(struct avl_node);
-      ++(m->tree_data->n);
-      return m->tree_data->node_array + offset;
+      /* cast to char* for pointer arithmetic */
+      unsigned char *node_ptr = (unsigned char *) m->tree_data->node_array;
+
+      /* offset in bytes for next node slot */
+      size_t offset = (m->tree_data->n)++ * sizeof(struct avl_node);
+
+      return node_ptr + offset;
     }
   else
     {
