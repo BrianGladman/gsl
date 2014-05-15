@@ -23,7 +23,8 @@ sparse BLAS functions and related declarations.
 This function computes the matrix-vector product and sum
 @math{y \leftarrow \alpha op(A) x + \beta y}, where
 @math{op(A) = A}, @math{A^T} for @var{TransA} = @code{CblasNoTrans},
-@code{CblasTrans}.
+@code{CblasTrans}. In-place computations are not supported, so
+@var{x} and @var{y} must be distinct vectors.
 The matrix @var{A} may be in triplet or compressed format.
 @end deftypefun
 
