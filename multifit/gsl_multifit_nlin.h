@@ -214,6 +214,7 @@ typedef struct
   double lambda;                    /* damping parameter */
   const gsl_vector *L_diag;         /* diagonal damping matrix or NULL */
   const gsl_matrix *L;              /* general damping matrix or NULL */
+  gsl_vector *f;                    /* function values for finite diff J */
   gsl_vector *wts;                  /* weight vector for augmented system */
   gsl_multifit_fdfsolver * s;
   gsl_multifit_function_fdf *fdf;   /* user defined fdf */

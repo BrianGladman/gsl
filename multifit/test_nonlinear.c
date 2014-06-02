@@ -227,6 +227,8 @@ test_nonlinear(void)
             problem->fdf->df = NULL;
             test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
                      1.0e5 * eps_scale, 1.0, problem, NULL);
+            test_fdfridge(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                          1.0e5 * eps_scale, 1.0, problem, NULL);
             problem->fdf->df = fdf.df;
           }
 
@@ -260,6 +262,8 @@ test_nonlinear(void)
             problem->fdf->df = NULL;
             test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
                      1.0e5 * eps_scale, 1.0, problem, NULL);
+            test_fdfridge(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
+                          1.0e5 * eps_scale, 1.0, problem, NULL);
             problem->fdf->df = fdf.df;
           }
 

@@ -58,6 +58,14 @@ gsl_multifit_fdfridge_alloc (const gsl_multifit_fdfsolver_type * T,
                     GSL_ENOMEM, 0);
     }
 
+  work->f = gsl_vector_alloc(n);
+  if (work->f == NULL)
+    {
+      gsl_multifit_fdfridge_free(work);
+      GSL_ERROR_VAL("failed to allocate space for f vector",
+                    GSL_ENOMEM, 0);
+    }
+
   work->n = n;
   work->p = p;
   work->lambda = 0.0;
@@ -76,6 +84,9 @@ gsl_multifit_fdfridge_free(gsl_multifit_fdfridge *work)
 
   if (work->wts)
     gsl_vector_free(work->wts);
+    
+  if (work->f)
+    gsl_vector_free(work->f);
 
   free(work);
 }
@@ -413,8 +424,17 @@ fdfridge_df(const gsl_vector * x, void * params, gsl_matrix * J)
   gsl_matrix_view J_tik = gsl_matrix_submatrix(J, n, 0, p, p);
   gsl_vector_view diag = gsl_matrix_diagonal(&J_tik.matrix);
 
-  /* compute user supplied Jacobian */
-  status = gsl_multifit_eval_wdf(w->fdf, x, NULL, &J_user.matrix);
+  /* compute Jacobian */
+  if (w->fdf->df)
+    status = gsl_multifit_eval_wdf(w->fdf, x, NULL, &J_user.matrix);
+  else
+    {
+      /* compute f(x) and then finite difference Jacobian */
+      status = gsl_multifit_eval_wf(w->fdf, x, NULL, w->f);
+      status += gsl_multifit_fdfsolver_dif_df(x, NULL, w->fdf, w->f,
+                                              &J_user.matrix);
+    }
+
   if (status)
     return status;
 

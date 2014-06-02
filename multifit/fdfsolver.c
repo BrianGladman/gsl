@@ -348,7 +348,8 @@ int
 gsl_multifit_eval_wdf(gsl_multifit_function_fdf *fdf, const gsl_vector *x,
                       const gsl_vector *swts, gsl_matrix *dy)
 {
-  int s = ((*((fdf)->df)) (x, fdf->params, dy));
+  int status = ((*((fdf)->df)) (x, fdf->params, dy));
+
   ++(fdf->nevaldf);
 
   /* J <- sqrt(W) J */
@@ -366,5 +367,5 @@ gsl_multifit_eval_wdf(gsl_multifit_function_fdf *fdf, const gsl_vector *x,
         }
     }
 
-  return s;
+  return status;
 }
