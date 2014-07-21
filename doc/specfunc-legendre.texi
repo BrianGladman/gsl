@@ -314,16 +314,25 @@ index is given by @math{l(l+1)/2 + m}.
 
 @deftypefun double gsl_sf_legendre_Plm (int @var{l}, int @var{m}, double @var{x})
 @deftypefunx int gsl_sf_legendre_Plm_e (int @var{l}, int @var{m}, double @var{x}, gsl_sf_result * @var{result})
-These functions are now deprecated and will be removed in a future
-release; see @code{gsl_sf_legendre_array} and
-@code{gsl_sf_legendre_deriv_array}.
+These routines compute the associated Legendre polynomial
+@math{P_l^m(x)} for @c{$m \ge 0$}
+@math{m >= 0}, @c{$l \ge m$}
+@math{l >= m}, @c{$|x| \le 1$}
+@math{|x| <= 1}. 
+@comment Exceptional Return Values: GSL_EDOM, GSL_EOVRFLW
 @end deftypefun
 
 @deftypefun double gsl_sf_legendre_sphPlm (int @var{l}, int @var{m}, double @var{x})
 @deftypefunx int gsl_sf_legendre_sphPlm_e (int @var{l}, int @var{m}, double @var{x}, gsl_sf_result * @var{result})
-These functions are now deprecated and will be removed in a future
-release; see @code{gsl_sf_legendre_array} and
-@code{gsl_sf_legendre_deriv_array}.
+These routines compute the normalized associated Legendre polynomial
+@c{$\sqrt{(2l+1)/(4\pi)} \sqrt{(l-m)!/(l+m)!} P_l^m(x)$}
+@math{\sqrt@{(2l+1)/(4\pi)@} \sqrt@{(l-m)!/(l+m)!@} P_l^m(x)} suitable
+for use in spherical harmonics.  The parameters must satisfy @c{$m \ge 0$}
+@math{m >= 0}, @c{$l \ge m$}
+@math{l >= m}, @c{$|x| \le 1$}
+@math{|x| <= 1}. Theses routines avoid the overflows
+that occur for the standard normalization of @math{P_l^m(x)}.
+@comment Exceptional Return Values: GSL_EDOM
 @end deftypefun
 
 @deftypefun int gsl_sf_legendre_Plm_array (int @var{lmax}, int @var{m}, double @var{x}, double @var{result_array}[])

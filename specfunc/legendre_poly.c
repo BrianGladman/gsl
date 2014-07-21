@@ -290,8 +290,6 @@ gsl_sf_legendre_Pl_deriv_array(const int lmax, const double x, double * result_a
   }
 }
 
-#ifndef GSL_DISABLE_DEPRECATED
-
 int
 gsl_sf_legendre_Plm_e(const int l, const int m, const double x, gsl_sf_result * result)
 {
@@ -354,147 +352,6 @@ gsl_sf_legendre_Plm_e(const int l, const int m, const double x, gsl_sf_result * 
       result->err = err_amp * (0.5*(l-m) + 1.0) * GSL_DBL_EPSILON * fabs(p_ell);
 
       return GSL_SUCCESS;
-    }
-  }
-}
-
-
-int
-gsl_sf_legendre_Plm_array(const int lmax, const int m, const double x, double * result_array)
-{
-  /* If l is large and m is large, then we have to worry
-   * about overflow. Calculate an approximate exponent which
-   * measures the normalization of this thing.
-   */
-  const double dif = lmax-m;
-  const double sum = lmax+m;
-  const double t_d = ( dif == 0.0 ? 0.0 : 0.5 * dif * (log(dif)-1.0) );
-  const double t_s = ( dif == 0.0 ? 0.0 : 0.5 * sum * (log(sum)-1.0) );
-  const double exp_check = 0.5 * log(2.0*lmax+1.0) + t_d - t_s;
-
-  /* CHECK_POINTER(result_array) */
-
-  if(m < 0 || lmax < m || x < -1.0 || x > 1.0) {
-    GSL_ERROR ("domain error", GSL_EDOM);
-  }
-  else if(m > 0 && (x == 1.0 || x == -1.0)) {
-    int ell;
-    for(ell=m; ell<=lmax; ell++) result_array[ell-m] = 0.0;
-    return GSL_SUCCESS;
-  }
-  else if(exp_check < GSL_LOG_DBL_MIN + 10.0){
-    /* Bail out. */
-    GSL_ERROR ("overflow", GSL_EOVRFLW);
-  }
-  else {
-    double p_mm   = legendre_Pmm(m, x);
-    double p_mmp1 = x * (2.0*m + 1.0) * p_mm;
-
-    if(lmax == m){
-      result_array[0] = p_mm;
-      return GSL_SUCCESS;
-    }
-    else if(lmax == m + 1) {
-      result_array[0] = p_mm;
-      result_array[1] = p_mmp1;
-      return GSL_SUCCESS;
-    }
-    else {
-      double p_ellm2 = p_mm;
-      double p_ellm1 = p_mmp1;
-      double p_ell = 0.0;
-      int ell;
-
-      result_array[0] = p_mm;
-      result_array[1] = p_mmp1;
-
-      for(ell=m+2; ell <= lmax; ell++){
-        p_ell = (x*(2.0*ell-1.0)*p_ellm1 - (ell+m-1)*p_ellm2) / (ell-m);
-        p_ellm2 = p_ellm1;
-        p_ellm1 = p_ell;
-        result_array[ell-m] = p_ell;
-      }
-
-      return GSL_SUCCESS;
-    }
-  }
-}
-
-
-int
-gsl_sf_legendre_Plm_deriv_array(
-  const int lmax, const int m, const double x,
-  double * result_array,
-  double * result_deriv_array)
-{
-  if(m < 0 || m > lmax)
-  {
-    GSL_ERROR("m < 0 or m > lmax", GSL_EDOM);
-  }
-  else if(m == 0)
-  {
-    /* It is better to do m=0 this way, so we can more easily
-     * trap the divergent case which can occur when m == 1.
-     */
-    return gsl_sf_legendre_Pl_deriv_array(lmax, x, result_array, result_deriv_array);
-  }
-  else
-  {
-    int stat_array = gsl_sf_legendre_Plm_array(lmax, m, x, result_array);
-
-    if(stat_array == GSL_SUCCESS)
-    {
-      int ell;
-
-      if(m == 1 && (1.0 - fabs(x) < GSL_DBL_EPSILON))
-      {
-        /* This divergence is real and comes from the cusp-like
-         * behaviour for m = 1. For example, P[1,1] = - Sqrt[1-x^2].
-         */
-        GSL_ERROR("divergence near |x| = 1.0 since m = 1", GSL_EOVRFLW);
-      }
-      else if(m == 2 && (1.0 - fabs(x) < GSL_DBL_EPSILON))
-      {
-        /* m = 2 gives a finite nonzero result for |x| near 1 */
-        if(fabs(x - 1.0) < GSL_DBL_EPSILON)
-        {
-          for(ell = m; ell <= lmax; ell++) result_deriv_array[ell-m] = -0.25 * x * (ell - 1.0)*ell*(ell+1.0)*(ell+2.0);
-        }
-        else if(fabs(x + 1.0) < GSL_DBL_EPSILON)
-        {
-          for(ell = m; ell <= lmax; ell++)
-          {
-            const double sgn = ( GSL_IS_ODD(ell) ? 1.0 : -1.0 );
-            result_deriv_array[ell-m] = -0.25 * sgn * x * (ell - 1.0)*ell*(ell+1.0)*(ell+2.0);
-          }
-        }
-        return GSL_SUCCESS;
-      }
-      else 
-      {
-        /* m > 2 is easier to deal with since the endpoints always vanish */
-        if(1.0 - fabs(x) < GSL_DBL_EPSILON)
-        {
-          for(ell = m; ell <= lmax; ell++) result_deriv_array[ell-m] = 0.0;
-          return GSL_SUCCESS;
-        }
-        else
-        {
-          const double diff_a = 1.0 + x;
-          const double diff_b = 1.0 - x;
-          result_deriv_array[0] = - m * x / (diff_a * diff_b) * result_array[0];
-          if(lmax-m >= 1) result_deriv_array[1] = (2.0 * m + 1.0) * (x * result_deriv_array[0] + result_array[0]);
-          for(ell = m+2; ell <= lmax; ell++)
-          {
-            result_deriv_array[ell-m] = - (ell * x * result_array[ell-m] - (ell+m) * result_array[ell-1-m]) / (diff_a * diff_b);
-          }
-          return GSL_SUCCESS;
-        }
-      }
-    }
-    else
-    {
-      return stat_array;
     }
   }
 }
@@ -588,6 +445,147 @@ gsl_sf_legendre_sphPlm_e(const int l, int m, const double x, gsl_sf_result * res
       result->err  = y_ell_err + (0.5*(l-m) + 1.0) * GSL_DBL_EPSILON * fabs(y_ell);
 
       return GSL_SUCCESS;
+    }
+  }
+}
+
+#ifndef GSL_DISABLE_DEPRECATED
+
+int
+gsl_sf_legendre_Plm_array(const int lmax, const int m, const double x, double * result_array)
+{
+  /* If l is large and m is large, then we have to worry
+   * about overflow. Calculate an approximate exponent which
+   * measures the normalization of this thing.
+   */
+  const double dif = lmax-m;
+  const double sum = lmax+m;
+  const double t_d = ( dif == 0.0 ? 0.0 : 0.5 * dif * (log(dif)-1.0) );
+  const double t_s = ( dif == 0.0 ? 0.0 : 0.5 * sum * (log(sum)-1.0) );
+  const double exp_check = 0.5 * log(2.0*lmax+1.0) + t_d - t_s;
+
+  /* CHECK_POINTER(result_array) */
+
+  if(m < 0 || lmax < m || x < -1.0 || x > 1.0) {
+    GSL_ERROR ("domain error", GSL_EDOM);
+  }
+  else if(m > 0 && (x == 1.0 || x == -1.0)) {
+    int ell;
+    for(ell=m; ell<=lmax; ell++) result_array[ell-m] = 0.0;
+    return GSL_SUCCESS;
+  }
+  else if(exp_check < GSL_LOG_DBL_MIN + 10.0){
+    /* Bail out. */
+    GSL_ERROR ("overflow", GSL_EOVRFLW);
+  }
+  else {
+    double p_mm   = legendre_Pmm(m, x);
+    double p_mmp1 = x * (2.0*m + 1.0) * p_mm;
+
+    if(lmax == m){
+      result_array[0] = p_mm;
+      return GSL_SUCCESS;
+    }
+    else if(lmax == m + 1) {
+      result_array[0] = p_mm;
+      result_array[1] = p_mmp1;
+      return GSL_SUCCESS;
+    }
+    else {
+      double p_ellm2 = p_mm;
+      double p_ellm1 = p_mmp1;
+      double p_ell = 0.0;
+      int ell;
+
+      result_array[0] = p_mm;
+      result_array[1] = p_mmp1;
+
+      for(ell=m+2; ell <= lmax; ell++){
+        p_ell = (x*(2.0*ell-1.0)*p_ellm1 - (ell+m-1)*p_ellm2) / (ell-m);
+        p_ellm2 = p_ellm1;
+        p_ellm1 = p_ell;
+        result_array[ell-m] = p_ell;
+      }
+
+      return GSL_SUCCESS;
+    }
+  }
+}
+
+int
+gsl_sf_legendre_Plm_deriv_array(
+  const int lmax, const int m, const double x,
+  double * result_array,
+  double * result_deriv_array)
+{
+  if(m < 0 || m > lmax)
+  {
+    GSL_ERROR("m < 0 or m > lmax", GSL_EDOM);
+  }
+  else if(m == 0)
+  {
+    /* It is better to do m=0 this way, so we can more easily
+     * trap the divergent case which can occur when m == 1.
+     */
+    return gsl_sf_legendre_Pl_deriv_array(lmax, x, result_array, result_deriv_array);
+  }
+  else
+  {
+    int stat_array = gsl_sf_legendre_Plm_array(lmax, m, x, result_array);
+
+    if(stat_array == GSL_SUCCESS)
+    {
+      int ell;
+
+      if(m == 1 && (1.0 - fabs(x) < GSL_DBL_EPSILON))
+      {
+        /* This divergence is real and comes from the cusp-like
+         * behaviour for m = 1. For example, P[1,1] = - Sqrt[1-x^2].
+         */
+        GSL_ERROR("divergence near |x| = 1.0 since m = 1", GSL_EOVRFLW);
+      }
+      else if(m == 2 && (1.0 - fabs(x) < GSL_DBL_EPSILON))
+      {
+        /* m = 2 gives a finite nonzero result for |x| near 1 */
+        if(fabs(x - 1.0) < GSL_DBL_EPSILON)
+        {
+          for(ell = m; ell <= lmax; ell++) result_deriv_array[ell-m] = -0.25 * x * (ell - 1.0)*ell*(ell+1.0)*(ell+2.0);
+        }
+        else if(fabs(x + 1.0) < GSL_DBL_EPSILON)
+        {
+          for(ell = m; ell <= lmax; ell++)
+          {
+            const double sgn = ( GSL_IS_ODD(ell) ? 1.0 : -1.0 );
+            result_deriv_array[ell-m] = -0.25 * sgn * x * (ell - 1.0)*ell*(ell+1.0)*(ell+2.0);
+          }
+        }
+        return GSL_SUCCESS;
+      }
+      else 
+      {
+        /* m > 2 is easier to deal with since the endpoints always vanish */
+        if(1.0 - fabs(x) < GSL_DBL_EPSILON)
+        {
+          for(ell = m; ell <= lmax; ell++) result_deriv_array[ell-m] = 0.0;
+          return GSL_SUCCESS;
+        }
+        else
+        {
+          const double diff_a = 1.0 + x;
+          const double diff_b = 1.0 - x;
+          result_deriv_array[0] = - m * x / (diff_a * diff_b) * result_array[0];
+          if(lmax-m >= 1) result_deriv_array[1] = (2.0 * m + 1.0) * (x * result_deriv_array[0] + result_array[0]);
+          for(ell = m+2; ell <= lmax; ell++)
+          {
+            result_deriv_array[ell-m] = - (ell * x * result_array[ell-m] - (ell+m) * result_array[ell-1-m]) / (diff_a * diff_b);
+          }
+          return GSL_SUCCESS;
+        }
+      }
+    }
+    else
+    {
+      return stat_array;
     }
   }
 }
@@ -768,8 +766,6 @@ double gsl_sf_legendre_Pl(const int l, const double x)
   EVAL_RESULT(gsl_sf_legendre_Pl_e(l, x, &result));
 }
 
-#ifndef GSL_DISABLE_DEPRECATED
-
 double gsl_sf_legendre_Plm(const int l, const int m, const double x)
 {
   EVAL_RESULT(gsl_sf_legendre_Plm_e(l, m, x, &result));
@@ -779,5 +775,3 @@ double gsl_sf_legendre_sphPlm(const int l, const int m, const double x)
 {
   EVAL_RESULT(gsl_sf_legendre_sphPlm_e(l, m, x, &result));
 }
-
-#endif /* !GSL_DISABLE_DEPRECATED */

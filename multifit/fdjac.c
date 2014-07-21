@@ -93,6 +93,7 @@ gsl_multifit_fdfsolver_dif_df()
   Compute approximate Jacobian using finite differences
 
 Inputs: x   - parameter vector
+        wts - data weights (set to NULL if not needed)
         fdf - fdf
         f   - (input) function values f_i(x)
         J   - (output) approximate Jacobian matrix
