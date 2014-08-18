@@ -638,8 +638,11 @@ FUNCTION (test, file) (size_t stride, size_t N)
 
   size_t i;
 
+  char filename[] = "test.XXXXXX";
+  int fd = mkstemp(filename);
+
   {
-    FILE *f = fopen ("test.dat", "wb");
+    FILE *f = fdopen(fd, "wb");
 
     for (i = 0; i < N; i++)
       {
@@ -655,7 +658,7 @@ FUNCTION (test, file) (size_t stride, size_t N)
   }
 
   {
-    FILE *f = fopen ("test.dat", "rb");
+    FILE *f = fopen(filename, "rb");
 
     FUNCTION (gsl_vector, fread) (f, w);
 
@@ -668,11 +671,12 @@ FUNCTION (test, file) (size_t stride, size_t N)
     fclose (f);
   }
 
+  unlink(filename);
+
   FUNCTION (gsl_vector, free) (v);
   FUNCTION (gsl_vector, free) (w);
 
   gsl_test (status, NAME (gsl_vector) "_write and read work");
-
 }
 
 #if USES_LONGDOUBLE && ! HAVE_PRINTF_LONGDOUBLE
@@ -686,8 +690,11 @@ FUNCTION (test, text) (size_t stride, size_t N)
 
   size_t i;
 
+  char filename[] = "test.XXXXXX";
+  int fd = mkstemp(filename);
+
   {
-    FILE *f = fopen ("test.txt", "w");
+    FILE *f = fdopen(fd, "w");
 
     for (i = 0; i < N; i++)
       {
@@ -703,7 +710,7 @@ FUNCTION (test, text) (size_t stride, size_t N)
   }
 
   {
-    FILE *f = fopen ("test.txt", "r");
+    FILE *f = fopen(filename, "r");
 
     FUNCTION (gsl_vector, fscanf) (f, w);
 
@@ -715,6 +722,8 @@ FUNCTION (test, text) (size_t stride, size_t N)
       };
     fclose (f);
   }
+
+  unlink(filename);
 
   FUNCTION (gsl_vector, free) (v);
   FUNCTION (gsl_vector, free) (w);
