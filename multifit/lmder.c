@@ -40,6 +40,7 @@ typedef struct
     double fnorm;
     double delta;
     double par;
+    gsl_matrix *J;             /* Jacobian matrix */
     gsl_matrix *r;             /* R matrix in J = Q R P^T */
     gsl_vector *tau;
     gsl_vector *diag;          /* scaling matrix D = diag(d1,...,dp) */
@@ -76,10 +77,19 @@ static int
 lmder_alloc (void *vstate, size_t n, size_t p)
 {
   lmder_state_t *state = (lmder_state_t *) vstate;
-  gsl_matrix *r;
+  gsl_matrix *r, *J;
   gsl_vector *tau, *diag, *qtf, *newton, *gradient, *x_trial, *f_trial,
    *df, *sdiag, *rptdx, *w, *work1;
   gsl_permutation *perm;
+
+  J = gsl_matrix_alloc (n, p);
+
+  if (J == 0)
+    {
+      GSL_ERROR ("failed to allocate space for J", GSL_ENOMEM);
+    }
+
+  state->J = J;
 
   r = gsl_matrix_alloc (n, p);
 
@@ -360,11 +370,12 @@ lmder_gradient (void *vstate, gsl_vector * g)
 }
 
 static int
-lmder_covar (void *vstate, const double epsrel, gsl_matrix * covar)
+lmder_jac (void *vstate, gsl_matrix * J)
 {
   lmder_state_t *state = (lmder_state_t *) vstate;
+  int s = gsl_matrix_memcpy(J, state->J);
 
-  return gsl_multifit_covar_QRPT(state->r, state->perm, epsrel, covar);
+  return s;
 }
 
 static void
@@ -372,20 +383,50 @@ lmder_free (void *vstate)
 {
   lmder_state_t *state = (lmder_state_t *) vstate;
 
-  gsl_permutation_free (state->perm);
-  gsl_vector_free (state->work1);
-  gsl_vector_free (state->w);
-  gsl_vector_free (state->rptdx);
-  gsl_vector_free (state->sdiag);
-  gsl_vector_free (state->df);
-  gsl_vector_free (state->f_trial);
-  gsl_vector_free (state->x_trial);
-  gsl_vector_free (state->gradient);
-  gsl_vector_free (state->newton);
-  gsl_vector_free (state->qtf);
-  gsl_vector_free (state->diag);
-  gsl_vector_free (state->tau);
-  gsl_matrix_free (state->r);
+  if (state->perm)
+    gsl_permutation_free (state->perm);
+
+  if (state->work1)
+    gsl_vector_free (state->work1);
+
+  if (state->w)
+    gsl_vector_free (state->w);
+
+  if (state->rptdx)
+    gsl_vector_free (state->rptdx);
+
+  if (state->sdiag)
+    gsl_vector_free (state->sdiag);
+
+  if (state->df)
+    gsl_vector_free (state->df);
+
+  if (state->f_trial)
+    gsl_vector_free (state->f_trial);
+
+  if (state->x_trial)
+    gsl_vector_free (state->x_trial);
+
+  if (state->gradient)
+    gsl_vector_free (state->gradient);
+
+  if (state->newton)
+    gsl_vector_free (state->newton);
+
+  if (state->qtf)
+    gsl_vector_free (state->qtf);
+
+  if (state->diag)
+    gsl_vector_free (state->diag);
+
+  if (state->tau)
+    gsl_vector_free (state->tau);
+
+  if (state->r)
+    gsl_matrix_free (state->r);
+
+  if (state->J)
+    gsl_matrix_free (state->J);
 }
 
 static const gsl_multifit_fdfsolver_type lmder_type =
@@ -396,7 +437,7 @@ static const gsl_multifit_fdfsolver_type lmder_type =
   &lmder_set,
   &lmder_iterate,
   &lmder_gradient,
-  &lmder_covar,
+  &lmder_jac,
   &lmder_free
 };
 
@@ -408,7 +449,7 @@ static const gsl_multifit_fdfsolver_type lmsder_type =
   &lmsder_set,
   &lmsder_iterate,
   &lmder_gradient,
-  &lmder_covar,
+  &lmder_jac,
   &lmder_free
 };
 

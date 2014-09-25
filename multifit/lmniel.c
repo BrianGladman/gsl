@@ -356,10 +356,12 @@ lmniel_gradient(void *vstate, gsl_vector * g)
 }
 
 static int
-lmniel_covar(void *vstate, const double epsrel, gsl_matrix * covar)
+lmniel_jac(void *vstate, gsl_matrix * J)
 {
   lmniel_state_t *state = (lmniel_state_t *) vstate;
-  return gsl_multifit_covar(state->J, epsrel, covar);
+  int s = gsl_matrix_memcpy(J, state->J);
+
+  return s;
 }
 
 static const gsl_multifit_fdfsolver_type lmniel_type =
@@ -370,7 +372,7 @@ static const gsl_multifit_fdfsolver_type lmniel_type =
   &lmniel_set,
   &lmniel_iterate,
   &lmniel_gradient,
-  &lmniel_covar,
+  &lmniel_jac,
   &lmniel_free
 };
 

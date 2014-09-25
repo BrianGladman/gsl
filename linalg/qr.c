@@ -428,7 +428,6 @@ gsl_linalg_QR_QTmat (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix *
     }
 }
 
-
 /*  Form the orthogonal matrix Q from the packed QR matrix */
 
 int

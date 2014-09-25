@@ -206,6 +206,7 @@ lm_iteration:
       {
         int signum;
 
+        gsl_matrix_memcpy(state->J, r);
         gsl_linalg_QRPT_decomp (r, tau, perm, &signum, work1);
         gsl_vector_memcpy (qtf, f);
         gsl_linalg_QR_QTvec (r, tau, qtf);

@@ -896,12 +896,16 @@ There are no algorithms implemented in this section at the moment.
 @cindex least squares, covariance of best-fit parameters
 @cindex covariance matrix, nonlinear fits
 
-@deftypefun int gsl_multifit_fdfsolver_covar (gsl_multifit_fdfsolver * @var{s}, const double @var{epsrel}, gsl_matrix * @var{covar})
-This function uses the Jacobian matrix @var{J} which is internally
-stored in the solver @var{s} to compute the covariance
-matrix of the best-fit parameters, @var{covar}.  The parameter
-@var{epsrel} is used to remove linear-dependent columns when @var{J} is
-rank deficient.
+@deftypefun int gsl_multifit_fdfsolver_jac (gsl_multifit_fdfsolver * @var{s}, gsl_matrix * @var{J})
+This function stores the @math{n}-by-@math{p} Jacobian matrix for the
+current iteration of the solver @var{s} into the output @var{J}.
+@end deftypefun
+
+@deftypefun int gsl_multifit_covar (const gsl_matrix * @var{J}, const double @var{epsrel}, gsl_matrix * @var{covar})
+This function computes the covariance matrix of best-fit parameters
+using the Jacobian matrix @var{J} and stores it in @var{covar}.
+The parameter @var{epsrel} is used to remove linear-dependent columns
+when @var{J} is rank deficient.
 
 The covariance matrix is given by,
 @tex
@@ -973,13 +977,6 @@ matrix @math{\sigma^2 C}.  This estimates the statistical error on the
 best-fit parameters from the scatter of the underlying data.
 
 For more information about covariance matrices see @ref{Fitting Overview}.
-@end deftypefun
-
-@deftypefun int gsl_multifit_covar (const gsl_matrix * @var{J}, const double @var{epsrel}, gsl_matrix * @var{covar})
-This function computes the covariance matrix for the Jacobian
-matrix @var{J} and stores it in @var{covar}. See
-@code{gsl_multifit_fdfsolver_covar} for more information and a
-description of the @var{epsrel} parameter.
 @end deftypefun
 
 @comment ============================================================

@@ -32,6 +32,8 @@ set (void *vstate, const gsl_vector * swts, gsl_multifit_function_fdf * fdf,
     else /* finite difference approximation */
       status = gsl_multifit_fdfsolver_dif_df(x, swts, fdf, f, r);
 
+    gsl_matrix_memcpy(state->J, r);
+
     if (status)
       return status;
   }

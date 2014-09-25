@@ -131,7 +131,7 @@ typedef struct
                     gsl_multifit_function_fdf * fdf, gsl_vector * x,
                     gsl_vector * f, gsl_vector * dx);
     int (*gradient) (void *state, gsl_vector * g);
-    int (*covar) (void *state, const double epsrel, gsl_matrix * covar);
+    int (*jac) (void *state, gsl_matrix * J);
     void (*free) (void *state);
   }
 gsl_multifit_fdfsolver_type;
@@ -174,8 +174,8 @@ int gsl_multifit_fdfsolver_driver (gsl_multifit_fdfsolver * s,
                                    const double ftol,
                                    int *info);
 
-int gsl_multifit_fdfsolver_covar (gsl_multifit_fdfsolver * s,
-                                  const double epsrel, gsl_matrix * covar);
+int gsl_multifit_fdfsolver_jac (gsl_multifit_fdfsolver * s,
+                                gsl_matrix * J);
 
 void
 gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * s);

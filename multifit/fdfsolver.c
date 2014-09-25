@@ -84,7 +84,7 @@ gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * T,
       GSL_ERROR_VAL ("failed to allocate space for sqrt_wts", GSL_ENOMEM, 0);
     }
 
-  s->state = malloc (T->size);
+  s->state = calloc (1, T->size);
 
   if (s->state == 0)
     {
@@ -241,11 +241,20 @@ gsl_multifit_fdfsolver_driver (gsl_multifit_fdfsolver * s,
 } /* gsl_multifit_fdfsolver_driver() */
 
 int
-gsl_multifit_fdfsolver_covar (gsl_multifit_fdfsolver * s,
-                              const double epsrel, gsl_matrix * covar)
+gsl_multifit_fdfsolver_jac (gsl_multifit_fdfsolver * s, gsl_matrix * J)
 {
-  return (s->type->covar) (s->state, epsrel, covar);
-} /* gsl_multifit_fdfsolver_covar() */
+  const size_t n = s->f->size;
+  const size_t p = s->x->size;
+
+  if (n != J->size1 || p != J->size2)
+    {
+      GSL_ERROR ("Jacobian dimensions do not match solver", GSL_EBADLEN);
+    }
+  else
+    {
+      return (s->type->jac) (s->state, J);
+    }
+} /* gsl_multifit_fdfsolver_jac() */
 
 void
 gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * s)
