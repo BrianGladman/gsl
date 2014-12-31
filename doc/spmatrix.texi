@@ -49,7 +49,7 @@ for adding elements to the sparse matrix structure while it is being
 constructed, while the compressed column storage is better suited for
 matrix-matrix multiplication or linear solvers.
 
-@tpindex gsl_spmatrix
+@tindex gsl_spmatrix
 @noindent
 The @code{gsl_spmatrix} structure is defined as
 

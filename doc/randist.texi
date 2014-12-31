@@ -1626,7 +1626,7 @@ something like the Poisson Distribution, a modification would have to
 be made, since it only takes a finite set of @math{K} outcomes.
 
 @deftypefun {gsl_ran_discrete_t *} gsl_ran_discrete_preproc (size_t @var{K}, const double * @var{P})
-@tpindex gsl_ran_discrete_t
+@tindex gsl_ran_discrete_t
 @cindex Discrete random numbers
 @cindex Discrete random numbers, preprocessing
 This function returns a pointer to a structure that contains the lookup

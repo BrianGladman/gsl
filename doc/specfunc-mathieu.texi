@@ -170,7 +170,7 @@ for multiple orders, using array-based routines.  The array-based
 routines require a preallocated workspace.
 
 @deftypefun {gsl_sf_mathieu_workspace *} gsl_sf_mathieu_alloc (size_t @var{n}, double @var{qmax})
-@tpindex gsl_sf_mathieu_workspace
+@tindex gsl_sf_mathieu_workspace
 This function returns a workspace for the array versions of the
 Mathieu routines.  The arguments @var{n} and @var{qmax} specify the
 maximum order and @math{q}-value of Mathieu functions which can be

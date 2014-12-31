@@ -278,8 +278,8 @@ code changes.
 @section Initializing the Solver
 
 @deftypefun {gsl_multifit_fsolver *} gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * @var{T}, size_t @var{n}, size_t @var{p})
-@tpindex gsl_multifit_fsolver
-@tpindex gsl_multifit_fsolver_type
+@tindex gsl_multifit_fsolver
+@tindex gsl_multifit_fsolver_type
 This function returns a pointer to a newly allocated instance of a
 solver of type @var{T} for @var{n} observations and @var{p} parameters.
 The number of observations @var{n} must be greater than or equal to
@@ -291,8 +291,8 @@ code of @code{GSL_ENOMEM}.
 @end deftypefun
 
 @deftypefun {gsl_multifit_fdfsolver *} gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * @var{T}, size_t @var{n}, size_t @var{p})
-@tpindex gsl_multifit_fdfsolver
-@tpindex gsl_multifit_fdfsolver_type
+@tindex gsl_multifit_fdfsolver
+@tindex gsl_multifit_fdfsolver_type
 This function returns a pointer to a newly allocated instance of a
 derivative solver of type @var{T} for @var{n} observations and @var{p}
 parameters.  For example, the following code creates an instance of a
@@ -315,7 +315,7 @@ code of @code{GSL_ENOMEM}.
 @end deftypefun
 
 @deftypefun {gsl_multifit_fdfridge *} gsl_multifit_fdfridge_alloc (const gsl_multifit_fdfsolver_type * @var{T}, size_t @var{n}, size_t @var{p})
-@tpindex gsl_multifit_fdfridge
+@tindex gsl_multifit_fdfridge
 This function returns a pointer to a newly allocated instance of a
 derivative solver of type @var{T} for @var{n} observations and @var{p}
 parameters. The solver will automatically form the augmented

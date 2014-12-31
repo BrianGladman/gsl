@@ -91,7 +91,7 @@ The computation of B-spline functions requires a preallocated
 workspace of type @code{gsl_bspline_workspace}.
 
 @deftypefun {gsl_bspline_workspace *} gsl_bspline_alloc (const size_t @var{k}, const size_t @var{nbreak})
-@tpindex gsl_bspline_workspace
+@tindex gsl_bspline_workspace
 This function allocates a workspace for computing B-splines of order
 @var{k}. The number of breakpoints is given by @var{nbreak}. This
 leads to @math{n = nbreak + k - 2} basis functions. Cubic B-splines

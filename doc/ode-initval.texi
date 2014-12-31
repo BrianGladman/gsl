@@ -116,8 +116,8 @@ advance a solution from time @math{t} to @math{t+h} for a fixed
 step-size @math{h} and estimate the resulting local error.
 
 @deftypefun {gsl_odeiv2_step *} gsl_odeiv2_step_alloc (const gsl_odeiv2_step_type * @var{T}, size_t @var{dim})
-@tpindex gsl_odeiv2_step
-@tpindex gsl_odeiv2_step_type
+@tindex gsl_odeiv2_step
+@tindex gsl_odeiv2_step_type
 This function returns a pointer to a newly allocated instance of a
 stepping function of type @var{T} for a system of @var{dim}
 dimensions. Please note that if you use a stepper method that
@@ -295,8 +295,8 @@ produced by a stepping function and attempts to determine the optimal
 step-size for a user-specified level of error.
 
 @deftypefun {gsl_odeiv2_control *} gsl_odeiv2_control_standard_new (double @var{eps_abs}, double @var{eps_rel}, double @var{a_y}, double @var{a_dydt})
-@tpindex gsl_odeiv2_control
-@tpindex gsl_odeiv2_control_type
+@tindex gsl_odeiv2_control
+@tindex gsl_odeiv2_control_type
 The standard control object is a four parameter heuristic based on
 absolute and relative errors @var{eps_abs} and @var{eps_rel}, and
 scaling factors @var{a_y} and @var{a_dydt} for the system state
@@ -471,7 +471,7 @@ control function to reliably advance the solution forward one step
 using an acceptable step-size.
 
 @deftypefun {gsl_odeiv2_evolve *} gsl_odeiv2_evolve_alloc (size_t @var{dim})
-@tpindex gsl_odeiv2_evolve
+@tindex gsl_odeiv2_evolve
 This function returns a pointer to a newly allocated instance of an
 evolution function for a system of @var{dim} dimensions.
 @end deftypefun
