@@ -357,7 +357,7 @@ FUNCTION (test, func) (size_t stride, size_t N)
 
     for (i = 0; i < N; i++)
       {
-        if (FUNCTION (gsl_vector, get) (v, i) != (ATOMIC) (i*2.0))
+        if (FUNCTION (gsl_vector, get) (v, i) != (ATOMIC) ((ATOMIC)i*(ATOMIC)2.0))
           status = 1;
       };
 
@@ -371,7 +371,7 @@ FUNCTION (test, func) (size_t stride, size_t N)
 
     for (i = 0; i < N; i++)
       {
-        if (FUNCTION (gsl_vector, get) (v, i) != (ATOMIC) (i*2.0 + 7))
+        if (FUNCTION (gsl_vector, get) (v, i) != (ATOMIC) ((ATOMIC)i*(ATOMIC)2.0 + (ATOMIC)7))
           status = 1;
       };
 
