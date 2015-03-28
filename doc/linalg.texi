@@ -71,8 +71,9 @@ diagonal) contains @math{L}.  The diagonal elements of @math{L} are
 unity, and are not stored.
 
 The permutation matrix @math{P} is encoded in the permutation
-@var{p}. The @math{j}-th column of the matrix @math{P} is given by the
-@math{k}-th column of the identity matrix, where @math{k = p_j} the
+@var{p} on output. The @math{j}-th column of the matrix @math{P}
+is given by the @math{k}-th column of the identity matrix, where
+@math{k = p_j} the
 @math{j}-th element of the permutation vector. The sign of the
 permutation is given by @var{signum}. It has the value @math{(-1)^n},
 where @math{n} is the number of interchanges in the permutation.
