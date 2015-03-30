@@ -580,7 +580,7 @@ FUNCTION (test, ops) (const size_t M, const size_t N)
           {
             BASE r = FUNCTION(gsl_matrix,get) (m,i,j);
             BASE x = FUNCTION(gsl_matrix,get) (a,i,j);
-            BASE y = (i == j) ? (x + 5.0) : x;
+            BASE y = (i == j) ? (x + (ATOMIC) 5.0) : x;
             if (fabs(r - y) > 2 * GSL_FLT_EPSILON * fabs(y))
               status = 1;
           }
