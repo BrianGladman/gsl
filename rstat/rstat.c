@@ -31,7 +31,18 @@ gsl_rstat_alloc(void)
 
   w = calloc(1, sizeof(gsl_rstat_workspace));
 
+  if (w == 0)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for workspace", GSL_ENOMEM);
+    }
+
   w->median_workspace_p = gsl_rstat_quantile_alloc(0.5);
+
+  if (w->median_workspace_p == 0)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for median workspace",
+                      GSL_ENOMEM);
+    }
 
   gsl_rstat_reset(w);
 
@@ -112,7 +123,10 @@ gsl_rstat_mean(gsl_rstat_workspace *w)
 double
 gsl_rstat_variance(gsl_rstat_workspace *w)
 {
-  return (w->M2 / (w->n - 1));
+  if (w->n > 1)
+    return (w->M2 / (w->n - 1));
+  else
+    return 0.0;
 } /* gsl_rstat_variance() */
 
 double
@@ -127,9 +141,13 @@ gsl_rstat_sd(gsl_rstat_workspace *w)
 double
 gsl_rstat_sd_mean(gsl_rstat_workspace *w)
 {
-  double sd = gsl_rstat_sd(w);
-
-  return (sd / sqrt((double) w->n));
+  if (w->n > 0)
+    {
+      double sd = gsl_rstat_sd(w);
+      return (sd / sqrt((double) w->n));
+    }
+  else
+    return 0.0;
 } /* gsl_rstat_sd_mean() */
 
 double
@@ -141,15 +159,25 @@ gsl_rstat_median(gsl_rstat_workspace *w)
 double
 gsl_rstat_skew(gsl_rstat_workspace *w)
 {
-  double fac = pow(w->n - 1.0, 1.5) / (double) w->n;
-  return ((fac * w->M3) / pow(w->M2, 1.5));
+  if (w->n > 0)
+    {
+      double fac = pow(w->n - 1.0, 1.5) / (double) w->n;
+      return ((fac * w->M3) / pow(w->M2, 1.5));
+    }
+  else
+    return 0.0;
 } /* gsl_rstat_skew() */
 
 double
 gsl_rstat_kurtosis(gsl_rstat_workspace *w)
 {
-  double fac = (w->n - 1.0) * (w->n - 1.0) / (double)w->n;
-  return ((fac * w->M4) / (w->M2 * w->M2) - 3.0);
+  if (w->n > 0)
+    {
+      double fac = (w->n - 1.0) * (w->n - 1.0) / (double)w->n;
+      return ((fac * w->M4) / (w->M2 * w->M2) - 3.0);
+    }
+  else
+    return 0.0;
 } /* gsl_rstat_kurtosis() */
 
 int

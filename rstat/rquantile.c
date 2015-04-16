@@ -43,8 +43,10 @@ gsl_rstat_quantile_alloc(const double p)
   int i;
 
   w = calloc(1, sizeof(gsl_rstat_quantile_workspace));
-  if (!w)
-    return 0;
+  if (w == 0)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for workspace", GSL_ENOMEM);
+    }
 
   /* initialize positions n */
   for (i = 0; i < 5; ++i)
@@ -79,8 +81,6 @@ gsl_rstat_quantile_free(gsl_rstat_quantile_workspace *w)
 int
 gsl_rstat_quantile_add(const double x, gsl_rstat_quantile_workspace *w)
 {
-  int s = 0;
-
   if (w->n < 5)
     {
       w->q[w->n] = x;
@@ -160,7 +160,7 @@ gsl_rstat_quantile_add(const double x, gsl_rstat_quantile_workspace *w)
 
   ++(w->n);
 
-  return s;
+  return GSL_SUCCESS;
 } /* gsl_rstat_quantile_add() */
 
 double
