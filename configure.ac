@@ -613,6 +613,7 @@ qrng/Makefile          \
 randist/Makefile       \
 rng/Makefile           \
 roots/Makefile         \
+rstat/Makefile         \
 siman/Makefile         \
 sort/Makefile          \
 spblas/Makefile        \
