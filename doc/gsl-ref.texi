@@ -257,6 +257,7 @@ project homepage thanks to Daisuke Tominaga.
 * Quasi-Random Sequences::      
 * Random Number Distributions::  
 * Statistics::                  
+* Running Statistics::                  
 * Histograms::                  
 * N-tuples::                    
 * Monte Carlo Integration::     
@@ -374,9 +375,13 @@ project homepage thanks to Daisuke Tominaga.
 @chapter Random Number Distributions
 @include randist.texi
 
-@node Statistics, Histograms, Random Number Distributions, Top
+@node Statistics, Running Statistics, Random Number Distributions, Top
 @chapter Statistics
 @include statistics.texi
+
+@node Running Statistics, Histograms, Statistics, Top
+@chapter Running Statistics
+@include rstat.texi
 
 @node Histograms, N-tuples, Statistics, Top
 @chapter Histograms
