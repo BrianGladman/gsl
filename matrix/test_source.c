@@ -623,7 +623,12 @@ FUNCTION (test, text) (const size_t M, const size_t N)
   int k = 0;
 
   char filename[] = "test.XXXXXX";
+#if !defined( _MSC_VER )
   int fd = mkstemp(filename);
+#else
+  char * fd = _mktemp(filename);
+# define fdopen fopen
+#endif
 
   {
     FILE *f = fdopen(fd, "w");
@@ -679,7 +684,12 @@ FUNCTION (test, binary) (const size_t M, const size_t N)
   size_t k = 0;
 
   char filename[] = "test.XXXXXX";
+#if !defined( _MSC_VER )
   int fd = mkstemp(filename);
+#else
+  char * fd = _mktemp(filename);
+# define fdopen fopen
+#endif
 
   {
     FILE *f = fdopen(fd, "wb");
@@ -735,7 +745,12 @@ FUNCTION (test, binary_noncontiguous) (const size_t M, const size_t N)
   size_t k = 0;
 
   char filename[] = "test.XXXXXX";
+#if !defined( _MSC_VER )
   int fd = mkstemp(filename);
+#else
+  char * fd = _mktemp(filename);
+# define fdopen fopen
+#endif
 
   {
     FILE *f = fdopen(fd, "wb");
