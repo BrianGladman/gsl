@@ -719,8 +719,12 @@ FUNCTION (test, file) (size_t stride, size_t N)
   size_t i;
 
   char filename[] = "test.XXXXXX";
+#if !defined( _MSC_VER )
   int fd = mkstemp(filename);
-
+#else
+  char * fd = _mktemp(filename);
+#  define fdopen fopen
+#endif
   {
     FILE *f = fdopen (fd, "wb");
 
@@ -769,8 +773,12 @@ FUNCTION (test, text) (size_t stride, size_t N)
   size_t i;
 
   char filename[] = "test.XXXXXX";
-  int fd = mkstemp(filename);
-
+#if !defined( _MSC_VER )
+   int fd = mkstemp(filename);
+#else
+   char * fd = _mktemp(filename);
+#  define fdopen fopen
+#endif
   {
     FILE *f = fdopen (fd, "w");
 
