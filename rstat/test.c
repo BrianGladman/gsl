@@ -28,6 +28,7 @@
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
+#include <gsl/gsl_ieee_utils.h>
 
 double *
 random_data(const size_t n, gsl_rng *r)
@@ -99,6 +100,8 @@ main()
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
   const double tol1 = 1.0e-12;
   const double tol2 = 1.0e-3;
+
+  gsl_ieee_env_setup();
 
   {
     const size_t N = 100000;

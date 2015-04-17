@@ -191,6 +191,35 @@ This function returns the current estimate of the @math{p}-quantile.
 @node Running Statistics Example programs
 @section Examples
 
+Here is a basic example of how to use the statistical functions:
+
+@example
+@verbatiminclude examples/rstat.c
+@end example
+
+The program should produce the following output,
+
+@example
+@verbatiminclude examples/stat.out
+@end example
+
+@noindent
+This next program estimates the lower quartile, median and upper
+quartile from 10,000 samples of a random Rayleigh distribution,
+using the @math{P^2} algorithm of Jain and Chlamtec. For
+comparison, the exact values are also computed from the sorted
+dataset.
+
+@example
+@verbatiminclude examples/rquantile.c
+@end example
+
+The program should produce the following output,
+
+@example
+@verbatiminclude examples/rquantile.out
+@end example
+
 @node Running Statistics References and Further Reading
 @section References and Further Reading
 
@@ -199,7 +228,7 @@ in the paper,
 @itemize @w{}
 @item
 R. Jain and I. Chlamtac.
-@cite{The P^2 algorithmus for dynamic calculation of quantiles and histograms without storing observations},
+@cite{The P^2 algorithm for dynamic calculation of quantiles and histograms without storing observations},
 Communications of the ACM, Volume 28 (October), Number 10, 1985,
 p. 1076-1085.
 @end itemize
