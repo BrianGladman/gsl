@@ -383,7 +383,7 @@ project homepage thanks to Daisuke Tominaga.
 @chapter Running Statistics
 @include rstat.texi
 
-@node Histograms, N-tuples, Statistics, Top
+@node Histograms, N-tuples, Running Statistics, Top
 @chapter Histograms
 @include histogram.texi
 

@@ -1,5 +1,7 @@
 * What is new in gsl-2.0:
 
+** add running statistics module
+
 ** added bilinear and bicubic interpolation (David Zaslavsky)
 
 ** added function gsl_multifit_robust_residuals to compute robust
