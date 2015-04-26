@@ -119,6 +119,12 @@ gsl_rstat_quantile_add(const double x, gsl_rstat_quantile_workspace *w)
             }
         }
 
+      if (k < 0)
+        {
+          /* we could get here if x is nan */
+          GSL_ERROR ("invalid input argument x", GSL_EINVAL);
+        }
+
       /* step B2(a): update n_i */
       for (i = k + 1; i <= 4; ++i)
         ++(w->npos[i]);
