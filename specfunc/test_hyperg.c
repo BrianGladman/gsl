@@ -652,11 +652,11 @@ int test_hyperg(void)
   /* Test case from Robert L Wolpert <Wolpert@stat.duke.edu> */
 
   TEST_SF(s, gsl_sf_hyperg_2F1_e, (-1.0, -10.0, 1.0, 0.5, &r), 6.0, TEST_TOL0, GSL_SUCCESS);
-#endif
 
   /* Test case from ldnlwm@163.com */
 
   TEST_SF(s, gsl_sf_hyperg_2F1_e, (3.23191, -4.0229, 8.02291, 0.5, &r), 0.4300243900348170646, TEST_TOL2, GSL_SUCCESS);
+#endif
 
   /* 2F1 conj */
 
