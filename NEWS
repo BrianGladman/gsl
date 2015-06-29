@@ -10,7 +10,7 @@
 ** added Steffen monotonic interpolation method (Jean-François Caron)
 
 ** added new nonlinear least squares solver 'lmniel' suitable for
-   systems with large numbers of residuals
+   systems with large numbers of data
 
 ** nonlinear least squares solver now tracks the number of function
    and Jacobian evaluations, see example program for details
