@@ -298,7 +298,8 @@ value decomposition of the matrix @math{X}.
 @deftypefun {gsl_multifit_linear_workspace *} gsl_multifit_linear_alloc (size_t @var{n}, size_t @var{p})
 @tindex gsl_multifit_linear_workspace
 This function allocates a workspace for fitting a model to @var{n}
-observations using @var{p} parameters.
+observations using @var{p} parameters. The size of the workspace is
+@math{O(np + p^2)}.
 @end deftypefun
 
 @deftypefun void gsl_multifit_linear_free (gsl_multifit_linear_workspace * @var{work})
@@ -615,7 +616,8 @@ having very little or no effect on the fitted model.
 @deftypefun {gsl_multifit_robust_workspace *} gsl_multifit_robust_alloc (const gsl_multifit_robust_type * @var{T}, const size_t @var{n}, const size_t @var{p})
 @tindex gsl_multifit_robust_workspace
 This function allocates a workspace for fitting a model to @var{n}
-observations using @var{p} parameters. The type @var{T} specifies the
+observations using @var{p} parameters. The size of the workspace
+is @math{O(np + p^2)}. The type @var{T} specifies the
 function @math{\psi} and can be selected from the following choices.
 @deffn {Robust type} gsl_multifit_robust_default
 This specifies the @code{gsl_multifit_robust_bisquare} type (see below) and is a good
