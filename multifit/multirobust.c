@@ -43,7 +43,7 @@
 
 static int robust_test_convergence(const gsl_vector *c_prev, const gsl_vector *c,
                                    const double tol);
-static double robust_madsigma(const gsl_vector *x, gsl_multifit_robust_workspace *w);
+static double robust_madsigma(const gsl_vector *r, const size_t p, gsl_vector *workn);
 static double robust_robsigma(const gsl_vector *r, const double s,
                               const double tune, gsl_multifit_robust_workspace *w);
 static double robust_sigma(const double s_ols, const double s_rob,
@@ -264,16 +264,12 @@ gsl_multifit_robust_weights(const gsl_vector *r, gsl_vector *wts,
     {
       GSL_ERROR("residual vector does not match weight vector size", GSL_EBADLEN);
     }
-  else if (r->size > w->n)
-    {
-      GSL_ERROR("residual vector size larger than workspace", GSL_EBADLEN);
-    }
   else
     {
       int s;
       double sigma;
 
-      sigma = robust_madsigma(r, w);
+      sigma = robust_madsigma(r, w->p, wts);
 
       /* scale residuals by sigma and tuning factor */
       gsl_vector_memcpy(wts, r);
@@ -398,7 +394,7 @@ gsl_multifit_robust(const gsl_matrix * X,
             return s;
 
           /* compute estimate of standard deviation using MAD */
-          sig = robust_madsigma(w->r, w);
+          sig = robust_madsigma(w->r, w->p, w->workn);
 
           /* scale residuals by standard deviation and tuning parameter */
           gsl_vector_scale(w->r, 1.0 / (GSL_MAX(sig, sig_lower) * w->tune));
@@ -424,7 +420,7 @@ gsl_multifit_robust(const gsl_matrix * X,
         }
 
       /* compute final MAD sigma */
-      w->stats.sigma_mad = robust_madsigma(w->r, w);
+      w->stats.sigma_mad = robust_madsigma(w->r, w->p, w->workn);
 
       /* compute robust estimate of sigma */
       w->stats.sigma_rob = robust_robsigma(w->r, w->stats.sigma_mad, w->tune, w);
@@ -590,20 +586,21 @@ throwing away the smallest p residuals.
 
 See: Street et al, 1988
 
-Inputs: r - vector of residuals
-        w - workspace
+Inputs: r     - vector of residuals
+        p     - number of model coefficients (smallest p residuals are
+                ignored)
+        workn - workspace of size n = length(r)
 */
 
 static double
-robust_madsigma(const gsl_vector *r, gsl_multifit_robust_workspace *w)
+robust_madsigma(const gsl_vector *r, const size_t p, gsl_vector *workn)
 {
   size_t n = r->size;
-  const size_t p = w->p;
   double sigma;
   size_t i;
 
   /* allow for the possibility that r->size < w->n */
-  gsl_vector_view v1 = gsl_vector_subvector(w->workn, 0, n);
+  gsl_vector_view v1 = gsl_vector_subvector(workn, 0, n);
   gsl_vector_view v2;
 
   /* copy |r| into workn */
