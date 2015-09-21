@@ -93,7 +93,8 @@ gsl_multifit_linear_ridge (const double lambda,
                            const gsl_vector * y,
                            gsl_vector * c,
                            gsl_matrix * cov,
-                           double *chisq,
+                           double *rnormsq,
+                           double *snormsq,
                            gsl_multifit_linear_workspace * work);
 
 int
@@ -102,7 +103,8 @@ gsl_multifit_linear_ridge2 (const gsl_vector * lambda,
                             const gsl_vector * y,
                             gsl_vector * c,
                             gsl_matrix * cov,
-                            double *chisq,
+                            double *rnormsq,
+                            double *snormsq,
                             gsl_multifit_linear_workspace * work);
 
 int

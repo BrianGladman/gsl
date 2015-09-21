@@ -48,6 +48,8 @@
  *         rank     - (output) effective rank
  *         c        - (output) model coefficient vector
  *         cov      - (output) covariance matrix
+ *         rnormsq  - (output) residual norm squared ||X c - y||^2
+ *         snormsq  - (output) solution norm squared ||lambda c||^2
  *         chisq    - (output) residual chi^2
  *         work     - workspace
  */
@@ -61,6 +63,8 @@ multifit_linear_svd (const gsl_matrix * X,
                      size_t * rank,
                      gsl_vector * c,
                      gsl_matrix * cov,
+                     double *rnormsq,
+                     double *snormsq,
                      double *chisq,
                      gsl_multifit_linear_workspace * work)
 {
@@ -183,7 +187,7 @@ multifit_linear_svd (const gsl_matrix * X,
       /* Compute chisq, from residual r = y - X c */
 
       {
-        double s2 = 0, r2 = 0, ridge = 0.0;
+        double s2 = 0, r2 = 0.0, sn2 = 0.0;
 
         for (i = 0; i < n; i++)
           {
@@ -199,12 +203,14 @@ multifit_linear_svd (const gsl_matrix * X,
         for (i = 0; i < p; ++i)
           {
             double ci = gsl_vector_get(c, i);
-            ridge += lambda_sq * ci * ci;
+            sn2 += lambda_sq * ci * ci;
           }
 
         s2 = r2 / (n - p_eff);   /* p_eff == rank */
 
-        *chisq = r2 + ridge;
+        *chisq = r2 + sn2;
+        *snormsq = sn2;
+        *rnormsq = r2;
 
         /* Form variance-covariance matrix cov = s2 * (Q S^-1) (Q S^-1)^T */
 
@@ -240,9 +246,10 @@ gsl_multifit_linear (const gsl_matrix * X,
 {
   size_t rank;
   int status;
+  double r2, s2;
 
   status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 1, 0.0,
-                                &rank, c, cov, chisq, work);
+                                &rank, c, cov, &r2, &s2, chisq, work);
   return status;
 }
 
@@ -258,9 +265,10 @@ gsl_multifit_linear_svd (const gsl_matrix * X,
                          double *chisq, gsl_multifit_linear_workspace * work)
 {
   int status;
+  double r2, s2;
   
   status = multifit_linear_svd (X, y, tol, 1, 0.0, rank, c, cov,
-                                chisq, work);
+                                &r2, &s2, chisq, work);
   return status;
 }
 
@@ -274,9 +282,10 @@ gsl_multifit_linear_usvd (const gsl_matrix * X,
                           double *chisq, gsl_multifit_linear_workspace * work)
 {
   int status;
+  double r2, s2;
 
   status = multifit_linear_svd (X, y, tol, 0, 0.0, rank, c, cov,
-                                chisq, work);
+                                &r2, &s2, chisq, work);
   return status;
 }
 
@@ -286,15 +295,17 @@ gsl_multifit_linear_ridge (const double lambda,
                            const gsl_vector * y,
                            gsl_vector * c,
                            gsl_matrix * cov,
-                           double *chisq,
+                           double *rnormsq,
+                           double *snormsq,
                            gsl_multifit_linear_workspace * work)
 {
   size_t rank;
   int status;
+  double chisq;
 
   /* do not balance since it cannot be applied to the Tikhonov term */
   status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 0, lambda,
-                                &rank, c, cov, chisq, work);
+                                &rank, c, cov, rnormsq, snormsq, &chisq, work);
 
   return status;
 } /* gsl_multifit_linear_ridge() */
@@ -316,7 +327,8 @@ Inputs: lambda - vector representing diag(lambda_1,lambda_2,...,lambda_p)
         y      - right hand side vector
         c      - (output) coefficients
         cov    - covariance matrix
-        chisq  - residual
+        rnormsq  - residual norm squared ||X c - y||^2
+        snormsq  - solution norm squared ||L c||^2
         work   - workspace
 */
 
@@ -326,7 +338,8 @@ gsl_multifit_linear_ridge2 (const gsl_vector * lambda,
                             const gsl_vector * y,
                             gsl_vector * c,
                             gsl_matrix * cov,
-                            double *chisq,
+                            double *rnormsq,
+                            double *snormsq,
                             gsl_multifit_linear_workspace * work)
 {
   const size_t p = X->size2;
@@ -346,6 +359,7 @@ gsl_multifit_linear_ridge2 (const gsl_vector * lambda,
       size_t rank;
       int status;
       size_t j;
+      double chisq;
 
       /* construct X~ = X * L^{-1} matrix using work->A */
       for (j = 0; j < p; ++j)
@@ -368,7 +382,7 @@ gsl_multifit_linear_ridge2 (const gsl_vector * lambda,
        * lambda = 1 in the transformed system
        */
       status = multifit_linear_svd (work->A, y, GSL_DBL_EPSILON, 0,
-                                    1.0, &rank, c, cov, chisq, work);
+                                    1.0, &rank, c, cov, rnormsq, snormsq, &chisq, work);
 
       if (status == GSL_SUCCESS)
         {

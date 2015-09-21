@@ -49,14 +49,16 @@ test_ridge(void)
     gsl_vector_view xtx_diag = gsl_matrix_diagonal(XTX);
     gsl_permutation *perm = gsl_permutation_alloc(p);
     int signum;
-    double chisq;
+    double chisq, rnormsq, snormsq;
 
     /* construct XTy = X^T y */
     gsl_blas_dgemv(CblasTrans, 1.0, X, &yv.vector, 0.0, XTy);
 
     /* test that ridge equals OLS solution for lambda = 0 */
     gsl_multifit_linear(X, &yv.vector, c0, cov, &chisq, w);
-    gsl_multifit_linear_ridge(0.0, X, &yv.vector, c1, cov, &chisq, w);
+    gsl_multifit_linear_ridge(0.0, X, &yv.vector, c1, cov, &rnormsq, &snormsq, w);
+
+    gsl_test_rel(rnormsq + snormsq, chisq, 1.0e-10, "test_ridge: lambda = 0, chisq");
 
     /* test c0 = c1 */
     for (j = 0; j < p; ++j)
@@ -72,11 +74,11 @@ test_ridge(void)
         double lambda = pow(10.0, -(double) i);
 
         gsl_multifit_linear_ridge(lambda, X, &yv.vector, c1, cov,
-                                  &chisq, w);
+                                  &rnormsq, &snormsq, w);
 
         gsl_vector_set_all(lambda_vec, lambda);
         gsl_multifit_linear_ridge2(lambda_vec, X, &yv.vector, c2, cov,
-                                   &chisq, w);
+                                   &rnormsq, &snormsq, w);
 
         /* construct XTX = X^T X + lamda^2 I */
         gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, X, X, 0.0, XTX);
@@ -117,7 +119,7 @@ test_ridge(void)
 
         /* solve with ridge routine */
         gsl_multifit_linear_ridge2(lambda_vec, X, &yv.vector, c2, cov,
-                                   &chisq, w);
+                                   &rnormsq, &snormsq, w);
 
         /* test c1 = c2 */
         for (i = 0; i < p; ++i)
