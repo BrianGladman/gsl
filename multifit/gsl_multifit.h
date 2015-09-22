@@ -92,6 +92,15 @@ gsl_multifit_linear_ridge_svd (const gsl_matrix * X,
                                gsl_multifit_linear_workspace * work);
 
 int
+gsl_multifit_linear_ridge_solve (const double lambda,
+                                 const gsl_vector * y,
+                                 gsl_vector * c,
+                                 gsl_matrix * cov,
+                                 double *rnormsq,
+                                 double *snormsq,
+                                 gsl_multifit_linear_workspace * work);
+
+int
 gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
                                   gsl_vector * reg_param,
                                   gsl_vector * rho, gsl_vector * eta,

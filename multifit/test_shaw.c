@@ -10,8 +10,6 @@
 
 #include <gsl/gsl_sf_trig.h>
 
-#include "oct.c"
-
 static size_t shaw_n = 20;
 static size_t shaw_p = 20;
 
@@ -64,17 +62,17 @@ test_shaw(void)
   gsl_vector * eta = gsl_vector_alloc(npoints);
 
   gsl_matrix * X = gsl_matrix_alloc(shaw_n, shaw_p);
+  gsl_matrix * cov = gsl_matrix_alloc(shaw_p, shaw_p);
+  gsl_vector * c = gsl_vector_alloc(shaw_p);
   gsl_vector_view y = gsl_vector_view_array(shaw_y, shaw_n);
   gsl_multifit_linear_workspace * work = 
     gsl_multifit_linear_alloc (shaw_n, shaw_p);
 
   size_t reg_idx;
-  double lambda;
+  double lambda, rnormsq, snormsq;
 
   /* build design matrix */
   shaw_matrix(X);
-
-  print_octave(X, "Shaw_X");
 
   /* SVD decomposition */
   gsl_multifit_linear_ridge_svd(X, work);
@@ -89,6 +87,10 @@ test_shaw(void)
 
   /* test against value from [1] */
   gsl_test_rel(lambda, 5.793190958069266e-06, 1.0e-12, "shaw: L-curve corner lambda");
+
+  /* compute regularized solution with optimal lambda */
+  gsl_multifit_linear_ridge_solve(lambda, &y.vector, c, cov,
+                                  &rnormsq, &snormsq, work);
 
   gsl_matrix_free(X);
   gsl_vector_free(reg_param);
