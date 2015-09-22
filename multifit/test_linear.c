@@ -22,6 +22,7 @@
 #include "test_pontius.c"
 #include "test_estimator.c"
 #include "test_ridge.c"
+#include "test_shaw.c"
 
 /* test linear regression */
 
@@ -33,4 +34,6 @@ test_linear(void)
   test_pontius();
   test_estimator();
   test_ridge();
+
+  test_shaw();
 }

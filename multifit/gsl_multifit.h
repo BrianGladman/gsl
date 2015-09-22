@@ -88,6 +88,21 @@ gsl_multifit_linear_usvd (const gsl_matrix * X,
                           gsl_multifit_linear_workspace * work);
 
 int
+gsl_multifit_linear_ridge_svd (const gsl_matrix * X,
+                               gsl_multifit_linear_workspace * work);
+
+int
+gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
+                                  gsl_vector * reg_param,
+                                  gsl_vector * rho, gsl_vector * eta,
+                                  gsl_multifit_linear_workspace * work);
+
+int
+gsl_multifit_linear_ridge_lcorner(const gsl_vector *rho,
+                                  const gsl_vector *eta,
+                                  size_t *idx);
+
+int
 gsl_multifit_linear_ridge (const double lambda,
                            const gsl_matrix * X,
                            const gsl_vector * y,

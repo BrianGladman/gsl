@@ -1,7 +1,7 @@
 /* multifit/multilinear.c
  * 
  * Copyright (C) 2000, 2007, 2010 Brian Gough
- * Copyright (C) 2013 Patrick Alken
+ * Copyright (C) 2013, 2015 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,251 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_linalg.h>
+
+/* Perform a SVD decomposition on the least squares matrix X = U S Q^T
+ *
+ * Inputs: X       - least squares matrix
+ *                   X may point to work->A in the case of ridge
+ *                   regression
+ *         balance - 1 to perform column balancing
+ *         work    - workspace
+ *
+ * Notes:
+ * 1) On output,
+ *    work->A contains the matrix U
+ *    work->Q contains the matrix Q
+ *    work->S contains the vector of singular values
+ */
+
+static int
+multifit_linear_svd2 (const gsl_matrix * X,
+                     const int balance,
+                     gsl_multifit_linear_workspace * work)
+{
+  if (X->size1 != work->n || X->size2 != work->p)
+    {
+      GSL_ERROR
+        ("size of workspace does not match size of observation matrix",
+         GSL_EBADLEN);
+    }
+  else
+    {
+      gsl_matrix *A = work->A;
+      gsl_matrix *Q = work->Q;
+      gsl_matrix *QSI = work->QSI;
+      gsl_vector *S = work->S;
+      gsl_vector *xt = work->xt;
+      gsl_vector *D = work->D;
+
+      /* Copy X to workspace,  A <= X */
+
+      if (X != A)
+        gsl_matrix_memcpy (A, X);
+
+      /* Balance the columns of the matrix A if requested */
+
+      if (balance) 
+        {
+          gsl_linalg_balance_columns (A, D);
+        }
+      else
+        {
+          gsl_vector_set_all (D, 1.0);
+        }
+
+      /* Decompose A into U S Q^T */
+
+      gsl_linalg_SV_decomp_mod (A, QSI, Q, S, xt);
+
+      return GSL_SUCCESS;
+    }
+}
+
+#if 0
+
+/* Fit
+ *
+ * y = X c
+ *
+ * where X is an M x N matrix of M observations for N variables.
+ *
+ * The solution includes a possible standard form Tikhonov regularization:
+ *
+ * c = (X^T X + lambda^2 I)^{-1} X^T y
+ *
+ * where lambda^2 is the Tikhonov regularization parameter.
+ *
+ * The function multifit_linear_svd() must first be called to
+ * compute the SVD decomposition of X
+ *
+ * Inputs: y        - right hand side vector
+ *         tol      - singular value tolerance
+ *         lambda   - Tikhonov regularization parameter lambda
+ *         rank     - (output) effective rank
+ *         c        - (output) model coefficient vector
+ *         cov      - (output) covariance matrix
+ *         rnormsq  - (output) residual norm squared ||X c - y||^2
+ *         snormsq  - (output) solution norm squared ||lambda c||^2
+ *         chisq    - (output) residual chi^2
+ *         work     - workspace
+ */
+
+static int
+multifit_linear_solve (const gsl_vector * y,
+                       const double tol,
+                       const double lambda,
+                       size_t * rank,
+                       gsl_vector * c,
+                       gsl_matrix * cov,
+                       double *rnormsq,
+                       double *snormsq,
+                       double *chisq,
+                       gsl_multifit_linear_workspace * work)
+{
+  if (work->n != y->size)
+    {
+      GSL_ERROR
+        ("number of observations in y does not match workspace",
+         GSL_EBADLEN);
+    }
+  else if (work->p != c->size)
+    {
+      GSL_ERROR ("number of parameters c does not match workspace",
+                 GSL_EBADLEN);
+    }
+  else if (cov->size1 != cov->size2)
+    {
+      GSL_ERROR ("covariance matrix is not square", GSL_ENOTSQR);
+    }
+  else if (c->size != cov->size1)
+    {
+      GSL_ERROR
+        ("number of parameters does not match size of covariance matrix",
+         GSL_EBADLEN);
+    }
+  else if (tol <= 0)
+    {
+      GSL_ERROR ("tolerance must be positive", GSL_EINVAL);
+    }
+  else
+    {
+      const size_t n = work->n;
+      const size_t p = work->p;
+      const double lambda_sq = lambda * lambda;
+
+      size_t i, j, p_eff;
+
+      gsl_matrix *A = work->A;
+      gsl_matrix *Q = work->Q;
+      gsl_matrix *QSI = work->QSI;
+      gsl_vector *S = work->S;
+      gsl_vector *xt = work->xt;
+      gsl_vector *D = work->D;
+
+      /*
+       * Solve y = A c for c
+       * c = Q diag(s_i / (s_i^2 + lambda_i^2)) U^T y
+       */
+
+      /* compute xt = U^T y */
+      gsl_blas_dgemv (CblasTrans, 1.0, A, y, 0.0, xt);
+
+      /* Scale the matrix Q,
+       * QSI = Q (S^2 + lambda^2 I)^{-1} S
+       *     = Q diag(s_i / (s_i^2 + lambda^2))
+       * For standard least squares, lambda = 0 and QSI = Q S^{-1}
+       */
+
+      gsl_matrix_memcpy (QSI, Q);
+
+      {
+        double s0 = gsl_vector_get (S, 0);
+        p_eff = 0;
+
+        for (j = 0; j < p; j++)
+          {
+            gsl_vector_view column = gsl_matrix_column (QSI, j);
+            double sj = gsl_vector_get (S, j);
+            double alpha;
+
+            if (sj <= tol * s0)
+              {
+                alpha = 0.0;
+              }
+            else
+              {
+                alpha = sj / (sj * sj + lambda_sq);
+                p_eff++;
+              }
+
+            gsl_vector_scale (&column.vector, alpha);
+          }
+
+        *rank = p_eff;
+      }
+
+      gsl_vector_set_zero (c);
+
+      gsl_blas_dgemv (CblasNoTrans, 1.0, QSI, xt, 0.0, c);
+
+      /* Unscale the balancing factors */
+
+      gsl_vector_div (c, D);
+
+      /* Compute chisq, from residual r = y - X c */
+
+      {
+        double s2 = 0, r2 = 0.0, sn2 = 0.0;
+
+        for (i = 0; i < n; i++)
+          {
+            double yi = gsl_vector_get (y, i);
+            gsl_vector_const_view row = gsl_matrix_const_row (X, i);
+            double y_est, ri;
+            gsl_blas_ddot (&row.vector, c, &y_est);
+            ri = yi - y_est;
+            r2 += ri * ri;
+          }
+
+        /* compute || L c ||^2 contribution to chi^2 */
+        for (i = 0; i < p; ++i)
+          {
+            double ci = gsl_vector_get(c, i);
+            sn2 += lambda_sq * ci * ci;
+          }
+
+        s2 = r2 / (n - p_eff);   /* p_eff == rank */
+
+        *chisq = r2 + sn2;
+        *snormsq = sn2;
+        *rnormsq = r2;
+
+        /* Form variance-covariance matrix cov = s2 * (Q S^-1) (Q S^-1)^T */
+
+        for (i = 0; i < p; i++)
+          {
+            gsl_vector_view row_i = gsl_matrix_row (QSI, i);
+            double d_i = gsl_vector_get (D, i);
+
+            for (j = i; j < p; j++)
+              {
+                gsl_vector_view row_j = gsl_matrix_row (QSI, j);
+                double d_j = gsl_vector_get (D, j);
+                double s;
+
+                gsl_blas_ddot (&row_i.vector, &row_j.vector, &s);
+
+                gsl_matrix_set (cov, i, j, s * s2 / (d_i * d_j));
+                gsl_matrix_set (cov, j, i, s * s2 / (d_i * d_j));
+              }
+          }
+      }
+
+      return GSL_SUCCESS;
+    }
+}
+
+#endif
 
 /* Fit
  *
@@ -290,6 +535,218 @@ gsl_multifit_linear_usvd (const gsl_matrix * X,
 }
 
 int
+gsl_multifit_linear_ridge_svd (const gsl_matrix * X,
+                               gsl_multifit_linear_workspace * work)
+{
+  int status;
+
+  /* do not balance since it cannot be applied to the Tikhonov term */
+  status = multifit_linear_svd2(X, 0, work);
+
+  return status;
+} /* gsl_multifit_linear_ridge_svd() */
+
+/*
+gsl_multifit_linear_ridge_lcurve()
+  Calculate L-curve using regularization parameters estimated
+from singular values of least squares matrix
+
+Inputs: y         - right hand side vector
+        reg_param - (output) vector of regularization parameters
+                    derived from singular values
+        rho       - (output) vector of residual norms ||y - X c||
+        eta       - (output) vector of solution norms ||lambda c||
+        work      - workspace
+
+Return: success/error
+*/
+
+int
+gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
+                                  gsl_vector * reg_param,
+                                  gsl_vector * rho, gsl_vector * eta,
+                                  gsl_multifit_linear_workspace * work)
+{
+  const size_t N = rho->size; /* number of points on L-curve */
+
+  if (N < 3)
+    {
+      GSL_ERROR ("at least 3 points are needed for L-curve analysis",
+                 GSL_EBADLEN);
+    }
+  else if (N != eta->size)
+    {
+      GSL_ERROR ("size of rho and eta vectors do not match",
+                 GSL_EBADLEN);
+    }
+  else if (reg_param->size != eta->size)
+    {
+      GSL_ERROR ("size of reg_param and eta vectors do not match",
+                 GSL_EBADLEN);
+    }
+  else
+    {
+      int status = GSL_SUCCESS;
+      const size_t p = work->p;
+
+      /* smallest regularization parameter */
+      const double smin_ratio = 16.0 * GSL_DBL_EPSILON;
+
+      double ratio, tmp;
+      size_t i, j;
+
+      gsl_matrix *A = work->A;
+      gsl_vector *S = work->S;
+      gsl_vector *xt = work->xt;
+      gsl_vector_view workp = gsl_matrix_column(work->QSI, 0);
+      gsl_vector *workp2 = work->D; /* D isn't used for regularized problems */
+
+      const double s1 = gsl_vector_get(S, 0);
+      const double sp = gsl_vector_get(S, p - 1);
+
+      /* compute xt = U^T y */
+      gsl_blas_dgemv (CblasTrans, 1.0, A, y, 0.0, xt);
+
+      tmp = GSL_MAX(sp, s1*smin_ratio);
+      gsl_vector_set(reg_param, N - 1, tmp);
+
+      /* ratio so that reg_param(1) = s(1) */
+      ratio = pow(s1 / tmp, 1.0 / (N - 1.0));
+
+      /* calculate the regularization parameters */
+      for (i = N - 1; i > 0 && i--; )
+        {
+          double rp1 = gsl_vector_get(reg_param, i + 1);
+          gsl_vector_set(reg_param, i, ratio * rp1);
+        }
+
+      for (i = 0; i < N; ++i)
+        {
+          double lambda = gsl_vector_get(reg_param, i);
+          double lambda_sq = lambda * lambda;
+
+          for (j = 0; j < p; ++j)
+            {
+              double sj = gsl_vector_get(S, j);
+              double xtj = gsl_vector_get(xt, j);
+              double f = sj / (sj*sj + lambda_sq);
+
+              gsl_vector_set(&workp.vector, j, f * xtj);
+              gsl_vector_set(workp2, j, (1.0 - sj*f) * xtj);
+            }
+
+          gsl_vector_set(eta, i, gsl_blas_dnrm2(&workp.vector));
+          gsl_vector_set(rho, i, gsl_blas_dnrm2(workp2));
+        }
+
+      return status;
+    }
+} /* gsl_multifit_linear_ridge_lcurve() */
+
+/*
+gsl_multifit_linear_ridge_lcorner()
+  Determine point on L-curve of maximum curvature. For each
+set of 3 points on the L-curve, the circle which passes through
+the 3 points is computed. The radius of the circle is then used
+as an estimate of the curvature at the middle point. The point
+with maximum curvature is then selected.
+
+Inputs: rho - vector of residual norms ||A x - b||
+        eta - vector of solution norms ||L x||
+        idx - (output) index i such that
+              (log(rho(i)),log(eta(i)) is the point of
+              maximum curvature
+
+Return: success/error
+*/
+
+int
+gsl_multifit_linear_ridge_lcorner(const gsl_vector *rho,
+                                  const gsl_vector *eta,
+                                  size_t *idx)
+{
+  const size_t n = rho->size;
+
+  if (n < 3)
+    {
+      GSL_ERROR ("at least 3 points are needed for L-curve analysis",
+                 GSL_EBADLEN);
+    }
+  else if (n != eta->size)
+    {
+      GSL_ERROR ("size of rho and eta vectors do not match",
+                 GSL_EBADLEN);
+    }
+  else
+    {
+      int s = GSL_SUCCESS;
+      size_t i;
+      double x1, y1;      /* first point of triangle on L-curve */
+      double x2, y2;      /* second point of triangle on L-curve */
+      double rmin = -1.0; /* minimum radius of curvature */
+
+      /* initial values */
+      x1 = log(gsl_vector_get(rho, 0));
+      y1 = log(gsl_vector_get(eta, 0));
+
+      x2 = log(gsl_vector_get(rho, 1));
+      y2 = log(gsl_vector_get(eta, 1));
+
+      for (i = 1; i < n - 1; ++i)
+        {
+          /*
+           * The points (x1,y1), (x2,y2), (x3,y3) are the previous,
+           * current, and next point on the L-curve. We will find
+           * the circle which fits these 3 points and take its radius
+           * as an estimate of the curvature at this point.
+           */
+          double x3 = log(gsl_vector_get(rho, i + 1));
+          double y3 = log(gsl_vector_get(eta, i + 1));
+
+          double x21 = x2 - x1;
+          double y21 = y2 - y1;
+          double x31 = x3 - x1;
+          double y31 = y3 - y1;
+          double h21 = x21*x21 + y21*y21;
+          double h31 = x31*x31 + y31*y31;
+          double d = fabs(2.0 * (x21*y31 - x31*y21));
+
+          if (d < GSL_DBL_EPSILON)
+            {
+              GSL_ERROR("detected colinear points on L-curve",
+                        GSL_EINVAL);
+            }
+          else
+            {
+              double r = sqrt(h21*h31*((x3-x2)*(x3-x2)+(y3-y2)*(y3-y2))) / d;
+
+              /* check for smallest radius of curvature */
+              if (r < rmin || rmin < 0.0)
+                {
+                  rmin = r;
+                  *idx = i;
+                }
+            }
+
+          /* update previous/current log values */
+          x1 = x2;
+          y1 = y2;
+          x2 = x3;
+          y2 = y3;
+        }
+
+      /* check if a minimum radius was found */
+      if (rmin < 0.0)
+        {
+          /* possibly co-linear points */
+          GSL_ERROR("failed to find minimum radius", GSL_EINVAL);
+        }
+
+      return s;
+    }
+} /* gsl_multifit_linear_ridge_lcorner() */
+
+int
 gsl_multifit_linear_ridge (const double lambda,
                            const gsl_matrix * X,
                            const gsl_vector * y,
@@ -304,6 +761,10 @@ gsl_multifit_linear_ridge (const double lambda,
   double chisq;
 
   /* do not balance since it cannot be applied to the Tikhonov term */
+  status = multifit_linear_svd2(X, 0, work);
+  if (status)
+    return status;
+
   status = multifit_linear_svd (X, y, GSL_DBL_EPSILON, 0, lambda,
                                 &rank, c, cov, rnormsq, snormsq, &chisq, work);
 
