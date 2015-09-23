@@ -96,9 +96,19 @@ gsl_multifit_linear_ridge_solve (const double lambda,
                                  const gsl_vector * y,
                                  gsl_vector * c,
                                  gsl_matrix * cov,
-                                 double *rnormsq,
-                                 double *snormsq,
+                                 double *rnorm,
+                                 double *snorm,
                                  gsl_multifit_linear_workspace * work);
+
+int
+gsl_multifit_linear_ridge_solve2 (const gsl_vector * lambda,
+                                  const gsl_matrix * X,
+                                  const gsl_vector * y,
+                                  gsl_vector * c,
+                                  gsl_matrix * cov,
+                                  double *rnorm,
+                                  double *snorm,
+                                  gsl_multifit_linear_workspace * work);
 
 int
 gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
@@ -110,26 +120,6 @@ int
 gsl_multifit_linear_ridge_lcorner(const gsl_vector *rho,
                                   const gsl_vector *eta,
                                   size_t *idx);
-
-int
-gsl_multifit_linear_ridge (const double lambda,
-                           const gsl_matrix * X,
-                           const gsl_vector * y,
-                           gsl_vector * c,
-                           gsl_matrix * cov,
-                           double *rnormsq,
-                           double *snormsq,
-                           gsl_multifit_linear_workspace * work);
-
-int
-gsl_multifit_linear_ridge2 (const gsl_vector * lambda,
-                            const gsl_matrix * X,
-                            const gsl_vector * y,
-                            gsl_vector * c,
-                            gsl_matrix * cov,
-                            double *rnormsq,
-                            double *snormsq,
-                            gsl_multifit_linear_workspace * work);
 
 int
 gsl_multifit_wlinear (const gsl_matrix * X,

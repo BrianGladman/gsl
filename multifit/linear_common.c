@@ -86,8 +86,8 @@ multifit_linear_svd2 (const gsl_matrix * X,
  *         rank     - (output) effective rank
  *         c        - (output) model coefficient vector
  *         cov      - (output) covariance matrix
- *         rnormsq  - (output) residual norm squared ||X c - y||^2
- *         snormsq  - (output) solution norm squared ||lambda c||^2
+ *         rnorm    - (output) residual norm ||y - X c||
+ *         snorm    - (output) solution norm ||lambda c||
  *         chisq    - (output) residual chi^2
  *         work     - workspace
  */
@@ -99,8 +99,8 @@ multifit_linear_solve (const gsl_vector * y,
                        size_t * rank,
                        gsl_vector * c,
                        gsl_matrix * cov,
-                       double *rnormsq,
-                       double *snormsq,
+                       double *rnorm,
+                       double *snorm,
                        double *chisq,
                        gsl_multifit_linear_workspace * work)
 {
@@ -138,6 +138,8 @@ multifit_linear_solve (const gsl_vector * y,
       const size_t n = work->n;
       const size_t p = work->p;
 
+      double rho_ls = 0.0;     /* contribution to rnorm from OLS */
+
       size_t i, j, p_eff;
 
       gsl_matrix *A = work->A;
@@ -146,6 +148,7 @@ multifit_linear_solve (const gsl_vector * y,
       gsl_vector *S = work->S;
       gsl_vector *xt = work->xt;
       gsl_vector *D = work->D;
+      gsl_vector *t = work->t;
 
       /*
        * Solve y = A c for c
@@ -155,6 +158,17 @@ multifit_linear_solve (const gsl_vector * y,
       /* compute xt = U^T y */
       gsl_blas_dgemv (CblasTrans, 1.0, A, y, 0.0, xt);
 
+      if (n > p)
+        {
+          /*
+           * compute OLS residual norm = || y - U U^T y ||;
+           * for n = p, U U^T = I, so no need to calculate norm
+           */
+          gsl_vector_memcpy(t, y);
+          gsl_blas_dgemv(CblasNoTrans, -1.0, A, xt, 1.0, t);
+          rho_ls = gsl_blas_dnrm2(t);
+        }
+
       if (lambda > 0.0)
         {
           const double lambda_sq = lambda * lambda;
@@ -163,21 +177,36 @@ multifit_linear_solve (const gsl_vector * y,
           for (j = 0; j < p; ++j)
             {
               double sj = gsl_vector_get(S, j);
+              double f = (sj * sj) / (sj * sj + lambda_sq);
               double *ptr = gsl_vector_ptr(xt, j);
+
+              /* use D as workspace for residual norm */
+              gsl_vector_set(D, j, (1.0 - f) * (*ptr));
 
               *ptr *= sj / (sj*sj + lambda_sq);
             }
 
           /* compute regularized solution vector */
           gsl_blas_dgemv (CblasNoTrans, 1.0, Q, xt, 0.0, c);
+
+          /* compute solution norm */
+          *snorm = lambda * gsl_blas_dnrm2(c);
+
+          /* compute residual norm */
+          *rnorm = gsl_blas_dnrm2(D);
+
+          if (n > p)
+            {
+              /* add correction to residual norm (see eqs 6-7 of [1]) */
+              *rnorm = sqrt((*rnorm) * (*rnorm) + rho_ls * rho_ls);
+            }
+
+          /* reset D vector */
+          gsl_vector_set_all(D, 1.0);
         }
       else
         {
-          /* Scale the matrix Q,
-           * QSI = Q (S^2 + lambda^2 I)^{-1} S
-           *     = Q diag(s_i / (s_i^2 + lambda^2))
-           * For standard least squares, lambda = 0 and QSI = Q S^{-1}
-           */
+          /* Scale the matrix Q, QSI = Q S^{-1} */
 
           gsl_matrix_memcpy (QSI, Q);
 
@@ -207,64 +236,41 @@ multifit_linear_solve (const gsl_vector * y,
             *rank = p_eff;
           }
 
-          gsl_vector_set_zero (c);
-
           gsl_blas_dgemv (CblasNoTrans, 1.0, QSI, xt, 0.0, c);
 
           /* Unscale the balancing factors */
           gsl_vector_div (c, D);
-        }
 
-      /* Compute chisq, from residual r = y - X c */
+          *snorm = 0.0;
+          *rnorm = rho_ls;
 
-      {
-        double s2 = 0, r2 = 0.0, sn2 = 0.0;
-
-#if 0
-        for (i = 0; i < n; i++)
+          /* variance-covariance matrix cov = s2 * (Q S^-1) (Q S^-1)^T */
           {
-            double yi = gsl_vector_get (y, i);
-            gsl_vector_const_view row = gsl_matrix_const_row (X, i);
-            double y_est, ri;
-            gsl_blas_ddot (&row.vector, c, &y_est);
-            ri = yi - y_est;
-            r2 += ri * ri;
-          }
+            double r2 = (*rnorm) * (*rnorm);
+            double s2 = r2 / (n - p_eff);   /* p_eff == rank */
 
-        /* compute || L c ||^2 contribution to chi^2 */
-        for (i = 0; i < p; ++i)
-          {
-            double ci = gsl_vector_get(c, i);
-            sn2 += lambda_sq * ci * ci;
-          }
-
-        s2 = r2 / (n - p_eff);   /* p_eff == rank */
-
-        *chisq = r2 + sn2;
-        *snormsq = sn2;
-        *rnormsq = r2;
-#endif
-
-        /* Form variance-covariance matrix cov = s2 * (Q S^-1) (Q S^-1)^T */
-
-        for (i = 0; i < p; i++)
-          {
-            gsl_vector_view row_i = gsl_matrix_row (QSI, i);
-            double d_i = gsl_vector_get (D, i);
-
-            for (j = i; j < p; j++)
+            for (i = 0; i < p; i++)
               {
-                gsl_vector_view row_j = gsl_matrix_row (QSI, j);
-                double d_j = gsl_vector_get (D, j);
-                double s;
+                gsl_vector_view row_i = gsl_matrix_row (QSI, i);
+                double d_i = gsl_vector_get (D, i);
 
-                gsl_blas_ddot (&row_i.vector, &row_j.vector, &s);
+                for (j = i; j < p; j++)
+                  {
+                    gsl_vector_view row_j = gsl_matrix_row (QSI, j);
+                    double d_j = gsl_vector_get (D, j);
+                    double s;
 
-                gsl_matrix_set (cov, i, j, s * s2 / (d_i * d_j));
-                gsl_matrix_set (cov, j, i, s * s2 / (d_i * d_j));
+                    gsl_blas_ddot (&row_i.vector, &row_j.vector, &s);
+
+                    gsl_matrix_set (cov, i, j, s * s2 / (d_i * d_j));
+                    gsl_matrix_set (cov, j, i, s * s2 / (d_i * d_j));
+                  }
               }
           }
-      }
+        }
+
+      /* compute chisq */
+      *chisq = (*rnorm) * (*rnorm) + (*snorm) * (*snorm);
 
       return GSL_SUCCESS;
     }

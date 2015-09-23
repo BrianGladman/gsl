@@ -17,6 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/*
+ * Reference:
+ *
+ * [1] P. C. Hansen & D. P. O'Leary, "The use of the L-curve in
+ * the regularization of discrete ill-posed problems",  SIAM J. Sci.
+ * Comput. 14 (1993), pp. 1487-1503.
+ */
+
 #include <config.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_multifit.h>
@@ -44,8 +52,8 @@ gsl_multifit_linear_ridge_solve (const double lambda,
                                  const gsl_vector * y,
                                  gsl_vector * c,
                                  gsl_matrix * cov,
-                                 double *rnormsq,
-                                 double *snormsq,
+                                 double *rnorm,
+                                 double *snorm,
                                  gsl_multifit_linear_workspace * work)
 {
   size_t rank;
@@ -53,10 +61,96 @@ gsl_multifit_linear_ridge_solve (const double lambda,
   double chisq;
 
   status = multifit_linear_solve(y, GSL_DBL_EPSILON, lambda, &rank, c,
-                                 cov, rnormsq, snormsq, &chisq, work);
+                                 cov, rnorm, snorm, &chisq, work);
 
   return status;
 } /* gsl_multifit_linear_ridge_solve() */
+
+/*
+gsl_multifit_linear_ridge_solve2()
+  Perform ridge regression with matrix
+
+    L = diag(lambda_1,lambda_2,...,lambda_p).
+
+This is equivalent to "standard form" Tikhonov regression with the
+change of variables:
+
+X~ = X * L^{-1}
+c~ = L * c
+
+and performing standard Tikhonov regularization on the system
+X~ c~ = y with \lambda = 1
+
+Inputs: lambda - vector representing diag(lambda_1,lambda_2,...,lambda_p)
+        X      - least squares matrix
+        y      - right hand side vector
+        c      - (output) coefficients
+        cov    - covariance matrix
+        rnorm  - residual norm ||X c - y||^2
+        snorm  - solution norm ||L c||^2
+        work   - workspace
+*/
+
+int
+gsl_multifit_linear_ridge_solve2 (const gsl_vector * lambda,
+                                  const gsl_matrix * X,
+                                  const gsl_vector * y,
+                                  gsl_vector * c,
+                                  gsl_matrix * cov,
+                                  double *rnorm,
+                                  double *snorm,
+                                  gsl_multifit_linear_workspace * work)
+{
+  const size_t p = work->p;
+
+  if (p != lambda->size || lambda->size != c->size)
+    {
+      GSL_ERROR("lambda vector has incorrect length", GSL_EBADLEN);
+    }
+  else
+    {
+      size_t rank;
+      int status;
+      size_t j;
+      double chisq;
+
+      /* construct X~ = X * L^{-1} matrix using work->A */
+      for (j = 0; j < p; ++j)
+        {
+          gsl_vector_const_view Xj = gsl_matrix_const_column(X, j);
+          gsl_vector_view Aj = gsl_matrix_column(work->A, j);
+          double lambdaj = gsl_vector_get(lambda, j);
+
+          if (lambdaj == 0.0)
+            {
+              GSL_ERROR("lambda matrix is singular", GSL_EDOM);
+            }
+
+          gsl_vector_memcpy(&Aj.vector, &Xj.vector);
+          gsl_vector_scale(&Aj.vector, 1.0 / lambdaj);
+        }
+
+      /*
+       * do not balance since it cannot be applied to the Tikhonov term;
+       * lambda = 1 in the transformed system
+       */
+      status = multifit_linear_svd2 (work->A, 0, work);
+      if (status)
+        return status;
+
+      status = multifit_linear_solve (y, GSL_DBL_EPSILON, 1.0,
+                                      &rank, c, cov, rnorm, snorm,
+                                      &chisq, work);
+
+      if (status == GSL_SUCCESS)
+        {
+          /* compute true solution vector c = L^{-1} c~ */
+          gsl_vector_div(c, lambda);
+        }
+
+      return status;
+    }
+} /* gsl_multifit_linear_ridge_solve2() */
 
 /*
 gsl_multifit_linear_ridge_lcurve()
@@ -99,6 +193,7 @@ gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
   else
     {
       int status = GSL_SUCCESS;
+      const size_t n = work->n;
       const size_t p = work->p;
 
       /* smallest regularization parameter */
@@ -116,8 +211,15 @@ gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
       const double s1 = gsl_vector_get(S, 0);
       const double sp = gsl_vector_get(S, p - 1);
 
-      /* compute xt = U^T y */
+      double dr; /* residual error from projection */
+      double normy = gsl_blas_dnrm2(y);
+      double normUTy;
+
+      /* compute projection xt = U^T y */
       gsl_blas_dgemv (CblasTrans, 1.0, A, y, 0.0, xt);
+
+      normUTy = gsl_blas_dnrm2(xt);
+      dr = normy*normy - normUTy*normUTy;
 
       tmp = GSL_MAX(sp, s1*smin_ratio);
       gsl_vector_set(reg_param, N - 1, tmp);
@@ -149,6 +251,18 @@ gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
 
           gsl_vector_set(eta, i, gsl_blas_dnrm2(&workp.vector));
           gsl_vector_set(rho, i, gsl_blas_dnrm2(workp2));
+        }
+
+      if (n > p && dr > 0.0)
+        {
+          /* add correction to residual norm (see eqs 6-7 of [1]) */
+          for (i = 0; i < N; ++i)
+            {
+              double rhoi = gsl_vector_get(rho, i);
+              double *ptr = gsl_vector_ptr(rho, i);
+
+              *ptr = sqrt(rhoi*rhoi + dr);
+            }
         }
 
       /* restore D to identity matrix */
