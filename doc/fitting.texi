@@ -453,15 +453,17 @@ vector @math{c}.
 For applications which require
 a more complicated matrix @math{L}, the user can apply the
 above transformation themselves if @math{L} is square and
-invertible and use @code{gsl_multifit_linear_ridge}, setting
+invertible and use @code{gsl_multifit_linear_ridge_solve}, setting
 the input @math{\lambda = 1}. If
 @math{L} is not square or not invertible, other techniques
 must be used (see Hansen 1998, chapter 2.3).
 
-@deftypefun int gsl_multifit_linear_ridge (const double @var{lambda}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{rnormsq}, double * @var{snormsq}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_ridge_solve (const double @var{lambda}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{rnorm}, double * @var{snorm}, gsl_multifit_linear_workspace * @var{work})
 This function computes the best-fit parameters @var{c} of the model
 @math{y = X c} for the observations @var{y} and the matrix of
-predictor variables @var{X}, using the preallocated workspace provided
+predictor variables @var{X}. The routine
+@code{gsl_multifit_linear_ridge_svd} must first be called to
+compute the SVD of @var{X}, which is stored in the workspace provided
 in @var{work}. The Tikhonov matrix appearing in the least squares
 solution is @math{L = \lambda I} where @math{\lambda}
 is provided in @var{lambda}, so that @math{\lambda^2} is added to
@@ -469,20 +471,18 @@ the diagonal elements of @math{X^T X}.
 The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
 @var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
 the standard deviation of the fit residuals.
-The squared residual norm @math{|| y - X c ||^2} is returned in @var{rnormsq}.
-The squared solution norm @math{|| \lambda c ||^2} is returned in
-@var{snormsq}. The cost function @math{\chi^2} can be computed as
-@var{rnormsq} + @var{snormsq}.
-
-The best-fit is found by singular value decomposition of the matrix
-@var{X}. Any components which have zero singular value (to machine
-precision) are discarded from the fit.
+The residual norm @math{|| y - X c ||} is returned in @var{rnorm}.
+The solution norm @math{|| \lambda c ||^2} is returned in
+@var{snorm}. The cost function @math{\chi^2} can be computed as
+@math{rnorm^2} + @math{snorm^2}.
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_ridge2 (const gsl_vector * @var{lambda}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{rnormsq}, double * @var{snormsq}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_ridge_solve2 (const gsl_vector * @var{lambda}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{rnorm}, double * @var{snorm}, gsl_multifit_linear_workspace * @var{work})
 This function computes the best-fit parameters @var{c} of the model
 @math{y = X c} for the observations @var{y} and the matrix of
-predictor variables @var{X}, using the preallocated workspace provided
+predictor variables @var{X}. The routine
+@code{gsl_multifit_linear_ridge_svd} must first be called to
+compute the SVD of @var{X}, which is stored in the workspace provided
 in @var{work}. The Tikhonov matrix appearing in the least squares
 solution is
 @math{L = diag(\lambda_0,\lambda_1,...,\lambda_{p-1})}
@@ -494,14 +494,45 @@ the matrix @math{L^{-1}} must exist and so none of the
 The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
 @var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
 the standard deviation of the fit residuals.
-The squared residual norm @math{|| y - X c ||^2} is returned in @var{rnormsq}.
-The squared solution norm @math{|| L c ||^2} is returned in
-@var{snormsq}. The cost function @math{\chi^2} can be computed as
-@var{rnormsq} + @var{snormsq}.
+The residual norm @math{|| y - X c ||} is returned in @var{rnorm}.
+The solution norm @math{|| L c ||} is returned in
+@var{snorm}. The cost function @math{\chi^2} can be computed as
+@math{rnorm^2} + @math{snorm^2}.
+@end deftypefun
 
-The best-fit is found by singular value decomposition of the matrix
-@var{X}. Any components which have zero singular value (to machine
-precision) are discarded from the fit.
+@deftypefun int gsl_multifit_linear_ridge_lcurve (const gsl_vector * @var{y}, gsl_vector * @var{reg_param}, gsl_vector * @var{rho}, gsl_vector * @var{eta}, gsl_multifit_linear_workspace * @var{work})
+This function computes the L-curve for a least squares system
+using the right hand side vector @var{y} and the SVD decomposition
+of the least squares matrix @var{X}, which must be provided
+to @code{gsl_multifit_linear_ridge_svd} prior to
+calling this function. The output vectors @var{reg_param},
+@var{rho}, and @var{eta} must all be the same size, and will
+contain the regularization parameters @math{\lambda_i}, residual norms
+@math{||y - X c_i||}, and solution norms @math{|| \lambda_i c_i ||}
+which compose the L-curve, where @math{c_i} is the regularized
+solution vector corresponding to @math{\lambda_i}.
+The user may determine the number of points on the L-curve by
+adjusting the size of these input arrays. The regularization
+parameters @math{\lambda_i} are estimated from the singular values
+of @var{X}, and chosen to represent the most relevant portion of
+the L-curve.
+@end deftypefun
+
+@deftypefun int gsl_multifit_linear_ridge_lcorner (const gsl_vector * @var{rho}, const gsl_vector * @var{eta}, size_t * @var{idx})
+This function attempts to locate the corner of the L-curve defined
+by the @var{rho} and @var{eta} input arrays, which represent
+vectors of residual norms and solution norms respectively. The
+corner is defined as the point of maximum curvature of the L-curve
+in log-log scale. The @var{rho} and @var{eta} arrays can be
+outputs of @code{gsl_multifit_linear_ridge_lcurve}. The algorithm
+used simply fits a circle to 3 consecutive points on the L-curve
+and uses the circle's radius to determine the curvature at
+the middle point. Therefore, the input array sizes must be
+@math{>= 3}. With more points provided for the L-curve, a better
+estimate of the curvature can be obtained. The array index
+corresponding to maximum curvature (ie: the corner) is returned
+in @var{idx}. If the input arrays contain colinear points,
+this function could fail and return @code{GSL_EINVAL}.
 @end deftypefun
 
 @node Robust linear regression
