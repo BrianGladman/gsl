@@ -77,10 +77,6 @@ test_ridge(void)
     /* compute SVD of X */
     gsl_multifit_linear_svd(X, w);
 
-    /* compute SVD of transformed system */
-    gsl_vector_set_all(g, 1.0);
-    gsl_multifit_linear_ridge_svd(g, X, w2);
-
     /* solve regularized standard form systems with different lambdas */
     for (i = 0; i < 7; ++i)
       {
@@ -89,8 +85,12 @@ test_ridge(void)
         gsl_multifit_linear_ridge_solve(lambda, &yv.vector, c1, cov,
                                         &rnorm, &snorm, w);
 
+        /* compute SVD of transformed system */
+        gsl_vector_set_all(g, 1.0);
+        gsl_multifit_linear_ridge_svd(g, X, w2);
         gsl_multifit_linear_ridge_solve(lambda, &yv.vector, c2, cov,
                                         &rnorm, &snorm, w2);
+        gsl_multifit_linear_ridge_trans(g, c2, w2);
 
         /* construct XTX = X^T X + lamda^2 I */
         gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, X, X, 0.0, XTX);
@@ -107,8 +107,8 @@ test_ridge(void)
             double c2j = gsl_vector_get(c2, j);
             double c3j = gsl_vector_get(c3, j);
 
-            gsl_test_rel(c2j, c1j, 1.0e-10, "test_ridge: c2 lambda = %.1e", lambda);
-            gsl_test_rel(c3j, c1j, 1.0e-9, "test_ridge: c3 lambda = %.1e", lambda);
+            gsl_test_rel(c2j, c1j, 1.0e-10, "test_ridge: lambda=%g c2", lambda);
+            gsl_test_rel(c3j, c1j, 1.0e-9, "test_ridge: lambda=%g c3", lambda);
           }
 
         /* now test a simple nontrivial system:
@@ -138,12 +138,12 @@ test_ridge(void)
         gsl_multifit_linear_ridge_trans(g, c2, w2);
 
         /* test c1 = c2 */
-        for (i = 0; i < p; ++i)
+        for (j = 0; j < p; ++j)
           {
-            double c1i = gsl_vector_get(c1, i);
-            double c2i = gsl_vector_get(c2, i);
+            double c1j = gsl_vector_get(c1, j);
+            double c2j = gsl_vector_get(c2, j);
 
-            gsl_test_rel(c2i, c1i, 1.0e-12, "test_ridge: general L");
+            gsl_test_rel(c2j, c1j, 1.0e-9, "test_ridge: lambda=%g general L", lambda);
           }
       }
 
