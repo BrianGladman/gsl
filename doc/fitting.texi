@@ -424,43 +424,45 @@ The routines below support two formats for the @math{L} matrix.
 The first is @math{L = \lambda I} giving a solution
 @math{c = \left( X^T X + \lambda^2 I \right)^{-1} X^T y} which damps
 all solution coefficients equally, and is known as the Tikhonov
-"standard form". For any square invertible matrix @math{L}, the
-general problem can be converted to standard form through the
-transformation
+"standard form". For any square, invertible matrix @math{\Gamma},
+with @math{L = \lambda \Gamma}, the problem can be converted
+to standard form with
 @tex
 \beforedisplay
 $$
 \eqalign{
-\tilde{X} &= X L^{-1} \cr
-\tilde{c} &= L c
+\tilde{X} &= X \Gamma^{-1} \cr
+\tilde{c} &= \Gamma c
 }
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-X~ = X L^-1
-c~ = L c
+X~ = X G^-1
+c~ = G c
 @end example
 @end ifinfo
-leading to @math{\tilde{c} = \left( \tilde{X}^T \tilde{X} + I \right)^{-1} \tilde{X}^T y} which is in standard form with @math{\lambda^2 = 1}.
+leading to @math{\tilde{c} = \left( \tilde{X}^T \tilde{X} + \lambda^2 I \right)^{-1} \tilde{X}^T y}.
+The matrix @math{\Gamma} is often chosen as a first or second
+finite difference operator, to ensure a smoothly varying coefficient
+vector @math{c}.
 The second regularization matrix input supported by GSL has the form
-@math{L = diag(\lambda_0,\lambda_1,...,\lambda_{p-1})} which allows
+@math{L = \lambda \Gamma = \lambda} diag@math{(\gamma_0,\gamma_1,...,\gamma_{p-1})} which allows
 the user to selectively damp each coefficient differently. For
 this matrix, GSL performs the above transformation and then
 backtransforms the least squares solution to recover the original
 vector @math{c}.
 For applications which require
-a more complicated matrix @math{L}, the user can apply the
-above transformation themselves if @math{L} is square and
-invertible and use @code{gsl_multifit_linear_ridge_solve}, setting
-the input @math{\lambda = 1}. If
-@math{L} is not square or not invertible, other techniques
+a more complicated matrix @math{\Gamma}, the user can apply the
+above transformation themselves if @math{\Gamma} is square and
+invertible and use @code{gsl_multifit_linear_ridge_solve}.
+If @math{\Gamma} is not square or not invertible, other techniques
 must be used (see Hansen 1998, chapter 2.3).
 
 In many regularization problems, care must be taken when choosing
 the regularization parameter @math{\lambda}. Since both the
-residual norm @math{||y - X c||} and solution norm @math{||\lambda c||}
+residual norm @math{||y - X c||} and solution norm @math{||L c||}
 are being minimized, the parameter @math{\lambda} represents
 a tradeoff between minimizing either the residuals or the
 solution vector. A common tool for visualizing the comprimise between
@@ -474,11 +476,25 @@ corresponding to this corner is often chosen as the optimal
 value. GSL provides routines to calculate the L-curve for all
 relevant regularization parameters as well as locating the corner.
 
+@deftypefun int gsl_multifit_linear_ridge_svd (const gsl_vector * @var{g}, const gsl_matrix * @var{X}, gsl_multifit_linear_workspace * @var{work})
+This function defines a regularization matrix
+@math{L = \lambda \Gamma}, where @math{\Gamma =} diag@math{(\gamma_0,\gamma_1,...,\gamma_{p-1})}.
+The diagonal matrix element @math{\gamma_i} is provided by the
+@math{i}th element of the input vector @var{g}.
+The least squares matrix @var{X} is then
+converted to standard form as described above, and the singular value
+decomposition of the transformed matrix @math{\tilde{X}} is computed
+and stored in @var{work}. In order to apply this transformation,
+@math{\Gamma^{-1}} must exist and so none of the @math{\gamma_i}
+may be zero.
+@end deftypefun
+
 @deftypefun int gsl_multifit_linear_ridge_solve (const double @var{lambda}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{rnorm}, double * @var{snorm}, gsl_multifit_linear_workspace * @var{work})
 This function computes the best-fit parameters @var{c} of the model
 @math{y = X c} for the observations @var{y} and the matrix of
 predictor variables @var{X}. The routine
-@code{gsl_multifit_linear_svd} must first be called to
+@code{gsl_multifit_linear_svd} (or @code{gsl_multifit_linear_ridge_svd})
+must first be called to
 compute the SVD of @var{X}, which is stored in the workspace provided
 in @var{work}. The Tikhonov matrix appearing in the least squares
 solution is @math{L = \lambda I} where @math{\lambda}
@@ -493,27 +509,14 @@ The solution norm @math{|| \lambda c ||} is returned in
 @math{rnorm^2} + @math{snorm^2}.
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_ridge_solve2 (const gsl_vector * @var{lambda}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{rnorm}, double * @var{snorm}, gsl_multifit_linear_workspace * @var{work})
-This function computes the best-fit parameters @var{c} of the model
-@math{y = X c} for the observations @var{y} and the matrix of
-predictor variables @var{X}. The routine
-@code{gsl_multifit_linear_svd} must first be called to
-compute the SVD of @var{X}, which is stored in the workspace provided
-in @var{work}. The Tikhonov matrix appearing in the least squares
-solution is
-@math{L = diag(\lambda_0,\lambda_1,...,\lambda_{p-1})}
-where @math{\lambda_i} is provided in @var{lambda}[i]. The
-problem is converted to standard form as discussed above, solved
-and backtransformed to recover the desired coefficients. Therefore,
-the matrix @math{L^{-1}} must exist and so none of the
-@math{\lambda_i} may be zero.
-The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
-@var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
-the standard deviation of the fit residuals.
-The residual norm @math{|| y - X c ||} is returned in @var{rnorm}.
-The solution norm @math{|| L c ||} is returned in
-@var{snorm}. The cost function @math{\chi^2} can be computed as
-@math{rnorm^2} + @math{snorm^2}.
+@deftypefun int gsl_multifit_linear_ridge_trans (const gsl_vector * @var{g}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
+After a regularized system has been solved with
+@math{L = \lambda \Gamma}, where
+@math{\Gamma =} diag@math{(\gamma_0,\gamma_1,...,\gamma_{p-1})},
+this function backtransforms the solution vector @var{c}
+to recover the solution vector of the original problem. The
+diagonal matrix elements @math{\gamma_i} are provided in
+the vector @var{g}.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_ridge_lcurve (const gsl_vector * @var{y}, gsl_vector * @var{reg_param}, gsl_vector * @var{rho}, gsl_vector * @var{eta}, gsl_multifit_linear_workspace * @var{work})

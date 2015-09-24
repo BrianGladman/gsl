@@ -37,12 +37,13 @@ test_ridge(void)
   /* least squares fits */
   {
     gsl_multifit_linear_workspace *w = gsl_multifit_linear_alloc(n, p);
+    gsl_multifit_linear_workspace *w2 = gsl_multifit_linear_alloc(n, p);
     gsl_vector_view yv = gsl_vector_view_array(y, n);
     gsl_vector *c0 = gsl_vector_alloc(p);
     gsl_vector *c1 = gsl_vector_alloc(p);
     gsl_vector *c2 = gsl_vector_alloc(p);
     gsl_vector *c3 = gsl_vector_alloc(p);
-    gsl_vector *lambda_vec = gsl_vector_calloc(p);
+    gsl_vector *g = gsl_vector_calloc(p);
     gsl_matrix *cov = gsl_matrix_alloc(p, p);
     gsl_matrix *XTX = gsl_matrix_alloc(p, p); /* X^T X + lambda^2 I */
     gsl_vector *XTy = gsl_vector_alloc(p);    /* X^T y */
@@ -73,8 +74,14 @@ test_ridge(void)
         gsl_test_rel(c1j, c0j, 1.0e-10, "test_ridge: lambda = 0, c0/c1");
       }
 
+    /* compute SVD of X */
     gsl_multifit_linear_svd(X, w);
 
+    /* compute SVD of transformed system */
+    gsl_vector_set_all(g, 1.0);
+    gsl_multifit_linear_ridge_svd(g, X, w2);
+
+    /* solve regularized standard form systems with different lambdas */
     for (i = 0; i < 7; ++i)
       {
         double lambda = pow(10.0, -(double) i);
@@ -82,9 +89,8 @@ test_ridge(void)
         gsl_multifit_linear_ridge_solve(lambda, &yv.vector, c1, cov,
                                         &rnorm, &snorm, w);
 
-        gsl_vector_set_all(lambda_vec, lambda);
-        gsl_multifit_linear_ridge_solve2(lambda_vec, X, &yv.vector,
-                                         c2, cov, &rnorm, &snorm, w);
+        gsl_multifit_linear_ridge_solve(lambda, &yv.vector, c2, cov,
+                                        &rnorm, &snorm, w2);
 
         /* construct XTX = X^T X + lamda^2 I */
         gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, X, X, 0.0, XTX);
@@ -105,18 +111,20 @@ test_ridge(void)
             gsl_test_rel(c3j, c1j, 1.0e-9, "test_ridge: c3 lambda = %.1e", lambda);
           }
 
-        /* now test a simple nontrivial L = diag(0.1,0.2,...) */
+        /* now test a simple nontrivial system:
+         * L = lambda * diag(0.1,0.2,...)
+         */
 
         /* XTX = X^T X */
         gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, X, X, 0.0, XTX);
 
-        /* construct diag(L) and X^T X + L^T L */
-        for (i = 0; i < p; ++i)
+        /* construct diag(G) and X^T X + lambda * G^T G */
+        for (j = 0; j < p; ++j)
           {
-            double val = (i + 1.0) / 10.0;
+            double val = (j + 1.0) / 10.0;
 
-            gsl_vector_set(lambda_vec, i, val);
-            *gsl_matrix_ptr(XTX, i, i) += val * val;
+            gsl_vector_set(g, j, val);
+            *gsl_matrix_ptr(XTX, j, j) += pow(lambda * val, 2.0);
           }
 
         /* solve XTX c = XTy with LU decomp */
@@ -124,8 +132,10 @@ test_ridge(void)
         gsl_linalg_LU_solve(XTX, perm, XTy, c1);
 
         /* solve with ridge routine */
-        gsl_multifit_linear_ridge_solve2(lambda_vec, X, &yv.vector,
-                                         c2, cov, &rnorm, &snorm, w);
+        gsl_multifit_linear_ridge_svd(g, X, w2);
+        gsl_multifit_linear_ridge_solve(lambda, &yv.vector, c2, cov,
+                                        &rnorm, &snorm, w2);
+        gsl_multifit_linear_ridge_trans(g, c2, w2);
 
         /* test c1 = c2 */
         for (i = 0; i < p; ++i)
@@ -138,11 +148,12 @@ test_ridge(void)
       }
 
     gsl_multifit_linear_free(w);
+    gsl_multifit_linear_free(w2);
     gsl_vector_free(c0);
     gsl_vector_free(c1);
     gsl_vector_free(c2);
     gsl_vector_free(c3);
-    gsl_vector_free(lambda_vec);
+    gsl_vector_free(g);
     gsl_matrix_free(cov);
     gsl_matrix_free(XTX);
     gsl_vector_free(XTy);

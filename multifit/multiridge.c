@@ -55,90 +55,98 @@ gsl_multifit_linear_ridge_solve (const double lambda,
 } /* gsl_multifit_linear_ridge_solve() */
 
 /*
-gsl_multifit_linear_ridge_solve2()
-  Perform ridge regression with matrix
+gsl_multifit_linear_ridge_svd()
+  Using regularization matrix L = \lambda G, with
+G = diag(g_1,g_2,...,g_p), transform to Tikhonov standard form:
 
-    L = diag(lambda_1,lambda_2,...,lambda_p).
+X~ = X G^{-1}
+c~ = G c
 
-This is equivalent to "standard form" Tikhonov regression with the
-change of variables:
+and compute SVD of X~
 
-X~ = X * L^{-1}
-c~ = L * c
+Inputs: g    - Tikhonov matrix as a vector of diagonal elements
+        X    - least squares matrix
+        work - workspace
 
-and performing standard Tikhonov regularization on the system
-X~ c~ = y with \lambda = 1
+Return: success/error
 
-Inputs: lambda - vector representing diag(lambda_1,lambda_2,...,lambda_p)
-        X      - least squares matrix
-        y      - right hand side vector
-        c      - (output) coefficients
-        cov    - covariance matrix
-        rnorm  - residual norm ||X c - y||^2
-        snorm  - solution norm ||L c||^2
-        work   - workspace
+Notes:
+1) X~ is computed as well as its SVD which is stored in work
 */
 
 int
-gsl_multifit_linear_ridge_solve2 (const gsl_vector * lambda,
-                                  const gsl_matrix * X,
-                                  const gsl_vector * y,
-                                  gsl_vector * c,
-                                  gsl_matrix * cov,
-                                  double *rnorm,
-                                  double *snorm,
-                                  gsl_multifit_linear_workspace * work)
+gsl_multifit_linear_ridge_svd (const gsl_vector * g,
+                               const gsl_matrix * X,
+                               gsl_multifit_linear_workspace * work)
 {
+  const size_t n = work->n;
   const size_t p = work->p;
 
-  if (p != lambda->size || lambda->size != c->size)
+  if (p != g->size)
     {
-      GSL_ERROR("lambda vector has incorrect length", GSL_EBADLEN);
+      GSL_ERROR("g vector does not match workspace", GSL_EBADLEN);
+    }
+  else if (n != X->size1 || p != X->size2)
+    {
+      GSL_ERROR("X matrix does not match workspace", GSL_EBADLEN);
     }
   else
     {
-      size_t rank;
-      int status;
+      int status = GSL_SUCCESS;
       size_t j;
-      double chisq;
 
-      /* construct X~ = X * L^{-1} matrix using work->A */
+      /* construct X~ = X * G^{-1} matrix using work->A */
       for (j = 0; j < p; ++j)
         {
           gsl_vector_const_view Xj = gsl_matrix_const_column(X, j);
           gsl_vector_view Aj = gsl_matrix_column(work->A, j);
-          double lambdaj = gsl_vector_get(lambda, j);
+          double gj = gsl_vector_get(g, j);
 
-          if (lambdaj == 0.0)
+          if (gj == 0.0)
             {
-              GSL_ERROR("lambda matrix is singular", GSL_EDOM);
+              GSL_ERROR("G matrix is singular", GSL_EDOM);
             }
 
           gsl_vector_memcpy(&Aj.vector, &Xj.vector);
-          gsl_vector_scale(&Aj.vector, 1.0 / lambdaj);
+          gsl_vector_scale(&Aj.vector, 1.0 / gj);
         }
 
-      /*
-       * do not balance since it cannot be applied to the Tikhonov term;
-       * lambda = 1 in the transformed system
-       */
+      /* compute SVD of X~; do not balance for regularized problems */
       status = multifit_linear_svd (work->A, 0, work);
-      if (status)
-        return status;
-
-      status = multifit_linear_solve (y, GSL_DBL_EPSILON, 1.0,
-                                      &rank, c, cov, rnorm, snorm,
-                                      &chisq, work);
-
-      if (status == GSL_SUCCESS)
-        {
-          /* compute true solution vector c = L^{-1} c~ */
-          gsl_vector_div(c, lambda);
-        }
 
       return status;
     }
-} /* gsl_multifit_linear_ridge_solve2() */
+}
+
+/*
+gsl_multifit_linear_ridge_trans()
+  Backtransform regularized solution vector using matrix
+G = diag(g)
+*/
+
+int
+gsl_multifit_linear_ridge_trans (const gsl_vector * g,
+                                 gsl_vector * c,
+                                 gsl_multifit_linear_workspace * work)
+{
+  const size_t p = work->p;
+
+  if (p != g->size)
+    {
+      GSL_ERROR("g vector does not match workspace", GSL_EBADLEN);
+    }
+  else if (p != c->size)
+    {
+      GSL_ERROR("c vector does not match workspace", GSL_EBADLEN);
+    }
+  else
+    {
+      /* compute true solution vector c = G^{-1} c~ */
+      gsl_vector_div(c, g);
+
+      return GSL_SUCCESS;
+    }
+}
 
 /*
 gsl_multifit_linear_ridge_lcurve()
