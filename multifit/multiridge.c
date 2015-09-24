@@ -339,12 +339,11 @@ gsl_multifit_linear_ridge_lcorner(const gsl_vector *rho,
           double h21 = x21*x21 + y21*y21;
           double h31 = x31*x31 + y31*y31;
           double d = fabs(2.0 * (x21*y31 - x31*y21));
+          double r = sqrt(h21*h31*((x3-x2)*(x3-x2)+(y3-y2)*(y3-y2))) / d;
 
           /* if d =~ 0 then there are nearly colinear points */
-          if (d > GSL_DBL_EPSILON)
+          if (gsl_finite(r))
             {
-              double r = sqrt(h21*h31*((x3-x2)*(x3-x2)+(y3-y2)*(y3-y2))) / d;
-
               /* check for smallest radius of curvature */
               if (r < rmin || rmin < 0.0)
                 {
