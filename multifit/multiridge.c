@@ -36,18 +36,6 @@
 #include "linear_common.c"
 
 int
-gsl_multifit_linear_ridge_svd (const gsl_matrix * X,
-                               gsl_multifit_linear_workspace * work)
-{
-  int status;
-
-  /* do not balance since it cannot be applied to the Tikhonov term */
-  status = multifit_linear_svd2(X, 0, work);
-
-  return status;
-} /* gsl_multifit_linear_ridge_svd() */
-
-int
 gsl_multifit_linear_ridge_solve (const double lambda,
                                  const gsl_vector * y,
                                  gsl_vector * c,
@@ -134,7 +122,7 @@ gsl_multifit_linear_ridge_solve2 (const gsl_vector * lambda,
        * do not balance since it cannot be applied to the Tikhonov term;
        * lambda = 1 in the transformed system
        */
-      status = multifit_linear_svd2 (work->A, 0, work);
+      status = multifit_linear_svd (work->A, 0, work);
       if (status)
         return status;
 

@@ -57,7 +57,7 @@ test_ridge(void)
     /* test that ridge equals OLS solution for lambda = 0 */
     gsl_multifit_linear(X, &yv.vector, c0, cov, &chisq, w);
 
-    gsl_multifit_linear_ridge_svd(X, w);
+    gsl_multifit_linear_svd(X, w);
     gsl_multifit_linear_ridge_solve(0.0, &yv.vector, c1, cov,
                                     &rnorm, &snorm, w);
 
@@ -73,7 +73,7 @@ test_ridge(void)
         gsl_test_rel(c1j, c0j, 1.0e-10, "test_ridge: lambda = 0, c0/c1");
       }
 
-    gsl_multifit_linear_ridge_svd(X, w);
+    gsl_multifit_linear_svd(X, w);
 
     for (i = 0; i < 7; ++i)
       {

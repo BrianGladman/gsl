@@ -115,7 +115,7 @@ test_shaw_system(gsl_rng *rng_p, const size_t n, const size_t p,
     }
 
   /* SVD decomposition */
-  gsl_multifit_linear_ridge_svd(X, work);
+  gsl_multifit_linear_svd(X, work);
 
   /* calculate L-curve */
   gsl_multifit_linear_ridge_lcurve(y, reg_param, rho, eta, work);

@@ -22,7 +22,7 @@
  */
 
 static int
-multifit_linear_svd2 (const gsl_matrix * X,
+multifit_linear_svd (const gsl_matrix * X,
                      const int balance,
                      gsl_multifit_linear_workspace * work)
 {

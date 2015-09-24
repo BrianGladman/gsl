@@ -306,6 +306,18 @@ observations using @var{p} parameters. The size of the workspace is
 This function frees the memory associated with the workspace @var{w}.
 @end deftypefun
 
+@deftypefun int gsl_multifit_linear_svd (const gsl_matrix * @var{X}, gsl_multifit_linear_workspace * @var{work})
+This function performs a singular value decomposition of the
+matrix @var{X} and stores the SVD factors internally in @var{work}.
+@end deftypefun
+
+@deftypefun int gsl_multifit_linear_bsvd (const gsl_matrix * @var{X}, gsl_multifit_linear_workspace * @var{work})
+This function performs a singular value decomposition of the
+matrix @var{X} and stores the SVD factors internally in @var{work}.
+The matrix @var{X} is first balanced by applying column scaling
+factors to improve the accuracy of the singular values.
+@end deftypefun
+
 @deftypefun int gsl_multifit_linear (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
 This function computes the best-fit parameters @var{c} of the model
 @math{y = X c} for the observations @var{y} and the matrix of
@@ -337,18 +349,6 @@ returned in @var{chisq}. If the coefficient of determination is
 desired, it can be computed from the expression @math{R^2 = 1 - \chi^2
 / WTSS}, where the weighted total sum of squares (WTSS) of the
 observations @var{y} may be computed from @code{gsl_stats_wtss}.
-@end deftypefun
-
-@deftypefun int gsl_multifit_linear_svd (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, double @var{tol}, size_t * @var{rank}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
-@deftypefunx int gsl_multifit_wlinear_svd (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, double @var{tol}, size_t * @var{rank}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
-In these functions components of the fit are discarded if the ratio of
-singular values @math{s_i/s_0} falls below the user-specified
-tolerance @var{tol}, and the effective rank is returned in @var{rank}.
-@end deftypefun
-
-@deftypefun int gsl_multifit_linear_usvd (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, double @var{tol}, size_t * @var{rank}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
-@deftypefunx int gsl_multifit_wlinear_usvd (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, double @var{tol}, size_t * @var{rank}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
-These functions compute the fit using an SVD without column scaling.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_est (const gsl_vector * @var{x}, const gsl_vector * @var{c}, const gsl_matrix * @var{cov}, double * @var{y}, double * @var{y_err})
@@ -458,11 +458,27 @@ the input @math{\lambda = 1}. If
 @math{L} is not square or not invertible, other techniques
 must be used (see Hansen 1998, chapter 2.3).
 
+In many regularization problems, care must be taken when choosing
+the regularization parameter @math{\lambda}. Since both the
+residual norm @math{||y - X c||} and solution norm @math{||\lambda c||}
+are being minimized, the parameter @math{\lambda} represents
+a tradeoff between minimizing either the residuals or the
+solution vector. A common tool for visualizing the comprimise between
+the minimization of these two quantities is known as the L-curve.
+The L-curve is a log-log plot of the residual norm @math{||y - X c||}
+on the horizontal axis and the solution norm @math{||L c||} on the
+vertical axis. This curve nearly always as an @math{L} shaped
+appearance, with a distinct corner separating the horizontal
+and vertical sections of the curve. The regularization parameter
+corresponding to this corner is often chosen as the optimal
+value. GSL provides routines to calculate the L-curve for all
+relevant regularization parameters as well as locating the corner.
+
 @deftypefun int gsl_multifit_linear_ridge_solve (const double @var{lambda}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{rnorm}, double * @var{snorm}, gsl_multifit_linear_workspace * @var{work})
 This function computes the best-fit parameters @var{c} of the model
 @math{y = X c} for the observations @var{y} and the matrix of
 predictor variables @var{X}. The routine
-@code{gsl_multifit_linear_ridge_svd} must first be called to
+@code{gsl_multifit_linear_svd} must first be called to
 compute the SVD of @var{X}, which is stored in the workspace provided
 in @var{work}. The Tikhonov matrix appearing in the least squares
 solution is @math{L = \lambda I} where @math{\lambda}
@@ -472,7 +488,7 @@ The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
 @var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
 the standard deviation of the fit residuals.
 The residual norm @math{|| y - X c ||} is returned in @var{rnorm}.
-The solution norm @math{|| \lambda c ||^2} is returned in
+The solution norm @math{|| \lambda c ||} is returned in
 @var{snorm}. The cost function @math{\chi^2} can be computed as
 @math{rnorm^2} + @math{snorm^2}.
 @end deftypefun
@@ -481,7 +497,7 @@ The solution norm @math{|| \lambda c ||^2} is returned in
 This function computes the best-fit parameters @var{c} of the model
 @math{y = X c} for the observations @var{y} and the matrix of
 predictor variables @var{X}. The routine
-@code{gsl_multifit_linear_ridge_svd} must first be called to
+@code{gsl_multifit_linear_svd} must first be called to
 compute the SVD of @var{X}, which is stored in the workspace provided
 in @var{work}. The Tikhonov matrix appearing in the least squares
 solution is
@@ -504,7 +520,7 @@ The solution norm @math{|| L c ||} is returned in
 This function computes the L-curve for a least squares system
 using the right hand side vector @var{y} and the SVD decomposition
 of the least squares matrix @var{X}, which must be provided
-to @code{gsl_multifit_linear_ridge_svd} prior to
+to @code{gsl_multifit_linear_svd} prior to
 calling this function. The output vectors @var{reg_param},
 @var{rho}, and @var{eta} must all be the same size, and will
 contain the regularization parameters @math{\lambda_i}, residual norms
@@ -528,7 +544,7 @@ outputs of @code{gsl_multifit_linear_ridge_lcurve}. The algorithm
 used simply fits a circle to 3 consecutive points on the L-curve
 and uses the circle's radius to determine the curvature at
 the middle point. Therefore, the input array sizes must be
-@math{>= 3}. With more points provided for the L-curve, a better
+@math{\ge 3}. With more points provided for the L-curve, a better
 estimate of the curvature can be obtained. The array index
 corresponding to maximum curvature (ie: the corner) is returned
 in @var{idx}. If the input arrays contain colinear points,

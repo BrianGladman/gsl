@@ -69,27 +69,11 @@ gsl_multifit_linear (const gsl_matrix * X,
 
 int
 gsl_multifit_linear_svd (const gsl_matrix * X,
-                         const gsl_vector * y,
-                         double tol,
-                         size_t * rank,
-                         gsl_vector * c,
-                         gsl_matrix * cov,
-                         double *chisq, 
                          gsl_multifit_linear_workspace * work);
 
 int
-gsl_multifit_linear_usvd (const gsl_matrix * X,
-                          const gsl_vector * y,
-                          double tol,
-                          size_t * rank,
-                          gsl_vector * c,
-                          gsl_matrix * cov,
-                          double *chisq, 
+gsl_multifit_linear_bsvd (const gsl_matrix * X,
                           gsl_multifit_linear_workspace * work);
-
-int
-gsl_multifit_linear_ridge_svd (const gsl_matrix * X,
-                               gsl_multifit_linear_workspace * work);
 
 int
 gsl_multifit_linear_ridge_solve (const double lambda,
