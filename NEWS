@@ -1,5 +1,7 @@
 * What is new in gsl-2.0:
 
+** added L-curve analysis routines for linear Tikhonov regression
+
 ** add running statistics module
 
 ** added bilinear and bicubic interpolation (David Zaslavsky)
