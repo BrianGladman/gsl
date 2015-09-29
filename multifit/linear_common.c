@@ -5,6 +5,7 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_blas.h>
+#include <gsl/gsl_multifit.h>
 
 /* Perform a SVD decomposition on the least squares matrix X = U S Q^T
  *
