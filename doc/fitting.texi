@@ -12,18 +12,19 @@ matrix is estimated from the scatter of the points, giving a
 variance-covariance matrix.
 
 The functions are divided into separate versions for simple one- or
-two-parameter regression and multiple-parameter fits.  The functions
-are declared in the header file @file{gsl_fit.h}.
+two-parameter regression and multiple-parameter fits.
 
 @menu
 * Fitting Overview::            
 * Linear regression::           
-* Linear fitting without a constant term::
-* Multi-parameter fitting::
+* Multi-parameter regression::
 * Ridge (Tikhonov) regression::
 * Robust linear regression::
 * Troubleshooting::
-* Fitting Examples::            
+* Fitting Examples for linear regression::
+* Fitting Examples for multi-parameter linear regression::
+* Fitting Examples for regularized linear regression::
+* Fitting Examples for robust linear regression::
 * Fitting References and Further Reading::  
 @end menu
 
@@ -140,6 +141,17 @@ is given by @c{$\rho_{ab} = C_{ab} / \sqrt{C_{aa} C_{bb}}$}
 @section Linear regression
 @cindex linear regression
 
+The functions in this section are used to fit simple one or two
+parameter linear regression models. The functions are declared in
+the header file @file{gsl_fit.h}.
+
+@menu
+* Linear regression with a constant term::
+* Linear regression without a constant term::
+@end menu
+
+@node Linear regression with a constant term
+@subsection Linear regression with a constant term
 The functions described in this section can be used to perform
 least-squares fits to a straight line model, @math{Y(c,x) = c_0 + c_1 x}.
 
@@ -180,8 +192,8 @@ This function uses the best-fit linear regression coefficients
 c_0 + c_1 X} at the point @var{x}.
 @end deftypefun
 
-@node Linear fitting without a constant term
-@section Linear fitting without a constant term
+@node Linear regression without a constant term
+@subsection Linear regression without a constant term
 
 The functions described in this section can be used to perform
 least-squares fits to a straight line model without a constant term,
@@ -219,15 +231,29 @@ and its covariance @var{cov11} to compute the fitted function
 c_1 X} at the point @var{x}.
 @end deftypefun
 
-@node Multi-parameter fitting
-@section Multi-parameter fitting
+@node Multi-parameter regression
+@section Multi-parameter regression
 @cindex multi-parameter regression
 @cindex fits, multi-parameter linear
-The functions described in this section perform least-squares fits to a
-general linear model, @math{y = X c} where @math{y} is a vector of
-@math{n} observations, @math{X} is an @math{n} by @math{p} matrix of
-predictor variables, and the elements of the vector @math{c} are the @math{p} unknown best-fit parameters which are to be estimated.  The chi-squared value is given by @c{$\chi^2 = \sum_i w_i (y_i - \sum_j X_{ij} c_j)^2$}
-@math{\chi^2 = \sum_i w_i (y_i - \sum_j X_@{ij@} c_j)^2}.
+This section describes routines which perform least squares fits
+to a linear model by minimizing the cost function
+@tex
+\beforedisplay
+$$
+\chi^2 = \sum_i w_i (y_i - \sum_j X_{ij} c_j)^2 = || \sqrt{W} (y - Xc) ||^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\chi^2 = \sum_i w_i (y_i - \sum_j X_ij c_j)^2 = || \sqrt(W) (y - Xc) ||^2
+@end example
+@end ifinfo
+where @math{y} is a vector of @math{n} observations, @math{X} is an
+@math{n}-by-@math{p} matrix of predictor variables, and the elements
+of the vector @math{c} are the @math{p} unknown best-fit parameters
+which are to be estimated. The matrix @math{W = } diag@math{(w_1,w_2,...,w_n)}
+defines the weights or uncertainties of the observation vector.
 
 This formulation can be used for fits to any number of functions and/or
 variables by preparing the @math{n}-by-@math{p} matrix @math{X}
@@ -288,12 +314,11 @@ X_@{ij@} = x_j(i)
 where @math{x_j(i)} is the @math{i}-th value of the predictor variable
 @math{x_j}.
 
-The functions described in this section are declared in the header file
-@file{gsl_multifit.h}.
-
 The solution of the general linear least-squares system requires an
 additional working space for intermediate results, such as the singular
 value decomposition of the matrix @math{X}.
+
+These functions are declared in the header file @file{gsl_multifit.h}.
 
 @deftypefun {gsl_multifit_linear_workspace *} gsl_multifit_linear_alloc (size_t @var{n}, size_t @var{p})
 @tindex gsl_multifit_linear_workspace
@@ -931,8 +956,8 @@ x' = (x - mu)/sigma
 @noindent
 and then construct the @math{X} matrix using the transformed values @math{x'}.
 
-@node Fitting Examples
-@section Examples
+@node Fitting Examples for linear regression
+@section Examples for linear regression
 
 The following program computes a least squares straight-line fit to a
 simple dataset, and outputs the best-fit line and its
@@ -968,7 +993,10 @@ $ graph -T X -X x -Y y -y 0 20 -m 0 -S 2 -Ie data
 @center @image{fit-wlinear,3.0in}
 @end iftex
 
-The next program performs a quadratic fit @math{y = c_0 + c_1 x + c_2
+@node Fitting Examples for multi-parameter linear regression
+@section Fitting Examples for multi-parameter linear regression
+
+The following program performs a quadratic fit @math{y = c_0 + c_1 x + c_2
 x^2} to a weighted dataset using the generalised linear fitting function
 @code{gsl_multifit_wlinear}.  The model matrix @math{X} for a quadratic
 fit is given by,
@@ -1060,6 +1088,9 @@ of freedom is 1.4, indicating a reasonable fit to the data.
 @center @image{fit-wlinear2,3.0in}
 @end iftex
 
+@node Fitting Examples for regularized linear regression
+@section Fitting Examples for regularized linear regression
+
 The next program demonstrates the difference between ordinary and
 regularized least squares when the design matrix is near-singular.
 In this program, we generate two random normally distributed variables
@@ -1074,21 +1105,34 @@ singular, leading to unstable ordinary least squares solutions.
 Here is the program output:
 @example
 === Unregularized fit ===
-best fit: y = -259.999 u + 262.007 v
-chisq/dof = 1.59069
+best fit: y = -43.6588 u + 45.6636 v
+chisq/dof = 1.00213
 === Regularized fit ===
-best fit: y = 1.01594 u + 1.02738 v
-chisq/dof = 1.69568
+optimal lambda: 4.51103
+best fit: y = 1.00113 u + 1.0032 v
+chisq/dof = 1.04499
 @end example
 
 @noindent
-We see that the regularized method with @math{\lambda = 1} finds
-the correct solution @math{c_1 \approx c_2 \approx 1}, while the
-ordinary least squares solution is unstable and has a large norm.
-The program is given below.
+We see that the regularized method with the optimal
+@math{\lambda = 4.51103} finds the correct solution
+@math{c_1 \approx c_2 \approx 1}, while the ordinary least squares
+solution is completely wrong. The optimal regularization
+parameter @math{\lambda} is found by calculating the L-curve and
+finding its corner. The L-curve and its computed corner are plotted below.
+
+@iftex
+@sp 1
+@center @image{lcurve,3.0in}
+@end iftex
+
+@noindent The program is given below.
 @example
 @verbatiminclude examples/ridge.c
 @end example
+
+@node Fitting Examples for robust linear regression
+@section Fitting Examples for robust linear regression
 
 The next program demonstrates the advantage of robust least squares on
 a dataset with outliers. The program generates linear @math{(x,y)}
