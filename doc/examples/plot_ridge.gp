@@ -16,7 +16,7 @@ set format y "10^{%L}"
 unset key
 
 set xlabel "residual norm ||y - X c||"
-set ylabel "solution norm ||{/Symbol \154} c||"
+set ylabel "solution norm ||c||"
 
 plot 'ridge.txt' index 0 us 1:2 w lp, \
      'ridge.txt' index 1 us 1:2 w p ps 3 pt 6 lt 3

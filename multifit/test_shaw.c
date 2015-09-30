@@ -85,6 +85,7 @@ test_shaw_system(gsl_rng *rng_p, const size_t n, const size_t p,
   const size_t npoints = 1000; /* number of points on L-curve */
   const double tol1 = 1.0e-12;
   const double tol2 = 1.0e-10;
+  const double tol3 = 1.0e-6;
   gsl_vector * reg_param = gsl_vector_alloc(npoints);
   gsl_vector * rho = gsl_vector_alloc(npoints);
   gsl_vector * eta = gsl_vector_alloc(npoints);
@@ -98,7 +99,7 @@ test_shaw_system(gsl_rng *rng_p, const size_t n, const size_t p,
   gsl_multifit_linear_workspace * work = 
     gsl_multifit_linear_alloc (n, p);
 
-  size_t reg_idx;
+  size_t reg_idx, i;
   double lambda, rnorm, snorm;
 
   /* build design matrix */
@@ -119,6 +120,22 @@ test_shaw_system(gsl_rng *rng_p, const size_t n, const size_t p,
 
   /* calculate L-curve */
   gsl_multifit_linear_ridge_lcurve(y, reg_param, rho, eta, work);
+
+  /* test rho and eta vectors */
+  for (i = 0; i < npoints; ++i)
+    {
+      double rhoi = gsl_vector_get(rho, i);
+      double etai = gsl_vector_get(eta, i);
+      double lami = gsl_vector_get(reg_param, i);
+
+      /* solve regularized system and check for consistent rho/eta values */
+      gsl_multifit_linear_ridge_solve(lami, y, c, cov,
+                                      &rnorm, &snorm, work);
+      gsl_test_rel(rhoi, rnorm, tol3, "shaw rho n=%zu p=%zu lambda=%e",
+                   n, p, lami);
+      gsl_test_rel(etai, snorm, tol1, "shaw eta n=%zu p=%zu lambda=%e",
+                   n, p, lami);
+    }
 
   /* calculate corner of L-curve */
   gsl_multifit_linear_ridge_lcorner(rho, eta, &reg_idx);
@@ -146,7 +163,7 @@ test_shaw_system(gsl_rng *rng_p, const size_t n, const size_t p,
                "shaw: n=%zu p=%zu rnorm", n, p);
 
   /* test snorm value */
-  gsl_test_rel(snorm, lambda * gsl_blas_dnrm2(c), tol2,
+  gsl_test_rel(snorm, gsl_blas_dnrm2(c), tol2,
                "shaw: n=%zu p=%zu snorm", n, p);
 
   gsl_matrix_free(X);

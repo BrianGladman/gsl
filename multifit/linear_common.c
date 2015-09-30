@@ -88,7 +88,7 @@ multifit_linear_svd (const gsl_matrix * X,
  *         c        - (output) model coefficient vector
  *         cov      - (output) covariance matrix
  *         rnorm    - (output) residual norm ||y - X c||
- *         snorm    - (output) solution norm ||lambda c||
+ *         snorm    - (output) solution norm ||c||
  *         chisq    - (output) residual chi^2
  *         work     - workspace
  */
@@ -136,6 +136,7 @@ multifit_linear_solve (const gsl_vector * y,
     }
   else
     {
+      const double lambda_sq = lambda * lambda;
       const size_t n = work->n;
       const size_t p = work->p;
 
@@ -172,8 +173,6 @@ multifit_linear_solve (const gsl_vector * y,
 
       if (lambda > 0.0)
         {
-          const double lambda_sq = lambda * lambda;
-
           /* xt <-- [ s(i) / (s(i)^2 + lambda^2) ] .* U^T y */
           for (j = 0; j < p; ++j)
             {
@@ -191,7 +190,7 @@ multifit_linear_solve (const gsl_vector * y,
           gsl_blas_dgemv (CblasNoTrans, 1.0, Q, xt, 0.0, c);
 
           /* compute solution norm */
-          *snorm = lambda * gsl_blas_dnrm2(c);
+          *snorm = gsl_blas_dnrm2(c);
 
           /* compute residual norm */
           *rnorm = gsl_blas_dnrm2(D);
@@ -271,7 +270,7 @@ multifit_linear_solve (const gsl_vector * y,
         }
 
       /* compute chisq */
-      *chisq = (*rnorm) * (*rnorm) + (*snorm) * (*snorm);
+      *chisq = (*rnorm) * (*rnorm) + lambda_sq * (*snorm) * (*snorm);
 
       return GSL_SUCCESS;
     }

@@ -85,12 +85,12 @@ gsl_multifit_linear_ridge_solve (const double lambda,
                                  gsl_multifit_linear_workspace * work);
 
 int
-gsl_multifit_linear_ridge_svd (const gsl_vector * g,
+gsl_multifit_linear_ridge_svd (const gsl_vector * L,
                                const gsl_matrix * X,
                                gsl_multifit_linear_workspace * work);
 
 int
-gsl_multifit_linear_ridge_trans (const gsl_vector * g,
+gsl_multifit_linear_ridge_trans (const gsl_vector * L,
                                  gsl_vector * c,
                                  gsl_multifit_linear_workspace * work);
 

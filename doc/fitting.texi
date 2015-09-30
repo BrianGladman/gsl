@@ -419,70 +419,70 @@ to include a regularization term in the least squares minimization
 @tex
 \beforedisplay
 $$
-\chi^2 = || y - Xc ||^2 + || L c ||^2
+\chi^2 = || y - Xc ||^2 + \lambda^2 || L c ||^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-\chi^2 = || y - Xc ||^2 + || L c ||^2
+\chi^2 = || y - Xc ||^2 + \lambda^2 || L c ||^2
 @end example
 @end ifinfo
-for a suitably chosen matrix @math{L}. In many cases,
-@math{L} is chosen as a multiple of the identity matrix, giving
+for a suitably chosen regularization parameter @math{\lambda} and
+matrix @math{L}. In many cases,
+@math{L} is chosen as the identity matrix, giving
 preference to solution vectors @math{c} with smaller norms.
 Including this regularization term leads to the explicit solution
 @tex
 \beforedisplay
 $$
-c = \left( X^T X + L^T L \right)^{-1} X^T y
+c = \left( X^T X + \lambda^2 L^T L \right)^{-1} X^T y
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-c = ( X^T X + L^T L )^-1 X^T y
+c = ( X^T X + \lambda^2 L^T L )^-1 X^T y
 @end example
 @end ifinfo
 which reduces to the ordinary least squares solution when @math{L = 0}.
 The routines below support two formats for the @math{L} matrix.
-The first is @math{L = \lambda I} giving a solution
+The first is @math{L = I} giving a solution
 @math{c = \left( X^T X + \lambda^2 I \right)^{-1} X^T y} which damps
 all solution coefficients equally, and is known as the Tikhonov
-"standard form". For any square, invertible matrix @math{\Gamma},
-with @math{L = \lambda \Gamma}, the problem can be converted
-to standard form with
+``standard form''. For any square, invertible matrix @math{L},
+the problem can be converted to standard form with the transformation
 @tex
 \beforedisplay
 $$
 \eqalign{
-\tilde{X} &= X \Gamma^{-1} \cr
-\tilde{c} &= \Gamma c
+\tilde{X} &= X L^{-1} \cr
+\tilde{c} &= L c
 }
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-X~ = X G^-1
-c~ = G c
+X~ = X L^-1
+c~ = L c
 @end example
 @end ifinfo
 leading to @math{\tilde{c} = \left( \tilde{X}^T \tilde{X} + \lambda^2 I \right)^{-1} \tilde{X}^T y}.
-The matrix @math{\Gamma} is often chosen as a first or second
+The matrix @math{L} is often chosen as a first or second
 finite difference operator, to ensure a smoothly varying coefficient
-vector @math{c}.
+vector @math{c}, or as a diagonal matrix to selectively damp each
+model parameter differently.
 The second regularization matrix input supported by GSL has the form
-@math{L = \lambda \Gamma = \lambda} diag@math{(\gamma_0,\gamma_1,...,\gamma_{p-1})} which allows
-the user to selectively damp each coefficient differently. For
+@math{L = } diag@math{(l_0,l_1,...,l_{p-1})}. For
 this matrix, GSL performs the above transformation and then
 backtransforms the least squares solution to recover the original
 vector @math{c}.
 For applications which require
-a more complicated matrix @math{\Gamma}, the user can apply the
-above transformation themselves if @math{\Gamma} is square and
+a more complicated matrix @math{L}, the user can apply the
+above transformation themselves if @math{L} is square and
 invertible and use @code{gsl_multifit_linear_ridge_solve}.
-If @math{\Gamma} is not square or not invertible, other techniques
+If @math{L} is not square or not invertible, other techniques
 must be used (see Hansen 1998, chapter 2.3).
 
 In many regularization problems, care must be taken when choosing
@@ -501,47 +501,45 @@ corresponding to this corner is often chosen as the optimal
 value. GSL provides routines to calculate the L-curve for all
 relevant regularization parameters as well as locating the corner.
 
-@deftypefun int gsl_multifit_linear_ridge_svd (const gsl_vector * @var{g}, const gsl_matrix * @var{X}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_ridge_svd (const gsl_vector * @var{L}, const gsl_matrix * @var{X}, gsl_multifit_linear_workspace * @var{work})
 This function defines a regularization matrix
-@math{L = \lambda \Gamma}, where @math{\Gamma =} diag@math{(\gamma_0,\gamma_1,...,\gamma_{p-1})}.
-The diagonal matrix element @math{\gamma_i} is provided by the
-@math{i}th element of the input vector @var{g}.
+@math{L =} diag@math{(l_0,l_1,...,l_{p-1})}.
+The diagonal matrix element @math{l_i} is provided by the
+@math{i}th element of the input vector @var{L}.
 The least squares matrix @var{X} is then
 converted to standard form as described above, and the singular value
 decomposition of the transformed matrix @math{\tilde{X}} is computed
 and stored in @var{work}. In order to apply this transformation,
-@math{\Gamma^{-1}} must exist and so none of the @math{\gamma_i}
+@math{L^{-1}} must exist and so none of the @math{l_i}
 may be zero.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_ridge_solve (const double @var{lambda}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{rnorm}, double * @var{snorm}, gsl_multifit_linear_workspace * @var{work})
-This function computes the best-fit parameters @var{c} of the model
-@math{y = X c} for the observations @var{y} and the matrix of
+This function computes the regularized best-fit parameters @var{c}
+of the model @math{y = X c} for the observations @var{y} and the matrix of
 predictor variables @var{X}. The routine
 @code{gsl_multifit_linear_svd} (or @code{gsl_multifit_linear_ridge_svd})
-must first be called to
-compute the SVD of @var{X}, which is stored in the workspace provided
-in @var{work}. The Tikhonov matrix appearing in the least squares
-solution is @math{L = \lambda I} where @math{\lambda}
-is provided in @var{lambda}, so that @math{\lambda^2} is added to
-the diagonal elements of @math{X^T X}.
+must first be called to compute the SVD of @var{X}, which is stored in
+the workspace provided in @var{work}. The Tikhonov matrix appearing in
+the least squares solution is @math{L = I} and the regularization
+parameter @math{\lambda} is provided in @var{lambda}, so that
+@math{\lambda^2} is added to the diagonal elements of @math{X^T X}.
 The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
 @var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
 the standard deviation of the fit residuals.
 The residual norm @math{|| y - X c ||} is returned in @var{rnorm}.
-The solution norm @math{|| \lambda c ||} is returned in
+The solution norm @math{|| c ||} is returned in
 @var{snorm}. The cost function @math{\chi^2} can be computed as
-@math{rnorm^2} + @math{snorm^2}.
+@math{rnorm^2} + @math{\lambda^2 snorm^2}.
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_ridge_trans (const gsl_vector * @var{g}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_ridge_trans (const gsl_vector * @var{L}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
 After a regularized system has been solved with
-@math{L = \lambda \Gamma}, where
-@math{\Gamma =} diag@math{(\gamma_0,\gamma_1,...,\gamma_{p-1})},
+@math{L =} diag@math{(\l_0,\l_1,...,\l_{p-1})},
 this function backtransforms the solution vector @var{c}
 to recover the solution vector of the original problem. The
-diagonal matrix elements @math{\gamma_i} are provided in
-the vector @var{g}.
+diagonal matrix elements @math{l_i} are provided in
+the vector @var{L}.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_ridge_lcurve (const gsl_vector * @var{y}, gsl_vector * @var{reg_param}, gsl_vector * @var{rho}, gsl_vector * @var{eta}, gsl_multifit_linear_workspace * @var{work})
@@ -552,7 +550,7 @@ to @code{gsl_multifit_linear_svd} prior to
 calling this function. The output vectors @var{reg_param},
 @var{rho}, and @var{eta} must all be the same size, and will
 contain the regularization parameters @math{\lambda_i}, residual norms
-@math{||y - X c_i||}, and solution norms @math{|| \lambda_i c_i ||}
+@math{||y - X c_i||}, and solution norms @math{|| L c_i ||}
 which compose the L-curve, where @math{c_i} is the regularized
 solution vector corresponding to @math{\lambda_i}.
 The user may determine the number of points on the L-curve by
@@ -1110,7 +1108,7 @@ chisq/dof = 1.00213
 === Regularized fit ===
 optimal lambda: 4.51103
 best fit: y = 1.00113 u + 1.0032 v
-chisq/dof = 1.04499
+chisq/dof = 1.00604
 @end example
 
 @noindent

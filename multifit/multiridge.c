@@ -56,15 +56,15 @@ gsl_multifit_linear_ridge_solve (const double lambda,
 
 /*
 gsl_multifit_linear_ridge_svd()
-  Using regularization matrix L = \lambda G, with
-G = diag(g_1,g_2,...,g_p), transform to Tikhonov standard form:
+  Using regularization matrix
+L = diag(l_1,l_2,...,l_p), transform to Tikhonov standard form:
 
-X~ = X G^{-1}
-c~ = G c
+X~ = X L^{-1}
+c~ = L c
 
 and compute SVD of X~
 
-Inputs: g    - Tikhonov matrix as a vector of diagonal elements
+Inputs: L    - Tikhonov matrix as a vector of diagonal elements
         X    - least squares matrix
         work - workspace
 
@@ -75,16 +75,16 @@ Notes:
 */
 
 int
-gsl_multifit_linear_ridge_svd (const gsl_vector * g,
+gsl_multifit_linear_ridge_svd (const gsl_vector * L,
                                const gsl_matrix * X,
                                gsl_multifit_linear_workspace * work)
 {
   const size_t n = work->n;
   const size_t p = work->p;
 
-  if (p != g->size)
+  if (p != L->size)
     {
-      GSL_ERROR("g vector does not match workspace", GSL_EBADLEN);
+      GSL_ERROR("L vector does not match workspace", GSL_EBADLEN);
     }
   else if (n != X->size1 || p != X->size2)
     {
@@ -95,20 +95,20 @@ gsl_multifit_linear_ridge_svd (const gsl_vector * g,
       int status = GSL_SUCCESS;
       size_t j;
 
-      /* construct X~ = X * G^{-1} matrix using work->A */
+      /* construct X~ = X * L^{-1} matrix using work->A */
       for (j = 0; j < p; ++j)
         {
           gsl_vector_const_view Xj = gsl_matrix_const_column(X, j);
           gsl_vector_view Aj = gsl_matrix_column(work->A, j);
-          double gj = gsl_vector_get(g, j);
+          double lj = gsl_vector_get(L, j);
 
-          if (gj == 0.0)
+          if (lj == 0.0)
             {
               GSL_ERROR("G matrix is singular", GSL_EDOM);
             }
 
           gsl_vector_memcpy(&Aj.vector, &Xj.vector);
-          gsl_vector_scale(&Aj.vector, 1.0 / gj);
+          gsl_vector_scale(&Aj.vector, 1.0 / lj);
         }
 
       /* compute SVD of X~; do not balance for regularized problems */
@@ -121,19 +121,19 @@ gsl_multifit_linear_ridge_svd (const gsl_vector * g,
 /*
 gsl_multifit_linear_ridge_trans()
   Backtransform regularized solution vector using matrix
-G = diag(g)
+L = diag(L)
 */
 
 int
-gsl_multifit_linear_ridge_trans (const gsl_vector * g,
+gsl_multifit_linear_ridge_trans (const gsl_vector * L,
                                  gsl_vector * c,
                                  gsl_multifit_linear_workspace * work)
 {
   const size_t p = work->p;
 
-  if (p != g->size)
+  if (p != L->size)
     {
-      GSL_ERROR("g vector does not match workspace", GSL_EBADLEN);
+      GSL_ERROR("L vector does not match workspace", GSL_EBADLEN);
     }
   else if (p != c->size)
     {
@@ -141,8 +141,8 @@ gsl_multifit_linear_ridge_trans (const gsl_vector * g,
     }
   else
     {
-      /* compute true solution vector c = G^{-1} c~ */
-      gsl_vector_div(c, g);
+      /* compute true solution vector c = L^{-1} c~ */
+      gsl_vector_div(c, L);
 
       return GSL_SUCCESS;
     }
