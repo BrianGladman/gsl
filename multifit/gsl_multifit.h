@@ -106,6 +106,11 @@ gsl_multifit_linear_ridge_lcorner(const gsl_vector *rho,
                                   size_t *idx);
 
 int
+gsl_multifit_linear_ridge_lcorner2(const gsl_vector *reg_param,
+                                   const gsl_vector *eta,
+                                   size_t *idx);
+
+int
 gsl_multifit_wlinear (const gsl_matrix * X,
                       const gsl_vector * w,
                       const gsl_vector * y,

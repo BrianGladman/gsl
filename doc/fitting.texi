@@ -561,13 +561,12 @@ the L-curve.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_ridge_lcorner (const gsl_vector * @var{rho}, const gsl_vector * @var{eta}, size_t * @var{idx})
-This function attempts to locate the corner of the L-curve defined
-by the @var{rho} and @var{eta} input arrays, which represent
-vectors of residual norms and solution norms respectively. The
-corner is defined as the point of maximum curvature of the L-curve
-in log-log scale. The @var{rho} and @var{eta} arrays can be
-outputs of @code{gsl_multifit_linear_ridge_lcurve}. The algorithm
-used simply fits a circle to 3 consecutive points on the L-curve
+This function attempts to locate the corner of the L-curve
+@math{(||y - X c||, ||L c||)} defined by the @var{rho} and @var{eta}
+input arrays respectively. The corner is defined as the point of maximum
+curvature of the L-curve in log-log scale. The @var{rho} and @var{eta}
+arrays can be outputs of @code{gsl_multifit_linear_ridge_lcurve}. The
+algorithm used simply fits a circle to 3 consecutive points on the L-curve
 and uses the circle's radius to determine the curvature at
 the middle point. Therefore, the input array sizes must be
 @math{\ge 3}. With more points provided for the L-curve, a better

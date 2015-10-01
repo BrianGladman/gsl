@@ -279,7 +279,7 @@ with maximum curvature is then selected.
 Inputs: rho - vector of residual norms ||A x - b||
         eta - vector of solution norms ||L x||
         idx - (output) index i such that
-              (log(rho(i)),log(eta(i)) is the point of
+              (log(rho(i)),log(eta(i))) is the point of
               maximum curvature
 
 Return: success/error
@@ -348,7 +348,7 @@ gsl_multifit_linear_ridge_lcorner(const gsl_vector *rho,
                 }
             }
 
-          /* update previous/current log values */
+          /* update previous/current L-curve values */
           x1 = x2;
           y1 = y2;
           x2 = x3;
@@ -365,3 +365,112 @@ gsl_multifit_linear_ridge_lcorner(const gsl_vector *rho,
       return s;
     }
 } /* gsl_multifit_linear_ridge_lcorner() */
+
+/*
+gsl_multifit_linear_ridge_lcorner2()
+  Determine point on L-curve (lambda^2, ||c||^2) of maximum curvature.
+For each set of 3 points on the L-curve, the circle which passes through
+the 3 points is computed. The radius of the circle is then used
+as an estimate of the curvature at the middle point. The point
+with maximum curvature is then selected.
+
+This routine is based on the paper
+
+M. Rezghi and S. M. Hosseini, "A new variant of L-curve for Tikhonov
+regularization", J. Comp. App. Math., 231 (2009).
+
+Inputs: reg_param - vector of regularization parameters
+        eta       - vector of solution norms ||L x||
+        idx       - (output) index i such that
+                    (lambda(i)^2,eta(i)^2) is the point of
+                    maximum curvature
+
+Return: success/error
+*/
+
+int
+gsl_multifit_linear_ridge_lcorner2(const gsl_vector *reg_param,
+                                   const gsl_vector *eta,
+                                   size_t *idx)
+{
+  const size_t n = reg_param->size;
+
+  if (n < 3)
+    {
+      GSL_ERROR ("at least 3 points are needed for L-curve analysis",
+                 GSL_EBADLEN);
+    }
+  else if (n != eta->size)
+    {
+      GSL_ERROR ("size of reg_param and eta vectors do not match",
+                 GSL_EBADLEN);
+    }
+  else
+    {
+      int s = GSL_SUCCESS;
+      size_t i;
+      double x1, y1;      /* first point of triangle on L-curve */
+      double x2, y2;      /* second point of triangle on L-curve */
+      double rmin = -1.0; /* minimum radius of curvature */
+
+      /* initial values */
+      x1 = gsl_vector_get(reg_param, 0);
+      x1 *= x1;
+      y1 = gsl_vector_get(eta, 0);
+      y1 *= y1;
+
+      x2 = gsl_vector_get(reg_param, 1);
+      x2 *= x2;
+      y2 = gsl_vector_get(eta, 1);
+      y2 *= y2;
+
+      for (i = 1; i < n - 1; ++i)
+        {
+          /*
+           * The points (x1,y1), (x2,y2), (x3,y3) are the previous,
+           * current, and next point on the L-curve. We will find
+           * the circle which fits these 3 points and take its radius
+           * as an estimate of the curvature at this point.
+           */
+          double lamip1 = gsl_vector_get(reg_param, i + 1);
+          double etaip1 = gsl_vector_get(eta, i + 1);
+          double x3 = lamip1 * lamip1;
+          double y3 = etaip1 * etaip1;
+
+          double x21 = x2 - x1;
+          double y21 = y2 - y1;
+          double x31 = x3 - x1;
+          double y31 = y3 - y1;
+          double h21 = x21*x21 + y21*y21;
+          double h31 = x31*x31 + y31*y31;
+          double d = fabs(2.0 * (x21*y31 - x31*y21));
+          double r = sqrt(h21*h31*((x3-x2)*(x3-x2)+(y3-y2)*(y3-y2))) / d;
+
+          /* if d =~ 0 then there are nearly colinear points */
+          if (gsl_finite(r))
+            {
+              /* check for smallest radius of curvature */
+              if (r < rmin || rmin < 0.0)
+                {
+                  rmin = r;
+                  *idx = i;
+                }
+            }
+
+          /* update previous/current L-curve values */
+          x1 = x2;
+          y1 = y2;
+          x2 = x3;
+          y2 = y3;
+        }
+
+      /* check if a minimum radius was found */
+      if (rmin < 0.0)
+        {
+          /* possibly co-linear points */
+          GSL_ERROR("failed to find minimum radius", GSL_EINVAL);
+        }
+
+      return s;
+    }
+} /* gsl_multifit_linear_ridge_lcorner2() */
