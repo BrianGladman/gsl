@@ -576,6 +576,26 @@ in @var{idx}. If the input arrays contain colinear points,
 this function could fail and return @code{GSL_EINVAL}.
 @end deftypefun
 
+@deftypefun int gsl_multifit_linear_ridge_lcorner2 (const gsl_vector * @var{reg_param}, const gsl_vector * @var{eta}, size_t * @var{idx})
+This function attempts to locate the corner of an alternate L-curve
+@math{(\lambda^2, ||L c||^2)} studied by Rezghi and Hosseini, 2009.
+This alternate L-curve can provide better estimates of the
+regularization parameter for smooth solution vectors. The regularization
+parameters @math{\lambda} and solution norms @math{||L c||} are provided
+in the @var{reg_param} and @var{eta} input arrays respectively. The
+corner is defined as the point of maximum curvature of this
+alternate L-curve in linear scale. The @var{reg_param} and @var{eta}
+arrays can be outputs of @code{gsl_multifit_linear_ridge_lcurve}. The
+algorithm used simply fits a circle to 3 consecutive points on the L-curve
+and uses the circle's radius to determine the curvature at
+the middle point. Therefore, the input array sizes must be
+@math{\ge 3}. With more points provided for the L-curve, a better
+estimate of the curvature can be obtained. The array index
+corresponding to maximum curvature (ie: the corner) is returned
+in @var{idx}. If the input arrays contain colinear points,
+this function could fail and return @code{GSL_EINVAL}.
+@end deftypefun
+
 @node Robust linear regression
 @section Robust linear regression
 @cindex robust regression
@@ -1176,13 +1196,16 @@ available from NIST at the following website,
 @center @uref{http://www.nist.gov/itl/div898/strd/index.html}.
 
 @noindent
-More information on performing ridge regression with non-square or
-non-invertible regularizing matrices can be found in
+More information on Tikhonov regularization can be found in
 
 @itemize @w{}
 @item Hansen, P. C. (1998), Rank-Deficient and Discrete Ill-Posed Problems:
 Numerical Aspects of Linear Inversion. SIAM Monogr. on Mathematical
 Modeling and Computation, Society for Industrial and Applied Mathematics
+
+@item M. Rezghi and S. M. Hosseini (2009), A new variant of L-curve for
+Tikhonov regularization, Journal of Computational and Applied Mathematics,
+Volume 231, Issue 2, pages 914-924.
 @end itemize
 
 @noindent
