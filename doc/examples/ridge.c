@@ -53,7 +53,7 @@ main()
 
     /* unregularized (standard) least squares fit, lambda = 0 */
     gsl_multifit_linear_ridge_solve(0.0, y, c, cov, &rnorm, &snorm, w);
-    chisq = rnorm*rnorm + snorm*snorm;
+    chisq = pow(rnorm, 2.0);
 
     fprintf(stderr, "=== Unregularized fit ===\n");
     fprintf(stderr, "best fit: y = %g u + %g v\n",
@@ -78,7 +78,7 @@ main()
 
     /* regularize with lambda */
     gsl_multifit_linear_ridge_solve(lambda, y, c_ridge, cov, &rnorm, &snorm, w);
-    chisq = rnorm*rnorm + snorm*snorm;
+    chisq = pow(rnorm, 2.0) + pow(lambda * snorm, 2.0);
 
     fprintf(stderr, "=== Regularized fit ===\n");
     fprintf(stderr, "optimal lambda: %g\n", lambda);

@@ -1108,7 +1108,7 @@ chisq/dof = 1.00213
 === Regularized fit ===
 optimal lambda: 4.51103
 best fit: y = 1.00113 u + 1.0032 v
-chisq/dof = 1.00604
+chisq/dof = 1.04499
 @end example
 
 @noindent
