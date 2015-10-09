@@ -501,7 +501,7 @@ corresponding to this corner is often chosen as the optimal
 value. GSL provides routines to calculate the L-curve for all
 relevant regularization parameters as well as locating the corner.
 
-@deftypefun int gsl_multifit_linear_ridge_svd (const gsl_vector * @var{L}, const gsl_matrix * @var{X}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_ridge_svd (const gsl_matrix * @var{X}, const gsl_vector * @var{L}, gsl_multifit_linear_workspace * @var{work})
 This function defines a regularization matrix
 @math{L =} diag@math{(l_0,l_1,...,l_{p-1})}.
 The diagonal matrix element @math{l_i} is provided by the
@@ -514,32 +514,46 @@ and stored in @var{work}. In order to apply this transformation,
 may be zero.
 @end deftypefun
 
+@deftypefun int gsl_multifit_linear_ridge_svd2 (const gsl_matrix * @var{X}, gsl_matrix * @var{L}, gsl_vector * @var{tau}, gsl_multifit_linear_workspace * @var{work})
+This function converts the general system (@var{X},@var{L}) to standard
+form as discussed above and then computes the singular value
+decomposition of the transformed matrix @math{\tilde{X}}, which
+is stored in @var{work}. The vector @var{tau} is additional workspace
+of size @math{p}. On output, (@var{L},@var{tau}) contain the QR
+decomposition of the matrix @var{L}, which must be square and invertible.
+@end deftypefun
+
 @deftypefun int gsl_multifit_linear_ridge_solve (const double @var{lambda}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{rnorm}, double * @var{snorm}, gsl_multifit_linear_workspace * @var{work})
 This function computes the regularized best-fit parameters @var{c}
 of the model @math{y = X c} for the observations @var{y} and the matrix of
-predictor variables @var{X}. The routine
-@code{gsl_multifit_linear_svd} (or @code{gsl_multifit_linear_ridge_svd})
-must first be called to compute the SVD of @var{X}, which is stored in
-the workspace provided in @var{work}. The Tikhonov matrix appearing in
-the least squares solution is @math{L = I} and the regularization
-parameter @math{\lambda} is provided in @var{lambda}, so that
-@math{\lambda^2} is added to the diagonal elements of @math{X^T X}.
+predictor variables @var{X}. The SVD of @var{X} must be computed prior
+to calling this function, using @code{gsl_multifit_linear_svd},
+@code{gsl_multifit_linear_ridge_svd}, or @code{gsl_multifit_linear_ridge_svd2}.
+The regularization parameter @math{\lambda} is provided in @var{lambda}.
 The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
 @var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
 the standard deviation of the fit residuals.
 The residual norm @math{|| y - X c ||} is returned in @var{rnorm}.
-The solution norm @math{|| c ||} is returned in
+The solution norm @math{|| L c ||} is returned in
 @var{snorm}. The cost function @math{\chi^2} can be computed as
 @math{rnorm^2} + @math{\lambda^2 snorm^2}.
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_ridge_trans (const gsl_vector * @var{L}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_ridge_transform (const gsl_vector * @var{L}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
 After a regularized system has been solved with
 @math{L =} diag@math{(\l_0,\l_1,...,\l_{p-1})},
 this function backtransforms the solution vector @var{c}
 to recover the solution vector of the original problem. The
 diagonal matrix elements @math{l_i} are provided in
 the vector @var{L}.
+@end deftypefun
+
+@deftypefun int gsl_multifit_linear_ridge_transform2 (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
+After a regularized system has been solved with a general square matrix @math{L},
+this function backtransforms the solution vector @var{c}
+to recover the solution vector of the original problem. The
+parameters (@var{QR},@var{tau}) contain the QR decomposition of @math{L}
+as output from @code{gsl_multifit_linear_ridge_svd2}.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_ridge_lcurve (const gsl_vector * @var{y}, gsl_vector * @var{reg_param}, gsl_vector * @var{rho}, gsl_vector * @var{eta}, gsl_multifit_linear_workspace * @var{work})

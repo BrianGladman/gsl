@@ -64,8 +64,8 @@ c~ = L c
 
 and compute SVD of X~
 
-Inputs: L    - Tikhonov matrix as a vector of diagonal elements
-        X    - least squares matrix
+Inputs: X    - least squares matrix
+        L    - Tikhonov matrix as a vector of diagonal elements
         work - workspace
 
 Return: success/error
@@ -75,8 +75,8 @@ Notes:
 */
 
 int
-gsl_multifit_linear_ridge_svd (const gsl_vector * L,
-                               const gsl_matrix * X,
+gsl_multifit_linear_ridge_svd (const gsl_matrix * X,
+                               const gsl_vector * L,
                                gsl_multifit_linear_workspace * work)
 {
   const size_t n = work->n;
@@ -119,15 +119,92 @@ gsl_multifit_linear_ridge_svd (const gsl_vector * L,
 }
 
 /*
-gsl_multifit_linear_ridge_trans()
+gsl_multifit_linear_ridge_svd2()
+  Using regularization matrix L, transform to Tikhonov standard form:
+
+X~ = X L^{-1}
+c~ = L c
+
+and compute SVD of X~
+
+Inputs: X    - least squares matrix
+        L    - on input, Tikhonov matrix
+               on output, QR decomposition of L
+        tau  - additional workspace for QR decomposition
+        work - workspace
+
+Return: success/error
+
+Notes:
+1) X~ is computed as well as its SVD which is stored in work
+*/
+
+int
+gsl_multifit_linear_ridge_svd2 (const gsl_matrix * X,
+                                gsl_matrix * L,
+                                gsl_vector * tau,
+                                gsl_multifit_linear_workspace * work)
+{
+  const size_t n = work->n;
+  const size_t p = work->p;
+
+  if (L->size1 != L->size2)
+    {
+      GSL_ERROR("L matrix must be square", GSL_ENOTSQR);
+    }
+  else if (p != L->size1)
+    {
+      GSL_ERROR("L matrix does not match workspace", GSL_EBADLEN);
+    }
+  else if (p != tau->size)
+    {
+      GSL_ERROR("tau vector does not match workspace", GSL_EBADLEN);
+    }
+  else if (n != X->size1 || p != X->size2)
+    {
+      GSL_ERROR("X matrix does not match workspace", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+      size_t i;
+
+      /* compute QR decomposition of L */
+      status = gsl_linalg_QR_decomp(L, tau);
+      if (status)
+        return status;
+
+      gsl_matrix_memcpy(work->A, X);
+
+      /* compute X~ = X L^{-1} using QR decomposition of L */
+      for (i = 0; i < n; ++i)
+        {
+          gsl_vector_view v = gsl_matrix_row(work->A, i);
+
+          /* solve: R^T y = X_j */
+          gsl_blas_dtrsv(CblasUpper, CblasTrans, CblasNonUnit, L, &v.vector);
+
+          /* compute: X~_j = Q y */
+          gsl_linalg_QR_Qvec(L, tau, &v.vector);
+        }
+
+      /* compute SVD of X~; do not balance for regularized problems */
+      status = multifit_linear_svd (work->A, 0, work);
+
+      return status;
+    }
+}
+
+/*
+gsl_multifit_linear_ridge_transform()
   Backtransform regularized solution vector using matrix
 L = diag(L)
 */
 
 int
-gsl_multifit_linear_ridge_trans (const gsl_vector * L,
-                                 gsl_vector * c,
-                                 gsl_multifit_linear_workspace * work)
+gsl_multifit_linear_ridge_transform (const gsl_vector * L,
+                                     gsl_vector * c,
+                                     gsl_multifit_linear_workspace * work)
 {
   const size_t p = work->p;
 
@@ -145,6 +222,42 @@ gsl_multifit_linear_ridge_trans (const gsl_vector * L,
       gsl_vector_div(c, L);
 
       return GSL_SUCCESS;
+    }
+}
+
+/*
+gsl_multifit_linear_ridge_transform2()
+  Backtransform regularized solution vector using matrix L = QR and tau
+*/
+
+int
+gsl_multifit_linear_ridge_transform2 (const gsl_matrix * QR,
+                                      const gsl_vector * tau,
+                                      gsl_vector * c,
+                                      gsl_multifit_linear_workspace * work)
+{
+  const size_t p = work->p;
+
+  if (p != QR->size1 || p != QR->size2)
+    {
+      GSL_ERROR("QR matrix does not match workspace", GSL_EBADLEN);
+    }
+  else if (p != tau->size)
+    {
+      GSL_ERROR("tau vector does not match workspace", GSL_EBADLEN);
+    }
+  else if (p != c->size)
+    {
+      GSL_ERROR("c vector does not match workspace", GSL_EBADLEN);
+    }
+  else
+    {
+      int s;
+
+      /* solve Lc = c~ for true solution c */
+      s = gsl_linalg_QR_svx(QR, tau, c);
+
+      return s;
     }
 }
 
