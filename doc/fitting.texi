@@ -446,7 +446,7 @@ c = ( X^T X + \lambda^2 L^T L )^-1 X^T y
 @end example
 @end ifinfo
 which reduces to the ordinary least squares solution when @math{L = 0}.
-The routines below support two formats for the @math{L} matrix.
+The routines below support several formats for the @math{L} matrix.
 The first is @math{L = I} giving a solution
 @math{c = \left( X^T X + \lambda^2 I \right)^{-1} X^T y} which damps
 all solution coefficients equally, and is known as the Tikhonov
@@ -474,16 +474,15 @@ finite difference operator, to ensure a smoothly varying coefficient
 vector @math{c}, or as a diagonal matrix to selectively damp each
 model parameter differently.
 The second regularization matrix input supported by GSL has the form
-@math{L = } diag@math{(l_0,l_1,...,l_{p-1})}. For
-this matrix, GSL performs the above transformation and then
+@math{L = } diag@math{(l_0,l_1,...,l_{p-1})}
+(see @code{gsl_multifit_linear_ridge_svd}). The third matrix input
+is for a square invertible matrix @math{L}
+(see @code{gsl_multifit_linear_ridge_svd2}).
+For these matrices, GSL performs the above transformation and then
 backtransforms the least squares solution to recover the original
-vector @math{c}.
-For applications which require
-a more complicated matrix @math{L}, the user can apply the
-above transformation themselves if @math{L} is square and
-invertible and use @code{gsl_multifit_linear_ridge_solve}.
-If @math{L} is not square or not invertible, other techniques
-must be used (see Hansen 1998, chapter 2.3).
+vector @math{c}. For applications which require a matrix
+@math{L} which is not square or not invertible, other techniques must
+be used (see Hansen 1998, chapter 2.3).
 
 In many regularization problems, care must be taken when choosing
 the regularization parameter @math{\lambda}. Since both the
