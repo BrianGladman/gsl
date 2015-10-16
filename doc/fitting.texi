@@ -398,34 +398,40 @@ variables @var{X}.
 @cindex regression, Tikhonov
 @cindex least squares, regularized
 
-Ordinary least squares models seek a solution vector @math{c} which
-minimizes the residual
+Ordinary weighted least squares models seek a solution vector @math{c}
+which minimizes the residual
 @tex
 \beforedisplay
 $$
-\chi^2 = || y - Xc ||^2
+\chi^2 = || y - Xc ||_W^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-\chi^2 = || y - Xc ||^2
+\chi^2 = || y - Xc ||_W^2
 @end example
 @end ifinfo
+where @math{y} is the @math{n}-by-@math{1} observation vector,
+@math{X} is the @math{n}-by-@math{p} design matrix, @math{c} is
+the @math{p}-by-@math{1} solution vector,
+@math{W =} diag@math{(w_1,...,w_n)} is the data weighting matrix,
+and @math{||x||_W^2 = x^T W x}.
 In cases where the least squares matrix @math{X} is ill-conditioned,
-small perturbations of the matrix could lead to widely different
-solution vectors @math{c}. In these cases it is often advantageous
-to include a regularization term in the least squares minimization
+small perturbations of the matrix or observation vector could lead to
+widely different solution vectors @math{c}. In these cases it is often
+advantageous to include a regularization term in the least squares
+minimization
 @tex
 \beforedisplay
 $$
-\chi^2 = || y - Xc ||^2 + \lambda^2 || L c ||^2
+\chi^2 = || y - Xc ||_W^2 + \lambda^2 || L c ||^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-\chi^2 = || y - Xc ||^2 + \lambda^2 || L c ||^2
+\chi^2 = || y - Xc ||_W^2 + \lambda^2 || L c ||^2
 @end example
 @end ifinfo
 for a suitably chosen regularization parameter @math{\lambda} and
@@ -436,27 +442,40 @@ Including this regularization term leads to the explicit solution
 @tex
 \beforedisplay
 $$
-c = \left( X^T X + \lambda^2 L^T L \right)^{-1} X^T y
+c = \left( X^T W X + \lambda^2 L^T L \right)^{-1} X^T W y
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-c = ( X^T X + \lambda^2 L^T L )^-1 X^T y
+c = ( X^T W X + \lambda^2 L^T L )^-1 X^T W y
 @end example
 @end ifinfo
 which reduces to the ordinary least squares solution when @math{L = 0}.
-The routines below support several formats for the @math{L} matrix.
-The first is @math{L = I} giving a solution
-@math{c = \left( X^T X + \lambda^2 I \right)^{-1} X^T y} which damps
-all solution coefficients equally, and is known as the Tikhonov
-``standard form''. For any square, invertible matrix @math{L},
-the problem can be converted to standard form with the transformation
+In practice, it is often advantageous to transform a regularized least
+squares system into the form
+@tex
+\beforedisplay
+$$
+\chi^2 = || \tilde{y} - \tilde{X} \tilde{c} ||^2 + \lambda^2 || \tilde{c} ||^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\chi^2 = || y~ - X~ c~ ||^2 + \lambda^2 || c~ ||^2
+@end example
+@end ifinfo
+This is known as the Tikhonov ``standard form'' and has the solution
+@math{\tilde{c} = \left( \tilde{X}^T \tilde{X} + \lambda^2 I \right)^{-1} \tilde{X}^T \tilde{y}}.
+For a matrix @math{L} which is square and invertible, this can be
+accomplished with the transformation
 @tex
 \beforedisplay
 $$
 \eqalign{
-\tilde{X} &= X L^{-1} \cr
+\tilde{X} &= W^{1 \over 2} X L^{-1} \cr
+\tilde{y} &= W^{1 \over 2} y \cr
 \tilde{c} &= L c
 }
 $$
@@ -464,18 +483,19 @@ $$
 @end tex
 @ifinfo
 @example
-X~ = X L^-1
+X~ = sqrt(W) X L^-1
+y~ = sqrt(W) y
 c~ = L c
 @end example
 @end ifinfo
-leading to @math{\tilde{c} = \left( \tilde{X}^T \tilde{X} + \lambda^2 I \right)^{-1} \tilde{X}^T y}.
-The matrix @math{L} is often chosen as a first or second
-finite difference operator, to ensure a smoothly varying coefficient
-vector @math{c}, or as a diagonal matrix to selectively damp each
-model parameter differently.
-The second regularization matrix input supported by GSL has the form
+The matrix @math{L} is often chosen as the identity matrix, or as a first
+or second finite difference operator, to ensure a smoothly varying
+coefficient vector @math{c}, or as a diagonal matrix to selectively damp
+each model parameter differently. GSL supports three different
+formats for the regularization matrix @math{L}. The first is
+@math{L = I} (see @code{gsl_multifit_linear_svd}). The second is
 @math{L = } diag@math{(l_0,l_1,...,l_{p-1})}
-(see @code{gsl_multifit_linear_ridge_svd}). The third matrix input
+(see @code{gsl_multifit_linear_ridge_svd}). The third input
 is for a square invertible matrix @math{L}
 (see @code{gsl_multifit_linear_ridge_svd2}).
 For these matrices, GSL performs the above transformation and then
