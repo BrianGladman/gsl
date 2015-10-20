@@ -240,19 +240,20 @@ to a linear model by minimizing the cost function
 @tex
 \beforedisplay
 $$
-\chi^2 = \sum_i w_i (y_i - \sum_j X_{ij} c_j)^2 = || \sqrt{W} (y - Xc) ||^2
+\chi^2 = \sum_i w_i (y_i - \sum_j X_{ij} c_j)^2 = || y - Xc ||_W^2
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-\chi^2 = \sum_i w_i (y_i - \sum_j X_ij c_j)^2 = || \sqrt(W) (y - Xc) ||^2
+\chi^2 = \sum_i w_i (y_i - \sum_j X_ij c_j)^2 = || y - Xc ||_W^2
 @end example
 @end ifinfo
 where @math{y} is a vector of @math{n} observations, @math{X} is an
-@math{n}-by-@math{p} matrix of predictor variables, and the elements
-of the vector @math{c} are the @math{p} unknown best-fit parameters
-which are to be estimated. The matrix @math{W = } diag@math{(w_1,w_2,...,w_n)}
+@math{n}-by-@math{p} matrix of predictor variables, @math{c}
+is a vector of the @math{p} unknown best-fit parameters to be estimated,
+and @math{||r||_W^2 = r^T W r}.
+The matrix @math{W = } diag@math{(w_1,w_2,...,w_n)}
 defines the weights or uncertainties of the observation vector.
 
 This formulation can be used for fits to any number of functions and/or
@@ -416,7 +417,7 @@ where @math{y} is the @math{n}-by-@math{1} observation vector,
 @math{X} is the @math{n}-by-@math{p} design matrix, @math{c} is
 the @math{p}-by-@math{1} solution vector,
 @math{W =} diag@math{(w_1,...,w_n)} is the data weighting matrix,
-and @math{||x||_W^2 = x^T W x}.
+and @math{||r||_W^2 = r^T W r}.
 In cases where the least squares matrix @math{X} is ill-conditioned,
 small perturbations of the matrix or observation vector could lead to
 widely different solution vectors @math{c}. In these cases it is often
@@ -438,7 +439,7 @@ for a suitably chosen regularization parameter @math{\lambda} and
 matrix @math{L}. In many cases,
 @math{L} is chosen as the identity matrix, giving
 preference to solution vectors @math{c} with smaller norms.
-Including this regularization term leads to the explicit solution
+Including this regularization term leads to the explicit ``normal equations'' solution
 @tex
 \beforedisplay
 $$
@@ -488,6 +489,9 @@ y~ = sqrt(W) y
 c~ = L c
 @end example
 @end ifinfo
+In practice, the normal equations solution above is not desirable due to
+numerical instabilities, and so the system is solved using the
+singular value decomposition of the matrix @math{\tilde{X}}.
 The matrix @math{L} is often chosen as the identity matrix, or as a first
 or second finite difference operator, to ensure a smoothly varying
 coefficient vector @math{c}, or as a diagonal matrix to selectively damp
