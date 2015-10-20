@@ -270,15 +270,13 @@ Inputs: smin      - smallest singular value of LS system
         smax      - largest singular value of LS system
         reg_param - (output) vector of regularization parameters
                     derived from singular values
-        work      - workspace
 
 Return: success/error
 */
 
 int
 gsl_multifit_linear_ridge_lreg (const double smin, const double smax,
-                                gsl_vector * reg_param,
-                                gsl_multifit_linear_workspace * work)
+                                gsl_vector * reg_param)
 {
   const size_t N = reg_param->size;
 
@@ -369,7 +367,7 @@ gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
       dr = normy*normy - normUTy*normUTy;
 
       /* calculate regularization parameters */
-      gsl_multifit_linear_ridge_lreg(smin, smax, reg_param, work);
+      gsl_multifit_linear_ridge_lreg(smin, smax, reg_param);
 
       for (i = 0; i < N; ++i)
         {
