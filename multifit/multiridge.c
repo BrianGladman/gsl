@@ -262,6 +262,48 @@ gsl_multifit_linear_ridge_transform2 (const gsl_matrix * QR,
 }
 
 /*
+gsl_multifit_linear_ridge_lreg()
+  Calculate regularization parameters to use in L-curve
+analysis
+
+Inputs: smin      - smallest singular value of LS system
+        smax      - largest singular value of LS system
+        reg_param - (output) vector of regularization parameters
+                    derived from singular values
+        work      - workspace
+
+Return: success/error
+*/
+
+int
+gsl_multifit_linear_ridge_lreg (const double smin, const double smax,
+                                gsl_vector * reg_param,
+                                gsl_multifit_linear_workspace * work)
+{
+  const size_t N = reg_param->size;
+
+  /* smallest regularization parameter */
+  const double smin_ratio = 16.0 * GSL_DBL_EPSILON;
+  const double new_smin = GSL_MAX(smin, smax*smin_ratio);
+  double ratio;
+  size_t i;
+
+  gsl_vector_set(reg_param, N - 1, new_smin);
+
+  /* ratio so that reg_param(1) = s(1) */
+  ratio = pow(smax / new_smin, 1.0 / (N - 1.0));
+
+  /* calculate the regularization parameters */
+  for (i = N - 1; i > 0 && i--; )
+    {
+      double rp1 = gsl_vector_get(reg_param, i + 1);
+      gsl_vector_set(reg_param, i, ratio * rp1);
+    }
+
+  return GSL_SUCCESS;
+}
+
+/*
 gsl_multifit_linear_ridge_lcurve()
   Calculate L-curve using regularization parameters estimated
 from singular values of least squares matrix
@@ -305,10 +347,6 @@ gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
       const size_t n = work->n;
       const size_t p = work->p;
 
-      /* smallest regularization parameter */
-      const double smin_ratio = 16.0 * GSL_DBL_EPSILON;
-
-      double ratio, tmp;
       size_t i, j;
 
       gsl_matrix *A = work->A;
@@ -317,8 +355,8 @@ gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
       gsl_vector_view workp = gsl_matrix_column(work->QSI, 0);
       gsl_vector *workp2 = work->D; /* D isn't used for regularized problems */
 
-      const double s1 = gsl_vector_get(S, 0);
-      const double sp = gsl_vector_get(S, p - 1);
+      const double smax = gsl_vector_get(S, 0);
+      const double smin = gsl_vector_get(S, p - 1);
 
       double dr; /* residual error from projection */
       double normy = gsl_blas_dnrm2(y);
@@ -330,18 +368,8 @@ gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
       normUTy = gsl_blas_dnrm2(xt);
       dr = normy*normy - normUTy*normUTy;
 
-      tmp = GSL_MAX(sp, s1*smin_ratio);
-      gsl_vector_set(reg_param, N - 1, tmp);
-
-      /* ratio so that reg_param(1) = s(1) */
-      ratio = pow(s1 / tmp, 1.0 / (N - 1.0));
-
-      /* calculate the regularization parameters */
-      for (i = N - 1; i > 0 && i--; )
-        {
-          double rp1 = gsl_vector_get(reg_param, i + 1);
-          gsl_vector_set(reg_param, i, ratio * rp1);
-        }
+      /* calculate regularization parameters */
+      gsl_multifit_linear_ridge_lreg(smin, smax, reg_param, work);
 
       for (i = 0; i < N; ++i)
         {

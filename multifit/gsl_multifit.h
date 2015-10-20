@@ -107,6 +107,11 @@ gsl_multifit_linear_ridge_transform2 (const gsl_matrix * L,
                                       gsl_multifit_linear_workspace * work);
 
 int
+gsl_multifit_linear_ridge_lreg (const double smin, const double smax,
+                                gsl_vector * reg_param,
+                                gsl_multifit_linear_workspace * work);
+
+int
 gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
                                   gsl_vector * reg_param,
                                   gsl_vector * rho, gsl_vector * eta,
