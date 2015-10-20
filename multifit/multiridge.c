@@ -267,7 +267,7 @@ gsl_multifit_linear_ridge_lreg()
 analysis
 
 Inputs: smin      - smallest singular value of LS system
-        smax      - largest singular value of LS system
+        smax      - largest singular value of LS system > 0
         reg_param - (output) vector of regularization parameters
                     derived from singular values
 
@@ -278,27 +278,34 @@ int
 gsl_multifit_linear_ridge_lreg (const double smin, const double smax,
                                 gsl_vector * reg_param)
 {
-  const size_t N = reg_param->size;
-
-  /* smallest regularization parameter */
-  const double smin_ratio = 16.0 * GSL_DBL_EPSILON;
-  const double new_smin = GSL_MAX(smin, smax*smin_ratio);
-  double ratio;
-  size_t i;
-
-  gsl_vector_set(reg_param, N - 1, new_smin);
-
-  /* ratio so that reg_param(1) = s(1) */
-  ratio = pow(smax / new_smin, 1.0 / (N - 1.0));
-
-  /* calculate the regularization parameters */
-  for (i = N - 1; i > 0 && i--; )
+  if (smax <= 0.0)
     {
-      double rp1 = gsl_vector_get(reg_param, i + 1);
-      gsl_vector_set(reg_param, i, ratio * rp1);
+      GSL_ERROR("smax must be positive", GSL_EINVAL);
     }
+  else
+    {
+      const size_t N = reg_param->size;
 
-  return GSL_SUCCESS;
+      /* smallest regularization parameter */
+      const double smin_ratio = 16.0 * GSL_DBL_EPSILON;
+      const double new_smin = GSL_MAX(smin, smax*smin_ratio);
+      double ratio;
+      size_t i;
+
+      gsl_vector_set(reg_param, N - 1, new_smin);
+
+      /* ratio so that reg_param(1) = s(1) */
+      ratio = pow(smax / new_smin, 1.0 / (N - 1.0));
+
+      /* calculate the regularization parameters */
+      for (i = N - 1; i > 0 && i--; )
+        {
+          double rp1 = gsl_vector_get(reg_param, i + 1);
+          gsl_vector_set(reg_param, i, ratio * rp1);
+        }
+
+      return GSL_SUCCESS;
+    }
 }
 
 /*
