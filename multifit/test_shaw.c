@@ -65,18 +65,6 @@ shaw_system(gsl_matrix * X, gsl_vector * y)
   return s;
 }
 
-static void
-shaw_random_noise(gsl_rng *r, gsl_vector *y)
-{
-  size_t i;
-
-  for (i = 0; i < y->size; ++i)
-    {
-      double *ptr = gsl_vector_ptr(y, i);
-      *ptr += 1.0e-3 * gsl_rng_uniform(r);
-    }
-} /* shaw_random_noise() */
-
 static int
 test_shaw_system(gsl_rng *rng_p, const size_t n, const size_t p,
                  const double lambda_expected,
@@ -112,14 +100,14 @@ test_shaw_system(gsl_rng *rng_p, const size_t n, const size_t p,
       y = ytmp;
 
       /* add random noise to exact rhs vector */
-      shaw_random_noise(rng_p, y);
+      test_random_vector_noise(rng_p, y);
     }
 
   /* SVD decomposition */
   gsl_multifit_linear_svd(X, work);
 
   /* calculate L-curve */
-  gsl_multifit_linear_ridge_lcurve(y, reg_param, rho, eta, work);
+  gsl_multifit_linear_lcurve(y, reg_param, rho, eta, work);
 
   /* test rho and eta vectors */
   for (i = 0; i < npoints; ++i)
@@ -129,8 +117,8 @@ test_shaw_system(gsl_rng *rng_p, const size_t n, const size_t p,
       double lami = gsl_vector_get(reg_param, i);
 
       /* solve regularized system and check for consistent rho/eta values */
-      gsl_multifit_linear_ridge_solve(lami, y, c, cov,
-                                      &rnorm, &snorm, work);
+      gsl_multifit_linear_solve(lami, y, c, cov,
+                                &rnorm, &snorm, work);
       gsl_test_rel(rhoi, rnorm, tol3, "shaw rho n=%zu p=%zu lambda=%e",
                    n, p, lami);
       gsl_test_rel(etai, snorm, tol1, "shaw eta n=%zu p=%zu lambda=%e",
@@ -138,7 +126,7 @@ test_shaw_system(gsl_rng *rng_p, const size_t n, const size_t p,
     }
 
   /* calculate corner of L-curve */
-  gsl_multifit_linear_ridge_lcorner(rho, eta, &reg_idx);
+  gsl_multifit_linear_lcorner(rho, eta, &reg_idx);
 
   lambda = gsl_vector_get(reg_param, reg_idx);
 
@@ -151,8 +139,8 @@ test_shaw_system(gsl_rng *rng_p, const size_t n, const size_t p,
     }
 
   /* compute regularized solution with optimal lambda */
-  gsl_multifit_linear_ridge_solve(lambda, y, c, cov,
-                                  &rnorm, &snorm, work);
+  gsl_multifit_linear_solve(lambda, y, c, cov,
+                            &rnorm, &snorm, work);
 
   /* compute residual norm ||y - X c|| */
   gsl_vector_memcpy(r, y);

@@ -89,7 +89,6 @@ multifit_linear_svd (const gsl_matrix * X,
  *         cov      - (output) covariance matrix
  *         rnorm    - (output) residual norm ||y - X c||
  *         snorm    - (output) solution norm ||c||
- *         chisq    - (output) residual chi^2
  *         work     - workspace
  */
 
@@ -102,7 +101,6 @@ multifit_linear_solve (const gsl_vector * y,
                        gsl_matrix * cov,
                        double *rnorm,
                        double *snorm,
-                       double *chisq,
                        gsl_multifit_linear_workspace * work)
 {
   if (work->n != y->size)
@@ -268,9 +266,6 @@ multifit_linear_solve (const gsl_vector * y,
               }
           }
         }
-
-      /* compute chisq */
-      *chisq = (*rnorm) * (*rnorm) + lambda_sq * (*snorm) * (*snorm);
 
       return GSL_SUCCESS;
     }

@@ -36,36 +36,34 @@
 #include "linear_common.c"
 
 int
-gsl_multifit_linear_ridge_solve (const double lambda,
-                                 const gsl_vector * y,
-                                 gsl_vector * c,
-                                 gsl_matrix * cov,
-                                 double *rnorm,
-                                 double *snorm,
-                                 gsl_multifit_linear_workspace * work)
+gsl_multifit_linear_solve (const double lambda,
+                           const gsl_vector * y,
+                           gsl_vector * c,
+                           gsl_matrix * cov,
+                           double *rnorm,
+                           double *snorm,
+                           gsl_multifit_linear_workspace * work)
 {
   size_t rank;
   int status;
-  double chisq;
 
   status = multifit_linear_solve(y, GSL_DBL_EPSILON, lambda, &rank, c,
-                                 cov, rnorm, snorm, &chisq, work);
+                                 cov, rnorm, snorm, work);
 
   return status;
-} /* gsl_multifit_linear_ridge_solve() */
+} /* gsl_multifit_linear_solve() */
 
 /*
-gsl_multifit_linear_ridge_svd()
+gsl_multifit_linear_stdform1()
   Using regularization matrix
 L = diag(l_1,l_2,...,l_p), transform to Tikhonov standard form:
 
 X~ = X L^{-1}
 c~ = L c
 
-and compute SVD of X~
-
-Inputs: X    - least squares matrix
-        L    - Tikhonov matrix as a vector of diagonal elements
+Inputs: L    - Tikhonov matrix as a vector of diagonal elements
+        X    - on input, least squares matrix; on output,
+               standard form matrix X~
         work - workspace
 
 Return: success/error
@@ -75,9 +73,9 @@ Notes:
 */
 
 int
-gsl_multifit_linear_ridge_svd (const gsl_matrix * X,
-                               const gsl_vector * L,
-                               gsl_multifit_linear_workspace * work)
+gsl_multifit_linear_stdform1 (const gsl_vector * L,
+                              gsl_matrix * X,
+                              gsl_multifit_linear_workspace * work)
 {
   const size_t n = work->n;
   const size_t p = work->p;
@@ -95,66 +93,58 @@ gsl_multifit_linear_ridge_svd (const gsl_matrix * X,
       int status = GSL_SUCCESS;
       size_t j;
 
-      /* construct X~ = X * L^{-1} matrix using work->A */
+      /* construct X~ = X * L^{-1} matrix */
       for (j = 0; j < p; ++j)
         {
-          gsl_vector_const_view Xj = gsl_matrix_const_column(X, j);
-          gsl_vector_view Aj = gsl_matrix_column(work->A, j);
+          gsl_vector_view Xj = gsl_matrix_column(X, j);
           double lj = gsl_vector_get(L, j);
 
           if (lj == 0.0)
             {
-              GSL_ERROR("G matrix is singular", GSL_EDOM);
+              GSL_ERROR("L matrix is singular", GSL_EDOM);
             }
 
-          gsl_vector_memcpy(&Aj.vector, &Xj.vector);
-          gsl_vector_scale(&Aj.vector, 1.0 / lj);
+          gsl_vector_scale(&Xj.vector, 1.0 / lj);
         }
-
-      /* compute SVD of X~; do not balance for regularized problems */
-      status = multifit_linear_svd (work->A, 0, work);
 
       return status;
     }
 }
 
 /*
-gsl_multifit_linear_ridge_svd2()
+gsl_multifit_linear_stdform2()
   Using regularization matrix L, transform to Tikhonov standard form:
 
 X~ = X L^{-1}
 c~ = L c
 
-and compute SVD of X~
-
-Inputs: X    - least squares matrix
-        L    - on input, Tikhonov matrix
+Inputs: L    - on input, Tikhonov matrix
                on output, QR decomposition of L
+        X    - on input, least squares matrix; on output,
+               standard form matrix X~
         tau  - additional workspace for QR decomposition
         work - workspace
 
 Return: success/error
 
 Notes:
-1) X~ is computed as well as its SVD which is stored in work
+1) If L is square, on output:
+   (L,tau) = QR decomposition of L
+   X_out = X_in L^{-1}
 */
 
 int
-gsl_multifit_linear_ridge_svd2 (const gsl_matrix * X,
-                                gsl_matrix * L,
-                                gsl_vector * tau,
-                                gsl_multifit_linear_workspace * work)
+gsl_multifit_linear_stdform2 (gsl_matrix * L,
+                              gsl_matrix * X,
+                              gsl_vector * tau,
+                              gsl_multifit_linear_workspace * work)
 {
   const size_t n = work->n;
   const size_t p = work->p;
 
-  if (L->size1 != L->size2)
+  if (p != L->size1)
     {
-      GSL_ERROR("L matrix must be square", GSL_ENOTSQR);
-    }
-  else if (p != L->size1)
-    {
-      GSL_ERROR("L matrix does not match workspace", GSL_EBADLEN);
+      GSL_ERROR("L matrix has wrong number of columns", GSL_EBADLEN);
     }
   else if (p != tau->size)
     {
@@ -169,42 +159,45 @@ gsl_multifit_linear_ridge_svd2 (const gsl_matrix * X,
       int status;
       size_t i;
 
-      /* compute QR decomposition of L */
-      status = gsl_linalg_QR_decomp(L, tau);
-      if (status)
-        return status;
-
-      gsl_matrix_memcpy(work->A, X);
-
-      /* compute X~ = X L^{-1} using QR decomposition of L */
-      for (i = 0; i < n; ++i)
+      /* check for special case of square matrix L */
+      if (L->size1 == L->size2)
         {
-          gsl_vector_view v = gsl_matrix_row(work->A, i);
+          /* compute QR decomposition of L */
+          status = gsl_linalg_QR_decomp(L, tau);
+          if (status)
+            return status;
 
-          /* solve: R^T y = X_j */
-          gsl_blas_dtrsv(CblasUpper, CblasTrans, CblasNonUnit, L, &v.vector);
+          /* compute X~ = X L^{-1} using QR decomposition of L */
+          for (i = 0; i < n; ++i)
+            {
+              gsl_vector_view v = gsl_matrix_row(X, i);
 
-          /* compute: X~_j = Q y */
-          gsl_linalg_QR_Qvec(L, tau, &v.vector);
+              /* solve: R^T y = X_j */
+              gsl_blas_dtrsv(CblasUpper, CblasTrans, CblasNonUnit, L, &v.vector);
+
+              /* compute: X~_j = Q y */
+              gsl_linalg_QR_Qvec(L, tau, &v.vector);
+            }
         }
-
-      /* compute SVD of X~; do not balance for regularized problems */
-      status = multifit_linear_svd (work->A, 0, work);
+      else
+        {
+          GSL_ERROR("rectangular L not yet supported", GSL_EBADLEN);
+        }
 
       return status;
     }
 }
 
 /*
-gsl_multifit_linear_ridge_transform()
+gsl_multifit_linear_genform1()
   Backtransform regularized solution vector using matrix
 L = diag(L)
 */
 
 int
-gsl_multifit_linear_ridge_transform (const gsl_vector * L,
-                                     gsl_vector * c,
-                                     gsl_multifit_linear_workspace * work)
+gsl_multifit_linear_genform1 (const gsl_vector * L,
+                              gsl_vector * c,
+                              gsl_multifit_linear_workspace * work)
 {
   const size_t p = work->p;
 
@@ -219,28 +212,28 @@ gsl_multifit_linear_ridge_transform (const gsl_vector * L,
   else
     {
       /* compute true solution vector c = L^{-1} c~ */
-      gsl_vector_div(c, L);
-
-      return GSL_SUCCESS;
+      int status = gsl_vector_div(c, L);
+      return status;
     }
 }
 
 /*
-gsl_multifit_linear_ridge_transform2()
-  Backtransform regularized solution vector using matrix L = QR and tau
+gsl_multifit_linear_genform2()
+  Backtransform regularized solution vector using matrix L; (L,tau) contain
+QR decomposition of original L
 */
 
 int
-gsl_multifit_linear_ridge_transform2 (const gsl_matrix * QR,
-                                      const gsl_vector * tau,
-                                      gsl_vector * c,
-                                      gsl_multifit_linear_workspace * work)
+gsl_multifit_linear_genform2 (const gsl_matrix * L,
+                              const gsl_vector * tau,
+                              gsl_vector * c,
+                              gsl_multifit_linear_workspace * work)
 {
   const size_t p = work->p;
 
-  if (p != QR->size1 || p != QR->size2)
+  if (p != L->size1 || p != L->size2)
     {
-      GSL_ERROR("QR matrix does not match workspace", GSL_EBADLEN);
+      GSL_ERROR("L matrix does not match workspace", GSL_EBADLEN);
     }
   else if (p != tau->size)
     {
@@ -255,14 +248,14 @@ gsl_multifit_linear_ridge_transform2 (const gsl_matrix * QR,
       int s;
 
       /* solve Lc = c~ for true solution c */
-      s = gsl_linalg_QR_svx(QR, tau, c);
+      s = gsl_linalg_QR_svx(L, tau, c);
 
       return s;
     }
 }
 
 /*
-gsl_multifit_linear_ridge_lreg()
+gsl_multifit_linear_lreg()
   Calculate regularization parameters to use in L-curve
 analysis
 
@@ -275,8 +268,8 @@ Return: success/error
 */
 
 int
-gsl_multifit_linear_ridge_lreg (const double smin, const double smax,
-                                gsl_vector * reg_param)
+gsl_multifit_linear_lreg (const double smin, const double smax,
+                          gsl_vector * reg_param)
 {
   if (smax <= 0.0)
     {
@@ -309,7 +302,7 @@ gsl_multifit_linear_ridge_lreg (const double smin, const double smax,
 }
 
 /*
-gsl_multifit_linear_ridge_lcurve()
+gsl_multifit_linear_lcurve()
   Calculate L-curve using regularization parameters estimated
 from singular values of least squares matrix
 
@@ -324,10 +317,10 @@ Return: success/error
 */
 
 int
-gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
-                                  gsl_vector * reg_param,
-                                  gsl_vector * rho, gsl_vector * eta,
-                                  gsl_multifit_linear_workspace * work)
+gsl_multifit_linear_lcurve (const gsl_vector * y,
+                            gsl_vector * reg_param,
+                            gsl_vector * rho, gsl_vector * eta,
+                            gsl_multifit_linear_workspace * work)
 {
   const size_t N = rho->size; /* number of points on L-curve */
 
@@ -374,7 +367,7 @@ gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
       dr = normy*normy - normUTy*normUTy;
 
       /* calculate regularization parameters */
-      gsl_multifit_linear_ridge_lreg(smin, smax, reg_param);
+      gsl_multifit_linear_lreg(smin, smax, reg_param);
 
       for (i = 0; i < N; ++i)
         {
@@ -412,10 +405,10 @@ gsl_multifit_linear_ridge_lcurve (const gsl_vector * y,
 
       return status;
     }
-} /* gsl_multifit_linear_ridge_lcurve() */
+} /* gsl_multifit_linear_lcurve() */
 
 /*
-gsl_multifit_linear_ridge_lcorner()
+gsl_multifit_linear_lcorner()
   Determine point on L-curve of maximum curvature. For each
 set of 3 points on the L-curve, the circle which passes through
 the 3 points is computed. The radius of the circle is then used
@@ -432,9 +425,9 @@ Return: success/error
 */
 
 int
-gsl_multifit_linear_ridge_lcorner(const gsl_vector *rho,
-                                  const gsl_vector *eta,
-                                  size_t *idx)
+gsl_multifit_linear_lcorner(const gsl_vector *rho,
+                            const gsl_vector *eta,
+                            size_t *idx)
 {
   const size_t n = rho->size;
 
@@ -510,10 +503,10 @@ gsl_multifit_linear_ridge_lcorner(const gsl_vector *rho,
 
       return s;
     }
-} /* gsl_multifit_linear_ridge_lcorner() */
+} /* gsl_multifit_linear_lcorner() */
 
 /*
-gsl_multifit_linear_ridge_lcorner2()
+gsl_multifit_linear_lcorner2()
   Determine point on L-curve (lambda^2, ||c||^2) of maximum curvature.
 For each set of 3 points on the L-curve, the circle which passes through
 the 3 points is computed. The radius of the circle is then used
@@ -535,9 +528,9 @@ Return: success/error
 */
 
 int
-gsl_multifit_linear_ridge_lcorner2(const gsl_vector *reg_param,
-                                   const gsl_vector *eta,
-                                   size_t *idx)
+gsl_multifit_linear_lcorner2(const gsl_vector *reg_param,
+                             const gsl_vector *eta,
+                             size_t *idx)
 {
   const size_t n = reg_param->size;
 
@@ -619,4 +612,4 @@ gsl_multifit_linear_ridge_lcorner2(const gsl_vector *reg_param,
 
       return s;
     }
-} /* gsl_multifit_linear_ridge_lcorner2() */
+} /* gsl_multifit_linear_lcorner2() */

@@ -1,3 +1,59 @@
+/* generate random square orthogonal matrix via QR decomposition */
+static void
+test_random_matrix_orth(gsl_matrix *m, const gsl_rng *r)
+{
+  const size_t M = m->size1;
+  gsl_matrix *A = gsl_matrix_alloc(M, M);
+  gsl_vector *tau = gsl_vector_alloc(M);
+  gsl_matrix *R = gsl_matrix_alloc(M, M);
+
+  test_random_matrix(A, r, -1.0, 1.0);
+  gsl_linalg_QR_decomp(A, tau);
+  gsl_linalg_QR_unpack(A, tau, m, R);
+
+  gsl_matrix_free(A);
+  gsl_matrix_free(R);
+  gsl_vector_free(tau);
+}
+
+/* construct ill-conditioned matrix via SVD */
+static void
+test_random_matrix_ill(gsl_matrix *m, const gsl_rng *r)
+{
+  const size_t M = m->size1;
+  const size_t N = m->size2;
+  gsl_matrix *U = gsl_matrix_alloc(M, M);
+  gsl_matrix *V = gsl_matrix_alloc(N, N);
+  gsl_vector *S = gsl_vector_alloc(N);
+  gsl_matrix_view Uv = gsl_matrix_submatrix(U, 0, 0, M, N);
+  const double smin = 16.0 * GSL_DBL_EPSILON;
+  const double smax = 10.0;
+  const double ratio = pow(smin / smax, 1.0 / (N - 1.0));
+  double s;
+  size_t j;
+
+  test_random_matrix_orth(U, r);
+  test_random_matrix_orth(V, r);
+
+  /* compute U * S */
+
+  s = smax;
+  for (j = 0; j < N; ++j)
+    {
+      gsl_vector_view uj = gsl_matrix_column(U, j);
+
+      gsl_vector_scale(&uj.vector, s);
+      s *= ratio;
+    }
+
+  /* compute m = (U * S) * V' */
+  gsl_blas_dgemm(CblasNoTrans, CblasTrans, 1.0, &Uv.matrix, V, 0.0, m);
+
+  gsl_matrix_free(U);
+  gsl_matrix_free(V);
+  gsl_vector_free(S);
+}
+
 /* solve system with lambda = 0 and test against OLS solution */
 static void
 test_ridge1(const gsl_matrix * X, const gsl_vector * y,
@@ -14,7 +70,7 @@ test_ridge1(const gsl_matrix * X, const gsl_vector * y,
   gsl_multifit_linear(X, y, c0, cov, &chisq, w);
 
   gsl_multifit_linear_svd(X, w);
-  gsl_multifit_linear_ridge_solve(0.0, y, c1, cov, &rnorm, &snorm, w);
+  gsl_multifit_linear_solve(0.0, y, c1, cov, &rnorm, &snorm, w);
 
   gsl_test_rel(rnorm*rnorm + snorm*snorm, chisq, tol,
                "test_ridge1: lambda = 0, chisq");
@@ -66,7 +122,7 @@ test_ridge2(const double lambda, const gsl_matrix * X, const gsl_vector * y,
   gsl_multifit_linear_svd(X, w);
 
   /* solve regularized standard form system with lambda */
-  gsl_multifit_linear_ridge_solve(lambda, y, c1, cov, &rnorm, &snorm, w);
+  gsl_multifit_linear_solve(lambda, y, c1, cov, &rnorm, &snorm, w);
 
   /* test c0 = c1 */
   for (j = 0; j < p; ++j)
@@ -91,6 +147,7 @@ static void
 test_ridge3(const double lambda, const gsl_vector * L, const gsl_matrix * X,
             const gsl_vector * y, const double tol, gsl_multifit_linear_workspace * w)
 {
+  const size_t n = X->size1;
   const size_t p = X->size2;
   double rnorm, snorm;
   gsl_vector *c0 = gsl_vector_alloc(p);
@@ -98,6 +155,7 @@ test_ridge3(const double lambda, const gsl_vector * L, const gsl_matrix * X,
   gsl_matrix *cov = gsl_matrix_alloc(p, p);
   gsl_matrix *XTX = gsl_matrix_alloc(p, p); /* X^T X + lambda^2 L^T L */
   gsl_vector *XTy = gsl_vector_alloc(p);    /* X^T y */
+  gsl_matrix *X2 = gsl_matrix_alloc(n, p);
   gsl_permutation *perm = gsl_permutation_alloc(p);
   int signum;
   size_t j;
@@ -119,9 +177,11 @@ test_ridge3(const double lambda, const gsl_vector * L, const gsl_matrix * X,
   gsl_linalg_LU_solve(XTX, perm, XTy, c0);
 
   /* solve with ridge routine */
-  gsl_multifit_linear_ridge_svd(X, L, w);
-  gsl_multifit_linear_ridge_solve(lambda, y, c1, cov, &rnorm, &snorm, w);
-  gsl_multifit_linear_ridge_transform(L, c1, w);
+  gsl_matrix_memcpy(X2, X);
+  gsl_multifit_linear_stdform1(L, X2, w);
+  gsl_multifit_linear_svd(X2, w);
+  gsl_multifit_linear_solve(lambda, y, c1, cov, &rnorm, &snorm, w);
+  gsl_multifit_linear_genform1(L, c1, w);
 
   /* test c0 = c1 */
   for (j = 0; j < p; ++j)
@@ -132,6 +192,7 @@ test_ridge3(const double lambda, const gsl_vector * L, const gsl_matrix * X,
       gsl_test_rel(c1j, c0j, tol, "test_ridge3: lambda=%g diagonal L", lambda);
     }
 
+  gsl_matrix_free(X2);
   gsl_matrix_free(XTX);
   gsl_vector_free(XTy);
   gsl_vector_free(c0);
@@ -146,12 +207,14 @@ static void
 test_ridge4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
             const gsl_vector * y, const double tol, gsl_multifit_linear_workspace * w)
 {
+  const size_t n = X->size1;
   const size_t p = X->size2;
   double rnorm, snorm;
   gsl_vector *c0 = gsl_vector_alloc(p);
   gsl_vector *c1 = gsl_vector_alloc(p);
   gsl_matrix *cov = gsl_matrix_alloc(p, p);
   gsl_matrix *QR = gsl_matrix_alloc(p, p);
+  gsl_matrix *X2 = gsl_matrix_alloc(n, p);
   gsl_vector *tau = gsl_vector_alloc(p);
   gsl_matrix *LTL = gsl_matrix_alloc(p, p); /* L^T L */
   gsl_matrix *XTX = gsl_matrix_alloc(p, p); /* X^T X + lambda^2 L^T L */
@@ -176,9 +239,11 @@ test_ridge4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
 
   /* solve with ridge routine */
   gsl_matrix_memcpy(QR, L);
-  gsl_multifit_linear_ridge_svd2(X, QR, tau, w);
-  gsl_multifit_linear_ridge_solve(lambda, y, c1, cov, &rnorm, &snorm, w);
-  gsl_multifit_linear_ridge_transform2(QR, tau, c1, w);
+  gsl_matrix_memcpy(X2, X);
+  gsl_multifit_linear_stdform2(QR, X2, tau, w);
+  gsl_multifit_linear_svd(X2, w);
+  gsl_multifit_linear_solve(lambda, y, c1, cov, &rnorm, &snorm, w);
+  gsl_multifit_linear_genform2(QR, tau, c1, w);
 
   /* test c0 = c1 */
   for (j = 0; j < p; ++j)
@@ -200,83 +265,66 @@ test_ridge4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   gsl_permutation_free(perm);
 }
 
+static void
+test_ridge_system(const size_t n, const size_t p, const gsl_rng *r)
+{
+  gsl_matrix *X = gsl_matrix_alloc(n, p);
+  gsl_vector *y = gsl_vector_alloc(n);
+  gsl_vector *c = gsl_vector_alloc(p);
+  gsl_multifit_linear_workspace *w = gsl_multifit_linear_alloc(n, p);
+  gsl_vector *diagL = gsl_vector_alloc(p);
+  gsl_matrix *L1 = gsl_matrix_alloc(p, p);
+  size_t i;
+
+  /* generate well-conditioned system and test against OLS solution */
+  test_random_matrix(X, r, -1.0, 1.0);
+  test_random_vector(y, r, -1.0, 1.0);
+  test_ridge1(X, y, 1.0e-12, w);
+
+  /* generate ill-conditioned system */
+  test_random_matrix_ill(X, r);
+  test_random_vector(c, r, -1.0, 1.0);
+
+  /* compute y = X c + noise */
+  gsl_blas_dgemv(CblasNoTrans, 1.0, X, c, 0.0, y);
+  test_random_vector_noise(r, y);
+
+  /* random diag(L) vector */
+  test_random_vector(diagL, r, -2.0, 2.0);
+
+  /* random square L matrix */
+  test_random_matrix(L1, r, -2.0, 2.0);
+
+  for (i = 0; i < 3; ++i)
+    {
+      /*
+       * can't make lambda too small or normal equations
+       * approach won't work well
+       */
+      double lambda = pow(10.0, -(double) i);
+
+      test_ridge2(lambda, X, y, 1.0e-7, w);
+      test_ridge3(lambda, diagL, X, y, 1.0e-7, w);
+      test_ridge4(lambda, L1, X, y, 1.0e-8, w);
+    }
+
+  gsl_matrix_free(X);
+  gsl_vector_free(y);
+  gsl_vector_free(c);
+  gsl_vector_free(diagL);
+  gsl_matrix_free(L1);
+  gsl_multifit_linear_free(w);
+}
+
 /* test linear ridge regression */
 static void
 test_ridge(void)
 {
-  const size_t n = 100;
-  const size_t p = 10;
-  const double xmin = -1.0;
-  const double xmax = 1.0;
-  const double dx = (xmax - xmin) / (n - 1.0);
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
-  double *x = malloc(n * sizeof(double));
-  double *y = malloc(n * sizeof(double));
-  gsl_vector_view yv = gsl_vector_view_array(y, n);
-  gsl_matrix *X = gsl_matrix_alloc(n, p);
-  gsl_multifit_linear_workspace *w = gsl_multifit_linear_alloc(n, p);
-  gsl_vector *Ldiag = gsl_vector_alloc(p);
-  gsl_matrix *L = gsl_matrix_alloc(p, p);
-  size_t i, j;
 
-  /* construct artificial data */
-  for (i = 0; i < n; ++i)
-    {
-      double ei = 0.2 * gsl_rng_uniform(r);
+  test_ridge_system(100, 10, r);
+  test_ridge_system(100, 50, r);
+  test_ridge_system(100, 100, r);
 
-      x[i] = xmin + dx * i;
-      y[i] = 1.0 / (1.0 + 25.0*x[i]*x[i]) + ei;
-    }
-
-  /* construct least squares matrix with polynomial model */
-  for (i = 0; i < n; ++i)
-    {
-      double Xij = 1.0;
-
-      for (j = 0; j < p; ++j)
-        {
-          gsl_matrix_set(X, i, j, Xij);
-          Xij *= x[i];
-        }
-    }
-
-  test_ridge1(X, &yv.vector, 1.0e-10, w);
-
-  /* build diag(L) vector */
-  gsl_vector_set_all(Ldiag, 2.5);
-
-  /* build general matrix L as second difference operator */
-  gsl_matrix_set_zero(L);
-
-  /* first row [2 -1 0 ... ] */
-  gsl_matrix_set(L, 0, 0, 2.0);
-  gsl_matrix_set(L, 0, 1, -1.0);
-
-  for (i = 1; i < p - 1; ++i)
-    {
-      gsl_matrix_set(L, i, i - 1, -1.0);
-      gsl_matrix_set(L, i, i, 2.0);
-      gsl_matrix_set(L, i, i + 1, -1.0);
-    }
-
-  /* last row [0 ... 0 -1 2] */
-  gsl_matrix_set(L, p - 1, p - 2, -1.0);
-  gsl_matrix_set(L, p - 1, p - 1, 2.0);
-
-  for (i = 0; i < 7; ++i)
-    {
-      double lambda = pow(10.0, -(double) i);
-
-      test_ridge2(lambda, X, &yv.vector, 1.0e-9, w);
-      test_ridge3(lambda, Ldiag, X, &yv.vector, 1.0e-9, w);
-      test_ridge4(lambda, L, X, &yv.vector, 1.0e-8, w);
-    }
-
-  gsl_multifit_linear_free(w);
   gsl_rng_free(r);
-  free(x);
-  free(y);
-  gsl_matrix_free(X);
-  gsl_vector_free(Ldiag);
-  gsl_matrix_free(L);
 }

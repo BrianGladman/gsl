@@ -44,7 +44,8 @@ gsl_multifit_linear (const gsl_matrix * X,
     return status;
 
   status = multifit_linear_solve (y, GSL_DBL_EPSILON, 0.0, &rank,
-                                  c, cov, &rnorm, &snorm, chisq, work);
+                                  c, cov, &rnorm, &snorm, work);
+  *chisq = rnorm * rnorm;
 
   return status;
 }
