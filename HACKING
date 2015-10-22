@@ -294,23 +294,22 @@ Savannah Information
 
 Developer Access via SSH.
 
-Only project developers can access the Bzr tree via this method. SSH2
+Only project developers can access the git tree via this method. SSH2
 must be installed on your client machine.  Put the following 
 in your ~/.ssh/config file:
 
-  Host subversions.gnu.org
-     Protocol 2
-     ForwardX11 no
+  Host git.sv.gnu.org
+    IdentityFile /path/to/savannah_key
 
 In the example below substitute 'USER' with your account username.
-Your savannah web password is not used for Bzr --- you have to
+Your savannah web password is not used for git --- you have to
 register an SSH Shared key in the Account Maintenance page.
 
 Source tree:
 
-  bzr checkout bzr+ssh://USER@bzr.savannah.gnu.org/gsl/trunk/
+  git clone USER@git.sv.gnu.org:/srv/git/gsl.git
 
 HTML tree:
 
   export CVS_RSH=ssh
-  cvs -z3 -d:ext:USER@cvs.savannah.gnu.org:/web/gsl co gsl
+  cvs -z3 -d:ext:USER@cvs.sv.gnu.org:/web/gsl co gsl
