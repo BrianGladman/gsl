@@ -520,32 +520,55 @@ corresponding to this corner is often chosen as the optimal
 value. GSL provides routines to calculate the L-curve for all
 relevant regularization parameters as well as locating the corner.
 
-@deftypefun int gsl_multifit_linear_stdform1 (const gsl_vector * @var{L}, gsl_matrix * @var{X}, gsl_multifit_linear_workspace * @var{work})
+@noindent
+For most applications, the steps required to solve a regularized least
+squares problem are as follows:
+
+@enumerate
+
+@item Construct the least squares system (@math{X}, @math{y}, @math{W}, @math{L})
+
+@item Transform the system to standard form (@math{\tilde{X}},@math{\tilde{y}}). This
+step can be skipped if @math{L = I_p} and @math{W = I_n}.
+
+@item Calculate the SVD of @math{\tilde{X}}.
+
+@item Determine an appropriate regularization parameter @math{\lambda} (using for example
+L-curve analysis).
+
+@item Solve the standard form system using the chosen @math{\lambda} and the SVD of @math{\tilde{X}}.
+
+@item Backtransform the standard form solution @math{\tilde{c}} to recover the
+original solution vector @math{c}.
+
+@end enumerate
+
+@deftypefun int gsl_multifit_linear_stdform1 (const gsl_vector * @var{L}, const gsl_matrix * @var{X}, gsl_matrix * @var{Xs}, gsl_multifit_linear_workspace * @var{work})
 This function defines a regularization matrix
 @math{L =} diag@math{(l_0,l_1,...,l_{p-1})}.
 The diagonal matrix element @math{l_i} is provided by the
 @math{i}th element of the input vector @var{L}.
-The least squares matrix @var{X} is then
-converted to standard form as described above and the matrix
-@math{\tilde{X}} is stored in @var{X} on output.
+The @math{n}-by-@math{p} least squares matrix @var{X} is then
+converted to standard form as described above and the @math{n}-by-@math{p} matrix
+@math{\tilde{X}} is stored in @var{Xs} on output.
 In order to apply this transformation,
 @math{L^{-1}} must exist and so none of the @math{l_i}
 may be zero. After the standard form system has been solved,
 use @code{gsl_multifit_linear_genform1} to recover the original solution vector.
+It is allowed for @var{X} = @var{Xs} for an in-place transform.
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_stdform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_matrix ** @var{Xs}, gsl_vector ** @var{ys}, gsl_matrix ** @var{M}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_stdform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_matrix * @var{M}, gsl_multifit_linear_workspace * @var{work})
 This function converts the least squares system (@var{X},@var{y}) to standard
 form (@math{\tilde{X}},@math{\tilde{y}}) as discussed above for the given
-regularization matrix @var{L}. The matrix @var{L} may be a rectangular (or square)
+regularization matrix @var{L}. The matrix @var{L} is a rectangular (or square)
 @math{m}-by-@math{p} matrix with @math{m \le p}. On output,
 (@math{\tilde{X}},@math{\tilde{y}}) is stored in @var{Xs} and @var{ys} respectively.
-The dimensions of @var{Xs} and @var{ys} may differ from @var{X} and @var{y} if
-@var{L} is rectangular, and so these variables are allocated internally and returned.
-@var{M} is an additional matrix allocated internally which is required to recover
-the original solution vector after the system has been solved (see
-@code{gsl_multifit_linear_genform2}). The outputs
-@var{Xs}, @var{ys} and @var{M} should be freed by the caller when no longer needed.
+The dimensions of @var{Xs} are @math{(n - p + m)}-by-@math{m} and @var{ys} 
+is @math{(n - p + m)}-by-1. Note that these dimensions differ from @var{X} and @var{y}
+for a non-square matrix @var{L}. @var{M} is an additional @math{p}-by-@math{n} matrix
+which is required to recover the original solution vector after the system has been solved (see
+@code{gsl_multifit_linear_genform2}).
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_solve (const double @var{lambda}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, double * @var{rnorm}, double * @var{snorm}, gsl_multifit_linear_workspace * @var{work})
@@ -633,6 +656,12 @@ estimate of the curvature can be obtained. The array index
 corresponding to maximum curvature (ie: the corner) is returned
 in @var{idx}. If the input arrays contain colinear points,
 this function could fail and return @code{GSL_EINVAL}.
+@end deftypefun
+
+@deftypefun {gsl_matrix *} gsl_multifit_linear_Lk (const size_t @var{p}, const size_t @var{k})
+This function computes the discrete approximation to the derivative operator of
+order @var{k} on a regular grid of @var{p} points. The dimensions of @math{L_k} are
+@math{(p-k)}-by-@math{p}.
 @end deftypefun
 
 @node Robust linear regression
@@ -1184,7 +1213,7 @@ finding its corner. The L-curve and its computed corner are plotted below.
 
 @noindent The program is given below.
 @example
-@verbatiminclude examples/ridge.c
+@verbatiminclude examples/fitreg.c
 @end example
 
 @node Fitting Examples for robust linear regression

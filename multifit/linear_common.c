@@ -177,32 +177,6 @@ multifit_linear_solve (const gsl_matrix * X,
 
           *snorm = 0.0;
           *rnorm = rho_ls;
-
-#if 0
-          /* variance-covariance matrix cov = s2 * (Q S^-1) (Q S^-1)^T */
-          {
-            double r2 = (*rnorm) * (*rnorm);
-            double s2 = r2 / (n - p_eff);   /* p_eff == rank */
-
-            for (i = 0; i < p; i++)
-              {
-                gsl_vector_view row_i = gsl_matrix_row (QSI, i);
-                double d_i = gsl_vector_get (D, i);
-
-                for (j = i; j < p; j++)
-                  {
-                    gsl_vector_view row_j = gsl_matrix_row (QSI, j);
-                    double d_j = gsl_vector_get (D, j);
-                    double s;
-
-                    gsl_blas_ddot (&row_i.vector, &row_j.vector, &s);
-
-                    gsl_matrix_set (cov, i, j, s * s2 / (d_i * d_j));
-                    gsl_matrix_set (cov, j, i, s * s2 / (d_i * d_j));
-                  }
-              }
-          }
-#endif
         }
 
       return GSL_SUCCESS;

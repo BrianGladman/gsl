@@ -89,16 +89,17 @@ gsl_multifit_linear_solve (const double lambda,
 
 int
 gsl_multifit_linear_stdform1 (const gsl_vector * L,
-                              gsl_matrix * X,
+                              const gsl_matrix * X,
+                              gsl_matrix * Xs,
                               gsl_multifit_linear_workspace * work);
 
 int
 gsl_multifit_linear_stdform2 (const gsl_matrix * L,
                               const gsl_matrix * X,
                               const gsl_vector * y,
-                              gsl_matrix ** Xs,
-                              gsl_vector ** ys,
-                              gsl_matrix ** M,
+                              gsl_matrix * Xs,
+                              gsl_vector * ys,
+                              gsl_matrix * M,
                               gsl_multifit_linear_workspace * work);
 
 int
@@ -136,7 +137,7 @@ gsl_multifit_linear_lcorner2(const gsl_vector *reg_param,
                              size_t *idx);
 
 gsl_matrix *
-gsl_multifit_linear_L(const size_t p, const size_t k);
+gsl_multifit_linear_Lk(const size_t p, const size_t k);
 
 int
 gsl_multifit_wlinear (const gsl_matrix * X,

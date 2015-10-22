@@ -35,24 +35,23 @@ main()
     }
 
   {
-    const size_t nL = 200;                  /* number of points on L-curve */
+    const size_t nL = 200;                   /* number of points on L-curve */
     gsl_multifit_linear_workspace *w =
       gsl_multifit_linear_alloc(n, p);
-    gsl_vector *c = gsl_vector_alloc(p);
-    gsl_vector *c_ridge = gsl_vector_alloc(p);
-    gsl_matrix *cov = gsl_matrix_alloc(p, p);
+    gsl_vector *c = gsl_vector_alloc(p);     /* OLS solution */
+    gsl_vector *c_reg = gsl_vector_alloc(p); /* regularized solution */
     gsl_vector *reg_param = gsl_vector_alloc(nL);
-    gsl_vector *rho = gsl_vector_alloc(nL); /* residual norms */
-    gsl_vector *eta = gsl_vector_alloc(nL); /* solution norms */
-    double lambda;                          /* optimal regularization parameter */
-    size_t reg_idx;                         /* index of optimal lambda */
+    gsl_vector *rho = gsl_vector_alloc(nL);  /* residual norms */
+    gsl_vector *eta = gsl_vector_alloc(nL);  /* solution norms */
+    double lambda;                           /* optimal regularization parameter */
+    size_t reg_idx;                          /* index of optimal lambda */
     double chisq, rnorm, snorm;
 
     /* compute SVD of X */
     gsl_multifit_linear_svd(X, w);
 
     /* unregularized (standard) least squares fit, lambda = 0 */
-    gsl_multifit_linear_ridge_solve(0.0, y, c, cov, &rnorm, &snorm, w);
+    gsl_multifit_linear_solve(0.0, X, y, c, &rnorm, &snorm, w);
     chisq = pow(rnorm, 2.0);
 
     fprintf(stderr, "=== Unregularized fit ===\n");
@@ -61,8 +60,8 @@ main()
     fprintf(stderr, "chisq/dof = %g\n", chisq / (n - p));
 
     /* calculate L-curve and find its corner */
-    gsl_multifit_linear_ridge_lcurve(y, reg_param, rho, eta, w);
-    gsl_multifit_linear_ridge_lcorner(rho, eta, &reg_idx);
+    gsl_multifit_linear_lcurve(y, reg_param, rho, eta, w);
+    gsl_multifit_linear_lcorner(rho, eta, &reg_idx);
 
     /* store optimal regularization parameter */
     lambda = gsl_vector_get(reg_param, reg_idx);
@@ -77,19 +76,18 @@ main()
            gsl_vector_get(eta, reg_idx));
 
     /* regularize with lambda */
-    gsl_multifit_linear_ridge_solve(lambda, y, c_ridge, cov, &rnorm, &snorm, w);
+    gsl_multifit_linear_solve(lambda, X, y, c_reg, &rnorm, &snorm, w);
     chisq = pow(rnorm, 2.0) + pow(lambda * snorm, 2.0);
 
     fprintf(stderr, "=== Regularized fit ===\n");
     fprintf(stderr, "optimal lambda: %g\n", lambda);
     fprintf(stderr, "best fit: y = %g u + %g v\n",
-      gsl_vector_get(c_ridge, 0), gsl_vector_get(c_ridge, 1));
+            gsl_vector_get(c_reg, 0), gsl_vector_get(c_reg, 1));
     fprintf(stderr, "chisq/dof = %g\n", chisq / (n - p));
 
     gsl_multifit_linear_free(w);
-    gsl_matrix_free(cov);
     gsl_vector_free(c);
-    gsl_vector_free(c_ridge);
+    gsl_vector_free(c_reg);
     gsl_vector_free(reg_param);
     gsl_vector_free(rho);
     gsl_vector_free(eta);

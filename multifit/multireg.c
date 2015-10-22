@@ -35,7 +35,11 @@
 
 #include "linear_common.c"
 
+#define TEST_FORM2 0
+
+#if TEST_FORM2
 #include "oct.h"
+#endif
 
 int
 gsl_multifit_linear_solve (const double lambda,
@@ -63,20 +67,21 @@ L = diag(l_1,l_2,...,l_p), transform to Tikhonov standard form:
 X~ = X L^{-1}
 c~ = L c
 
-Inputs: L    - Tikhonov matrix as a vector of diagonal elements
-        X    - on input, least squares matrix; on output,
-               standard form matrix X~
+Inputs: L    - Tikhonov matrix as a vector of diagonal elements p-by-1
+        X    - least squares matrix n-by-p
+        Xs   - least squares matrix in standard form X~ n-by-p
         work - workspace
 
 Return: success/error
 
 Notes:
-1) X~ is computed as well as its SVD which is stored in work
+1) It is allowed for X = Xs
 */
 
 int
 gsl_multifit_linear_stdform1 (const gsl_vector * L,
-                              gsl_matrix * X,
+                              const gsl_matrix * X,
+                              gsl_matrix * Xs,
                               gsl_multifit_linear_workspace * work)
 {
   const size_t n = work->n;
@@ -90,15 +95,20 @@ gsl_multifit_linear_stdform1 (const gsl_vector * L,
     {
       GSL_ERROR("X matrix does not match workspace", GSL_EBADLEN);
     }
+  else if (n != Xs->size1 || p != Xs->size2)
+    {
+      GSL_ERROR("Xs matrix does not match workspace", GSL_EBADLEN);
+    }
   else
     {
       int status = GSL_SUCCESS;
       size_t j;
 
       /* construct X~ = X * L^{-1} matrix */
+      gsl_matrix_memcpy(Xs, X);
       for (j = 0; j < p; ++j)
         {
-          gsl_vector_view Xj = gsl_matrix_column(X, j);
+          gsl_vector_view Xj = gsl_matrix_column(Xs, j);
           double lj = gsl_vector_get(L, j);
 
           if (lj == 0.0)
@@ -143,30 +153,46 @@ int
 gsl_multifit_linear_stdform2 (const gsl_matrix * L,
                               const gsl_matrix * X,
                               const gsl_vector * y,
-                              gsl_matrix ** Xs,
-                              gsl_vector ** ys,
-                              gsl_matrix ** M,
+                              gsl_matrix * Xs,
+                              gsl_vector * ys,
+                              gsl_matrix * M,
                               gsl_multifit_linear_workspace * work)
 {
-  const size_t n = work->n;
-  const size_t p = work->p;
+  const size_t m = L->size1;
+  const size_t n = X->size1;
+  const size_t p = X->size2;
+  const size_t npm = n - (p - m);
 
   if (p != L->size2)
     {
-      GSL_ERROR("L matrix has wrong number of columns", GSL_EBADLEN);
+      GSL_ERROR("L and X matrices have different numbers of columns", GSL_EBADLEN);
     }
-  else if (n != X->size1 || p != X->size2)
+  else if (m > p)
     {
-      GSL_ERROR("X matrix does not match workspace", GSL_EBADLEN);
+      GSL_ERROR("L matrix cannot have more rows than columns", GSL_EBADLEN);
+    }
+  else if (n != y->size)
+    {
+      GSL_ERROR("y vector does not match X", GSL_EBADLEN);
+    }
+  else if (npm != Xs->size1 || m != Xs->size2)
+    {
+      GSL_ERROR("Xs matrix has wrong dimensions", GSL_EBADLEN);
+    }
+  else if (npm != ys->size)
+    {
+      GSL_ERROR("ys vector has wrong length", GSL_EBADLEN);
+    }
+  else if (p != M->size1 || n != M->size2)
+    {
+      GSL_ERROR("M matrix has wrong dimensions", GSL_EBADLEN);
     }
   else if (L->size1 == L->size2) /* special case of square matrix */
     {
       int status;
       size_t i;
 
-      *Xs = gsl_matrix_alloc(n, p);
-      *ys = gsl_vector_alloc(n);
-      *M = NULL;
+      gsl_matrix_set_zero(M); /* not used */
 
       /* compute QR decomposition of L */
       gsl_matrix_memcpy(work->Linv, L);
@@ -175,13 +201,13 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
         return status;
 
       /* rhs vector is unchanged */
-      gsl_vector_memcpy(*ys, y);
+      gsl_vector_memcpy(ys, y);
 
       /* compute X~ = X L^{-1} using QR decomposition of L */
-      gsl_matrix_memcpy(*Xs, X);
+      gsl_matrix_memcpy(Xs, X);
       for (i = 0; i < n; ++i)
         {
-          gsl_vector_view v = gsl_matrix_row(*Xs, i);
+          gsl_vector_view v = gsl_matrix_row(Xs, i);
 
           /* solve: R^T y = X_j */
           gsl_blas_dtrsv(CblasUpper, CblasTrans, CblasNonUnit, work->Linv, &v.vector);
@@ -211,11 +237,6 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
 
       gsl_matrix_view Rp, Ko, Kp, Ho, Hq, To;
       size_t i;
-
-      /* allocate outputs */
-      *Xs = gsl_matrix_alloc(n - p + m, m);
-      *ys = gsl_vector_alloc(n - p + m);
-      *M = gsl_matrix_alloc(p, n);
 
       /* compute QR decomposition [K,R] = qr(L^T) */
       gsl_matrix_transpose_memcpy(&LT.matrix, L);
@@ -255,7 +276,7 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
           gsl_linalg_householder_hv(taui, &h.vector, &w.vector);
         }
 #else
-      gsl_blas_dgemv(CblasTrans, 1.0, &Hq.matrix, y, 0.0, *ys);
+      gsl_blas_dgemv(CblasTrans, 1.0, &Hq.matrix, y, 0.0, ys);
 #endif
 
       /* compute: M1 = inv(T_o) * H_o^T */
@@ -267,12 +288,13 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
         }
 
       /* compute: M = K_o * M1 */
-      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &Ko.matrix, M1, 0.0, *M);
+      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &Ko.matrix, M1, 0.0, M);
 
       /* compute: C = H_q^T X; Xs = C * L_inv */
       gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &Hq.matrix, X, 0.0, &C.matrix);
-      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &C.matrix, &Lp.matrix, 0.0, *Xs);
+      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &C.matrix, &Lp.matrix, 0.0, Xs);
 
+#if TEST_FORM2
       print_octave(&Rp.matrix, "R");
       print_octave(K, "K");
       print_octave(&Ko.matrix, "Ko");
@@ -281,9 +303,10 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
       print_octave(T, "T");
       print_octave(&Lp.matrix, "Lp");
       print_octave(&Hq.matrix, "Hq");
-      printv_octave(*ys, "ys");
-      print_octave(*Xs, "Xs");
+      printv_octave(ys, "ys");
+      print_octave(Xs, "Xs");
       print_octave(M1, "M1");
+#endif
 
       gsl_matrix_free(K);
       gsl_matrix_free(R);
@@ -764,7 +787,7 @@ k on a regular grid of p points, ie: L is (p-k)-by-p
 */
 
 gsl_matrix *
-gsl_multifit_linear_L(const size_t p, const size_t k)
+gsl_multifit_linear_Lk(const size_t p, const size_t k)
 {
   if (p <= k)
     {
