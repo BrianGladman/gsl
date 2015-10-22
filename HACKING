@@ -247,10 +247,17 @@ na.digest@na-net.ornl.gov or freshmeat.net
 
     # Edit manual/index.html and manually add entry for gsl-ref.ps.gz and update size info for gsl-ref.pdf
 
-    # NOTE DON'T TRY TO IMPORT - it doesn't work as .GZ files tend to be ignored
-    # JUST COPY THE FILES INTO A CHECKED OUT AREA AND CVS ADD/REMOVE AND COMMIT THEM
+    # Checkout CVS html tree (see below for instructions) and copy new files over:
+    $ rsync -va manual /path/to/www/gsl
+
+    # Remove any deleted/renamed files
+    $ cd /path/to/www/gsl
+    $ cvs remove
 
     # Edit the checked out gsl.html and update version numbers
+
+    # Commit new html tree
+    $ cvs commit
 
 * Tag with "cvs tag release-X-Y" for version X.Y
 
