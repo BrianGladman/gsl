@@ -243,7 +243,7 @@ na.digest@na-net.ornl.gov or freshmeat.net
     # PDF might fail in above step due to eps files, execute these commands for PDF/PS generation
     $ make ps ; ps2pdf gsl-ref.ps gsl-ref.pdf
     $ gzip gsl-ref.ps
-    $ cp gsl-ref.ps.gz gsl-ref.pdf manual/
+    $ mv gsl-ref.ps.gz gsl-ref.pdf manual/
 
     # Edit manual/index.html and manually add entry for gsl-ref.ps.gz and update size info for gsl-ref.pdf
 
