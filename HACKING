@@ -254,6 +254,10 @@ na.digest@na-net.ornl.gov or freshmeat.net
     $ cd /path/to/www/gsl
     $ cvs remove
 
+    # Add any new files
+    $ cd /path/to/www/gsl/manual/html_node
+    $ cvs add *.html
+
     # Edit the checked out gsl.html and update version numbers
 
     # Commit new html tree
