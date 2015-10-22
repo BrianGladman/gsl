@@ -6,8 +6,6 @@
 *.dvi
 *.fn
 *.fns
-gendocs*
-gendocs_template
 gsl-ref.dvi
 gsl-ref.fns
 gsl-ref*ps
