@@ -34,7 +34,7 @@
 ** added routines gsl_linalg_givens and gsl_linalg_givens_gv
    for Givens rotations
 
-** added ridge (Tikhonov) regularization to least squares module
+** added Tikhonov (ridge) regularization to least squares module
    (linear and nonlinear)
 
 ** removed unused argument 'n' from gsl_sf_ellint_D
