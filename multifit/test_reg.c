@@ -213,7 +213,7 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   gsl_matrix *XTX = gsl_matrix_alloc(p, p); /* X^T X + lambda^2 L^T L */
   gsl_vector *XTy = gsl_vector_alloc(p);    /* X^T y */
   gsl_permutation *perm = gsl_permutation_alloc(p);
-  gsl_matrix *Xs, *Linv, *M;
+  gsl_matrix *Xs, *M;
   gsl_vector *ys, *cs;
   int signum;
   size_t j;
@@ -233,11 +233,11 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   gsl_linalg_LU_solve(XTX, perm, XTy, c0);
 
   /* solve with reg routine */
-  gsl_multifit_linear_stdform2(L, X, y, &Xs, &ys, &Linv, &M, w);
+  gsl_multifit_linear_stdform2(L, X, y, &Xs, &ys, &M, w);
   gsl_multifit_linear_svd(Xs, w);
   cs = gsl_vector_alloc(Xs->size2);
   gsl_multifit_linear_solve(lambda, Xs, ys, cs, &rnorm, &snorm, w);
-  gsl_multifit_linear_genform2(L, X, y, cs, Linv, M, c1, w);
+  gsl_multifit_linear_genform2(L, X, y, cs, M, c1, w);
 
   /* test c0 = c1 */
   for (j = 0; j < p; ++j)
@@ -256,9 +256,8 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   gsl_permutation_free(perm);
   gsl_matrix_free(Xs);
   gsl_vector_free(ys);
+  gsl_vector_free(cs);
 
-  if (Linv)
-    gsl_matrix_free(Linv);
   if (M)
     gsl_matrix_free(M);
 }

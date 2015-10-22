@@ -123,7 +123,6 @@ Inputs: L    - regularization matrix
         y    - right hand side vector n-by-1
         Xs   - (output) least squares matrix in standard form (n - p + m)-by-m
         ys   - (output) right hand side vector in standard form (n - p + m)-by-1
-        Linv - (output) pseudo inverse of L p-by-m
         M    - (output) matrix needed to reconstruct solution vector p-by-n
         work - workspace
 
@@ -131,10 +130,13 @@ Return: success/error
 
 Notes:
 1) If L is square, on output:
-   (Linv,work->tau) = QR decomposition of L
+   (work->Linv,work->tau) = QR decomposition of L
    Xs = X L^{-1}
    ys = y
    M = NULL (not used)
+
+2) If L is rectangular, on output:
+   work->Linv = pseudo inverse of L
 */
 
 int
@@ -143,7 +145,6 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
                               const gsl_vector * y,
                               gsl_matrix ** Xs,
                               gsl_vector ** ys,
-                              gsl_matrix ** Linv,
                               gsl_matrix ** M,
                               gsl_multifit_linear_workspace * work)
 {
@@ -162,18 +163,14 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
     {
       int status;
       size_t i;
-      gsl_matrix *Li;
 
       *Xs = gsl_matrix_alloc(n, p);
       *ys = gsl_vector_alloc(n);
-      *Linv = gsl_matrix_alloc(p, p);
       *M = NULL;
 
-      Li = *Linv;
-
       /* compute QR decomposition of L */
-      gsl_matrix_memcpy(Li, L);
-      status = gsl_linalg_QR_decomp(Li, work->tau);
+      gsl_matrix_memcpy(work->Linv, L);
+      status = gsl_linalg_QR_decomp(work->Linv, work->tau);
       if (status)
         return status;
 
@@ -187,10 +184,10 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
           gsl_vector_view v = gsl_matrix_row(*Xs, i);
 
           /* solve: R^T y = X_j */
-          gsl_blas_dtrsv(CblasUpper, CblasTrans, CblasNonUnit, Li, &v.vector);
+          gsl_blas_dtrsv(CblasUpper, CblasTrans, CblasNonUnit, work->Linv, &v.vector);
 
           /* compute: X~_j = Q y */
-          gsl_linalg_QR_Qvec(Li, work->tau, &v.vector);
+          gsl_linalg_QR_Qvec(work->Linv, work->tau, &v.vector);
         }
 
       return GSL_SUCCESS;
@@ -201,14 +198,15 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
       const size_t m = L->size1;
       gsl_vector_view tauv1 = gsl_vector_subvector(work->tau, 0, GSL_MIN(p, m));
       gsl_vector_view tauv2 = gsl_vector_subvector(work->t, 0, GSL_MIN(n, p - m));
+      gsl_matrix_view LT = gsl_matrix_submatrix(work->Q, 0, 0, p, m);          /* L^T */
+      gsl_matrix_view Lp = gsl_matrix_submatrix(work->Linv, 0, 0, p, m);       /* L_inv */
+      gsl_matrix_view B = gsl_matrix_submatrix(work->A, 0, 0, n, p - m);       /* X * K_o */
+      gsl_matrix_view C = gsl_matrix_submatrix(work->A, 0, 0, n - (p - m), p); /* H_q^T X */
 
-      gsl_matrix *LT = gsl_matrix_alloc(p, m);
       gsl_matrix *K = gsl_matrix_alloc(p, p);
       gsl_matrix *R = gsl_matrix_alloc(p, m);
-      gsl_matrix *B = gsl_matrix_alloc(n, p - m);
       gsl_matrix *H = gsl_matrix_alloc(n, n);
       gsl_matrix *T = gsl_matrix_alloc(n, p - m);
-      gsl_matrix *tmp = gsl_matrix_alloc(n - p + m, p);
       gsl_matrix *M1 = gsl_matrix_alloc(p - m, n);
 
       gsl_matrix_view Rp, Ko, Kp, Ho, Hq, To;
@@ -217,42 +215,48 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
       /* allocate outputs */
       *Xs = gsl_matrix_alloc(n - p + m, m);
       *ys = gsl_vector_alloc(n - p + m);
-      *Linv = gsl_matrix_alloc(p, m);
       *M = gsl_matrix_alloc(p, n);
 
       /* compute QR decomposition [K,R] = qr(L^T) */
-      gsl_matrix_transpose_memcpy(LT, L);
-      status = gsl_linalg_QR_decomp(LT, &tauv1.vector);
+      gsl_matrix_transpose_memcpy(&LT.matrix, L);
+      status = gsl_linalg_QR_decomp(&LT.matrix, &tauv1.vector);
       if (status)
         return status;
 
-      gsl_linalg_QR_unpack(LT, &tauv1.vector, K, R);
-      Rp = gsl_matrix_submatrix(R, 0, 0, m, m);
+      Rp = gsl_matrix_submatrix(&LT.matrix, 0, 0, m, m);
+
+      gsl_linalg_QR_unpack(&LT.matrix, &tauv1.vector, K, R);
       Ko = gsl_matrix_submatrix(K, 0, m, p, p - m);
       Kp = gsl_matrix_submatrix(K, 0, 0, p, m);
 
       /* compute QR decomposition [H,T] = qr(X * K_o) */
-      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, X, &Ko.matrix, 0.0, B);
-      gsl_linalg_QR_decomp(B, &tauv2.vector);
-      gsl_linalg_QR_unpack(B, &tauv2.vector, H, T);
+      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, X, &Ko.matrix, 0.0, &B.matrix);
+      gsl_linalg_QR_decomp(&B.matrix, &tauv2.vector);
+      gsl_linalg_QR_unpack(&B.matrix, &tauv2.vector, H, T);
       Ho = gsl_matrix_submatrix(H, 0, 0, n, p - m);
       Hq = gsl_matrix_submatrix(H, 0, p - m, n, n - p + m);
-      To = gsl_matrix_submatrix(T, 0, 0, p - m, p - m);
+      To = gsl_matrix_submatrix(&B.matrix, 0, 0, p - m, p - m);
 
       /* solve: R_p L_inv^T = K_p^T for L_inv */
-      gsl_matrix_memcpy(*Linv, &Kp.matrix);
+      gsl_matrix_memcpy(&Lp.matrix, &Kp.matrix);
       for (i = 0; i < p; ++i)
         {
-          gsl_vector_view x = gsl_matrix_row(*Linv, i);
+          gsl_vector_view x = gsl_matrix_row(&Lp.matrix, i);
           gsl_blas_dtrsv(CblasUpper, CblasNoTrans, CblasNonUnit, &Rp.matrix, &x.vector);
         }
 
       /* compute: ys = H_q^T y */
+#if 0
+      for (i = 0; i < GSL_MIN(n, p - m); ++i)
+        {
+          gsl_vector_view h = gsl_matrix_subcolumn(&B.matrix, i, i, n - i);
+          gsl_vector_view w = gsl_vector_subvector(y, i, n - i);
+          double taui = gsl_vector_get(&tauv2.vector, i);
+          gsl_linalg_householder_hv(taui, &h.vector, &w.vector);
+        }
+#else
       gsl_blas_dgemv(CblasTrans, 1.0, &Hq.matrix, y, 0.0, *ys);
-
-      /* compute: tmp = H_q^T X; Xs = tmp * L_inv */
-      gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &Hq.matrix, X, 0.0, tmp);
-      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, tmp, *Linv, 0.0, *Xs);
+#endif
 
       /* compute: M1 = inv(T_o) * H_o^T */
       gsl_matrix_transpose_memcpy(M1, &Ho.matrix);
@@ -265,17 +269,27 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
       /* compute: M = K_o * M1 */
       gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &Ko.matrix, M1, 0.0, *M);
 
+      /* compute: C = H_q^T X; Xs = C * L_inv */
+      gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &Hq.matrix, X, 0.0, &C.matrix);
+      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &C.matrix, &Lp.matrix, 0.0, *Xs);
+
       print_octave(&Rp.matrix, "R");
       print_octave(K, "K");
       print_octave(&Ko.matrix, "Ko");
       print_octave(&Kp.matrix, "Kp");
       print_octave(H, "H");
       print_octave(T, "T");
-      print_octave(*Linv, "Lp");
+      print_octave(&Lp.matrix, "Lp");
       print_octave(&Hq.matrix, "Hq");
       printv_octave(*ys, "ys");
       print_octave(*Xs, "Xs");
       print_octave(M1, "M1");
+
+      gsl_matrix_free(K);
+      gsl_matrix_free(R);
+      gsl_matrix_free(H);
+      gsl_matrix_free(T);
+      gsl_matrix_free(M1);
 
       return GSL_SUCCESS;
     }
@@ -320,7 +334,6 @@ Inputs: L    - regularization matrix
         y    - original rhs vector
         cs   - standard form solution vector
         c    - (output) original solution vector
-        Linv - pseudoinverse of L
         M    -
         work - workspace
 */
@@ -330,7 +343,6 @@ gsl_multifit_linear_genform2 (const gsl_matrix * L,
                               const gsl_matrix * X,
                               const gsl_vector * y,
                               const gsl_vector * cs,
-                              const gsl_matrix * Linv,
                               const gsl_matrix * M,
                               gsl_vector * c,
                               gsl_multifit_linear_workspace * work)
@@ -354,11 +366,11 @@ gsl_multifit_linear_genform2 (const gsl_matrix * L,
     {
       int s;
 
-      /* (Linv, work->tau) contain the QR decomposition of the original L */
+      /* (work->Linv, work->tau) contain the QR decomposition of the original L */
 
       /* solve L c = cs for true solution c */
       gsl_vector_memcpy(c, cs);
-      s = gsl_linalg_QR_svx(Linv, work->tau, c);
+      s = gsl_linalg_QR_svx(work->Linv, work->tau, c);
 
       return s;
     }
@@ -366,9 +378,10 @@ gsl_multifit_linear_genform2 (const gsl_matrix * L,
     {
       gsl_vector *Linv_cs = work->xt; /* L_inv * cs */
       gsl_vector *workn = work->t;
+      gsl_matrix_view Lp = gsl_matrix_submatrix(work->Linv, 0, 0, p, m); /* L_inv */
 
       /* compute L_inv * cs */
-      gsl_blas_dgemv(CblasNoTrans, 1.0, Linv, cs, 0.0, Linv_cs);
+      gsl_blas_dgemv(CblasNoTrans, 1.0, &Lp.matrix, cs, 0.0, Linv_cs);
 
       /* compute: workn = y - X L_inv cs */
       gsl_vector_memcpy(workn, y);

@@ -52,6 +52,7 @@ typedef struct
   gsl_vector * D;
 
   gsl_vector * tau;    /* Householder scalars for standard form conversion */
+  gsl_matrix * Linv;   /* pseudo inverse of regularization matrix */
 } 
 gsl_multifit_linear_workspace;
 
@@ -97,7 +98,6 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
                               const gsl_vector * y,
                               gsl_matrix ** Xs,
                               gsl_vector ** ys,
-                              gsl_matrix ** Linv,
                               gsl_matrix ** M,
                               gsl_multifit_linear_workspace * work);
 
@@ -111,7 +111,6 @@ gsl_multifit_linear_genform2 (const gsl_matrix * L,
                               const gsl_matrix * X,
                               const gsl_vector * y,
                               const gsl_vector * cs,
-                              const gsl_matrix * Linv,
                               const gsl_matrix * M,
                               gsl_vector * c,
                               gsl_multifit_linear_workspace * work);

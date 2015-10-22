@@ -93,12 +93,19 @@ gsl_multifit_linear_alloc (size_t n, size_t p)
       GSL_ERROR_VAL ("failed to allocate space for D", GSL_ENOMEM, 0);
     }
 
-  w->tau = gsl_vector_calloc (p);
+  w->tau = gsl_vector_alloc (p);
 
   if (w->tau == 0)
     {
       gsl_multifit_linear_free(w);
       GSL_ERROR_VAL ("failed to allocate space for tau", GSL_ENOMEM, 0);
+    }
+
+  w->Linv = gsl_matrix_alloc(p, p);
+  if (w->Linv == 0)
+    {
+      gsl_multifit_linear_free(w);
+      GSL_ERROR_VAL ("failed to allocate space for Linv", GSL_ENOMEM, 0);
     }
 
   return w;
@@ -132,6 +139,9 @@ gsl_multifit_linear_free (gsl_multifit_linear_workspace * w)
 
   if (w->tau)
     gsl_vector_free (w->tau);
+
+  if (w->Linv)
+    gsl_matrix_free (w->Linv);
 
   free (w);
 }
