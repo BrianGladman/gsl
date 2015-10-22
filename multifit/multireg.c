@@ -1,4 +1,4 @@
-/* multifit/multiridge.c
+/* multifit/multireg.c
  * 
  * Copyright (C) 2015 Patrick Alken
  * 
@@ -35,11 +35,13 @@
 
 #include "linear_common.c"
 
+#include "oct.h"
+
 int
 gsl_multifit_linear_solve (const double lambda,
+                           const gsl_matrix * X,
                            const gsl_vector * y,
                            gsl_vector * c,
-                           gsl_matrix * cov,
                            double *rnorm,
                            double *snorm,
                            gsl_multifit_linear_workspace * work)
@@ -47,8 +49,8 @@ gsl_multifit_linear_solve (const double lambda,
   size_t rank;
   int status;
 
-  status = multifit_linear_solve(y, GSL_DBL_EPSILON, lambda, &rank, c,
-                                 cov, rnorm, snorm, work);
+  status = multifit_linear_solve(X, y, GSL_DBL_EPSILON, lambda, &rank, c,
+                                 rnorm, snorm, work);
 
   return status;
 } /* gsl_multifit_linear_solve() */
@@ -113,78 +115,169 @@ gsl_multifit_linear_stdform1 (const gsl_vector * L,
 
 /*
 gsl_multifit_linear_stdform2()
-  Using regularization matrix L, transform to Tikhonov standard form:
+  Using regularization matrix L which is m-by-p, transform to Tikhonov
+standard form
 
-X~ = X L^{-1}
-c~ = L c
-
-Inputs: L    - on input, Tikhonov matrix
-               on output, QR decomposition of L
-        X    - on input, least squares matrix; on output,
-               standard form matrix X~
-        tau  - additional workspace for QR decomposition
+Inputs: L    - regularization matrix
+        X    - least squares matrix n-by-p
+        y    - right hand side vector n-by-1
+        Xs   - (output) least squares matrix in standard form (n - p + m)-by-m
+        ys   - (output) right hand side vector in standard form (n - p + m)-by-1
+        Linv - (output) pseudo inverse of L p-by-m
+        M    - (output) matrix needed to reconstruct solution vector p-by-n
         work - workspace
 
 Return: success/error
 
 Notes:
 1) If L is square, on output:
-   (L,tau) = QR decomposition of L
-   X_out = X_in L^{-1}
+   (Linv,work->tau) = QR decomposition of L
+   Xs = X L^{-1}
+   ys = y
+   M = NULL (not used)
 */
 
 int
-gsl_multifit_linear_stdform2 (gsl_matrix * L,
-                              gsl_matrix * X,
-                              gsl_vector * tau,
+gsl_multifit_linear_stdform2 (const gsl_matrix * L,
+                              const gsl_matrix * X,
+                              const gsl_vector * y,
+                              gsl_matrix ** Xs,
+                              gsl_vector ** ys,
+                              gsl_matrix ** Linv,
+                              gsl_matrix ** M,
                               gsl_multifit_linear_workspace * work)
 {
   const size_t n = work->n;
   const size_t p = work->p;
 
-  if (p != L->size1)
+  if (p != L->size2)
     {
       GSL_ERROR("L matrix has wrong number of columns", GSL_EBADLEN);
-    }
-  else if (p != tau->size)
-    {
-      GSL_ERROR("tau vector does not match workspace", GSL_EBADLEN);
     }
   else if (n != X->size1 || p != X->size2)
     {
       GSL_ERROR("X matrix does not match workspace", GSL_EBADLEN);
     }
-  else
+  else if (L->size1 == L->size2) /* special case of square matrix */
     {
       int status;
       size_t i;
+      gsl_matrix *Li;
 
-      /* check for special case of square matrix L */
-      if (L->size1 == L->size2)
+      *Xs = gsl_matrix_alloc(n, p);
+      *ys = gsl_vector_alloc(n);
+      *Linv = gsl_matrix_alloc(p, p);
+      *M = NULL;
+
+      Li = *Linv;
+
+      /* compute QR decomposition of L */
+      gsl_matrix_memcpy(Li, L);
+      status = gsl_linalg_QR_decomp(Li, work->tau);
+      if (status)
+        return status;
+
+      /* rhs vector is unchanged */
+      gsl_vector_memcpy(*ys, y);
+
+      /* compute X~ = X L^{-1} using QR decomposition of L */
+      gsl_matrix_memcpy(*Xs, X);
+      for (i = 0; i < n; ++i)
         {
-          /* compute QR decomposition of L */
-          status = gsl_linalg_QR_decomp(L, tau);
-          if (status)
-            return status;
+          gsl_vector_view v = gsl_matrix_row(*Xs, i);
 
-          /* compute X~ = X L^{-1} using QR decomposition of L */
-          for (i = 0; i < n; ++i)
-            {
-              gsl_vector_view v = gsl_matrix_row(X, i);
+          /* solve: R^T y = X_j */
+          gsl_blas_dtrsv(CblasUpper, CblasTrans, CblasNonUnit, Li, &v.vector);
 
-              /* solve: R^T y = X_j */
-              gsl_blas_dtrsv(CblasUpper, CblasTrans, CblasNonUnit, L, &v.vector);
-
-              /* compute: X~_j = Q y */
-              gsl_linalg_QR_Qvec(L, tau, &v.vector);
-            }
+          /* compute: X~_j = Q y */
+          gsl_linalg_QR_Qvec(Li, work->tau, &v.vector);
         }
-      else
+
+      return GSL_SUCCESS;
+    }
+  else
+    {
+      int status;
+      const size_t m = L->size1;
+      gsl_vector_view tauv1 = gsl_vector_subvector(work->tau, 0, GSL_MIN(p, m));
+      gsl_vector_view tauv2 = gsl_vector_subvector(work->t, 0, GSL_MIN(n, p - m));
+
+      gsl_matrix *LT = gsl_matrix_alloc(p, m);
+      gsl_matrix *K = gsl_matrix_alloc(p, p);
+      gsl_matrix *R = gsl_matrix_alloc(p, m);
+      gsl_matrix *B = gsl_matrix_alloc(n, p - m);
+      gsl_matrix *H = gsl_matrix_alloc(n, n);
+      gsl_matrix *T = gsl_matrix_alloc(n, p - m);
+      gsl_matrix *tmp = gsl_matrix_alloc(n - p + m, p);
+      gsl_matrix *M1 = gsl_matrix_alloc(p - m, n);
+
+      gsl_matrix_view Rp, Ko, Kp, Ho, Hq, To;
+      size_t i;
+
+      /* allocate outputs */
+      *Xs = gsl_matrix_alloc(n - p + m, m);
+      *ys = gsl_vector_alloc(n - p + m);
+      *Linv = gsl_matrix_alloc(p, m);
+      *M = gsl_matrix_alloc(p, n);
+
+      /* compute QR decomposition [K,R] = qr(L^T) */
+      gsl_matrix_transpose_memcpy(LT, L);
+      status = gsl_linalg_QR_decomp(LT, &tauv1.vector);
+      if (status)
+        return status;
+
+      gsl_linalg_QR_unpack(LT, &tauv1.vector, K, R);
+      Rp = gsl_matrix_submatrix(R, 0, 0, m, m);
+      Ko = gsl_matrix_submatrix(K, 0, m, p, p - m);
+      Kp = gsl_matrix_submatrix(K, 0, 0, p, m);
+
+      /* compute QR decomposition [H,T] = qr(X * K_o) */
+      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, X, &Ko.matrix, 0.0, B);
+      gsl_linalg_QR_decomp(B, &tauv2.vector);
+      gsl_linalg_QR_unpack(B, &tauv2.vector, H, T);
+      Ho = gsl_matrix_submatrix(H, 0, 0, n, p - m);
+      Hq = gsl_matrix_submatrix(H, 0, p - m, n, n - p + m);
+      To = gsl_matrix_submatrix(T, 0, 0, p - m, p - m);
+
+      /* solve: R_p L_inv^T = K_p^T for L_inv */
+      gsl_matrix_memcpy(*Linv, &Kp.matrix);
+      for (i = 0; i < p; ++i)
         {
-          GSL_ERROR("rectangular L not yet supported", GSL_EBADLEN);
+          gsl_vector_view x = gsl_matrix_row(*Linv, i);
+          gsl_blas_dtrsv(CblasUpper, CblasNoTrans, CblasNonUnit, &Rp.matrix, &x.vector);
         }
 
-      return status;
+      /* compute: ys = H_q^T y */
+      gsl_blas_dgemv(CblasTrans, 1.0, &Hq.matrix, y, 0.0, *ys);
+
+      /* compute: tmp = H_q^T X; Xs = tmp * L_inv */
+      gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &Hq.matrix, X, 0.0, tmp);
+      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, tmp, *Linv, 0.0, *Xs);
+
+      /* compute: M1 = inv(T_o) * H_o^T */
+      gsl_matrix_transpose_memcpy(M1, &Ho.matrix);
+      for (i = 0; i < n; ++i)
+        {
+          gsl_vector_view x = gsl_matrix_column(M1, i);
+          gsl_blas_dtrsv(CblasUpper, CblasNoTrans, CblasNonUnit, &To.matrix, &x.vector);
+        }
+
+      /* compute: M = K_o * M1 */
+      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &Ko.matrix, M1, 0.0, *M);
+
+      print_octave(&Rp.matrix, "R");
+      print_octave(K, "K");
+      print_octave(&Ko.matrix, "Ko");
+      print_octave(&Kp.matrix, "Kp");
+      print_octave(H, "H");
+      print_octave(T, "T");
+      print_octave(*Linv, "Lp");
+      print_octave(&Hq.matrix, "Hq");
+      printv_octave(*ys, "ys");
+      print_octave(*Xs, "Xs");
+      print_octave(M1, "M1");
+
+      return GSL_SUCCESS;
     }
 }
 
@@ -221,36 +314,71 @@ gsl_multifit_linear_genform1 (const gsl_vector * L,
 gsl_multifit_linear_genform2()
   Backtransform regularized solution vector using matrix L; (L,tau) contain
 QR decomposition of original L
+
+Inputs: L    - regularization matrix
+        X    - original least squares matrix
+        y    - original rhs vector
+        cs   - standard form solution vector
+        c    - (output) original solution vector
+        Linv - pseudoinverse of L
+        M    -
+        work - workspace
 */
 
 int
 gsl_multifit_linear_genform2 (const gsl_matrix * L,
-                              const gsl_vector * tau,
+                              const gsl_matrix * X,
+                              const gsl_vector * y,
+                              const gsl_vector * cs,
+                              const gsl_matrix * Linv,
+                              const gsl_matrix * M,
                               gsl_vector * c,
                               gsl_multifit_linear_workspace * work)
 {
-  const size_t p = work->p;
+  const size_t m = L->size1;
+  const size_t p = L->size2;
 
-  if (p != L->size1 || p != L->size2)
+  if (p != work->p)
     {
       GSL_ERROR("L matrix does not match workspace", GSL_EBADLEN);
     }
-  else if (p != tau->size)
-    {
-      GSL_ERROR("tau vector does not match workspace", GSL_EBADLEN);
-    }
   else if (p != c->size)
     {
-      GSL_ERROR("c vector does not match workspace", GSL_EBADLEN);
+      GSL_ERROR("c vector does not match L", GSL_EBADLEN);
     }
-  else
+  else if (m != cs->size)
+    {
+      GSL_ERROR("cs vector does not match L", GSL_EBADLEN);
+    }
+  else if (L->size1 == L->size2)      /* special case square L matrix */
     {
       int s;
 
-      /* solve Lc = c~ for true solution c */
-      s = gsl_linalg_QR_svx(L, tau, c);
+      /* (Linv, work->tau) contain the QR decomposition of the original L */
+
+      /* solve L c = cs for true solution c */
+      gsl_vector_memcpy(c, cs);
+      s = gsl_linalg_QR_svx(Linv, work->tau, c);
 
       return s;
+    }
+  else                                /* general rectangular L matrix */
+    {
+      gsl_vector *Linv_cs = work->xt; /* L_inv * cs */
+      gsl_vector *workn = work->t;
+
+      /* compute L_inv * cs */
+      gsl_blas_dgemv(CblasNoTrans, 1.0, Linv, cs, 0.0, Linv_cs);
+
+      /* compute: workn = y - X L_inv cs */
+      gsl_vector_memcpy(workn, y);
+      gsl_blas_dgemv(CblasNoTrans, -1.0, X, Linv_cs, 1.0, workn);
+
+      /* compute: c = L_inv cs + M * workn */
+      gsl_vector_memcpy(c, Linv_cs);
+      gsl_blas_dgemv(CblasNoTrans, 1.0, M, workn, 1.0, c);
+
+      return GSL_SUCCESS;
     }
 }
 
@@ -613,3 +741,67 @@ gsl_multifit_linear_lcorner2(const gsl_vector *reg_param,
       return s;
     }
 } /* gsl_multifit_linear_lcorner2() */
+
+#define GSL_MULTIFIT_MAXK      100
+
+/*
+gsl_multifit_linear_L()
+  Compute discrete approximation to derivative operator of order
+k on a regular grid of p points, ie: L is (p-k)-by-p
+*/
+
+gsl_matrix *
+gsl_multifit_linear_L(const size_t p, const size_t k)
+{
+  if (p <= k)
+    {
+      GSL_ERROR_NULL("p must be larger than derivative order", GSL_EBADLEN);
+    }
+  else if (k >= GSL_MULTIFIT_MAXK - 1)
+    {
+      GSL_ERROR_NULL("derivative order k too large", GSL_EBADLEN);
+    }
+  else
+    {
+      size_t pmk = p - k;
+      gsl_matrix *L = gsl_matrix_calloc(pmk, p);
+      double c_data[GSL_MULTIFIT_MAXK];
+      gsl_vector_view cv = gsl_vector_view_array(c_data, k + 1);
+      size_t i, j;
+
+      /* zeroth derivative */
+      if (k == 0)
+        {
+          gsl_matrix_set_identity(L);
+          return L;
+        }
+  
+      gsl_vector_set_zero(&cv.vector);
+      gsl_vector_set(&cv.vector, 0, -1.0);
+      gsl_vector_set(&cv.vector, 1, 1.0);
+
+      for (i = 1; i < k; ++i)
+        {
+          double cjm1 = 0.0;
+
+          for (j = 0; j < k + 1; ++j)
+            {
+              double cj = gsl_vector_get(&cv.vector, j);
+
+              gsl_vector_set(&cv.vector, j, cjm1 - cj);
+              cjm1 = cj;
+            }
+        }
+
+      /* build L, the c_i are the entries on the diagonals */
+      for (i = 0; i < k + 1; ++i)
+        {
+          gsl_vector_view v = gsl_matrix_superdiagonal(L, i);
+          double ci = gsl_vector_get(&cv.vector, i);
+
+          gsl_vector_set_all(&v.vector, ci);
+        }
+
+      return L;
+    }
+} /* gsl_multifit_linear_L() */

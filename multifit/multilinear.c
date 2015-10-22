@@ -28,6 +28,10 @@
 
 #include "linear_common.c"
 
+static int multifit_linear_svd (const gsl_matrix * X,
+                                const int balance,
+                                gsl_multifit_linear_workspace * work);
+
 int
 gsl_multifit_linear (const gsl_matrix * X,
                      const gsl_vector * y,
@@ -43,9 +47,39 @@ gsl_multifit_linear (const gsl_matrix * X,
   if (status)
     return status;
 
-  status = multifit_linear_solve (y, GSL_DBL_EPSILON, 0.0, &rank,
-                                  c, cov, &rnorm, &snorm, work);
+  status = multifit_linear_solve (X, y, GSL_DBL_EPSILON, 0.0, &rank,
+                                  c, &rnorm, &snorm, work);
+
   *chisq = rnorm * rnorm;
+
+  /* variance-covariance matrix cov = s2 * (Q S^-1) (Q S^-1)^T */
+  {
+    const size_t n = work->n;
+    const size_t p = work->p;
+    double r2 = rnorm * rnorm;
+    double s2 = r2 / (n - rank);
+    size_t i, j;
+    gsl_matrix_view QSI = gsl_matrix_submatrix(work->QSI, 0, 0, p, p);
+    gsl_vector_view D = gsl_vector_subvector(work->D, 0, p);
+
+    for (i = 0; i < p; i++)
+      {
+        gsl_vector_view row_i = gsl_matrix_row (&QSI.matrix, i);
+        double d_i = gsl_vector_get (&D.vector, i);
+
+        for (j = i; j < p; j++)
+          {
+            gsl_vector_view row_j = gsl_matrix_row (&QSI.matrix, j);
+            double d_j = gsl_vector_get (&D.vector, j);
+            double s;
+
+            gsl_blas_ddot (&row_i.vector, &row_j.vector, &s);
+
+            gsl_matrix_set (cov, i, j, s * s2 / (d_i * d_j));
+            gsl_matrix_set (cov, j, i, s * s2 / (d_i * d_j));
+          }
+      }
+  }
 
   return status;
 }
@@ -169,3 +203,63 @@ gsl_multifit_linear_residuals (const gsl_matrix *X, const gsl_vector *y,
       return GSL_SUCCESS;
     }
 } /* gsl_multifit_linear_residuals() */
+
+/* Perform a SVD decomposition on the least squares matrix X = U S Q^T
+ *
+ * Inputs: X       - least squares matrix
+ *         balance - 1 to perform column balancing
+ *         work    - workspace
+ *
+ * Notes:
+ * 1) On output,
+ *    work->A contains the matrix U
+ *    work->Q contains the matrix Q
+ *    work->S contains the vector of singular values
+ * 2) The matrix X may have smaller dimensions than the workspace
+ *    in the case of stdform2() - but the dimensions cannot be larger
+ */
+
+static int
+multifit_linear_svd (const gsl_matrix * X,
+                     const int balance,
+                     gsl_multifit_linear_workspace * work)
+{
+  const size_t n = X->size1;
+  const size_t p = X->size2;
+
+  if (n > work->n || p > work->p)
+    {
+      GSL_ERROR("observation matrix larger than workspace", GSL_EBADLEN);
+    }
+  else
+    {
+      gsl_matrix_view A = gsl_matrix_submatrix(work->A, 0, 0, n, p);
+      gsl_matrix_view Q = gsl_matrix_submatrix(work->Q, 0, 0, p, p);
+      gsl_matrix_view QSI = gsl_matrix_submatrix(work->QSI, 0, 0, p, p);
+      gsl_vector_view S = gsl_vector_subvector(work->S, 0, p);
+      gsl_vector_view xt = gsl_vector_subvector(work->xt, 0, p);
+      gsl_vector_view D = gsl_vector_subvector(work->D, 0, p);
+
+      /* Copy X to workspace,  A <= X */
+
+      gsl_matrix_memcpy (&A.matrix, X);
+
+      /* Balance the columns of the matrix A if requested */
+
+      if (balance) 
+        {
+          gsl_linalg_balance_columns (&A.matrix, &D.vector);
+        }
+      else
+        {
+          gsl_vector_set_all (&D.vector, 1.0);
+        }
+
+      /* Decompose A into U S Q^T */
+
+      gsl_linalg_SV_decomp_mod (&A.matrix, &QSI.matrix, &Q.matrix,
+                                &S.vector, &xt.vector);
+
+      return GSL_SUCCESS;
+    }
+}

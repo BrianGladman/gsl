@@ -117,8 +117,7 @@ test_shaw_system(gsl_rng *rng_p, const size_t n, const size_t p,
       double lami = gsl_vector_get(reg_param, i);
 
       /* solve regularized system and check for consistent rho/eta values */
-      gsl_multifit_linear_solve(lami, y, c, cov,
-                                &rnorm, &snorm, work);
+      gsl_multifit_linear_solve(lami, X, y, c, &rnorm, &snorm, work);
       gsl_test_rel(rhoi, rnorm, tol3, "shaw rho n=%zu p=%zu lambda=%e",
                    n, p, lami);
       gsl_test_rel(etai, snorm, tol1, "shaw eta n=%zu p=%zu lambda=%e",
@@ -139,8 +138,7 @@ test_shaw_system(gsl_rng *rng_p, const size_t n, const size_t p,
     }
 
   /* compute regularized solution with optimal lambda */
-  gsl_multifit_linear_solve(lambda, y, c, cov,
-                            &rnorm, &snorm, work);
+  gsl_multifit_linear_solve(lambda, X, y, c, &rnorm, &snorm, work);
 
   /* compute residual norm ||y - X c|| */
   gsl_vector_memcpy(r, y);

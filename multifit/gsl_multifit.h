@@ -43,13 +43,15 @@ typedef struct
 {
   size_t n;            /* number of observations */
   size_t p;            /* number of parameters */
-  gsl_matrix * A;
+  gsl_matrix * A;      /* least squares matrix for SVD */
   gsl_matrix * Q;
   gsl_matrix * QSI;
   gsl_vector * S;
   gsl_vector * t;
   gsl_vector * xt;
   gsl_vector * D;
+
+  gsl_vector * tau;    /* Householder scalars for standard form conversion */
 } 
 gsl_multifit_linear_workspace;
 
@@ -77,9 +79,9 @@ gsl_multifit_linear_bsvd (const gsl_matrix * X,
 
 int
 gsl_multifit_linear_solve (const double lambda,
+                           const gsl_matrix * X,
                            const gsl_vector * y,
                            gsl_vector * c,
-                           gsl_matrix * cov,
                            double *rnorm,
                            double *snorm,
                            gsl_multifit_linear_workspace * work);
@@ -90,9 +92,13 @@ gsl_multifit_linear_stdform1 (const gsl_vector * L,
                               gsl_multifit_linear_workspace * work);
 
 int
-gsl_multifit_linear_stdform2 (gsl_matrix * L,
-                              gsl_matrix * X,
-                              gsl_vector * tau,
+gsl_multifit_linear_stdform2 (const gsl_matrix * L,
+                              const gsl_matrix * X,
+                              const gsl_vector * y,
+                              gsl_matrix ** Xs,
+                              gsl_vector ** ys,
+                              gsl_matrix ** Linv,
+                              gsl_matrix ** M,
                               gsl_multifit_linear_workspace * work);
 
 int
@@ -102,7 +108,11 @@ gsl_multifit_linear_genform1 (const gsl_vector * L,
 
 int
 gsl_multifit_linear_genform2 (const gsl_matrix * L,
-                              const gsl_vector * tau,
+                              const gsl_matrix * X,
+                              const gsl_vector * y,
+                              const gsl_vector * cs,
+                              const gsl_matrix * Linv,
+                              const gsl_matrix * M,
                               gsl_vector * c,
                               gsl_multifit_linear_workspace * work);
 
@@ -125,6 +135,9 @@ int
 gsl_multifit_linear_lcorner2(const gsl_vector *reg_param,
                              const gsl_vector *eta,
                              size_t *idx);
+
+gsl_matrix *
+gsl_multifit_linear_L(const size_t p, const size_t k);
 
 int
 gsl_multifit_wlinear (const gsl_matrix * X,

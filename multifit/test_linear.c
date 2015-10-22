@@ -65,7 +65,7 @@ test_random_vector_noise(const gsl_rng *r, gsl_vector *y)
 #include "test_filip.c"
 #include "test_pontius.c"
 #include "test_estimator.c"
-#include "test_ridge.c"
+#include "test_reg.c"
 #include "test_shaw.c"
 
 /* test linear regression */
@@ -77,6 +77,6 @@ test_linear(void)
   test_filip();
   test_pontius();
   test_estimator();
-  test_ridge();
+  test_reg();
   test_shaw();
 }
