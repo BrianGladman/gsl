@@ -84,20 +84,20 @@ gsl_multifit_linear_stdform1 (const gsl_vector * L,
                               gsl_matrix * Xs,
                               gsl_multifit_linear_workspace * work)
 {
-  const size_t n = work->n;
-  const size_t p = work->p;
+  const size_t n = X->size1;
+  const size_t p = X->size2;
 
-  if (p != L->size)
+  if (n > work->nmax || p > work->pmax)
     {
-      GSL_ERROR("L vector does not match workspace", GSL_EBADLEN);
+      GSL_ERROR("observation matrix larger than workspace", GSL_EBADLEN);
     }
-  else if (n != X->size1 || p != X->size2)
+  else if (p != L->size)
     {
-      GSL_ERROR("X matrix does not match workspace", GSL_EBADLEN);
+      GSL_ERROR("L vector does not match X", GSL_EBADLEN);
     }
   else if (n != Xs->size1 || p != Xs->size2)
     {
-      GSL_ERROR("Xs matrix does not match workspace", GSL_EBADLEN);
+      GSL_ERROR("Xs matrix dimensions do not match X", GSL_EBADLEN);
     }
   else
     {
@@ -163,7 +163,11 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
   const size_t p = X->size2;
   const size_t npm = n - (p - m);
 
-  if (p != L->size2)
+  if (n > work->nmax || p > work->pmax)
+    {
+      GSL_ERROR("observation matrix larger than workspace", GSL_EBADLEN);
+    }
+  else if (p != L->size2)
     {
       GSL_ERROR("L and X matrices have different numbers of columns", GSL_EBADLEN);
     }
@@ -191,12 +195,14 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
     {
       int status;
       size_t i;
+      gsl_matrix_view Linv = gsl_matrix_submatrix(work->Linv, 0, 0, p, p);
+      gsl_vector_view tau = gsl_vector_subvector(work->tau, 0, p);
 
       gsl_matrix_set_zero(M); /* not used */
 
       /* compute QR decomposition of L */
-      gsl_matrix_memcpy(work->Linv, L);
-      status = gsl_linalg_QR_decomp(work->Linv, work->tau);
+      gsl_matrix_memcpy(&Linv.matrix, L);
+      status = gsl_linalg_QR_decomp(&Linv.matrix, &tau.vector);
       if (status)
         return status;
 
@@ -210,10 +216,10 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
           gsl_vector_view v = gsl_matrix_row(Xs, i);
 
           /* solve: R^T y = X_j */
-          gsl_blas_dtrsv(CblasUpper, CblasTrans, CblasNonUnit, work->Linv, &v.vector);
+          gsl_blas_dtrsv(CblasUpper, CblasTrans, CblasNonUnit, &Linv.matrix, &v.vector);
 
           /* compute: X~_j = Q y */
-          gsl_linalg_QR_Qvec(work->Linv, work->tau, &v.vector);
+          gsl_linalg_QR_Qvec(&Linv.matrix, &tau.vector, &v.vector);
         }
 
       return GSL_SUCCESS;
@@ -221,7 +227,6 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
   else
     {
       int status;
-      const size_t m = L->size1;
       gsl_vector_view tauv1 = gsl_vector_subvector(work->tau, 0, GSL_MIN(p, m));
       gsl_vector_view tauv2 = gsl_vector_subvector(work->t, 0, GSL_MIN(n, p - m));
       gsl_matrix_view LT = gsl_matrix_submatrix(work->Q, 0, 0, p, m);          /* L^T */
@@ -329,15 +334,13 @@ gsl_multifit_linear_genform1 (const gsl_vector * L,
                               gsl_vector * c,
                               gsl_multifit_linear_workspace * work)
 {
-  const size_t p = work->p;
-
-  if (p != L->size)
+  if (L->size > work->pmax)
     {
       GSL_ERROR("L vector does not match workspace", GSL_EBADLEN);
     }
-  else if (p != c->size)
+  else if (L->size != c->size)
     {
-      GSL_ERROR("c vector does not match workspace", GSL_EBADLEN);
+      GSL_ERROR("c vector does not match L", GSL_EBADLEN);
     }
   else
     {
@@ -352,9 +355,9 @@ gsl_multifit_linear_genform2()
   Backtransform regularized solution vector using matrix L; (L,tau) contain
 QR decomposition of original L
 
-Inputs: L    - regularization matrix
-        X    - original least squares matrix
-        y    - original rhs vector
+Inputs: L    - regularization matrix m-by-p
+        X    - original least squares matrix n-by-p
+        y    - original rhs vector n-by-1
         cs   - standard form solution vector
         c    - (output) original solution vector
         M    -
@@ -370,49 +373,64 @@ gsl_multifit_linear_genform2 (const gsl_matrix * L,
                               gsl_vector * c,
                               gsl_multifit_linear_workspace * work)
 {
+  const size_t n = X->size1;
+  const size_t p = X->size2;
   const size_t m = L->size1;
-  const size_t p = L->size2;
 
-  if (p != work->p)
+  if (n > work->nmax || p > work->pmax)
     {
-      GSL_ERROR("L matrix does not match workspace", GSL_EBADLEN);
+      GSL_ERROR("X matrix does not match workspace", GSL_EBADLEN);
+    }
+  else if (p != L->size2)
+    {
+      GSL_ERROR("L matrix does not match X", GSL_EBADLEN);
     }
   else if (p != c->size)
     {
-      GSL_ERROR("c vector does not match L", GSL_EBADLEN);
+      GSL_ERROR("c vector does not match X", GSL_EBADLEN);
+    }
+  else if (n != y->size)
+    {
+      GSL_ERROR("y vector does not match X", GSL_EBADLEN);
     }
   else if (m != cs->size)
     {
       GSL_ERROR("cs vector does not match L", GSL_EBADLEN);
     }
-  else if (L->size1 == L->size2)      /* special case square L matrix */
+  else if (p != M->size1 || n != M->size2)
+    {
+      GSL_ERROR("M matrix has wrong dimensions", GSL_EBADLEN);
+    }
+  else if (m == p)                    /* special case square L matrix */
     {
       int s;
+      gsl_matrix_view Linv = gsl_matrix_submatrix(work->Linv, 0, 0, p, p);
+      gsl_vector_view tau = gsl_vector_subvector(work->tau, 0, p);
 
-      /* (work->Linv, work->tau) contain the QR decomposition of the original L */
+      /* (Linv, tau) contain the QR decomposition of the original L */
 
       /* solve L c = cs for true solution c */
       gsl_vector_memcpy(c, cs);
-      s = gsl_linalg_QR_svx(work->Linv, work->tau, c);
+      s = gsl_linalg_QR_svx(&Linv.matrix, &tau.vector, c);
 
       return s;
     }
   else                                /* general rectangular L matrix */
     {
-      gsl_vector *Linv_cs = work->xt; /* L_inv * cs */
-      gsl_vector *workn = work->t;
+      gsl_vector_view Linv_cs = gsl_vector_subvector(work->xt, 0, p);    /* L_inv * cs */
+      gsl_vector_view workn = gsl_vector_subvector(work->t, 0, n);
       gsl_matrix_view Lp = gsl_matrix_submatrix(work->Linv, 0, 0, p, m); /* L_inv */
 
       /* compute L_inv * cs */
-      gsl_blas_dgemv(CblasNoTrans, 1.0, &Lp.matrix, cs, 0.0, Linv_cs);
+      gsl_blas_dgemv(CblasNoTrans, 1.0, &Lp.matrix, cs, 0.0, &Linv_cs.vector);
 
       /* compute: workn = y - X L_inv cs */
-      gsl_vector_memcpy(workn, y);
-      gsl_blas_dgemv(CblasNoTrans, -1.0, X, Linv_cs, 1.0, workn);
+      gsl_vector_memcpy(&workn.vector, y);
+      gsl_blas_dgemv(CblasNoTrans, -1.0, X, &Linv_cs.vector, 1.0, &workn.vector);
 
       /* compute: c = L_inv cs + M * workn */
-      gsl_vector_memcpy(c, Linv_cs);
-      gsl_blas_dgemv(CblasNoTrans, 1.0, M, workn, 1.0, c);
+      gsl_vector_memcpy(c, &Linv_cs.vector);
+      gsl_blas_dgemv(CblasNoTrans, 1.0, M, &workn.vector, 1.0, c);
 
       return GSL_SUCCESS;
     }
@@ -478,6 +496,10 @@ Inputs: y         - right hand side vector
         work      - workspace
 
 Return: success/error
+
+Notes:
+1) SVD of X must be computed first by calling multifit_linear_svd();
+   work->n and work->p are initialized by this function
 */
 
 int
@@ -486,9 +508,14 @@ gsl_multifit_linear_lcurve (const gsl_vector * y,
                             gsl_vector * rho, gsl_vector * eta,
                             gsl_multifit_linear_workspace * work)
 {
+  const size_t n = y->size;
   const size_t N = rho->size; /* number of points on L-curve */
 
-  if (N < 3)
+  if (n != work->n)
+    {
+      GSL_ERROR("y vector does not match workspace", GSL_EBADLEN);
+    }
+  else if (N < 3)
     {
       GSL_ERROR ("at least 3 points are needed for L-curve analysis",
                  GSL_EBADLEN);
@@ -506,28 +533,27 @@ gsl_multifit_linear_lcurve (const gsl_vector * y,
   else
     {
       int status = GSL_SUCCESS;
-      const size_t n = work->n;
       const size_t p = work->p;
 
       size_t i, j;
 
-      gsl_matrix *A = work->A;
-      gsl_vector *S = work->S;
-      gsl_vector *xt = work->xt;
-      gsl_vector_view workp = gsl_matrix_column(work->QSI, 0);
-      gsl_vector *workp2 = work->D; /* D isn't used for regularized problems */
+      gsl_matrix_view A = gsl_matrix_submatrix(work->A, 0, 0, n, p);
+      gsl_vector_view S = gsl_vector_subvector(work->S, 0, p);
+      gsl_vector_view xt = gsl_vector_subvector(work->xt, 0, p);
+      gsl_vector_view workp = gsl_matrix_subcolumn(work->QSI, 0, 0, p);
+      gsl_vector_view workp2 = gsl_vector_subvector(work->D, 0, p); /* D isn't used for regularized problems */
 
-      const double smax = gsl_vector_get(S, 0);
-      const double smin = gsl_vector_get(S, p - 1);
+      const double smax = gsl_vector_get(&S.vector, 0);
+      const double smin = gsl_vector_get(&S.vector, p - 1);
 
       double dr; /* residual error from projection */
       double normy = gsl_blas_dnrm2(y);
       double normUTy;
 
       /* compute projection xt = U^T y */
-      gsl_blas_dgemv (CblasTrans, 1.0, A, y, 0.0, xt);
+      gsl_blas_dgemv (CblasTrans, 1.0, &A.matrix, y, 0.0, &xt.vector);
 
-      normUTy = gsl_blas_dnrm2(xt);
+      normUTy = gsl_blas_dnrm2(&xt.vector);
       dr = normy*normy - normUTy*normUTy;
 
       /* calculate regularization parameters */
@@ -540,16 +566,16 @@ gsl_multifit_linear_lcurve (const gsl_vector * y,
 
           for (j = 0; j < p; ++j)
             {
-              double sj = gsl_vector_get(S, j);
-              double xtj = gsl_vector_get(xt, j);
+              double sj = gsl_vector_get(&S.vector, j);
+              double xtj = gsl_vector_get(&xt.vector, j);
               double f = sj / (sj*sj + lambda_sq);
 
               gsl_vector_set(&workp.vector, j, f * xtj);
-              gsl_vector_set(workp2, j, (1.0 - sj*f) * xtj);
+              gsl_vector_set(&workp2.vector, j, (1.0 - sj*f) * xtj);
             }
 
           gsl_vector_set(eta, i, gsl_blas_dnrm2(&workp.vector));
-          gsl_vector_set(rho, i, gsl_blas_dnrm2(workp2));
+          gsl_vector_set(rho, i, gsl_blas_dnrm2(&workp2.vector));
         }
 
       if (n > p && dr > 0.0)

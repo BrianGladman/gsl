@@ -273,6 +273,7 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
   gsl_vector *y = gsl_vector_alloc(n);
   gsl_vector *c = gsl_vector_alloc(p);
   gsl_multifit_linear_workspace *w = gsl_multifit_linear_alloc(n, p);
+  gsl_multifit_linear_workspace *wbig = gsl_multifit_linear_alloc(n + 10, p + 5);
   gsl_vector *diagL = gsl_vector_alloc(p);
   gsl_matrix *Lr = gsl_matrix_alloc(p, p);
   gsl_matrix *L1 = gsl_multifit_linear_Lk(p, 1);
@@ -315,6 +316,12 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
       test_reg4(lambda, L2, X, y, 1.0e-7, w, "L2");
       test_reg4(lambda, L3, X, y, 1.0e-7, w, "L3");
       test_reg4(lambda, L4, X, y, 1.0e-4, w, "L4");
+
+      /* test again with larger workspace */
+      test_reg2(lambda, X, y, 1.0e-7, wbig);
+      test_reg3(lambda, diagL, X, y, 1.0e-7, wbig);
+      test_reg4(lambda, Lr, X, y, 1.0e-8, wbig, "Lr big");
+      test_reg4(lambda, L1, X, y, 1.0e-6, wbig, "L1 big");
     }
 
   gsl_matrix_free(X);
@@ -327,6 +334,7 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
   gsl_matrix_free(L3);
   gsl_matrix_free(L4);
   gsl_multifit_linear_free(w);
+  gsl_multifit_linear_free(wbig);
 }
 
 /* test linear regularized regression */

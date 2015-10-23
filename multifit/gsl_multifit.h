@@ -41,8 +41,10 @@ __BEGIN_DECLS
 
 typedef struct 
 {
-  size_t n;            /* number of observations */
-  size_t p;            /* number of parameters */
+  size_t nmax;         /* maximum number of observations */
+  size_t pmax;         /* maximum number of parameters */
+  size_t n;            /* number of observations in current SVD decomposition */
+  size_t p;            /* number of parameters in current SVD decomposition */
   gsl_matrix * A;      /* least squares matrix for SVD */
   gsl_matrix * Q;
   gsl_matrix * QSI;
@@ -57,7 +59,7 @@ typedef struct
 gsl_multifit_linear_workspace;
 
 gsl_multifit_linear_workspace *
-gsl_multifit_linear_alloc (size_t n, size_t p);
+gsl_multifit_linear_alloc (const size_t n, const size_t p);
 
 void
 gsl_multifit_linear_free (gsl_multifit_linear_workspace * w);

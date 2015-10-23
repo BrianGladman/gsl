@@ -54,8 +54,8 @@ gsl_multifit_linear (const gsl_matrix * X,
 
   /* variance-covariance matrix cov = s2 * (Q S^-1) (Q S^-1)^T */
   {
-    const size_t n = work->n;
-    const size_t p = work->p;
+    const size_t n = X->size1;
+    const size_t p = X->size2;
     double r2 = rnorm * rnorm;
     double s2 = r2 / (n - rank);
     size_t i, j;
@@ -217,6 +217,7 @@ gsl_multifit_linear_residuals (const gsl_matrix *X, const gsl_vector *y,
  *    work->S contains the vector of singular values
  * 2) The matrix X may have smaller dimensions than the workspace
  *    in the case of stdform2() - but the dimensions cannot be larger
+ * 3) On output, work->n and work->p are set to the dimensions of X
  */
 
 static int
@@ -227,7 +228,7 @@ multifit_linear_svd (const gsl_matrix * X,
   const size_t n = X->size1;
   const size_t p = X->size2;
 
-  if (n > work->n || p > work->p)
+  if (n > work->nmax || p > work->pmax)
     {
       GSL_ERROR("observation matrix larger than workspace", GSL_EBADLEN);
     }
@@ -259,6 +260,9 @@ multifit_linear_svd (const gsl_matrix * X,
 
       gsl_linalg_SV_decomp_mod (&A.matrix, &QSI.matrix, &Q.matrix,
                                 &S.vector, &xt.vector);
+
+      work->n = n;
+      work->p = p;
 
       return GSL_SUCCESS;
     }

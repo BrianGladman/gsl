@@ -22,7 +22,7 @@
 #include <gsl/gsl_multifit.h>
 
 gsl_multifit_linear_workspace *
-gsl_multifit_linear_alloc (size_t n, size_t p)
+gsl_multifit_linear_alloc (const size_t nmax, const size_t pmax)
 {
   gsl_multifit_linear_workspace *w;
 
@@ -34,10 +34,12 @@ gsl_multifit_linear_alloc (size_t n, size_t p)
                      GSL_ENOMEM, 0);
     }
 
-  w->n = n;                     /* number of observations */
-  w->p = p;                     /* number of parameters */
+  w->nmax = nmax;                     /* max number of observations */
+  w->pmax = pmax;                     /* max number of parameters */
+  w->n = 0;
+  w->p = 0;
 
-  w->A = gsl_matrix_alloc (n, p);
+  w->A = gsl_matrix_alloc (nmax, pmax);
 
   if (w->A == 0)
     {
@@ -45,7 +47,7 @@ gsl_multifit_linear_alloc (size_t n, size_t p)
       GSL_ERROR_VAL ("failed to allocate space for A", GSL_ENOMEM, 0);
     }
 
-  w->Q = gsl_matrix_alloc (p, p);
+  w->Q = gsl_matrix_alloc (pmax, pmax);
 
   if (w->Q == 0)
     {
@@ -53,7 +55,7 @@ gsl_multifit_linear_alloc (size_t n, size_t p)
       GSL_ERROR_VAL ("failed to allocate space for Q", GSL_ENOMEM, 0);
     }
 
-  w->QSI = gsl_matrix_alloc (p, p);
+  w->QSI = gsl_matrix_alloc (pmax, pmax);
 
   if (w->QSI == 0)
     {
@@ -61,7 +63,7 @@ gsl_multifit_linear_alloc (size_t n, size_t p)
       GSL_ERROR_VAL ("failed to allocate space for QSI", GSL_ENOMEM, 0);
     }
 
-  w->S = gsl_vector_alloc (p);
+  w->S = gsl_vector_alloc (pmax);
 
   if (w->S == 0)
     {
@@ -69,7 +71,7 @@ gsl_multifit_linear_alloc (size_t n, size_t p)
       GSL_ERROR_VAL ("failed to allocate space for S", GSL_ENOMEM, 0);
     }
 
-  w->t = gsl_vector_alloc (n);
+  w->t = gsl_vector_alloc (nmax);
 
   if (w->t == 0)
     {
@@ -77,7 +79,7 @@ gsl_multifit_linear_alloc (size_t n, size_t p)
       GSL_ERROR_VAL ("failed to allocate space for t", GSL_ENOMEM, 0);
     }
 
-  w->xt = gsl_vector_calloc (p);
+  w->xt = gsl_vector_calloc (pmax);
 
   if (w->xt == 0)
     {
@@ -85,7 +87,7 @@ gsl_multifit_linear_alloc (size_t n, size_t p)
       GSL_ERROR_VAL ("failed to allocate space for xt", GSL_ENOMEM, 0);
     }
 
-  w->D = gsl_vector_calloc (p);
+  w->D = gsl_vector_calloc (pmax);
 
   if (w->D == 0)
     {
@@ -93,7 +95,7 @@ gsl_multifit_linear_alloc (size_t n, size_t p)
       GSL_ERROR_VAL ("failed to allocate space for D", GSL_ENOMEM, 0);
     }
 
-  w->tau = gsl_vector_alloc (p);
+  w->tau = gsl_vector_alloc (pmax);
 
   if (w->tau == 0)
     {
@@ -101,7 +103,7 @@ gsl_multifit_linear_alloc (size_t n, size_t p)
       GSL_ERROR_VAL ("failed to allocate space for tau", GSL_ENOMEM, 0);
     }
 
-  w->Linv = gsl_matrix_alloc(p, p);
+  w->Linv = gsl_matrix_alloc(pmax, pmax);
   if (w->Linv == 0)
     {
       gsl_multifit_linear_free(w);

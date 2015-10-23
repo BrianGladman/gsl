@@ -31,6 +31,10 @@
  *         rnorm    - (output) residual norm ||y - X c||
  *         snorm    - (output) solution norm ||c||
  *         work     - workspace
+ *
+ * Notes:
+ * 1) The dimensions of X must match work->n and work->p which are set
+ *    by multifit_linear_svd()
  */
 
 static int
@@ -47,15 +51,14 @@ multifit_linear_solve (const gsl_matrix * X,
   const size_t n = X->size1;
   const size_t p = X->size2;
 
-  if (n > work->n || p > work->p)
+  if (n != work->n || p != work->p)
     {
-      GSL_ERROR("observation matrix larger than workspace", GSL_EBADLEN);
+      GSL_ERROR("observation matrix does not match workspace", GSL_EBADLEN);
     }
   else if (n != y->size)
     {
-      GSL_ERROR
-        ("number of observations in y does not match matrix",
-         GSL_EBADLEN);
+      GSL_ERROR("number of observations in y does not match matrix",
+                GSL_EBADLEN);
     }
   else if (p != c->size)
     {
