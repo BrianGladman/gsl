@@ -276,10 +276,10 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
   gsl_multifit_linear_workspace *wbig = gsl_multifit_linear_alloc(n + 10, p + 5);
   gsl_vector *diagL = gsl_vector_alloc(p);
   gsl_matrix *Lr = gsl_matrix_alloc(p, p);
-  gsl_matrix *L1 = gsl_multifit_linear_Lk(p, 1);
-  gsl_matrix *L2 = gsl_multifit_linear_Lk(p, 2);
-  gsl_matrix *L3 = gsl_multifit_linear_Lk(p, 3);
-  gsl_matrix *L4 = gsl_multifit_linear_Lk(p, 4);
+  gsl_matrix *L1 = gsl_matrix_alloc(p - 1, p);
+  gsl_matrix *L2 = gsl_matrix_alloc(p - 2, p);
+  gsl_matrix *L3 = gsl_matrix_alloc(p - 3, p);
+  gsl_matrix *L4 = gsl_matrix_alloc(p - 4, p);
   size_t i;
 
   /* generate well-conditioned system and test against OLS solution */
@@ -300,6 +300,11 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
 
   /* random square L matrix */
   test_random_matrix(Lr, r, -2.0, 2.0);
+
+  gsl_multifit_linear_Lk(p, 1, L1);
+  gsl_multifit_linear_Lk(p, 2, L2);
+  gsl_multifit_linear_Lk(p, 3, L3);
+  gsl_multifit_linear_Lk(p, 4, L4);
 
   for (i = 0; i < 3; ++i)
     {

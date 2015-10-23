@@ -812,21 +812,23 @@ gsl_multifit_linear_L()
 k on a regular grid of p points, ie: L is (p-k)-by-p
 */
 
-gsl_matrix *
-gsl_multifit_linear_Lk(const size_t p, const size_t k)
+int
+gsl_multifit_linear_Lk(const size_t p, const size_t k, gsl_matrix *L)
 {
   if (p <= k)
     {
-      GSL_ERROR_NULL("p must be larger than derivative order", GSL_EBADLEN);
+      GSL_ERROR("p must be larger than derivative order", GSL_EBADLEN);
     }
   else if (k >= GSL_MULTIFIT_MAXK - 1)
     {
-      GSL_ERROR_NULL("derivative order k too large", GSL_EBADLEN);
+      GSL_ERROR("derivative order k too large", GSL_EBADLEN);
+    }
+  else if (p - k != L->size1 || p != L->size2)
+    {
+      GSL_ERROR("L matrix must be (p-k)-by-p", GSL_EBADLEN);
     }
   else
     {
-      size_t pmk = p - k;
-      gsl_matrix *L = gsl_matrix_calloc(pmk, p);
       double c_data[GSL_MULTIFIT_MAXK];
       gsl_vector_view cv = gsl_vector_view_array(c_data, k + 1);
       size_t i, j;
@@ -835,8 +837,10 @@ gsl_multifit_linear_Lk(const size_t p, const size_t k)
       if (k == 0)
         {
           gsl_matrix_set_identity(L);
-          return L;
+          return GSL_SUCCESS;
         }
+
+      gsl_matrix_set_zero(L);
   
       gsl_vector_set_zero(&cv.vector);
       gsl_vector_set(&cv.vector, 0, -1.0);
@@ -864,6 +868,6 @@ gsl_multifit_linear_Lk(const size_t p, const size_t k)
           gsl_vector_set_all(&v.vector, ci);
         }
 
-      return L;
+      return GSL_SUCCESS;
     }
-} /* gsl_multifit_linear_L() */
+} /* gsl_multifit_linear_Lk() */

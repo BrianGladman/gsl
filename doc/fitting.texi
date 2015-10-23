@@ -659,9 +659,9 @@ in @var{idx}. If the input arrays contain colinear points,
 this function could fail and return @code{GSL_EINVAL}.
 @end deftypefun
 
-@deftypefun {gsl_matrix *} gsl_multifit_linear_Lk (const size_t @var{p}, const size_t @var{k})
-This function computes the discrete approximation to the derivative operator of
-order @var{k} on a regular grid of @var{p} points. The dimensions of @math{L_k} are
+@deftypefun int gsl_multifit_linear_Lk (const size_t @var{p}, const size_t @var{k}, gsl_matrix * @var{L})
+This function computes the discrete approximation to the derivative operator @math{L_k} of
+order @var{k} on a regular grid of @var{p} points and stores it in @var{L}. The dimensions of @var{L} are
 @math{(p-k)}-by-@math{p}.
 @end deftypefun
 

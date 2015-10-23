@@ -138,8 +138,8 @@ gsl_multifit_linear_lcorner2(const gsl_vector *reg_param,
                              const gsl_vector *eta,
                              size_t *idx);
 
-gsl_matrix *
-gsl_multifit_linear_Lk(const size_t p, const size_t k);
+int
+gsl_multifit_linear_Lk(const size_t p, const size_t k, gsl_matrix *L);
 
 int
 gsl_multifit_wlinear (const gsl_matrix * X,
