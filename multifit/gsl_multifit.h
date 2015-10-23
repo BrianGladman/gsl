@@ -142,6 +142,11 @@ int
 gsl_multifit_linear_Lk(const size_t p, const size_t k, gsl_matrix *L);
 
 int
+gsl_multifit_linear_Lsobolev(const size_t p, const size_t kmax,
+                             const gsl_vector *alpha, gsl_matrix *L,
+                             gsl_multifit_linear_workspace *work);
+
+int
 gsl_multifit_wlinear (const gsl_matrix * X,
                       const gsl_vector * w,
                       const gsl_vector * y,

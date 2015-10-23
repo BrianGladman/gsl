@@ -342,6 +342,69 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
   gsl_multifit_linear_free(wbig);
 }
 
+static void
+test_reg_sobolev(const size_t p, const size_t kmax, const gsl_rng *r)
+{
+  const double tol = 1.0e-12;
+  size_t i, j, k;
+  gsl_matrix *L = gsl_matrix_alloc(p, p);
+  gsl_matrix *LTL = gsl_matrix_alloc(p, p);   /* Sobolov L^T L */
+  gsl_matrix *LTL2 = gsl_matrix_alloc(p, p);  /* alternate L^T L */
+  gsl_matrix *Li = gsl_matrix_alloc(p, p);
+  gsl_multifit_linear_workspace *w = gsl_multifit_linear_alloc(p, p);
+
+  for (k = 0; k <= kmax; ++k)
+    {
+      gsl_vector *alpha = gsl_vector_alloc(k + 1);
+
+      /* random weights */
+      test_random_vector(alpha, r, 0.0, 1.0);
+
+      /* compute Sobolev matrix */
+      gsl_multifit_linear_Lsobolev(p, k, alpha, L, w);
+
+      /* compute LTL = L^T L */
+      gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, L, L, 0.0, LTL);
+
+      /* now compute LTL2 = L^T L using individual L_i factors */
+      {
+        gsl_matrix_set_zero(LTL2);
+        for (i = 0; i <= k; ++i)
+          {
+            gsl_matrix_view Liv = gsl_matrix_submatrix(Li, 0, 0, p - i, p);
+            double ai = gsl_vector_get(alpha, i);
+
+            /* compute a_i L_i */
+            gsl_multifit_linear_Lk(p, i, &Liv.matrix);
+            gsl_matrix_scale(&Liv.matrix, ai);
+
+            /* LTL += L_i^T L_i */
+            gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &Liv.matrix, &Liv.matrix, 1.0, LTL2);
+          }
+      }
+
+      /* test LTL = LTL2 */
+      for (i = 0; i < p; ++i)
+        {
+          for (j = 0; j < p; ++j)
+            {
+              double aij = gsl_matrix_get(LTL, i, j);
+              double bij = gsl_matrix_get(LTL2, i, j);
+
+              gsl_test_rel(aij, bij, tol, "sobolov k=%zu LTL(%zu,%zu)", k, i, j);
+            }
+        }
+
+      gsl_vector_free(alpha);
+    }
+
+  gsl_matrix_free(L);
+  gsl_matrix_free(Li);
+  gsl_matrix_free(LTL);
+  gsl_matrix_free(LTL2);
+  gsl_multifit_linear_free(w);
+}
+
 /* test linear regularized regression */
 static void
 test_reg(void)
@@ -351,6 +414,8 @@ test_reg(void)
   test_reg_system(100, 10, r);
   test_reg_system(100, 50, r);
   test_reg_system(100, 100, r);
+
+  test_reg_sobolev(20, 10, r);
 
   gsl_rng_free(r);
 }

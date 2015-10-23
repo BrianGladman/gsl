@@ -871,3 +871,87 @@ gsl_multifit_linear_Lk(const size_t p, const size_t k, gsl_matrix *L)
       return GSL_SUCCESS;
     }
 } /* gsl_multifit_linear_Lk() */
+
+/*
+gsl_multifit_linear_Lsobolev()
+  Construct Sobolev smoothing norm operator
+
+L = [ a_0 I; a_1 L_1; a_2 L_2; ...; a_k L_k ]
+
+by computing the Cholesky factor of L^T L
+
+Inputs: p     - number of columns of L
+        kmax  - maximum derivative order (< p)
+        alpha - vector of weights; alpha_k multiplies L_k, size kmax + 1
+        L     - (output) Sobolev matrix p-by-p
+        work  - workspace
+
+Notes:
+1) work->Linv is used to store intermediate L_k matrices
+*/
+
+int
+gsl_multifit_linear_Lsobolev(const size_t p, const size_t kmax,
+                             const gsl_vector *alpha, gsl_matrix *L,
+                             gsl_multifit_linear_workspace *work)
+{
+  if (p > work->pmax)
+    {
+      GSL_ERROR("p is larger than workspace", GSL_EBADLEN);
+    }
+  else if (p <= kmax)
+    {
+      GSL_ERROR("p must be larger than derivative order", GSL_EBADLEN);
+    }
+  else if (kmax + 1 != alpha->size)
+    {
+      GSL_ERROR("alpha must be size kmax + 1", GSL_EBADLEN);
+    }
+  else if (p != L->size1)
+    {
+      GSL_ERROR("L matrix is wrong size", GSL_EBADLEN);
+    }
+  else if (L->size1 != L->size2)
+    {
+      GSL_ERROR("L matrix is not square", GSL_ENOTSQR);
+    }
+  else
+    {
+      int s;
+      size_t j, k;
+      gsl_vector_view d = gsl_matrix_diagonal(L);
+      const double alpha0 = gsl_vector_get(alpha, 0);
+
+      /* initialize L to alpha0^2 I */
+      gsl_matrix_set_zero(L);
+      gsl_vector_add_constant(&d.vector, alpha0 * alpha0);
+
+      for (k = 1; k <= kmax; ++k)
+        {
+          gsl_matrix_view Lk = gsl_matrix_submatrix(work->Linv, 0, 0, p - k, p);
+          double ak = gsl_vector_get(alpha, k);
+
+          /* compute a_k L_k */
+          s = gsl_multifit_linear_Lk(p, k, &Lk.matrix);
+          if (s)
+            return s;
+          gsl_matrix_scale(&Lk.matrix, ak);
+
+          /* LTL += L_k^T L_k */
+          gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &Lk.matrix, 1.0, L);
+        }
+
+      s = gsl_linalg_cholesky_decomp(L);
+      if (s)
+        return s;
+
+      /* zero out lower triangle */
+      for (j = 0; j < p; ++j)
+        {
+          for (k = 0; k < j; ++k)
+            gsl_matrix_set(L, j, k, 0.0);
+        }
+
+      return GSL_SUCCESS;
+    }
+}

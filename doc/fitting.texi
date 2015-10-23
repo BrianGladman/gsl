@@ -665,6 +665,17 @@ order @var{k} on a regular grid of @var{p} points and stores it in @var{L}. The 
 @math{(p-k)}-by-@math{p}.
 @end deftypefun
 
+@deftypefun int gsl_multifit_linear_Lsobolev (const size_t @var{p}, const size_t @var{kmax}, const gsl_vector * @var{alpha}, gsl_matrix * @var{L}, gsl_multifit_linear_workspace * @var{work})
+This function computes the regularization matrix @var{L} corresponding to the weighted Sobolov norm
+@math{||L c||^2 = \sum_k \alpha_k^2 ||L_k c||^2} where @math{L_k} approximates the derivative
+operator of order @math{k}. This regularization norm can be useful in applications where
+it is necessary to smooth several derivatives of the solution. @var{p} is the number of
+model parameters, @var{kmax} is the highest derivative to include in the summation above, and
+@var{alpha} is the vector of weights of size @var{kmax} + 1, where @var{alpha}[k] = @math{\alpha_k}
+is the weight assigned to the derivative of order @math{k}.  The output matrix @var{L} is of size
+@var{p}-by-@var{p}.
+@end deftypefun
+
 @node Robust linear regression
 @section Robust linear regression
 @cindex robust regression
