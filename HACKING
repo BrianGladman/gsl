@@ -134,13 +134,14 @@ for HAVE_INLINE use in installed headers.
  grep config.h gsl/*.h    --- shouldn't match anything
  grep -L config.h */*.c | grep -v _source  --- gives files not using config.h
 
-* Make a master gsl header file of cat gsl/*.h > tmp.c and try
-compiling it to test all possible conflicts
+* Make a master gsl header file and try compiling it to test all possible conflicts
+> cat gsl/*.h > tmp.c
+> gcc -g -Wall -W -c tmp.c
 
-* Check that the library passes "make check" with -O3 and -mfpmath=sse -msse2, 
-also check with -funsigned-char (to simulate Power/ARM)
-and -std=c89 -ansi -pedantic, now that GCC uses c99 by default 
-instead of c89.
+* Check that the library passes "make check" with various compiler flags
+> make clean; ./configure CFLAGS="-O3 -mfpmath=sse -msse2" ; make ; make check
+> make clean; make CFLAGS="-funsigned-char" check
+> make clean; ./configure CFLAGS="-std=c89 -ansi -pedantic" ; make ; make check
 
 * Make sure the library passes "make check" with export
 GSL_TEST_VERBOSE=1 (it is possible to get segfaults in the verbose

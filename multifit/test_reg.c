@@ -414,8 +414,8 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
       test_reg4(lambda, Lsqr, X, y, NULL, 1.0e-8, w, "Lsqr unweighted");
       test_reg4(lambda, Ltall, X, y, NULL, 1.0e-8, w, "Ltall unweighted");
       test_reg4(lambda, L1, X, y, NULL, 1.0e-6, w, "L1 unweighted");
-      test_reg4(lambda, L2, X, y, NULL, 1.0e-7, w, "L2 unweighted");
-      test_reg4(lambda, L3, X, y, NULL, 1.0e-6, w, "L3 unweighted");
+      test_reg4(lambda, L2, X, y, NULL, 1.0e-6, w, "L2 unweighted");
+      test_reg4(lambda, L3, X, y, NULL, 1.0e-5, w, "L3 unweighted");
 
       /* test weighted */
       test_reg2(lambda, X, y, wts, 1.0e-7, w, "weighted");
