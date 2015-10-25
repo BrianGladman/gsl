@@ -44,6 +44,43 @@
 #include "oct.h"
 #endif
 
+/* XXX:  Form the orthogonal matrix Q from the packed QR matrix */
+static int
+gsl_linalg_Q_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix * Q)
+{
+  const size_t M = QR->size1;
+  const size_t N = QR->size2;
+
+  if (Q->size1 != M || Q->size2 != M)
+    {
+      GSL_ERROR ("Q matrix must be M x M", GSL_ENOTSQR);
+    }
+  else if (tau->size != GSL_MIN (M, N))
+    {
+      GSL_ERROR ("size of tau must be MIN(M,N)", GSL_EBADLEN);
+    }
+  else
+    {
+      size_t i;
+
+      /* Initialize Q to the identity */
+
+      gsl_matrix_set_identity (Q);
+
+      for (i = GSL_MIN (M, N); i-- > 0;)
+        {
+          gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
+          gsl_vector_const_view h = gsl_vector_const_subvector (&c.vector,
+                                                                i, M - i);
+          gsl_matrix_view m = gsl_matrix_submatrix (Q, i, i, M - i, M - i);
+          double ti = gsl_vector_get (tau, i);
+          gsl_linalg_householder_hm (ti, &h.vector, &m.matrix);
+        }
+
+      return GSL_SUCCESS;
+    }
+}
+
 int
 gsl_multifit_linear_solve (const double lambda,
                            const gsl_matrix * X,
@@ -247,7 +284,8 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
     }
   else /* L matrix with m < p */
     {
-      const size_t npm = n - (p - m);
+      const size_t pm = p - m;
+      const size_t npm = n - pm;
 
       if (npm != Xs->size1 || m != Xs->size2)
         {
@@ -265,17 +303,15 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
         {
           int status;
           gsl_vector_view tauv1 = gsl_vector_subvector(work->xt, 0, GSL_MIN(p, m));
-          gsl_vector_view tauv2 = gsl_vector_subvector(work->t, 0, GSL_MIN(n, p - m));
+          gsl_vector_view tauv2 = gsl_vector_subvector(work->t, 0, GSL_MIN(n, pm));
           gsl_matrix_view LT = gsl_matrix_submatrix(work->Q, 0, 0, p, m);          /* L^T */
           gsl_matrix_view Lp = gsl_matrix_submatrix(work->Linv, 0, 0, p, m);       /* L_inv */
-          gsl_matrix_view B = gsl_matrix_submatrix(work->A, 0, 0, n, p - m);       /* X * K_o */
-          gsl_matrix_view C = gsl_matrix_submatrix(work->A, 0, 0, n - (p - m), p); /* H_q^T X */
+          gsl_matrix_view B = gsl_matrix_submatrix(work->A, 0, 0, n, pm);          /* X * K_o */
+          gsl_matrix_view C = gsl_matrix_submatrix(work->A, 0, 0, npm, p);         /* H_q^T X */
 
           gsl_matrix *K = gsl_matrix_alloc(p, p);
-          gsl_matrix *R = gsl_matrix_alloc(p, m);
           gsl_matrix *H = gsl_matrix_alloc(n, n);
-          gsl_matrix *T = gsl_matrix_alloc(n, p - m);
-          gsl_matrix *M1 = gsl_matrix_alloc(p - m, n);
+          gsl_matrix *M1 = gsl_matrix_alloc(pm, n);
 
           gsl_matrix_view Rp, Ko, Kp, Ho, Hq, To;
           size_t i;
@@ -288,17 +324,17 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
 
           Rp = gsl_matrix_submatrix(&LT.matrix, 0, 0, m, m);
 
-          gsl_linalg_QR_unpack(&LT.matrix, &tauv1.vector, K, R);
-          Ko = gsl_matrix_submatrix(K, 0, m, p, p - m);
+          gsl_linalg_Q_unpack(&LT.matrix, &tauv1.vector, K);
+          Ko = gsl_matrix_submatrix(K, 0, m, p, pm);
           Kp = gsl_matrix_submatrix(K, 0, 0, p, m);
 
           /* compute QR decomposition [H,T] = qr(X * K_o) */
           gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, X, &Ko.matrix, 0.0, &B.matrix);
           gsl_linalg_QR_decomp(&B.matrix, &tauv2.vector);
-          gsl_linalg_QR_unpack(&B.matrix, &tauv2.vector, H, T);
-          Ho = gsl_matrix_submatrix(H, 0, 0, n, p - m);
-          Hq = gsl_matrix_submatrix(H, 0, p - m, n, n - p + m);
-          To = gsl_matrix_submatrix(&B.matrix, 0, 0, p - m, p - m);
+          gsl_linalg_Q_unpack(&B.matrix, &tauv2.vector, H);
+          Ho = gsl_matrix_submatrix(H, 0, 0, n, pm);
+          Hq = gsl_matrix_submatrix(H, 0, pm, n, n - p + m);
+          To = gsl_matrix_submatrix(&B.matrix, 0, 0, pm, pm);
 
           /* solve: R_p L_inv^T = K_p^T for L_inv */
           gsl_matrix_memcpy(&Lp.matrix, &Kp.matrix);
@@ -310,7 +346,7 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
 
           /* compute: ys = H_q^T y */
 #if 0
-          for (i = 0; i < GSL_MIN(n, p - m); ++i)
+          for (i = 0; i < GSL_MIN(n, pm); ++i)
             {
               gsl_vector_view h = gsl_matrix_subcolumn(&B.matrix, i, i, n - i);
               gsl_vector_view w = gsl_vector_subvector(y, i, n - i);
@@ -351,9 +387,7 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
 #endif
 
           gsl_matrix_free(K);
-          gsl_matrix_free(R);
           gsl_matrix_free(H);
-          gsl_matrix_free(T);
           gsl_matrix_free(M1);
 
           return GSL_SUCCESS;
