@@ -196,7 +196,8 @@ run under valgrind giving misleading results. Also, compile everything
 with: make CFLAGS="-g -Wall" since optimization can cause valgrind to
 report uninitialized memory errors which don't really exist.
 
-* Tag release with: bzr tag release-X-Y
+* Tag release:
+> git tag release-X-Y
 
 * Upload to ftp-upload.gnu.org with GPG signatures (see http://www.gnu.org/prep/maintain/maintain.html)
   /incoming/ftp for official releases
