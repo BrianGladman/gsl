@@ -45,7 +45,7 @@ typedef struct
   size_t pmax;         /* maximum number of parameters */
   size_t n;            /* number of observations in current SVD decomposition */
   size_t p;            /* number of parameters in current SVD decomposition */
-  gsl_matrix * A;      /* least squares matrix for SVD */
+  gsl_matrix * A;      /* least squares matrix for SVD, n-by-p */
   gsl_matrix * Q;
   gsl_matrix * QSI;
   gsl_vector * S;
@@ -53,8 +53,7 @@ typedef struct
   gsl_vector * xt;
   gsl_vector * D;
 
-  gsl_vector * tau;    /* Householder scalars for standard form conversion */
-  gsl_matrix * Linv;   /* pseudo inverse of regularization matrix */
+  gsl_matrix * Linv;   /* pseudo inverse of regularization matrix, p-by-p */
 } 
 gsl_multifit_linear_workspace;
 

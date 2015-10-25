@@ -99,14 +99,17 @@ static void
 test_reg2(const double lambda, const gsl_matrix * X, const gsl_vector * y,
           const double tol, gsl_multifit_linear_workspace * w)
 {
+  const size_t n = X->size1;
   const size_t p = X->size2;
-  double rnorm, snorm;
+  double rnorm0, snorm0;
+  double rnorm1, snorm1;
   gsl_vector *c0 = gsl_vector_alloc(p);
   gsl_vector *c1 = gsl_vector_alloc(p);
   gsl_matrix *XTX = gsl_matrix_alloc(p, p); /* X^T X + lambda^2 I */
   gsl_vector *XTy = gsl_vector_alloc(p);    /* X^T y */
   gsl_vector_view xtx_diag = gsl_matrix_diagonal(XTX);
   gsl_permutation *perm = gsl_permutation_alloc(p);
+  gsl_vector *r = gsl_vector_alloc(n);
   int signum;
   size_t j;
 
@@ -125,7 +128,17 @@ test_reg2(const double lambda, const gsl_matrix * X, const gsl_vector * y,
   gsl_multifit_linear_svd(X, w);
 
   /* solve regularized standard form system with lambda */
-  gsl_multifit_linear_solve(lambda, X, y, c1, &rnorm, &snorm, w);
+  gsl_multifit_linear_solve(lambda, X, y, c1, &rnorm0, &snorm0, w);
+
+  /* test snorm = ||c1|| */
+  snorm1 = gsl_blas_dnrm2(c1);
+  gsl_test_rel(snorm0, snorm1, tol, "test_reg2: snorm lambda=%g", lambda);
+
+  /* test rnorm = ||y - X c1|| */
+  gsl_vector_memcpy(r, y);
+  gsl_blas_dgemv(CblasNoTrans, -1.0, X, c1, 1.0, r);
+  rnorm1 = gsl_blas_dnrm2(r);
+  gsl_test_rel(rnorm0, rnorm1, tol, "test_reg2: rnorm lambda=%g", lambda);
 
   /* test c0 = c1 */
   for (j = 0; j < p; ++j)
@@ -140,6 +153,7 @@ test_reg2(const double lambda, const gsl_matrix * X, const gsl_vector * y,
   gsl_vector_free(XTy);
   gsl_vector_free(c0);
   gsl_vector_free(c1);
+  gsl_vector_free(r);
   gsl_permutation_free(perm);
 }
 
@@ -151,12 +165,15 @@ test_reg3(const double lambda, const gsl_vector * L, const gsl_matrix * X,
 {
   const size_t n = X->size1;
   const size_t p = X->size2;
-  double rnorm, snorm;
+  double rnorm0, snorm0;
+  double rnorm1, snorm1;
   gsl_vector *c0 = gsl_vector_alloc(p);
   gsl_vector *c1 = gsl_vector_alloc(p);
   gsl_matrix *XTX = gsl_matrix_alloc(p, p); /* X^T X + lambda^2 L^T L */
   gsl_vector *XTy = gsl_vector_alloc(p);    /* X^T y */
   gsl_matrix *Xs = gsl_matrix_alloc(n, p);  /* standard form X~ */
+  gsl_vector *Lc = gsl_vector_alloc(p);
+  gsl_vector *r = gsl_vector_alloc(n);
   gsl_permutation *perm = gsl_permutation_alloc(p);
   int signum;
   size_t j;
@@ -180,8 +197,20 @@ test_reg3(const double lambda, const gsl_vector * L, const gsl_matrix * X,
   /* solve with reg routine */
   gsl_multifit_linear_stdform1(L, X, Xs, w);
   gsl_multifit_linear_svd(Xs, w);
-  gsl_multifit_linear_solve(lambda, Xs, y, c1, &rnorm, &snorm, w);
+  gsl_multifit_linear_solve(lambda, Xs, y, c1, &rnorm0, &snorm0, w);
   gsl_multifit_linear_genform1(L, c1, w);
+
+  /* test snorm = ||L c1|| */
+  gsl_vector_memcpy(Lc, c1);
+  gsl_vector_mul(Lc, L);
+  snorm1 = gsl_blas_dnrm2(Lc);
+  gsl_test_rel(snorm0, snorm1, tol, "test_reg3: snorm lambda=%g", lambda);
+
+  /* test rnorm = ||y - X c1|| */
+  gsl_vector_memcpy(r, y);
+  gsl_blas_dgemv(CblasNoTrans, -1.0, X, c1, 1.0, r);
+  rnorm1 = gsl_blas_dnrm2(r);
+  gsl_test_rel(rnorm0, rnorm1, tol, "test_reg3: rnorm lambda=%g", lambda);
 
   /* test c0 = c1 */
   for (j = 0; j < p; ++j)
@@ -197,6 +226,8 @@ test_reg3(const double lambda, const gsl_vector * L, const gsl_matrix * X,
   gsl_vector_free(XTy);
   gsl_vector_free(c0);
   gsl_vector_free(c1);
+  gsl_vector_free(Lc);
+  gsl_vector_free(r);
   gsl_permutation_free(perm);
 }
 
@@ -210,18 +241,20 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   const size_t m = L->size1;
   const size_t n = X->size1;
   const size_t p = X->size2;
-  const size_t npm = n - (p - m);
-  double rnorm, snorm;
+  double rnorm0, snorm0;
+  double rnorm1, snorm1;
   gsl_vector *c0 = gsl_vector_alloc(p);
   gsl_vector *c1 = gsl_vector_alloc(p);
   gsl_matrix *LTL = gsl_matrix_alloc(p, p); /* L^T L */
   gsl_matrix *XTX = gsl_matrix_alloc(p, p); /* X^T X + lambda^2 L^T L */
   gsl_vector *XTy = gsl_vector_alloc(p);    /* X^T y */
   gsl_permutation *perm = gsl_permutation_alloc(p);
-  gsl_matrix *Xs = gsl_matrix_alloc(npm, m);
-  gsl_vector *ys = gsl_vector_alloc(npm);
-  gsl_matrix *M = gsl_matrix_alloc(p, n);
-  gsl_vector *cs = gsl_vector_alloc(m);
+  gsl_matrix *Xs = (m < p) ? gsl_matrix_alloc(n - (p - m), m) : gsl_matrix_alloc(n, p);
+  gsl_vector *ys = (m < p) ? gsl_vector_alloc(n - (p - m)) : gsl_vector_alloc(n);
+  gsl_matrix *M = (m < p) ? gsl_matrix_alloc(p, n) : gsl_matrix_alloc(m, p);
+  gsl_vector *cs = (m < p) ? gsl_vector_alloc(m) : gsl_vector_alloc(p);
+  gsl_vector *Lc = gsl_vector_alloc(m);
+  gsl_vector *r = gsl_vector_alloc(n);
   int signum;
   size_t j;
 
@@ -242,8 +275,19 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   /* solve with reg routine */
   gsl_multifit_linear_stdform2(L, X, y, Xs, ys, M, w);
   gsl_multifit_linear_svd(Xs, w);
-  gsl_multifit_linear_solve(lambda, Xs, ys, cs, &rnorm, &snorm, w);
+  gsl_multifit_linear_solve(lambda, Xs, ys, cs, &rnorm0, &snorm0, w);
   gsl_multifit_linear_genform2(L, X, y, cs, M, c1, w);
+
+  /* test snorm = ||L c1|| */
+  gsl_blas_dgemv(CblasNoTrans, 1.0, L, c1, 0.0, Lc);
+  snorm1 = gsl_blas_dnrm2(Lc);
+  gsl_test_rel(snorm0, snorm1, tol, "test_reg4: %s snorm lambda=%g", desc, lambda);
+
+  /* test rnorm = ||y - X c1|| */
+  gsl_vector_memcpy(r, y);
+  gsl_blas_dgemv(CblasNoTrans, -1.0, X, c1, 1.0, r);
+  rnorm1 = gsl_blas_dnrm2(r);
+  gsl_test_rel(rnorm0, rnorm1, tol, "test_reg4: %s rnorm lambda=%g", desc, lambda);
 
   /* test c0 = c1 */
   for (j = 0; j < p; ++j)
@@ -264,6 +308,8 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   gsl_vector_free(ys);
   gsl_vector_free(cs);
   gsl_matrix_free(M);
+  gsl_vector_free(Lc);
+  gsl_vector_free(r);
 }
 
 static void
@@ -275,11 +321,11 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
   gsl_multifit_linear_workspace *w = gsl_multifit_linear_alloc(n, p);
   gsl_multifit_linear_workspace *wbig = gsl_multifit_linear_alloc(n + 10, p + 5);
   gsl_vector *diagL = gsl_vector_alloc(p);
-  gsl_matrix *Lr = gsl_matrix_alloc(p, p);
+  gsl_matrix *Lsqr = gsl_matrix_alloc(p, p);
+  gsl_matrix *Ltall = gsl_matrix_alloc(5*p, p);
   gsl_matrix *L1 = gsl_matrix_alloc(p - 1, p);
   gsl_matrix *L2 = gsl_matrix_alloc(p - 2, p);
   gsl_matrix *L3 = gsl_matrix_alloc(p - 3, p);
-  gsl_matrix *L4 = gsl_matrix_alloc(p - 4, p);
   size_t i;
 
   /* generate well-conditioned system and test against OLS solution */
@@ -298,13 +344,13 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
   /* random diag(L) vector */
   test_random_vector(diagL, r, -2.0, 2.0);
 
-  /* random square L matrix */
-  test_random_matrix(Lr, r, -2.0, 2.0);
+  /* random square and tall L matrices */
+  test_random_matrix(Lsqr, r, -2.0, 2.0);
+  test_random_matrix(Ltall, r, -2.0, 2.0);
 
   gsl_multifit_linear_Lk(p, 1, L1);
   gsl_multifit_linear_Lk(p, 2, L2);
   gsl_multifit_linear_Lk(p, 3, L3);
-  gsl_multifit_linear_Lk(p, 4, L4);
 
   for (i = 0; i < 3; ++i)
     {
@@ -316,16 +362,16 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
 
       test_reg2(lambda, X, y, 1.0e-7, w);
       test_reg3(lambda, diagL, X, y, 1.0e-7, w);
-      test_reg4(lambda, Lr, X, y, 1.0e-8, w, "Lr");
+      test_reg4(lambda, Lsqr, X, y, 1.0e-8, w, "Lsqr");
+      test_reg4(lambda, Ltall, X, y, 1.0e-8, w, "Ltall");
       test_reg4(lambda, L1, X, y, 1.0e-6, w, "L1");
       test_reg4(lambda, L2, X, y, 1.0e-7, w, "L2");
-      test_reg4(lambda, L3, X, y, 1.0e-7, w, "L3");
-      test_reg4(lambda, L4, X, y, 1.0e-4, w, "L4");
+      test_reg4(lambda, L3, X, y, 1.0e-6, w, "L3");
 
       /* test again with larger workspace */
       test_reg2(lambda, X, y, 1.0e-7, wbig);
       test_reg3(lambda, diagL, X, y, 1.0e-7, wbig);
-      test_reg4(lambda, Lr, X, y, 1.0e-8, wbig, "Lr big");
+      test_reg4(lambda, Lsqr, X, y, 1.0e-8, wbig, "Lsqr big");
       test_reg4(lambda, L1, X, y, 1.0e-6, wbig, "L1 big");
     }
 
@@ -333,11 +379,11 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
   gsl_vector_free(y);
   gsl_vector_free(c);
   gsl_vector_free(diagL);
-  gsl_matrix_free(Lr);
+  gsl_matrix_free(Lsqr);
+  gsl_matrix_free(Ltall);
   gsl_matrix_free(L1);
   gsl_matrix_free(L2);
   gsl_matrix_free(L3);
-  gsl_matrix_free(L4);
   gsl_multifit_linear_free(w);
   gsl_multifit_linear_free(wbig);
 }

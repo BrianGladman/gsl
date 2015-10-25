@@ -438,7 +438,7 @@ $$
 @end ifinfo
 for a suitably chosen regularization parameter @math{\lambda} and
 matrix @math{L}. This type of regularization is known as Tikhonov, or ridge,
-regression. In many cases, @math{L} is chosen as the identity matrix, giving
+regression. In some applications, @math{L} is chosen as the identity matrix, giving
 preference to solution vectors @math{c} with smaller norms.
 Including this regularization term leads to the explicit ``normal equations'' solution
 @tex
@@ -468,30 +468,32 @@ $$
 \chi^2 = || y~ - X~ c~ ||^2 + \lambda^2 || c~ ||^2
 @end example
 @end ifinfo
-This is known as the Tikhonov ``standard form'' and has the solution
+This is known as the Tikhonov ``standard form'' and has the normal equations solution
 @math{\tilde{c} = \left( \tilde{X}^T \tilde{X} + \lambda^2 I \right)^{-1} \tilde{X}^T \tilde{y}}.
-For a matrix @math{L} which is square and invertible, this can be
-accomplished with the transformation
+For an @math{m}-by-@math{p} matrix @math{L} which is full rank and has @math{m >= p} (ie: @math{L} is
+square or has more rows than columns), we can calculate the ``skinny'' QR decomposition of @math{L}, and
+note that @math{||L c||} = @math{||R c||} since the @math{Q} factor will not change the norm. Since
+@math{R} is @math{p}-by-@math{p}, we can then use the transformation
 @tex
 \beforedisplay
 $$
 \eqalign{
-\tilde{X} &= W^{1 \over 2} X L^{-1} \cr
+\tilde{X} &= W^{1 \over 2} X R^{-1} \cr
 \tilde{y} &= W^{1 \over 2} y \cr
-\tilde{c} &= L c
+\tilde{c} &= R c
 }
 $$
 \afterdisplay
 @end tex
 @ifinfo
 @example
-X~ = sqrt(W) X L^-1
+X~ = sqrt(W) X R^-1
 y~ = sqrt(W) y
-c~ = L c
+c~ = R c
 @end example
 @end ifinfo
-For a general rectangular matrix @math{L}, a more sophisticated approach
-is needed (see Hansen 1998, chapter 2.3).
+to achieve the standard form. For a rectangular matrix @math{L} with @math{m < p},
+a more sophisticated approach is needed (see Hansen 1998, chapter 2.3).
 In practice, the normal equations solution above is not desirable due to
 numerical instabilities, and so the system is solved using the
 singular value decomposition of the matrix @math{\tilde{X}}.
@@ -503,7 +505,7 @@ convert the least squares problem to standard form using
 @code{gsl_multifit_linear_stdform1} or @code{gsl_multifit_linear_stdform2},
 solve the system, and then backtransform the solution vector to recover
 the solution of the original problem (see
-@code{gsl_multifit_linear_genform1} and @code{gsl_multifit_linear_genform2}.
+@code{gsl_multifit_linear_genform1} and @code{gsl_multifit_linear_genform2}).
 
 In many regularization problems, care must be taken when choosing
 the regularization parameter @math{\lambda}. Since both the
@@ -556,34 +558,36 @@ In order to apply this transformation,
 @math{L^{-1}} must exist and so none of the @math{l_i}
 may be zero. After the standard form system has been solved,
 use @code{gsl_multifit_linear_genform1} to recover the original solution vector.
-It is allowed for @var{X} = @var{Xs} for an in-place transform.
+It is allowed to have @var{X} = @var{Xs} for an in-place transform.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_stdform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_matrix * @var{M}, gsl_multifit_linear_workspace * @var{work})
-This function converts the least squares system (@var{X},@var{y}) to standard
-form (@math{\tilde{X}},@math{\tilde{y}}) as discussed above for the given
-regularization matrix @var{L}. The matrix @var{L} is a rectangular (or square)
-@math{m}-by-@math{p} matrix with @math{m \le p}. On output,
-(@math{\tilde{X}},@math{\tilde{y}}) is stored in @var{Xs} and @var{ys} respectively.
-The dimensions of @var{Xs} are @math{(n - p + m)}-by-@math{m} and @var{ys} 
-is @math{(n - p + m)}-by-1. Note that these dimensions differ from @var{X} and @var{y}
-for a non-square matrix @var{L}. @var{M} is an additional @math{p}-by-@math{n} matrix
-which is required to recover the original solution vector after the system has been solved (see
-@code{gsl_multifit_linear_genform2}).
+This function converts the least squares system (@var{X},@var{y},@var{L}) to standard
+form (@math{\tilde{X}},@math{\tilde{y}}) which are stored in @var{Xs} and @var{ys}
+respectively. The regularization matrix @var{L} is a full rank
+@math{m}-by-@math{p} matrix with no restrictions on @math{m}. However,
+the dimensions of the standard form parameters (@math{\tilde{X}},@math{\tilde{y}})
+depend on whether @math{m} is larger or less than @math{p}. For @math{m \ge p},
+@var{Xs} is @math{n}-by-@math{p}, @var{ys} is @math{n}-by-1, and @var{M} is
+additional @math{m}-by-@math{p} workspace. For @math{m < p}, @var{Xs} is @math{(n - p + m)}-by-@math{m},
+@var{ys} is @math{(n - p + m)}-by-1, and @var{M} is additional @math{p}-by-@math{n} workspace.
+In both cases, @var{M} is required to recover the original solution vector after the system has been
+solved (see @code{gsl_multifit_linear_genform2}).
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_solve (const double @var{lambda}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_vector * @var{c}, double * @var{rnorm}, double * @var{snorm}, gsl_multifit_linear_workspace * @var{work})
-This function computes the regularized best-fit parameters @var{c}
+@deftypefun int gsl_multifit_linear_solve (const double @var{lambda}, const gsl_matrix * @var{Xs}, const gsl_vector * @var{ys}, gsl_vector * @var{cs}, double * @var{rnorm}, double * @var{snorm}, gsl_multifit_linear_workspace * @var{work})
+This function computes the regularized best-fit parameters @math{\tilde{c}}
 which minimize the cost function
-@math{\chi^2 = || y - X c ||^2 + \lambda^2 || c ||^2} which is
+@math{\chi^2 = || \tilde{y} - \tilde{X} \tilde{c} ||^2 + \lambda^2 || \tilde{c} ||^2} which is
 in standard form. The least squares system must therefore be converted
 to standard form prior to calling this function.
-The observation vector is provided in @var{y} and the matrix of
-predictor variables in @var{X}. The SVD of @var{X} must be computed prior
+The observation vector @math{\tilde{y}} is provided in @var{ys} and the matrix of
+predictor variables @math{\tilde{X}} in @var{Xs}. The solution vector @math{\tilde{c}} is
+returned in @var{cs}. The SVD of @var{Xs} must be computed prior
 to calling this function, using @code{gsl_multifit_linear_svd}.
 The regularization parameter @math{\lambda} is provided in @var{lambda}.
-The residual norm @math{|| y - X c ||} is returned in @var{rnorm}.
-The solution norm @math{|| c ||} is returned in
+The residual norm @math{|| \tilde{y} - \tilde{X} \tilde{c} || = ||y - X c||} is returned in @var{rnorm}.
+The solution norm @math{|| \tilde{c} || = ||L c||} is returned in
 @var{snorm}.
 @end deftypefun
 
@@ -599,7 +603,8 @@ the vector @var{L}.
 @deftypefun int gsl_multifit_linear_genform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, const gsl_vector * @var{cs}, const gsl_matrix * @var{M}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
 After a regularized system has been solved with a general rectangular matrix @math{L},
 this function backtransforms the standard form solution @var{cs}
-to recover the solution vector of the original problem, which is stored in @var{c}. The
+to recover the solution vector of the original problem, which is stored in @var{c}.
+The vector @var{cs} has length @math{min(m,p)}-by-1. The
 original least squares matrix and observation vector are provided in
 @var{X} and @var{y} respectively. @var{M} is the matrix computed by
 @code{gsl_multifit_linear_stdform2}.
