@@ -6,6 +6,8 @@ pkginclude_HEADERS = gsl_interp.h gsl_spline.h gsl_interp2d.h gsl_spline2d.h
 
 libgslinterpolation_la_SOURCES = accel.c akima.c cspline.c interp.c linear.c integ_eval.h spline.c poly.c steffen.c inline.c interp2d.c bilinear.c bicubic.c spline2d.c
 
+noinst_HEADERS = test2d.c
+
 AM_CPPFLAGS = -I$(top_srcdir)
 
 TESTS = $(check_PROGRAMS)

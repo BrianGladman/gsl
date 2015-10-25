@@ -126,13 +126,13 @@ The SUBDIRS and SUBLIBS variables have to be updated manually.
 * Make all internal functions static, and have all exported functions
 & variables prefixed with gsl_ or GSL_. Useful command for checking this: 
 
- nm -A -g -P .libs/*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
+> nm -A -g -P .libs/*.a  | perl -a -n -e 'print if $F[1] !~ /gsl_/ && $F[2] ne "U"'
 
 * Make sure config.h is used consistently. This is especially relevant
 for HAVE_INLINE use in installed headers.  
 
- grep config.h gsl/*.h    --- shouldn't match anything
- grep -L config.h */*.c | grep -v _source  --- gives files not using config.h
+> grep config.h gsl/*.h    --- shouldn't match anything
+> grep -L config.h */*.c | grep -v _source  --- gives files not using config.h
 
 * Make a master gsl header file and try compiling it to test all possible conflicts
 > cat gsl/*.h > tmp.c
@@ -140,7 +140,7 @@ for HAVE_INLINE use in installed headers.
 
 * Check that the library passes "make check" with various compiler flags
 > make clean; ./configure CFLAGS="-O3 -mfpmath=sse -msse2" ; make ; make check
-> make clean; make CFLAGS="-funsigned-char" check
+> make clean; ./configure CFLAGS="-funsigned-char" ; make ; make check
 > make clean; ./configure CFLAGS="-std=c89 -ansi -pedantic" ; make ; make check
 
 * Make sure the library passes "make check" with export
@@ -150,8 +150,8 @@ and these don't show up otherwise).
 
 * Do make distcheck with /usr/bin/install and install-sh
 
-make distcheck
-make distcheck INSTALL=/home/bjg/gsl/gsl-1.13/install-sh  # absolute location of install-sh
+> make distcheck
+> make distcheck INSTALL=/home/bjg/gsl/gsl-1.13/install-sh  # absolute location of install-sh
 
 ----------- Notes on making a release
 

@@ -12,6 +12,7 @@ lmutil.c                \
 lmpar.c                 \
 lmset.c                 \
 lmiterate.c             \
+lmmisc.c                \
 qrsolv.c                \
 test_bard.c             \
 test_beale.c            \
@@ -58,6 +59,7 @@ test_shaw.c             \
 test_thurber.c          \
 test_vardim.c           \
 test_watson.c           \
+test_wnlin.c            \
 test_wood.c
 
 check_PROGRAMS = test #demo
