@@ -1,7 +1,3 @@
-#if 0
-#include "oct.c"
-#endif
-
 /* generate random square orthogonal matrix via QR decomposition */
 static void
 test_random_matrix_orth(gsl_matrix *m, const gsl_rng *r)
@@ -61,8 +57,10 @@ test_random_matrix_ill(gsl_matrix *m, const gsl_rng *r)
 /* solve system with lambda = 0 and test against OLS solution */
 static void
 test_reg1(const gsl_matrix * X, const gsl_vector * y,
-          const double tol, gsl_multifit_linear_workspace * w)
+          const gsl_vector * wts, const double tol,
+          gsl_multifit_linear_workspace * w, const char * desc)
 {
+  const size_t n = X->size1;
   const size_t p = X->size2;
   double rnorm, snorm, chisq;
   gsl_vector *c0 = gsl_vector_alloc(p);
@@ -70,14 +68,30 @@ test_reg1(const gsl_matrix * X, const gsl_vector * y,
   gsl_matrix *cov = gsl_matrix_alloc(p, p);
   size_t j;
 
-  /* test that reg. solution equals OLS solution for lambda = 0 */
-  gsl_multifit_linear(X, y, c0, cov, &chisq, w);
+  if (wts)
+    {
+      gsl_matrix *Xs = gsl_matrix_alloc(n, p);
+      gsl_vector *ys = gsl_vector_alloc(n);
 
-  gsl_multifit_linear_svd(X, w);
-  gsl_multifit_linear_solve(0.0, X, y, c1, &rnorm, &snorm, w);
+      gsl_multifit_wlinear(X, wts, y, c0, cov, &chisq, w);
+
+      gsl_multifit_linear_wstdform1(NULL, X, wts, y, Xs, ys, w);
+      gsl_multifit_linear_svd(Xs, w);
+      gsl_multifit_linear_solve(0.0, Xs, ys, c1, &rnorm, &snorm, w);
+
+      gsl_matrix_free(Xs);
+      gsl_vector_free(ys);
+    }
+  else
+    {
+      gsl_multifit_linear(X, y, c0, cov, &chisq, w);
+
+      gsl_multifit_linear_svd(X, w);
+      gsl_multifit_linear_solve(0.0, X, y, c1, &rnorm, &snorm, w);
+    }
 
   gsl_test_rel(rnorm*rnorm + snorm*snorm, chisq, tol,
-               "test_reg1: lambda = 0, chisq");
+               "test_reg1: %s, lambda = 0, n=%zu p=%zu chisq", desc, n, p);
 
   /* test c0 = c1 */
   for (j = 0; j < p; ++j)
@@ -85,7 +99,8 @@ test_reg1(const gsl_matrix * X, const gsl_vector * y,
       double c0j = gsl_vector_get(c0, j);
       double c1j = gsl_vector_get(c1, j);
 
-      gsl_test_rel(c1j, c0j, tol, "test_reg1: lambda = 0, c0/c1");
+      gsl_test_rel(c1j, c0j, tol, "test_reg1: %s, lambda = 0, n=%zu p=%zu c0/c1",
+                   desc, n, p);
     }
 
   gsl_vector_free(c0);
@@ -94,10 +109,11 @@ test_reg1(const gsl_matrix * X, const gsl_vector * y,
 }
 
 /* solve standard form system with given lambda and test against
- * normal equations solution */
+ * normal equations solution, L = I */
 static void
 test_reg2(const double lambda, const gsl_matrix * X, const gsl_vector * y,
-          const double tol, gsl_multifit_linear_workspace * w)
+          const gsl_vector * wts, const double tol,
+          gsl_multifit_linear_workspace * w, const char * desc)
 {
   const size_t n = X->size1;
   const size_t p = X->size2;
@@ -105,19 +121,24 @@ test_reg2(const double lambda, const gsl_matrix * X, const gsl_vector * y,
   double rnorm1, snorm1;
   gsl_vector *c0 = gsl_vector_alloc(p);
   gsl_vector *c1 = gsl_vector_alloc(p);
-  gsl_matrix *XTX = gsl_matrix_alloc(p, p); /* X^T X + lambda^2 I */
-  gsl_vector *XTy = gsl_vector_alloc(p);    /* X^T y */
+  gsl_matrix *XTX = gsl_matrix_alloc(p, p); /* X^T W X + lambda^2 I */
+  gsl_vector *XTy = gsl_vector_alloc(p);    /* X^T W y */
+  gsl_matrix *Xs = gsl_matrix_alloc(n, p);
+  gsl_vector *ys = gsl_vector_alloc(n);
   gsl_vector_view xtx_diag = gsl_matrix_diagonal(XTX);
   gsl_permutation *perm = gsl_permutation_alloc(p);
   gsl_vector *r = gsl_vector_alloc(n);
   int signum;
   size_t j;
 
-  /* construct XTy = X^T y */
-  gsl_blas_dgemv(CblasTrans, 1.0, X, y, 0.0, XTy);
+  /* compute Xs = sqrt(W) X and ys = sqrt(W) y */
+  gsl_multifit_linear_wstdform1(NULL, X, wts, y, Xs, ys, w);
 
-  /* construct XTX = X^T X + lambda^2 I */
-  gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, X, X, 0.0, XTX);
+  /* construct XTy = X^T W y */
+  gsl_blas_dgemv(CblasTrans, 1.0, Xs, ys, 0.0, XTy);
+
+  /* construct XTX = X^T W X + lambda^2 I */
+  gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, Xs, Xs, 0.0, XTX);
   gsl_vector_add_constant(&xtx_diag.vector, lambda*lambda);
 
   /* solve XTX c = XTy with LU decomp */
@@ -125,20 +146,22 @@ test_reg2(const double lambda, const gsl_matrix * X, const gsl_vector * y,
   gsl_linalg_LU_solve(XTX, perm, XTy, c0);
 
   /* compute SVD of X */
-  gsl_multifit_linear_svd(X, w);
+  gsl_multifit_linear_svd(Xs, w);
 
   /* solve regularized standard form system with lambda */
-  gsl_multifit_linear_solve(lambda, X, y, c1, &rnorm0, &snorm0, w);
+  gsl_multifit_linear_solve(lambda, Xs, ys, c1, &rnorm0, &snorm0, w);
 
   /* test snorm = ||c1|| */
   snorm1 = gsl_blas_dnrm2(c1);
-  gsl_test_rel(snorm0, snorm1, tol, "test_reg2: snorm lambda=%g", lambda);
+  gsl_test_rel(snorm0, snorm1, tol, "test_reg2: %s, snorm lambda=%g n=%zu p=%zu",
+               desc, lambda, n, p);
 
   /* test rnorm = ||y - X c1|| */
-  gsl_vector_memcpy(r, y);
-  gsl_blas_dgemv(CblasNoTrans, -1.0, X, c1, 1.0, r);
+  gsl_vector_memcpy(r, ys);
+  gsl_blas_dgemv(CblasNoTrans, -1.0, Xs, c1, 1.0, r);
   rnorm1 = gsl_blas_dnrm2(r);
-  gsl_test_rel(rnorm0, rnorm1, tol, "test_reg2: rnorm lambda=%g", lambda);
+  gsl_test_rel(rnorm0, rnorm1, tol, "test_reg2: %s, rnorm lambda=%g n=%zu p=%zu",
+               desc, lambda, n, p);
 
   /* test c0 = c1 */
   for (j = 0; j < p; ++j)
@@ -146,11 +169,14 @@ test_reg2(const double lambda, const gsl_matrix * X, const gsl_vector * y,
       double c0j = gsl_vector_get(c0, j);
       double c1j = gsl_vector_get(c1, j);
 
-      gsl_test_rel(c1j, c0j, tol, "test_reg2: lambda=%g", lambda);
+      gsl_test_rel(c1j, c0j, tol, "test_reg2: %s, c0/c1 lambda=%g n=%zu p=%zu",
+                   desc, lambda, n, p);
     }
 
   gsl_matrix_free(XTX);
   gsl_vector_free(XTy);
+  gsl_matrix_free(Xs);
+  gsl_vector_free(ys);
   gsl_vector_free(c0);
   gsl_vector_free(c1);
   gsl_vector_free(r);
@@ -161,7 +187,8 @@ test_reg2(const double lambda, const gsl_matrix * X, const gsl_vector * y,
  * normal equations solution */
 static void
 test_reg3(const double lambda, const gsl_vector * L, const gsl_matrix * X,
-          const gsl_vector * y, const double tol, gsl_multifit_linear_workspace * w)
+          const gsl_vector * y, const gsl_vector * wts, const double tol,
+          gsl_multifit_linear_workspace * w, const char * desc)
 {
   const size_t n = X->size1;
   const size_t p = X->size2;
@@ -169,20 +196,24 @@ test_reg3(const double lambda, const gsl_vector * L, const gsl_matrix * X,
   double rnorm1, snorm1;
   gsl_vector *c0 = gsl_vector_alloc(p);
   gsl_vector *c1 = gsl_vector_alloc(p);
-  gsl_matrix *XTX = gsl_matrix_alloc(p, p); /* X^T X + lambda^2 L^T L */
-  gsl_vector *XTy = gsl_vector_alloc(p);    /* X^T y */
+  gsl_matrix *XTX = gsl_matrix_alloc(p, p); /* X^T W X + lambda^2 L^T L */
+  gsl_vector *XTy = gsl_vector_alloc(p);    /* X^T W y */
   gsl_matrix *Xs = gsl_matrix_alloc(n, p);  /* standard form X~ */
+  gsl_vector *ys = gsl_vector_alloc(n);     /* standard form y~ */
   gsl_vector *Lc = gsl_vector_alloc(p);
   gsl_vector *r = gsl_vector_alloc(n);
   gsl_permutation *perm = gsl_permutation_alloc(p);
   int signum;
   size_t j;
 
-  /* construct XTy = X^T y */
-  gsl_blas_dgemv(CblasTrans, 1.0, X, y, 0.0, XTy);
+  /* compute Xs = sqrt(W) X, ys = sqrt(W) y */
+  gsl_multifit_linear_wstdform1(NULL, X, wts, y, Xs, ys, w);
 
-  /* construct XTX = X^T X + lambda^2 L^T L */
-  gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, X, X, 0.0, XTX);
+  /* construct XTy = X^T W y */
+  gsl_blas_dgemv(CblasTrans, 1.0, Xs, ys, 0.0, XTy);
+
+  /* construct XTX = X^T W X + lambda^2 L^T L */
+  gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, Xs, Xs, 0.0, XTX);
 
   for (j = 0; j < p; ++j)
     {
@@ -195,22 +226,25 @@ test_reg3(const double lambda, const gsl_vector * L, const gsl_matrix * X,
   gsl_linalg_LU_solve(XTX, perm, XTy, c0);
 
   /* solve with reg routine */
-  gsl_multifit_linear_stdform1(L, X, Xs, w);
+  gsl_multifit_linear_wstdform1(L, X, wts, y, Xs, ys, w);
   gsl_multifit_linear_svd(Xs, w);
-  gsl_multifit_linear_solve(lambda, Xs, y, c1, &rnorm0, &snorm0, w);
+  gsl_multifit_linear_solve(lambda, Xs, ys, c1, &rnorm0, &snorm0, w);
   gsl_multifit_linear_genform1(L, c1, w);
 
   /* test snorm = ||L c1|| */
   gsl_vector_memcpy(Lc, c1);
   gsl_vector_mul(Lc, L);
   snorm1 = gsl_blas_dnrm2(Lc);
-  gsl_test_rel(snorm0, snorm1, tol, "test_reg3: snorm lambda=%g", lambda);
+  gsl_test_rel(snorm0, snorm1, tol, "test_reg3: %s, snorm lambda=%g n=%zu p=%zu",
+               desc, lambda, n, p);
 
-  /* test rnorm = ||y - X c1|| */
-  gsl_vector_memcpy(r, y);
-  gsl_blas_dgemv(CblasNoTrans, -1.0, X, c1, 1.0, r);
+  /* test rnorm = ||y - X c1||, compute again Xs = sqrt(W) X and ys = sqrt(W) y */
+  gsl_multifit_linear_wstdform1(NULL, X, wts, y, Xs, ys, w);
+  gsl_vector_memcpy(r, ys);
+  gsl_blas_dgemv(CblasNoTrans, -1.0, Xs, c1, 1.0, r);
   rnorm1 = gsl_blas_dnrm2(r);
-  gsl_test_rel(rnorm0, rnorm1, tol, "test_reg3: rnorm lambda=%g", lambda);
+  gsl_test_rel(rnorm0, rnorm1, tol, "test_reg3: %s, rnorm lambda=%g n=%zu p=%zu",
+               desc, lambda, n, p);
 
   /* test c0 = c1 */
   for (j = 0; j < p; ++j)
@@ -218,7 +252,8 @@ test_reg3(const double lambda, const gsl_vector * L, const gsl_matrix * X,
       double c0j = gsl_vector_get(c0, j);
       double c1j = gsl_vector_get(c1, j);
 
-      gsl_test_rel(c1j, c0j, tol, "test_reg3: lambda=%g diagonal L", lambda);
+      gsl_test_rel(c1j, c0j, tol, "test_reg3: %s, c0/c1 j=%zu lambda=%g n=%zu p=%zu",
+                   desc, j, lambda, n, p);
     }
 
   gsl_matrix_free(Xs);
@@ -227,6 +262,7 @@ test_reg3(const double lambda, const gsl_vector * L, const gsl_matrix * X,
   gsl_vector_free(c0);
   gsl_vector_free(c1);
   gsl_vector_free(Lc);
+  gsl_vector_free(ys);
   gsl_vector_free(r);
   gsl_permutation_free(perm);
 }
@@ -235,8 +271,8 @@ test_reg3(const double lambda, const gsl_vector * L, const gsl_matrix * X,
  * normal equations solution */
 static void
 test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
-          const gsl_vector * y, const double tol, gsl_multifit_linear_workspace * w,
-          const char *desc)
+          const gsl_vector * y, const gsl_vector * wts, const double tol,
+          gsl_multifit_linear_workspace * w, const char *desc)
 {
   const size_t m = L->size1;
   const size_t n = X->size1;
@@ -246,26 +282,31 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   gsl_vector *c0 = gsl_vector_alloc(p);
   gsl_vector *c1 = gsl_vector_alloc(p);
   gsl_matrix *LTL = gsl_matrix_alloc(p, p); /* L^T L */
-  gsl_matrix *XTX = gsl_matrix_alloc(p, p); /* X^T X + lambda^2 L^T L */
-  gsl_vector *XTy = gsl_vector_alloc(p);    /* X^T y */
+  gsl_matrix *XTX = gsl_matrix_alloc(p, p); /* X^T W X + lambda^2 L^T L */
+  gsl_vector *XTy = gsl_vector_alloc(p);    /* X^T W y */
   gsl_permutation *perm = gsl_permutation_alloc(p);
   gsl_matrix *Xs = (m < p) ? gsl_matrix_alloc(n - (p - m), m) : gsl_matrix_alloc(n, p);
   gsl_vector *ys = (m < p) ? gsl_vector_alloc(n - (p - m)) : gsl_vector_alloc(n);
   gsl_matrix *M = (m < p) ? gsl_matrix_alloc(p, n) : gsl_matrix_alloc(m, p);
   gsl_vector *cs = (m < p) ? gsl_vector_alloc(m) : gsl_vector_alloc(p);
+  gsl_matrix *WX = gsl_matrix_alloc(n, p);
+  gsl_vector *Wy = gsl_vector_alloc(n);
   gsl_vector *Lc = gsl_vector_alloc(m);
   gsl_vector *r = gsl_vector_alloc(n);
   int signum;
   size_t j;
 
-  /* construct XTy = X^T y */
-  gsl_blas_dgemv(CblasTrans, 1.0, X, y, 0.0, XTy);
+  /* compute WX = sqrt(W) X, Wy = sqrt(W) y */
+  gsl_multifit_linear_wstdform1(NULL, X, wts, y, WX, Wy, w);
 
-  /* construct XTX = X^T X + lambda^2 L^T L */
+  /* construct XTy = X^T W y */
+  gsl_blas_dgemv(CblasTrans, 1.0, WX, Wy, 0.0, XTy);
+
+  /* construct XTX = X^T W X + lambda^2 L^T L */
   gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, L, L, 0.0, LTL);
   gsl_matrix_scale(LTL, lambda * lambda);
 
-  gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, X, X, 0.0, XTX);
+  gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, WX, WX, 0.0, XTX);
   gsl_matrix_add(XTX, LTL);
 
   /* solve XTX c = XTy with LU decomp */
@@ -273,7 +314,7 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   gsl_linalg_LU_solve(XTX, perm, XTy, c0);
 
   /* solve with reg routine */
-  gsl_multifit_linear_stdform2(L, X, y, Xs, ys, M, w);
+  gsl_multifit_linear_wstdform2(L, X, wts, y, Xs, ys, M, w);
   gsl_multifit_linear_svd(Xs, w);
   gsl_multifit_linear_solve(lambda, Xs, ys, cs, &rnorm0, &snorm0, w);
   gsl_multifit_linear_genform2(L, X, y, cs, M, c1, w);
@@ -283,9 +324,9 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   snorm1 = gsl_blas_dnrm2(Lc);
   gsl_test_rel(snorm0, snorm1, tol, "test_reg4: %s snorm lambda=%g", desc, lambda);
 
-  /* test rnorm = ||y - X c1|| */
-  gsl_vector_memcpy(r, y);
-  gsl_blas_dgemv(CblasNoTrans, -1.0, X, c1, 1.0, r);
+  /* test rnorm = ||y - X c1||_W */
+  gsl_vector_memcpy(r, Wy);
+  gsl_blas_dgemv(CblasNoTrans, -1.0, WX, c1, 1.0, r);
   rnorm1 = gsl_blas_dnrm2(r);
   gsl_test_rel(rnorm0, rnorm1, tol, "test_reg4: %s rnorm lambda=%g", desc, lambda);
 
@@ -309,6 +350,8 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   gsl_vector_free(cs);
   gsl_matrix_free(M);
   gsl_vector_free(Lc);
+  gsl_matrix_free(WX);
+  gsl_vector_free(Wy);
   gsl_vector_free(r);
 }
 
@@ -318,6 +361,7 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
   gsl_matrix *X = gsl_matrix_alloc(n, p);
   gsl_vector *y = gsl_vector_alloc(n);
   gsl_vector *c = gsl_vector_alloc(p);
+  gsl_vector *wts = gsl_vector_alloc(n);
   gsl_multifit_linear_workspace *w = gsl_multifit_linear_alloc(n, p);
   gsl_multifit_linear_workspace *wbig = gsl_multifit_linear_alloc(n + 10, p + 5);
   gsl_vector *diagL = gsl_vector_alloc(p);
@@ -328,10 +372,14 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
   gsl_matrix *L3 = gsl_matrix_alloc(p - 3, p);
   size_t i;
 
+  /* generate random weights */
+  test_random_vector(wts, r, 0.0, 1.0);
+
   /* generate well-conditioned system and test against OLS solution */
   test_random_matrix(X, r, -1.0, 1.0);
   test_random_vector(y, r, -1.0, 1.0);
-  test_reg1(X, y, 1.0e-12, w);
+  test_reg1(X, y, NULL, 1.0e-10, w, "unweighted");
+  test_reg1(X, y, wts, 1.0e-10, w, "weighted");
 
   /* generate ill-conditioned system */
   test_random_matrix_ill(X, r);
@@ -360,24 +408,31 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
        */
       double lambda = pow(10.0, -(double) i);
 
-      test_reg2(lambda, X, y, 1.0e-7, w);
-      test_reg3(lambda, diagL, X, y, 1.0e-7, w);
-      test_reg4(lambda, Lsqr, X, y, 1.0e-8, w, "Lsqr");
-      test_reg4(lambda, Ltall, X, y, 1.0e-8, w, "Ltall");
-      test_reg4(lambda, L1, X, y, 1.0e-6, w, "L1");
-      test_reg4(lambda, L2, X, y, 1.0e-7, w, "L2");
-      test_reg4(lambda, L3, X, y, 1.0e-6, w, "L3");
+      /* test unweighted */
+      test_reg2(lambda, X, y, NULL, 1.0e-6, w, "unweighted");
+      test_reg3(lambda, diagL, X, y, NULL, 1.0e-7, w, "unweighted");
+      test_reg4(lambda, Lsqr, X, y, NULL, 1.0e-8, w, "Lsqr unweighted");
+      test_reg4(lambda, Ltall, X, y, NULL, 1.0e-8, w, "Ltall unweighted");
+      test_reg4(lambda, L1, X, y, NULL, 1.0e-6, w, "L1 unweighted");
+      test_reg4(lambda, L2, X, y, NULL, 1.0e-7, w, "L2 unweighted");
+      test_reg4(lambda, L3, X, y, NULL, 1.0e-6, w, "L3 unweighted");
+
+      /* test weighted */
+      test_reg2(lambda, X, y, wts, 1.0e-7, w, "weighted");
+      test_reg3(lambda, diagL, X, y, wts, 1.0e-7, w, "weighted");
+      test_reg4(lambda, Lsqr, X, y, wts, 1.0e-8, w, "Lsqr weighted");
 
       /* test again with larger workspace */
-      test_reg2(lambda, X, y, 1.0e-7, wbig);
-      test_reg3(lambda, diagL, X, y, 1.0e-7, wbig);
-      test_reg4(lambda, Lsqr, X, y, 1.0e-8, wbig, "Lsqr big");
-      test_reg4(lambda, L1, X, y, 1.0e-6, wbig, "L1 big");
+      test_reg2(lambda, X, y, NULL, 1.0e-6, wbig, "unweighted big");
+      test_reg3(lambda, diagL, X, y, NULL, 1.0e-7, wbig, "unweighted big");
+      test_reg4(lambda, Lsqr, X, y, NULL, 1.0e-8, wbig, "Lsqr big unweighted");
+      test_reg4(lambda, L1, X, y, NULL, 1.0e-6, wbig, "L1 big unweighted");
     }
 
   gsl_matrix_free(X);
   gsl_vector_free(y);
   gsl_vector_free(c);
+  gsl_vector_free(wts);
   gsl_vector_free(diagL);
   gsl_matrix_free(Lsqr);
   gsl_matrix_free(Ltall);
@@ -459,7 +514,7 @@ test_reg(void)
 
   test_reg_system(100, 10, r);
   test_reg_system(100, 50, r);
-  test_reg_system(100, 100, r);
+  test_reg_system(100, 99, r);
 
   test_reg_sobolev(20, 10, r);
 

@@ -38,12 +38,6 @@
 
 #include "linear_common.c"
 
-#define TEST_FORM2 0
-
-#if TEST_FORM2
-#include "oct.h"
-#endif
-
 /* XXX:  Form the orthogonal matrix Q from the packed QR matrix */
 static int
 gsl_linalg_Q_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix * Q)
@@ -100,16 +94,130 @@ gsl_multifit_linear_solve (const double lambda,
 } /* gsl_multifit_linear_solve() */
 
 /*
-gsl_multifit_linear_stdform1()
+gsl_multifit_linear_wstdform1()
   Using regularization matrix
 L = diag(l_1,l_2,...,l_p), transform to Tikhonov standard form:
 
+X~ = sqrt(W) X L^{-1}
+y~ = sqrt(W) y
+c~ = L c
+
+Inputs: L    - Tikhonov matrix as a vector of diagonal elements p-by-1;
+               or NULL for L = I
+        X    - least squares matrix n-by-p
+        y    - right hand side vector n-by-1
+        w    - weight vector n-by-1; or NULL for W = I
+        Xs   - least squares matrix in standard form X~ n-by-p
+        ys   - right hand side vector in standard form y~ n-by-1
+        work - workspace
+
+Return: success/error
+
+Notes:
+1) It is allowed for X = Xs and y = ys
+*/
+
+int
+gsl_multifit_linear_wstdform1 (const gsl_vector * L,
+                               const gsl_matrix * X,
+                               const gsl_vector * w,
+                               const gsl_vector * y,
+                               gsl_matrix * Xs,
+                               gsl_vector * ys,
+                               gsl_multifit_linear_workspace * work)
+{
+  const size_t n = X->size1;
+  const size_t p = X->size2;
+
+  if (n > work->nmax || p > work->pmax)
+    {
+      GSL_ERROR("observation matrix larger than workspace", GSL_EBADLEN);
+    }
+  else if (L != NULL && p != L->size)
+    {
+      GSL_ERROR("L vector does not match X", GSL_EBADLEN);
+    }
+  else if (n != y->size)
+    {
+      GSL_ERROR("y vector does not match X", GSL_EBADLEN);
+    }
+  else if (w != NULL && n != w->size)
+    {
+      GSL_ERROR("weight vector does not match X", GSL_EBADLEN);
+    }
+  else if (n != Xs->size1 || p != Xs->size2)
+    {
+      GSL_ERROR("Xs matrix dimensions do not match X", GSL_EBADLEN);
+    }
+  else if (n != ys->size)
+    {
+      GSL_ERROR("ys vector must be length n", GSL_EBADLEN);
+    }
+  else
+    {
+      int status = GSL_SUCCESS;
+
+      gsl_matrix_memcpy(Xs, X);
+      gsl_vector_memcpy(ys, y);
+
+      if (w != NULL)
+        {
+          size_t i;
+
+          /* construct Xs = sqrt(W) X and ys = sqrt(W) y */
+          for (i = 0; i < n; ++i)
+            {
+              double wi = gsl_vector_get(w, i);
+              double swi;
+              gsl_vector_view row = gsl_matrix_row(Xs, i);
+              double *yi = gsl_vector_ptr(ys, i);
+
+              if (wi < 0.0)
+                wi = 0.0;
+
+              swi = sqrt(wi);
+              gsl_vector_scale(&row.vector, swi);
+              *yi *= swi;
+            }
+        }
+
+      if (L != NULL)
+        {
+          size_t j;
+
+          /* construct X~ = sqrt(W) X * L^{-1} matrix */
+          for (j = 0; j < p; ++j)
+            {
+              gsl_vector_view Xj = gsl_matrix_column(Xs, j);
+              double lj = gsl_vector_get(L, j);
+
+              if (lj == 0.0)
+                {
+                  GSL_ERROR("L matrix is singular", GSL_EDOM);
+                }
+
+              gsl_vector_scale(&Xj.vector, 1.0 / lj);
+            }
+        }
+
+      return status;
+    }
+}
+
+/*
+gsl_multifit_linear_stdform1()
+  Using regularization matrix L = diag(l_1,l_2,...,l_p),
+and W = I, transform to Tikhonov standard form:
+
 X~ = X L^{-1}
+y~ = y
 c~ = L c
 
 Inputs: L    - Tikhonov matrix as a vector of diagonal elements p-by-1
         X    - least squares matrix n-by-p
+        y    - right hand side vector n-by-1
         Xs   - least squares matrix in standard form X~ n-by-p
+        ys   - right hand side vector in standard form y~ n-by-1
         work - workspace
 
 Return: success/error
@@ -121,50 +229,20 @@ Notes:
 int
 gsl_multifit_linear_stdform1 (const gsl_vector * L,
                               const gsl_matrix * X,
+                              const gsl_vector * y,
                               gsl_matrix * Xs,
+                              gsl_vector * ys,
                               gsl_multifit_linear_workspace * work)
 {
-  const size_t n = X->size1;
-  const size_t p = X->size2;
+  int status;
 
-  if (n > work->nmax || p > work->pmax)
-    {
-      GSL_ERROR("observation matrix larger than workspace", GSL_EBADLEN);
-    }
-  else if (p != L->size)
-    {
-      GSL_ERROR("L vector does not match X", GSL_EBADLEN);
-    }
-  else if (n != Xs->size1 || p != Xs->size2)
-    {
-      GSL_ERROR("Xs matrix dimensions do not match X", GSL_EBADLEN);
-    }
-  else
-    {
-      int status = GSL_SUCCESS;
-      size_t j;
+  status = gsl_multifit_linear_wstdform1(L, X, NULL, y, Xs, ys, work);
 
-      /* construct X~ = X * L^{-1} matrix */
-      gsl_matrix_memcpy(Xs, X);
-      for (j = 0; j < p; ++j)
-        {
-          gsl_vector_view Xj = gsl_matrix_column(Xs, j);
-          double lj = gsl_vector_get(L, j);
-
-          if (lj == 0.0)
-            {
-              GSL_ERROR("L matrix is singular", GSL_EDOM);
-            }
-
-          gsl_vector_scale(&Xj.vector, 1.0 / lj);
-        }
-
-      return status;
-    }
+  return status;
 }
 
 /*
-gsl_multifit_linear_stdform2()
+gsl_multifit_linear_wstdform2()
   Using regularization matrix L which is m-by-p, transform to Tikhonov
 standard form. This routine is separated into two cases:
 
@@ -185,6 +263,7 @@ M is p-by-n (workspace)
 
 Inputs: L    - regularization matrix m-by-p
         X    - least squares matrix n-by-p
+        w    - weight vector n-by-1; or NULL for W = I
         y    - right hand side vector n-by-1
         Xs   - (output) least squares matrix in standard form
                case 1: n-by-p
@@ -210,13 +289,14 @@ Notes:
 */
 
 int
-gsl_multifit_linear_stdform2 (const gsl_matrix * L,
-                              const gsl_matrix * X,
-                              const gsl_vector * y,
-                              gsl_matrix * Xs,
-                              gsl_vector * ys,
-                              gsl_matrix * M,
-                              gsl_multifit_linear_workspace * work)
+gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
+                               const gsl_matrix * X,
+                               const gsl_vector * w,
+                               const gsl_vector * y,
+                               gsl_matrix * Xs,
+                               gsl_vector * ys,
+                               gsl_matrix * M,
+                               gsl_multifit_linear_workspace * work)
 {
   const size_t m = L->size1;
   const size_t n = X->size1;
@@ -233,6 +313,10 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
   else if (n != y->size)
     {
       GSL_ERROR("y vector does not match X", GSL_EBADLEN);
+    }
+  else if (w != NULL && n != w->size)
+    {
+      GSL_ERROR("weights vector must be length n", GSL_EBADLEN);
     }
   else if (m >= p) /* square or tall L matrix */
     {
@@ -265,11 +349,20 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
           if (status)
             return status;
 
-          /* rhs vector is unchanged */
-          gsl_vector_memcpy(ys, y);
+          if (w != NULL)
+            {
+              /* compute Xs = sqrt(W) X and ys = sqrt(W) y */
+              status = gsl_multifit_linear_wstdform1(NULL, X, w, y, Xs, ys, work);
+              if (status)
+                return status;
+            }
+          else
+            {
+              gsl_vector_memcpy(ys, y);
+              gsl_matrix_memcpy(Xs, X);
+            }
 
           /* compute X~ = X R^{-1} using QR decomposition of L */
-          gsl_matrix_memcpy(Xs, X);
           for (i = 0; i < n; ++i)
             {
               gsl_vector_view v = gsl_matrix_row(Xs, i);
@@ -312,9 +405,24 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
           gsl_matrix *K = gsl_matrix_alloc(p, p);
           gsl_matrix *H = gsl_matrix_alloc(n, n);
           gsl_matrix *M1 = gsl_matrix_alloc(pm, n);
+          gsl_matrix *X1 = gsl_matrix_alloc(n, p);
+          gsl_vector *y1 = gsl_vector_alloc(n);
 
           gsl_matrix_view Rp, Ko, Kp, Ho, Hq, To;
           size_t i;
+
+          if (w != NULL)
+            {
+              /* compute X1 = sqrt(W) X and y1 = sqrt(W) y */
+              status = gsl_multifit_linear_wstdform1(NULL, X, w, y, X1, y1, work);
+              if (status)
+                return status;
+            }
+          else
+            {
+              gsl_vector_memcpy(y1, y);
+              gsl_matrix_memcpy(X1, X);
+            }
 
           /* compute QR decomposition [K,R] = qr(L^T) */
           gsl_matrix_transpose_memcpy(&LT.matrix, L);
@@ -329,7 +437,7 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
           Kp = gsl_matrix_submatrix(K, 0, 0, p, m);
 
           /* compute QR decomposition [H,T] = qr(X * K_o) */
-          gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, X, &Ko.matrix, 0.0, &B.matrix);
+          gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, X1, &Ko.matrix, 0.0, &B.matrix);
           gsl_linalg_QR_decomp(&B.matrix, &tauv2.vector);
           gsl_linalg_Q_unpack(&B.matrix, &tauv2.vector, H);
           Ho = gsl_matrix_submatrix(H, 0, 0, n, pm);
@@ -345,17 +453,7 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
             }
 
           /* compute: ys = H_q^T y */
-#if 0
-          for (i = 0; i < GSL_MIN(n, pm); ++i)
-            {
-              gsl_vector_view h = gsl_matrix_subcolumn(&B.matrix, i, i, n - i);
-              gsl_vector_view w = gsl_vector_subvector(y, i, n - i);
-              double taui = gsl_vector_get(&tauv2.vector, i);
-              gsl_linalg_householder_hv(taui, &h.vector, &w.vector);
-            }
-#else
-          gsl_blas_dgemv(CblasTrans, 1.0, &Hq.matrix, y, 0.0, ys);
-#endif
+          gsl_blas_dgemv(CblasTrans, 1.0, &Hq.matrix, y1, 0.0, ys);
 
           /* compute: M1 = inv(T_o) * H_o^T */
           gsl_matrix_transpose_memcpy(M1, &Ho.matrix);
@@ -369,30 +467,34 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
           gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &Ko.matrix, M1, 0.0, M);
 
           /* compute: C = H_q^T X; Xs = C * L_inv */
-          gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &Hq.matrix, X, 0.0, &C.matrix);
+          gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &Hq.matrix, X1, 0.0, &C.matrix);
           gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &C.matrix, &Lp.matrix, 0.0, Xs);
-
-#if TEST_FORM2
-          print_octave(&Rp.matrix, "R");
-          print_octave(K, "K");
-          print_octave(&Ko.matrix, "Ko");
-          print_octave(&Kp.matrix, "Kp");
-          print_octave(H, "H");
-          print_octave(T, "T");
-          print_octave(&Lp.matrix, "Lp");
-          print_octave(&Hq.matrix, "Hq");
-          printv_octave(ys, "ys");
-          print_octave(Xs, "Xs");
-          print_octave(M1, "M1");
-#endif
 
           gsl_matrix_free(K);
           gsl_matrix_free(H);
           gsl_matrix_free(M1);
+          gsl_matrix_free(X1);
+          gsl_vector_free(y1);
 
           return GSL_SUCCESS;
         }
     }
+}
+
+int
+gsl_multifit_linear_stdform2 (const gsl_matrix * L,
+                              const gsl_matrix * X,
+                              const gsl_vector * y,
+                              gsl_matrix * Xs,
+                              gsl_vector * ys,
+                              gsl_matrix * M,
+                              gsl_multifit_linear_workspace * work)
+{
+  int status;
+
+  status = gsl_multifit_linear_wstdform2(L, X, NULL, y, Xs, ys, M, work);
+
+  return status;
 }
 
 /*

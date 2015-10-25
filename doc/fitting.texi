@@ -546,23 +546,30 @@ original solution vector @math{c}.
 
 @end enumerate
 
-@deftypefun int gsl_multifit_linear_stdform1 (const gsl_vector * @var{L}, const gsl_matrix * @var{X}, gsl_matrix * @var{Xs}, gsl_multifit_linear_workspace * @var{work})
-This function defines a regularization matrix
+@deftypefun int gsl_multifit_linear_stdform1 (const gsl_vector * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_multifit_linear_workspace * @var{work})
+@deftypefunx int gsl_multifit_linear_wstdform1 (const gsl_vector * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_multifit_linear_workspace * @var{work})
+These functions define a regularization matrix
 @math{L =} diag@math{(l_0,l_1,...,l_{p-1})}.
 The diagonal matrix element @math{l_i} is provided by the
 @math{i}th element of the input vector @var{L}.
-The @math{n}-by-@math{p} least squares matrix @var{X} is then
-converted to standard form as described above and the @math{n}-by-@math{p} matrix
-@math{\tilde{X}} is stored in @var{Xs} on output.
-In order to apply this transformation,
+The @math{n}-by-@math{p} least squares matrix @var{X} and
+vector @var{y} of length @math{n} are then
+converted to standard form as described above and the parameters
+(@math{\tilde{X}},@math{\tilde{y}}) are stored in @var{Xs} and @var{ys}
+on output.  @var{Xs} and @var{ys} have the same dimensions as
+@var{X} and @var{y}. Optional data weights may be supplied in the
+vector @var{w} of length @math{n}. In order to apply this transformation,
 @math{L^{-1}} must exist and so none of the @math{l_i}
 may be zero. After the standard form system has been solved,
 use @code{gsl_multifit_linear_genform1} to recover the original solution vector.
-It is allowed to have @var{X} = @var{Xs} for an in-place transform.
+It is allowed to have @var{X} = @var{Xs} and @var{y} = @var{ys} for an in-place transform.
+In order to perform a weighted regularized fit with @math{L = I}, the user may
+call @code{wstdform1} and set the input @var{L} to NULL.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_stdform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_matrix * @var{M}, gsl_multifit_linear_workspace * @var{work})
-This function converts the least squares system (@var{X},@var{y},@var{L}) to standard
+@deftypefunx int gsl_multifit_linear_wstdform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_matrix * @var{M}, gsl_multifit_linear_workspace * @var{work})
+These functions convert the least squares system (@var{X},@var{y},@var{W},@var{L}) to standard
 form (@math{\tilde{X}},@math{\tilde{y}}) which are stored in @var{Xs} and @var{ys}
 respectively. The regularization matrix @var{L} is a full rank
 @math{m}-by-@math{p} matrix with no restrictions on @math{m}. However,
@@ -572,7 +579,8 @@ depend on whether @math{m} is larger or less than @math{p}. For @math{m \ge p},
 additional @math{m}-by-@math{p} workspace. For @math{m < p}, @var{Xs} is @math{(n - p + m)}-by-@math{m},
 @var{ys} is @math{(n - p + m)}-by-1, and @var{M} is additional @math{p}-by-@math{n} workspace.
 In both cases, @var{M} is required to recover the original solution vector after the system has been
-solved (see @code{gsl_multifit_linear_genform2}).
+solved (see @code{gsl_multifit_linear_genform2}). Optional data weights may be supplied in the
+vector @var{w} of length @math{n}, where @math{W =} diag(w).
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_solve (const double @var{lambda}, const gsl_matrix * @var{Xs}, const gsl_vector * @var{ys}, gsl_vector * @var{cs}, double * @var{rnorm}, double * @var{snorm}, gsl_multifit_linear_workspace * @var{work})
@@ -586,7 +594,7 @@ predictor variables @math{\tilde{X}} in @var{Xs}. The solution vector @math{\til
 returned in @var{cs}. The SVD of @var{Xs} must be computed prior
 to calling this function, using @code{gsl_multifit_linear_svd}.
 The regularization parameter @math{\lambda} is provided in @var{lambda}.
-The residual norm @math{|| \tilde{y} - \tilde{X} \tilde{c} || = ||y - X c||} is returned in @var{rnorm}.
+The residual norm @math{|| \tilde{y} - \tilde{X} \tilde{c} || = ||y - X c||_W} is returned in @var{rnorm}.
 The solution norm @math{|| \tilde{c} || = ||L c||} is returned in
 @var{snorm}.
 @end deftypefun
