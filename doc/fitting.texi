@@ -471,7 +471,7 @@ $$
 This is known as the Tikhonov ``standard form'' and has the normal equations solution
 @math{\tilde{c} = \left( \tilde{X}^T \tilde{X} + \lambda^2 I \right)^{-1} \tilde{X}^T \tilde{y}}.
 For an @math{m}-by-@math{p} matrix @math{L} which is full rank and has @math{m >= p} (ie: @math{L} is
-square or has more rows than columns), we can calculate the ``skinny'' QR decomposition of @math{L}, and
+square or has more rows than columns), we can calculate the ``thin'' QR decomposition of @math{L}, and
 note that @math{||L c||} = @math{||R c||} since the @math{Q} factor will not change the norm. Since
 @math{R} is @math{p}-by-@math{p}, we can then use the transformation
 @tex
