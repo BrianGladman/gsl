@@ -167,6 +167,7 @@ main()
       const double expected_skew = gsl_stats_skew(data, 1, n);
       const double expected_kurtosis = gsl_stats_kurtosis(data, 1, n);
       const double expected_median = gsl_stats_quantile_from_sorted_data(sorted_data, 1, n, 0.5);
+
       const double mean = gsl_rstat_mean(rstat_workspace_p);
       const double var = gsl_rstat_variance(rstat_workspace_p);
       const double sd = gsl_rstat_sd(rstat_workspace_p);
