@@ -229,7 +229,7 @@ test_reg3(const double lambda, const gsl_vector * L, const gsl_matrix * X,
   gsl_multifit_linear_wstdform1(L, X, wts, y, Xs, ys, w);
   gsl_multifit_linear_svd(Xs, w);
   gsl_multifit_linear_solve(lambda, Xs, ys, c1, &rnorm0, &snorm0, w);
-  gsl_multifit_linear_genform1(L, c1, w);
+  gsl_multifit_linear_genform1(L, c1, c1, w);
 
   /* test snorm = ||L c1|| */
   gsl_vector_memcpy(Lc, c1);

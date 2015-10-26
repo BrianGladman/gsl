@@ -126,6 +126,7 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
 
 int
 gsl_multifit_linear_genform1 (const gsl_vector * L,
+                              const gsl_vector * cs,
                               gsl_vector * c,
                               gsl_multifit_linear_workspace * work);
 

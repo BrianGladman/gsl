@@ -505,12 +505,17 @@ L = diag(L)
 
 int
 gsl_multifit_linear_genform1 (const gsl_vector * L,
+                              const gsl_vector * cs,
                               gsl_vector * c,
                               gsl_multifit_linear_workspace * work)
 {
   if (L->size > work->pmax)
     {
       GSL_ERROR("L vector does not match workspace", GSL_EBADLEN);
+    }
+  else if (L->size != cs->size)
+    {
+      GSL_ERROR("cs vector does not match L", GSL_EBADLEN);
     }
   else if (L->size != c->size)
     {
@@ -519,8 +524,10 @@ gsl_multifit_linear_genform1 (const gsl_vector * L,
   else
     {
       /* compute true solution vector c = L^{-1} c~ */
-      int status = gsl_vector_div(c, L);
-      return status;
+      gsl_vector_memcpy(c, cs);
+      gsl_vector_div(c, L);
+
+      return GSL_SUCCESS;
     }
 }
 

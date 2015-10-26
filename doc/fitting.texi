@@ -599,13 +599,14 @@ The solution norm @math{|| \tilde{c} || = ||L c||} is returned in
 @var{snorm}.
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_genform1 (const gsl_vector * @var{L}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_genform1 (const gsl_vector * @var{L}, const gsl_vector * @var{cs}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
 After a regularized system has been solved with
 @math{L =} diag@math{(\l_0,\l_1,...,\l_{p-1})},
-this function backtransforms the solution vector @var{c}
-to recover the solution vector of the original problem. The
+this function backtransforms the standard form solution vector @var{cs}
+to recover the solution vector of the original problem @var{c}. The
 diagonal matrix elements @math{l_i} are provided in
-the vector @var{L}.
+the vector @var{L}. It is allowed to have @var{c} = @var{cs} for an
+in-place transform.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_genform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, const gsl_vector * @var{cs}, const gsl_matrix * @var{M}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
