@@ -37,7 +37,7 @@ random_data(const size_t n, gsl_rng *r)
   double *data = malloc(n * sizeof(double));
 
   for (i = 0; i < n; ++i)
-    data[i] = gsl_ran_cauchy(r, 2.0);
+    data[i] = gsl_rng_uniform(r);
 
   return data;
 }
@@ -104,7 +104,7 @@ main()
   gsl_ieee_env_setup();
 
   {
-    const size_t N = 100000;
+    const size_t N = 2000000;
     double *data = random_data(N, r);
     double data2[] = { 4.0, 7.0, 13.0, 16.0 };
     size_t i;
@@ -114,6 +114,8 @@ main()
     test_basic(10000, data, tol1);
     test_basic(50000, data, tol1);
     test_basic(80000, data, tol1);
+    test_basic(1500000, data, tol1);
+    test_basic(2000000, data, tol1);
 
     for (i = 0; i < 4; ++i)
       data2[i] += 1.0e9;
