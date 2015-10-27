@@ -336,7 +336,8 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
       double c0j = gsl_vector_get(c0, j);
       double c1j = gsl_vector_get(c1, j);
 
-      gsl_test_rel(c1j, c0j, tol, "test_reg4: %s lambda=%g j=%zu", desc, lambda, j);
+      gsl_test_rel(c1j, c0j, tol, "test_reg4: %s lambda=%g n=%zu p=%zu j=%zu",
+                   desc, lambda, n, p, j);
     }
 
   gsl_matrix_free(LTL);
@@ -370,6 +371,7 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
   gsl_matrix *L1 = gsl_matrix_alloc(p - 1, p);
   gsl_matrix *L2 = gsl_matrix_alloc(p - 2, p);
   gsl_matrix *L3 = gsl_matrix_alloc(p - 3, p);
+  gsl_matrix *L5 = gsl_matrix_alloc(p - 5, p);
   size_t i;
 
   /* generate random weights */
@@ -399,6 +401,7 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
   gsl_multifit_linear_Lk(p, 1, L1);
   gsl_multifit_linear_Lk(p, 2, L2);
   gsl_multifit_linear_Lk(p, 3, L3);
+  gsl_multifit_linear_Lk(p, 5, L5);
 
   for (i = 0; i < 3; ++i)
     {
@@ -410,21 +413,23 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
 
       /* test unweighted */
       test_reg2(lambda, X, y, NULL, 1.0e-6, w, "unweighted");
-      test_reg3(lambda, diagL, X, y, NULL, 1.0e-7, w, "unweighted");
+      test_reg3(lambda, diagL, X, y, NULL, 1.0e-6, w, "unweighted");
       test_reg4(lambda, Lsqr, X, y, NULL, 1.0e-8, w, "Lsqr unweighted");
       test_reg4(lambda, Ltall, X, y, NULL, 1.0e-8, w, "Ltall unweighted");
       test_reg4(lambda, L1, X, y, NULL, 1.0e-6, w, "L1 unweighted");
       test_reg4(lambda, L2, X, y, NULL, 1.0e-6, w, "L2 unweighted");
       test_reg4(lambda, L3, X, y, NULL, 1.0e-5, w, "L3 unweighted");
+      test_reg4(lambda, L5, X, y, NULL, 1.0e-2, w, "L5 unweighted");
 
       /* test weighted */
-      test_reg2(lambda, X, y, wts, 1.0e-7, w, "weighted");
-      test_reg3(lambda, diagL, X, y, wts, 1.0e-7, w, "weighted");
+      test_reg2(lambda, X, y, wts, 1.0e-6, w, "weighted");
+      test_reg3(lambda, diagL, X, y, wts, 1.0e-6, w, "weighted");
       test_reg4(lambda, Lsqr, X, y, wts, 1.0e-8, w, "Lsqr weighted");
+      /*test_reg4(lambda, L1, X, y, wts, 1.0e-6, w, "L1 weighted");*/
 
       /* test again with larger workspace */
       test_reg2(lambda, X, y, NULL, 1.0e-6, wbig, "unweighted big");
-      test_reg3(lambda, diagL, X, y, NULL, 1.0e-7, wbig, "unweighted big");
+      test_reg3(lambda, diagL, X, y, NULL, 1.0e-6, wbig, "unweighted big");
       test_reg4(lambda, Lsqr, X, y, NULL, 1.0e-8, wbig, "Lsqr big unweighted");
       test_reg4(lambda, L1, X, y, NULL, 1.0e-6, wbig, "L1 big unweighted");
     }
@@ -439,6 +444,7 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
   gsl_matrix_free(L1);
   gsl_matrix_free(L2);
   gsl_matrix_free(L3);
+  gsl_matrix_free(L5);
   gsl_multifit_linear_free(w);
   gsl_multifit_linear_free(wbig);
 }
@@ -512,7 +518,7 @@ test_reg(void)
 {
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
 
-  test_reg_system(100, 10, r);
+  test_reg_system(100, 15, r);
   test_reg_system(100, 50, r);
   test_reg_system(100, 99, r);
 

@@ -408,11 +408,12 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
           gsl_matrix *X1 = gsl_matrix_alloc(n, p);
           gsl_vector *y1 = gsl_vector_alloc(n);
 
-          gsl_matrix_view Rp, Ko, Kp, Ho, Hq, To;
+          gsl_matrix_view Rp, Ko, Kp, Ho, To;
           size_t i;
 
           if (w != NULL)
             {
+              GSL_ERROR("weights not yet supported for general L", GSL_EINVAL);
               /* compute X1 = sqrt(W) X and y1 = sqrt(W) y */
               status = gsl_multifit_linear_wstdform1(NULL, X, w, y, X1, y1, work);
               if (status)
@@ -441,7 +442,6 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
           gsl_linalg_QR_decomp(&B.matrix, &tauv2.vector);
           gsl_linalg_Q_unpack(&B.matrix, &tauv2.vector, H);
           Ho = gsl_matrix_submatrix(H, 0, 0, n, pm);
-          Hq = gsl_matrix_submatrix(H, 0, pm, n, n - p + m);
           To = gsl_matrix_submatrix(&B.matrix, 0, 0, pm, pm);
 
           /* solve: R_p L_inv^T = K_p^T for L_inv */
@@ -452,8 +452,13 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
               gsl_blas_dtrsv(CblasUpper, CblasNoTrans, CblasNonUnit, &Rp.matrix, &x.vector);
             }
 
-          /* compute: ys = H_q^T y */
-          gsl_blas_dgemv(CblasTrans, 1.0, &Hq.matrix, y1, 0.0, ys);
+          /* compute: ys = H_q^T y; this is equivalent to computing
+           * the last q elements of H^T y (q = npm) */
+          {
+            gsl_vector_view v = gsl_vector_subvector(y1, pm, npm);
+            gsl_linalg_QR_QTvec(&B.matrix, &tauv2.vector, y1);
+            gsl_vector_memcpy(ys, &v.vector);
+          }
 
           /* compute: M1 = inv(T_o) * H_o^T */
           gsl_matrix_transpose_memcpy(M1, &Ho.matrix);
@@ -466,8 +471,14 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
           /* compute: M = K_o * M1 */
           gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &Ko.matrix, M1, 0.0, M);
 
-          /* compute: C = H_q^T X; Xs = C * L_inv */
-          gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &Hq.matrix, X1, 0.0, &C.matrix);
+          /* compute: C = H_q^T X; this is equivalent to computing H^T X and
+           * keeping the last q rows (q = npm) */
+          {
+            gsl_matrix_view m = gsl_matrix_submatrix(X1, pm, 0, npm, p);
+            gsl_linalg_QR_QTmat(&B.matrix, &tauv2.vector, X1);
+            gsl_matrix_memcpy(&C.matrix, &m.matrix);
+          }
+          /* compute: Xs = C * L_inv */
           gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &C.matrix, &Lp.matrix, 0.0, Xs);
 
           gsl_matrix_free(K);
