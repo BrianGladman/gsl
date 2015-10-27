@@ -441,7 +441,7 @@ gsl_multifit_robust(const gsl_matrix * X,
         w->stats.Rsq = 1.0 - ss_err / ss_tot;
 
         /* compute adjusted R^2 */
-        w->stats.adj_Rsq = 1.0 - (1.0 - w->stats.Rsq) * (n - 1.0) / dof;
+        w->stats.adj_Rsq = 1.0 - (1.0 - w->stats.Rsq) * ((double)n - 1.0) / dof;
 
         /* compute rmse */
         w->stats.rmse = sqrt(ss_err / dof);
@@ -700,8 +700,8 @@ robust_sigma(const double s_ols, const double s_rob,
              gsl_multifit_robust_workspace *w)
 {
   double sigma;
-  const size_t p = w->p;
-  const size_t n = w->n;
+  const double p = (double) w->p;
+  const double n = (double) w->n;
 
   /* see DuMouchel and O'Brien, sec 4.1 */
   sigma = GSL_MAX(s_rob,
@@ -726,7 +726,7 @@ static int
 robust_covariance(const double sigma, gsl_matrix *cov,
                   gsl_multifit_robust_workspace *w)
 {
-  int s = 0;
+  int status = 0;
   const size_t p = w->p;
   const double s2 = sigma * sigma;
   size_t i, j;
@@ -753,5 +753,5 @@ robust_covariance(const double sigma, gsl_matrix *cov,
         }
     }
 
-  return s;
+  return status;
 } /* robust_covariance() */

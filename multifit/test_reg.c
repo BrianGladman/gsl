@@ -435,11 +435,17 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
       test_reg3(lambda, diagL, X, y, NULL, 1.0e-6, wbig, "unweighted big");
       test_reg4(lambda, Lsqr, X, y, NULL, 1.0e-8, wbig, "Lsqr unweighted big");
       test_reg4(lambda, L1, X, y, NULL, 1.0e-6, wbig, "L1 unweighted big");
+      test_reg4(lambda, L2, X, y, NULL, 1.0e-6, wbig, "L2 unweighted big");
+      test_reg4(lambda, L3, X, y, NULL, 1.0e-5, wbig, "L3 unweighted big");
+      test_reg4(lambda, L5, X, y, NULL, 1.0e-4, wbig, "L5 unweighted big");
 
       test_reg2(lambda, X, y, wts, 1.0e-6, wbig, "weighted big");
       test_reg3(lambda, diagL, X, y, wts, 1.0e-6, wbig, "weighted big");
       test_reg4(lambda, Lsqr, X, y, wts, 1.0e-8, wbig, "Lsqr weighted big");
       test_reg4(lambda, L1, X, y, wts, 1.0e-6, wbig, "L1 weighted big");
+      test_reg4(lambda, L2, X, y, wts, 1.0e-6, wbig, "L2 weighted big");
+      test_reg4(lambda, L3, X, y, wts, 1.0e-5, wbig, "L3 weighted big");
+      test_reg4(lambda, L5, X, y, wts, 1.0e-4, wbig, "L5 weighted big");
     }
 
   gsl_matrix_free(X);

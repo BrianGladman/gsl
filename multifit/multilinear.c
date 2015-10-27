@@ -39,9 +39,9 @@ gsl_multifit_linear (const gsl_matrix * X,
                      gsl_matrix * cov,
                      double *chisq, gsl_multifit_linear_workspace * work)
 {
-  size_t rank;
+  size_t rank = 0;
   int status;
-  double rnorm, snorm;
+  double rnorm = 0.0, snorm;
 
   status = gsl_multifit_linear_bsvd (X, work);
   if (status)
@@ -57,7 +57,7 @@ gsl_multifit_linear (const gsl_matrix * X,
     const size_t n = X->size1;
     const size_t p = X->size2;
     double r2 = rnorm * rnorm;
-    double s2 = r2 / (n - rank);
+    double s2 = r2 / (double)(n - rank);
     size_t i, j;
     gsl_matrix_view QSI = gsl_matrix_submatrix(work->QSI, 0, 0, p, p);
     gsl_vector_view D = gsl_vector_subvector(work->D, 0, p);

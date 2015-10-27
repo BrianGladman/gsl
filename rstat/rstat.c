@@ -124,7 +124,10 @@ double
 gsl_rstat_variance(gsl_rstat_workspace *w)
 {
   if (w->n > 1)
-    return (w->M2 / (w->n - 1));
+    {
+      double n = (double) w->n;
+      return (w->M2 / (n - 1.0));
+    }
   else
     return 0.0;
 } /* gsl_rstat_variance() */

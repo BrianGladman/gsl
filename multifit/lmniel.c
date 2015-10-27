@@ -324,7 +324,7 @@ lmniel_iterate(void *vstate, const gsl_vector *swts,
           long nu2;
 
           /* step did not reduce error, reject step */
-          state->mu *= state->nu;
+          state->mu *= (double) state->nu;
           nu2 = state->nu << 1; /* 2*nu */
           if (nu2 <= state->nu)
             {

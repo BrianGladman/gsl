@@ -714,7 +714,7 @@ gsl_multifit_linear_lreg (const double smin, const double smax,
       gsl_vector_set(reg_param, N - 1, new_smin);
 
       /* ratio so that reg_param(1) = s(1) */
-      ratio = pow(smax / new_smin, 1.0 / (N - 1.0));
+      ratio = pow(smax / new_smin, 1.0 / ((double)N - 1.0));
 
       /* calculate the regularization parameters */
       for (i = N - 1; i > 0 && i--; )
