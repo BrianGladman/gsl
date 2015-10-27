@@ -564,7 +564,7 @@ may be zero. After the standard form system has been solved,
 use @code{gsl_multifit_linear_genform1} to recover the original solution vector.
 It is allowed to have @var{X} = @var{Xs} and @var{y} = @var{ys} for an in-place transform.
 In order to perform a weighted regularized fit with @math{L = I}, the user may
-call @code{wstdform1} and set the input @var{L} to NULL.
+call @code{gsl_multifit_linear_applyW} to convert to standard form.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_stdform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_matrix * @var{M}, gsl_multifit_linear_workspace * @var{work})
@@ -591,7 +591,7 @@ in standard form. The least squares system must therefore be converted
 to standard form prior to calling this function.
 The observation vector @math{\tilde{y}} is provided in @var{ys} and the matrix of
 predictor variables @math{\tilde{X}} in @var{Xs}. The solution vector @math{\tilde{c}} is
-returned in @var{cs}. The SVD of @var{Xs} must be computed prior
+returned in @var{cs}, which has length min(@math{m,p}). The SVD of @var{Xs} must be computed prior
 to calling this function, using @code{gsl_multifit_linear_svd}.
 The regularization parameter @math{\lambda} is provided in @var{lambda}.
 The residual norm @math{|| \tilde{y} - \tilde{X} \tilde{c} || = ||y - X c||_W} is returned in @var{rnorm}.
@@ -610,13 +610,22 @@ in-place transform.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_genform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, const gsl_vector * @var{cs}, const gsl_matrix * @var{M}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
+@deftypefunx int gsl_multifit_linear_wgenform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, const gsl_vector * @var{cs}, const gsl_matrix * @var{M}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
 After a regularized system has been solved with a general rectangular matrix @math{L},
 this function backtransforms the standard form solution @var{cs}
-to recover the solution vector of the original problem, which is stored in @var{c}.
-The vector @var{cs} has length @math{min(m,p)}-by-1. The
-original least squares matrix and observation vector are provided in
+to recover the solution vector of the original problem, which is stored in @var{c},
+of length @math{p}. The original least squares matrix and observation vector are provided in
 @var{X} and @var{y} respectively. @var{M} is the matrix computed by
-@code{gsl_multifit_linear_stdform2}.
+@code{gsl_multifit_linear_stdform2}. For weighted fits, the weight vector
+@var{w} must also be supplied.
+@end deftypefun
+
+@deftypefun int gsl_multifit_linear_applyW (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_matrix * @var{WX}, gsl_vector * @var{Wy}, gsl_multifit_linear_workspace * @var{work})
+For weighted least squares systems with @math{L = I}, this function may be used to
+convert the system to standard form by applying the weight matrix @math{W =} diag(@var{w})
+to the least squares matrix @var{X} and observation vector @var{y}. On output, @var{WX}
+is equal to @math{W^{1/2} X} and @var{Wy} is equal to @math{W^{1/2} y}. It is allowed
+for @var{WX} = @var{X} and @var{Wy} = @var{y} for an in-place transform.
 @end deftypefun
 
 @deftypefun int gsl_multifit_linear_lcurve (const gsl_vector * @var{y}, gsl_vector * @var{reg_param}, gsl_vector * @var{rho}, gsl_vector * @var{eta}, gsl_multifit_linear_workspace * @var{work})

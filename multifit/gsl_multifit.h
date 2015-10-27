@@ -89,6 +89,14 @@ gsl_multifit_linear_solve (const double lambda,
                            gsl_multifit_linear_workspace * work);
 
 int
+gsl_multifit_linear_applyW(const gsl_matrix * X,
+                           const gsl_vector * w,
+                           const gsl_vector * y,
+                           gsl_matrix * WX,
+                           gsl_vector * Wy,
+                           gsl_multifit_linear_workspace * work);
+
+int
 gsl_multifit_linear_stdform1 (const gsl_vector * L,
                               const gsl_matrix * X,
                               const gsl_vector * y,
@@ -138,6 +146,16 @@ gsl_multifit_linear_genform2 (const gsl_matrix * L,
                               const gsl_matrix * M,
                               gsl_vector * c,
                               gsl_multifit_linear_workspace * work);
+
+int
+gsl_multifit_linear_wgenform2 (const gsl_matrix * L,
+                               const gsl_matrix * X,
+                               const gsl_vector * w,
+                               const gsl_vector * y,
+                               const gsl_vector * cs,
+                               const gsl_matrix * M,
+                               gsl_vector * c,
+                               gsl_multifit_linear_workspace * work);
 
 int
 gsl_multifit_linear_lreg (const double smin, const double smax,

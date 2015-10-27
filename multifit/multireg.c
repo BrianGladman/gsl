@@ -94,6 +94,79 @@ gsl_multifit_linear_solve (const double lambda,
 } /* gsl_multifit_linear_solve() */
 
 /*
+gsl_multifit_linear_applyW()
+  Apply weight matrix to (X,y) LS system
+
+Inputs: X    - least squares matrix n-by-p
+        w    - weight vector n-by-1 or NULL for W = I
+        y    - right hand side n-by-1
+        WX   - (output) sqrt(W) X
+        Wy   - (output) sqrt(W) y
+        work - workspace
+
+Notes:
+1) If w = NULL, on output WX = X and Wy = y
+2) It is allowed for WX = X and Wy = y for in-place transform
+*/
+
+int
+gsl_multifit_linear_applyW(const gsl_matrix * X,
+                           const gsl_vector * w,
+                           const gsl_vector * y,
+                           gsl_matrix * WX,
+                           gsl_vector * Wy,
+                           gsl_multifit_linear_workspace * work)
+{
+  const size_t n = X->size1;
+  const size_t p = X->size2;
+
+  if (n != y->size)
+    {
+      GSL_ERROR("y vector does not match X", GSL_EBADLEN);
+    }
+  else if (w != NULL && n != w->size)
+    {
+      GSL_ERROR("weight vector does not match X", GSL_EBADLEN);
+    }
+  else if (n != WX->size1 || p != WX->size2)
+    {
+      GSL_ERROR("WX matrix dimensions do not match X", GSL_EBADLEN);
+    }
+  else if (n != Wy->size)
+    {
+      GSL_ERROR("Wy vector must be length n", GSL_EBADLEN);
+    }
+  else
+    {
+      size_t i;
+
+      gsl_matrix_memcpy(WX, X);
+      gsl_vector_memcpy(Wy, y);
+
+      if (w != NULL)
+        {
+          /* construct WX = sqrt(W) X and Wy = sqrt(W) y */
+          for (i = 0; i < n; ++i)
+            {
+              double wi = gsl_vector_get(w, i);
+              double swi;
+              gsl_vector_view row = gsl_matrix_row(WX, i);
+              double *yi = gsl_vector_ptr(Wy, i);
+
+              if (wi < 0.0)
+                wi = 0.0;
+
+              swi = sqrt(wi);
+              gsl_vector_scale(&row.vector, swi);
+              *yi *= swi;
+            }
+        }
+
+      return GSL_SUCCESS;
+    }
+}
+
+/*
 gsl_multifit_linear_wstdform1()
   Using regularization matrix
 L = diag(l_1,l_2,...,l_p), transform to Tikhonov standard form:
@@ -157,29 +230,10 @@ gsl_multifit_linear_wstdform1 (const gsl_vector * L,
     {
       int status = GSL_SUCCESS;
 
-      gsl_matrix_memcpy(Xs, X);
-      gsl_vector_memcpy(ys, y);
-
-      if (w != NULL)
-        {
-          size_t i;
-
-          /* construct Xs = sqrt(W) X and ys = sqrt(W) y */
-          for (i = 0; i < n; ++i)
-            {
-              double wi = gsl_vector_get(w, i);
-              double swi;
-              gsl_vector_view row = gsl_matrix_row(Xs, i);
-              double *yi = gsl_vector_ptr(ys, i);
-
-              if (wi < 0.0)
-                wi = 0.0;
-
-              swi = sqrt(wi);
-              gsl_vector_scale(&row.vector, swi);
-              *yi *= swi;
-            }
-        }
+      /* compute Xs = sqrt(W) X and ys = sqrt(W) y */
+      status = gsl_multifit_linear_applyW(X, w, y, Xs, ys, work);
+      if (status)
+        return status;
 
       if (L != NULL)
         {
@@ -349,18 +403,10 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
           if (status)
             return status;
 
-          if (w != NULL)
-            {
-              /* compute Xs = sqrt(W) X and ys = sqrt(W) y */
-              status = gsl_multifit_linear_wstdform1(NULL, X, w, y, Xs, ys, work);
-              if (status)
-                return status;
-            }
-          else
-            {
-              gsl_vector_memcpy(ys, y);
-              gsl_matrix_memcpy(Xs, X);
-            }
+          /* compute Xs = sqrt(W) X and ys = sqrt(W) y */
+          status = gsl_multifit_linear_applyW(X, w, y, Xs, ys, work);
+          if (status)
+            return status;
 
           /* compute X~ = X R^{-1} using QR decomposition of L */
           for (i = 0; i < n; ++i)
@@ -411,19 +457,10 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
           gsl_matrix_view Rp, Ko, Kp, Ho, To;
           size_t i;
 
-          if (w != NULL)
-            {
-              GSL_ERROR("weights not yet supported for general L", GSL_EINVAL);
-              /* compute X1 = sqrt(W) X and y1 = sqrt(W) y */
-              status = gsl_multifit_linear_wstdform1(NULL, X, w, y, X1, y1, work);
-              if (status)
-                return status;
-            }
-          else
-            {
-              gsl_vector_memcpy(y1, y);
-              gsl_matrix_memcpy(X1, X);
-            }
+          /* compute X1 = sqrt(W) X and y1 = sqrt(W) y */
+          status = gsl_multifit_linear_applyW(X, w, y, X1, y1, work);
+          if (status)
+            return status;
 
           /* compute QR decomposition [K,R] = qr(L^T) */
           gsl_matrix_transpose_memcpy(&LT.matrix, L);
@@ -543,27 +580,29 @@ gsl_multifit_linear_genform1 (const gsl_vector * L,
 }
 
 /*
-gsl_multifit_linear_genform2()
-  Backtransform regularized solution vector using matrix L; (L,tau) contain
-QR decomposition of original L
+gsl_multifit_linear_wgenform2()
+  Backtransform regularized solution vector in standard form to recover
+original vector
 
 Inputs: L    - regularization matrix m-by-p
         X    - original least squares matrix n-by-p
+        w    - original weight vector n-by-1 or NULL for W = I
         y    - original rhs vector n-by-1
         cs   - standard form solution vector
         c    - (output) original solution vector
-        M    -
+        M    - matrix computed by gsl_multifit_linear_wstdform2()
         work - workspace
 */
 
 int
-gsl_multifit_linear_genform2 (const gsl_matrix * L,
-                              const gsl_matrix * X,
-                              const gsl_vector * y,
-                              const gsl_vector * cs,
-                              const gsl_matrix * M,
-                              gsl_vector * c,
-                              gsl_multifit_linear_workspace * work)
+gsl_multifit_linear_wgenform2 (const gsl_matrix * L,
+                               const gsl_matrix * X,
+                               const gsl_vector * w,
+                               const gsl_vector * y,
+                               const gsl_vector * cs,
+                               const gsl_matrix * M,
+                               gsl_vector * c,
+                               gsl_multifit_linear_workspace * work)
 {
   const size_t m = L->size1;
   const size_t n = X->size1;
@@ -580,6 +619,10 @@ gsl_multifit_linear_genform2 (const gsl_matrix * L,
   else if (p != c->size)
     {
       GSL_ERROR("c vector does not match X", GSL_EBADLEN);
+    }
+  else if (w != NULL && n != w->size)
+    {
+      GSL_ERROR("w vector does not match X", GSL_EBADLEN);
     }
   else if (n != y->size)
     {
@@ -619,24 +662,44 @@ gsl_multifit_linear_genform2 (const gsl_matrix * L,
         }
       else
         {
-          gsl_vector_view Linv_cs = gsl_vector_subvector(work->xt, 0, p);    /* L_inv * cs */
-          gsl_vector_view workn = gsl_vector_subvector(work->t, 0, n);
+          int status;
+          gsl_matrix_view A = gsl_matrix_submatrix(work->A, 0, 0, n, p);
+          gsl_vector_view b = gsl_vector_subvector(work->t, 0, n);
           gsl_matrix_view Lp = gsl_matrix_submatrix(work->Linv, 0, 0, p, m); /* L_inv */
 
-          /* compute L_inv * cs */
-          gsl_blas_dgemv(CblasNoTrans, 1.0, &Lp.matrix, cs, 0.0, &Linv_cs.vector);
+          /* compute A = sqrt(W) X and b = sqrt(W) y */
+          status = gsl_multifit_linear_applyW(X, w, y, &A.matrix, &b.vector, work);
+          if (status)
+            return status;
 
-          /* compute: workn = y - X L_inv cs */
-          gsl_vector_memcpy(&workn.vector, y);
-          gsl_blas_dgemv(CblasNoTrans, -1.0, X, &Linv_cs.vector, 1.0, &workn.vector);
+          /* compute c = L_inv * cs */
+          gsl_blas_dgemv(CblasNoTrans, 1.0, &Lp.matrix, cs, 0.0, c);
 
-          /* compute: c = L_inv cs + M * workn */
-          gsl_vector_memcpy(c, &Linv_cs.vector);
-          gsl_blas_dgemv(CblasNoTrans, 1.0, M, &workn.vector, 1.0, c);
+          /* compute: b = sqrt(W) [ y - X L_inv cs ] */
+          gsl_blas_dgemv(CblasNoTrans, -1.0, &A.matrix, c, 1.0, &b.vector);
+
+          /* compute: c = L_inv cs + M * b */
+          gsl_blas_dgemv(CblasNoTrans, 1.0, M, &b.vector, 1.0, c);
 
           return GSL_SUCCESS;
         }
     }
+}
+
+int
+gsl_multifit_linear_genform2 (const gsl_matrix * L,
+                              const gsl_matrix * X,
+                              const gsl_vector * y,
+                              const gsl_vector * cs,
+                              const gsl_matrix * M,
+                              gsl_vector * c,
+                              gsl_multifit_linear_workspace * work)
+{
+  int status;
+
+  status = gsl_multifit_linear_wgenform2(L, X, NULL, y, cs, M, c, work);
+
+  return status;
 }
 
 /*

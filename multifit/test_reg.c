@@ -317,7 +317,7 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   gsl_multifit_linear_wstdform2(L, X, wts, y, Xs, ys, M, w);
   gsl_multifit_linear_svd(Xs, w);
   gsl_multifit_linear_solve(lambda, Xs, ys, cs, &rnorm0, &snorm0, w);
-  gsl_multifit_linear_genform2(L, X, y, cs, M, c1, w);
+  gsl_multifit_linear_wgenform2(L, X, wts, y, cs, M, c1, w);
 
   /* test snorm = ||L c1|| */
   gsl_blas_dgemv(CblasNoTrans, 1.0, L, c1, 0.0, Lc);
@@ -425,13 +425,21 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
       test_reg2(lambda, X, y, wts, 1.0e-6, w, "weighted");
       test_reg3(lambda, diagL, X, y, wts, 1.0e-6, w, "weighted");
       test_reg4(lambda, Lsqr, X, y, wts, 1.0e-8, w, "Lsqr weighted");
-      /*test_reg4(lambda, L1, X, y, wts, 1.0e-6, w, "L1 weighted");*/
+      test_reg4(lambda, L1, X, y, wts, 1.0e-6, w, "L1 weighted");
+      test_reg4(lambda, L2, X, y, wts, 1.0e-6, w, "L2 weighted");
+      test_reg4(lambda, L3, X, y, wts, 1.0e-5, w, "L3 weighted");
+      test_reg4(lambda, L5, X, y, wts, 1.0e-2, w, "L5 weighted");
 
       /* test again with larger workspace */
       test_reg2(lambda, X, y, NULL, 1.0e-6, wbig, "unweighted big");
       test_reg3(lambda, diagL, X, y, NULL, 1.0e-6, wbig, "unweighted big");
-      test_reg4(lambda, Lsqr, X, y, NULL, 1.0e-8, wbig, "Lsqr big unweighted");
-      test_reg4(lambda, L1, X, y, NULL, 1.0e-6, wbig, "L1 big unweighted");
+      test_reg4(lambda, Lsqr, X, y, NULL, 1.0e-8, wbig, "Lsqr unweighted big");
+      test_reg4(lambda, L1, X, y, NULL, 1.0e-6, wbig, "L1 unweighted big");
+
+      test_reg2(lambda, X, y, wts, 1.0e-6, wbig, "weighted big");
+      test_reg3(lambda, diagL, X, y, wts, 1.0e-6, wbig, "weighted big");
+      test_reg4(lambda, Lsqr, X, y, wts, 1.0e-8, wbig, "Lsqr weighted big");
+      test_reg4(lambda, L1, X, y, wts, 1.0e-6, wbig, "L1 weighted big");
     }
 
   gsl_matrix_free(X);
