@@ -38,43 +38,6 @@
 
 #include "linear_common.c"
 
-/* XXX:  Form the orthogonal matrix Q from the packed QR matrix */
-static int
-gsl_linalg_Q_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix * Q)
-{
-  const size_t M = QR->size1;
-  const size_t N = QR->size2;
-
-  if (Q->size1 != M || Q->size2 != M)
-    {
-      GSL_ERROR ("Q matrix must be M x M", GSL_ENOTSQR);
-    }
-  else if (tau->size != GSL_MIN (M, N))
-    {
-      GSL_ERROR ("size of tau must be MIN(M,N)", GSL_EBADLEN);
-    }
-  else
-    {
-      size_t i;
-
-      /* Initialize Q to the identity */
-
-      gsl_matrix_set_identity (Q);
-
-      for (i = GSL_MIN (M, N); i-- > 0;)
-        {
-          gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
-          gsl_vector_const_view h = gsl_vector_const_subvector (&c.vector,
-                                                                i, M - i);
-          gsl_matrix_view m = gsl_matrix_submatrix (Q, i, i, M - i, M - i);
-          double ti = gsl_vector_get (tau, i);
-          gsl_linalg_householder_hm (ti, &h.vector, &m.matrix);
-        }
-
-      return GSL_SUCCESS;
-    }
-}
-
 int
 gsl_multifit_linear_solve (const double lambda,
                            const gsl_matrix * X,
@@ -313,7 +276,7 @@ Case 2: m < p
 X~ is (n - p + m)-by-m
 y~ is (n - p + m)-by-1
 c~ is m-by-1
-M is p-by-n (workspace)
+M is n-by-p (workspace)
 
 Inputs: L    - regularization matrix m-by-p
         X    - least squares matrix n-by-p
@@ -327,19 +290,21 @@ Inputs: L    - regularization matrix m-by-p
                case 2: (n - p + m)-by-1
         M    - (output) workspace matrix needed to reconstruct solution vector
                case 1: m-by-p
-               case 2: p-by-n
+               case 2: n-by-p
         work - workspace
 
 Return: success/error
 
 Notes:
-1) If L is square, on output:
+1) If m >= p, on output:
    M(1:p,1:p) = R factor in QR decomposition of L
    Xs = X R^{-1}
    ys = y
 
-2) If L is rectangular, on output:
-   work->Linv = pseudo inverse of L
+2) If m < p, on output:
+   a) work->LTQR and work->LTtau contain QR decomposition of L^T
+   b) M(:,1:pm) contains QR decomposition of A * K_o, needed to reconstruct
+      solution vector, where pm = p - m; M(:,p) contains Householder scalars
 */
 
 int
@@ -426,6 +391,11 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
       const size_t pm = p - m;
       const size_t npm = n - pm;
 
+      /*
+       * This code closely follows section 2.6.1 of Hansen's
+       * "Regularization Tools" manual
+       */
+
       if (npm != Xs->size1 || m != Xs->size2)
         {
           GSL_ERROR("Xs matrix must be (n-p+m)-by-m", GSL_EBADLEN);
@@ -434,95 +404,72 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
         {
           GSL_ERROR("ys vector must be of length (n-p+m)", GSL_EBADLEN);
         }
-      else if (p != M->size1 || n != M->size2)
+      else if (n != M->size1 || p != M->size2)
         {
-          GSL_ERROR("M matrix must be p-by-n", GSL_EBADLEN);
+          GSL_ERROR("M matrix must be n-by-p", GSL_EBADLEN);
         }
       else
         {
           int status;
-          gsl_vector_view tauv1 = gsl_vector_subvector(work->xt, 0, GSL_MIN(p, m));
-          gsl_vector_view tauv2 = gsl_vector_subvector(work->t, 0, GSL_MIN(n, pm));
-          gsl_matrix_view LT = gsl_matrix_submatrix(work->Q, 0, 0, p, m);          /* L^T */
-          gsl_matrix_view Lp = gsl_matrix_submatrix(work->Linv, 0, 0, p, m);       /* L_inv */
-          gsl_matrix_view B = gsl_matrix_submatrix(work->A, 0, 0, n, pm);          /* X * K_o */
-          gsl_matrix_view C = gsl_matrix_submatrix(work->A, 0, 0, npm, p);         /* H_q^T X */
+          gsl_matrix_view A = gsl_matrix_submatrix(work->A, 0, 0, n, p);
+          gsl_vector_view b = gsl_vector_subvector(work->t, 0, n);
 
-          gsl_matrix *K = gsl_matrix_alloc(p, p);
-          gsl_matrix *H = gsl_matrix_alloc(n, n);
-          gsl_matrix *M1 = gsl_matrix_alloc(pm, n);
-          gsl_matrix *X1 = gsl_matrix_alloc(n, p);
-          gsl_vector *y1 = gsl_vector_alloc(n);
+          gsl_matrix_view LTQR = gsl_matrix_submatrix(work->LTQR, 0, 0, p, m);  /* qr(L^T) */
+          gsl_vector_view LTtau = gsl_vector_subvector(work->LTtau, 0, m);
 
-          gsl_matrix_view Rp, Ko, Kp, Ho, To;
+          /*
+           * M(:,1:p-m) will hold QR decomposition of A K_o; M(:,p) will hold
+           * Householder scalars
+           */
+          gsl_matrix_view MQR = gsl_matrix_submatrix(M, 0, 0, n, pm);
+          gsl_vector_view Mtau = gsl_matrix_subcolumn(M, p - 1, 0, GSL_MIN(n, pm));
+
+          gsl_matrix_view Rp, AKo, AKp, HqTAKp;
+          gsl_vector_view v;
           size_t i;
 
-          /* compute X1 = sqrt(W) X and y1 = sqrt(W) y */
-          status = gsl_multifit_linear_applyW(X, w, y, X1, y1, work);
+          /* compute A = sqrt(W) X and b = sqrt(W) y */
+          status = gsl_multifit_linear_applyW(X, w, y, &A.matrix, &b.vector, work);
           if (status)
             return status;
 
           /* compute QR decomposition [K,R] = qr(L^T) */
-          gsl_matrix_transpose_memcpy(&LT.matrix, L);
-          status = gsl_linalg_QR_decomp(&LT.matrix, &tauv1.vector);
+          gsl_matrix_transpose_memcpy(&LTQR.matrix, L);
+          status = gsl_linalg_QR_decomp(&LTQR.matrix, &LTtau.vector);
           if (status)
             return status;
 
-          Rp = gsl_matrix_submatrix(&LT.matrix, 0, 0, m, m);
+          /* compute: A <- A K = [ A K_p ; A K_o ] */
+          gsl_linalg_QR_matQ(&LTQR.matrix, &LTtau.vector, &A.matrix);
+          AKp = gsl_matrix_submatrix(&A.matrix, 0, 0, n, m); 
+          AKo = gsl_matrix_submatrix(&A.matrix, 0, m, n, pm); 
 
-          gsl_linalg_Q_unpack(&LT.matrix, &tauv1.vector, K);
-          Ko = gsl_matrix_submatrix(K, 0, m, p, pm);
-          Kp = gsl_matrix_submatrix(K, 0, 0, p, m);
+          /* compute QR decomposition [H,T] = qr(A * K_o) and store in M */
+          gsl_matrix_memcpy(&MQR.matrix, &AKo.matrix);
+          gsl_linalg_QR_decomp(&MQR.matrix, &Mtau.vector);
 
-          /* compute QR decomposition [H,T] = qr(X * K_o) */
-          gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, X1, &Ko.matrix, 0.0, &B.matrix);
-          gsl_linalg_QR_decomp(&B.matrix, &tauv2.vector);
-          gsl_linalg_Q_unpack(&B.matrix, &tauv2.vector, H);
-          Ho = gsl_matrix_submatrix(H, 0, 0, n, pm);
-          To = gsl_matrix_submatrix(&B.matrix, 0, 0, pm, pm);
+          /* AKp currently contains A K_p; apply H^T from the left to get H^T A K_p */
+          gsl_linalg_QR_QTmat(&MQR.matrix, &Mtau.vector, &AKp.matrix);
 
-          /* solve: R_p L_inv^T = K_p^T for L_inv */
-          gsl_matrix_memcpy(&Lp.matrix, &Kp.matrix);
-          for (i = 0; i < p; ++i)
+          /* the last npm rows correspond to H_q^T A K_p */
+          HqTAKp = gsl_matrix_submatrix(&AKp.matrix, pm, 0, npm, m);
+
+          /* solve: Xs R_p^T = H_q^T A K_p for Xs */
+          Rp = gsl_matrix_submatrix(&LTQR.matrix, 0, 0, m, m);
+          gsl_matrix_memcpy(Xs, &HqTAKp.matrix);
+          for (i = 0; i < npm; ++i)
             {
-              gsl_vector_view x = gsl_matrix_row(&Lp.matrix, i);
+              gsl_vector_view x = gsl_matrix_row(Xs, i);
               gsl_blas_dtrsv(CblasUpper, CblasNoTrans, CblasNonUnit, &Rp.matrix, &x.vector);
             }
 
-          /* compute: ys = H_q^T y; this is equivalent to computing
-           * the last q elements of H^T y (q = npm) */
-          {
-            gsl_vector_view v = gsl_vector_subvector(y1, pm, npm);
-            gsl_linalg_QR_QTvec(&B.matrix, &tauv2.vector, y1);
-            gsl_vector_memcpy(ys, &v.vector);
-          }
-
-          /* compute: M1 = inv(T_o) * H_o^T */
-          gsl_matrix_transpose_memcpy(M1, &Ho.matrix);
-          for (i = 0; i < n; ++i)
-            {
-              gsl_vector_view x = gsl_matrix_column(M1, i);
-              gsl_blas_dtrsv(CblasUpper, CblasNoTrans, CblasNonUnit, &To.matrix, &x.vector);
-            }
-
-          /* compute: M = K_o * M1 */
-          gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &Ko.matrix, M1, 0.0, M);
-
-          /* compute: C = H_q^T X; this is equivalent to computing H^T X and
-           * keeping the last q rows (q = npm) */
-          {
-            gsl_matrix_view m = gsl_matrix_submatrix(X1, pm, 0, npm, p);
-            gsl_linalg_QR_QTmat(&B.matrix, &tauv2.vector, X1);
-            gsl_matrix_memcpy(&C.matrix, &m.matrix);
-          }
-          /* compute: Xs = C * L_inv */
-          gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, &C.matrix, &Lp.matrix, 0.0, Xs);
-
-          gsl_matrix_free(K);
-          gsl_matrix_free(H);
-          gsl_matrix_free(M1);
-          gsl_matrix_free(X1);
-          gsl_vector_free(y1);
+          /*
+           * compute: ys = H_q^T b; this is equivalent to computing
+           * the last q elements of H^T b (q = npm)
+           */
+          v = gsl_vector_subvector(&b.vector, pm, npm);
+          gsl_linalg_QR_QTvec(&MQR.matrix, &Mtau.vector, &b.vector);
+          gsl_vector_memcpy(ys, &v.vector);
 
           return GSL_SUCCESS;
         }
@@ -656,30 +603,61 @@ gsl_multifit_linear_wgenform2 (const gsl_matrix * L,
         {
           GSL_ERROR("cs vector must be length m", GSL_EBADLEN);
         }
-      else if (p != M->size1 || n != M->size2)
+      else if (n != M->size1 || p != M->size2)
         {
-          GSL_ERROR("M matrix must be size p-by-n", GSL_EBADLEN);
+          GSL_ERROR("M matrix must be size n-by-p", GSL_EBADLEN);
         }
       else
         {
           int status;
+          const size_t pm = p - m;
           gsl_matrix_view A = gsl_matrix_submatrix(work->A, 0, 0, n, p);
           gsl_vector_view b = gsl_vector_subvector(work->t, 0, n);
-          gsl_matrix_view Lp = gsl_matrix_submatrix(work->Linv, 0, 0, p, m); /* L_inv */
+          gsl_matrix_view Rp = gsl_matrix_submatrix(work->LTQR, 0, 0, m, m); /* R_p */
+          gsl_matrix_view LTQR = gsl_matrix_submatrix(work->LTQR, 0, 0, p, m);
+          gsl_vector_view LTtau = gsl_vector_subvector(work->LTtau, 0, m);
+          gsl_matrix_const_view MQR = gsl_matrix_const_submatrix(M, 0, 0, n, pm);
+          gsl_vector_const_view Mtau = gsl_matrix_const_subcolumn(M, p - 1, 0, GSL_MIN(n, pm));
+          gsl_matrix_const_view To = gsl_matrix_const_submatrix(&MQR.matrix, 0, 0, pm, pm);
+          gsl_vector_view workp = gsl_vector_subvector(work->xt, 0, p);
+          gsl_vector_view v1, v2;
 
           /* compute A = sqrt(W) X and b = sqrt(W) y */
           status = gsl_multifit_linear_applyW(X, w, y, &A.matrix, &b.vector, work);
           if (status)
             return status;
 
-          /* compute c = L_inv * cs */
-          gsl_blas_dgemv(CblasNoTrans, 1.0, &Lp.matrix, cs, 0.0, c);
+          /* initialize c to zero */
+          gsl_vector_set_zero(c);
 
-          /* compute: b = sqrt(W) [ y - X L_inv cs ] */
+          /* compute c = L_inv cs = K_p R_p^{-T} cs */
+
+          /* set c(1:m) = R_p^{-T} cs */
+          v1 = gsl_vector_subvector(c, 0, m);
+          gsl_vector_memcpy(&v1.vector, cs);
+          gsl_blas_dtrsv(CblasUpper, CblasTrans, CblasNonUnit, &Rp.matrix, &v1.vector);
+
+          /* c <- K R_p^{-T} cs = [ K_p R_p^{_T} cs ; 0 ] */
+          gsl_linalg_QR_Qvec(&LTQR.matrix, &LTtau.vector, c);
+
+          /* compute: b1 = b - A L_inv cs */
           gsl_blas_dgemv(CblasNoTrans, -1.0, &A.matrix, c, 1.0, &b.vector);
 
-          /* compute: c = L_inv cs + M * b */
-          gsl_blas_dgemv(CblasNoTrans, 1.0, M, &b.vector, 1.0, c);
+          /* compute: b2 = H^T b1 */
+          gsl_linalg_QR_QTvec(&MQR.matrix, &Mtau.vector, &b.vector);
+
+          /* compute: b3 = T_o^{-1} b2 */
+          v1 = gsl_vector_subvector(&b.vector, 0, pm);
+          gsl_blas_dtrsv(CblasUpper, CblasNoTrans, CblasNonUnit, &To.matrix, &v1.vector);
+
+          /* compute: b4 = K_o b3 */
+          gsl_vector_set_zero(&workp.vector);
+          v2 = gsl_vector_subvector(&workp.vector, m, pm);
+          gsl_vector_memcpy(&v2.vector, &v1.vector);
+          gsl_linalg_QR_Qvec(&LTQR.matrix, &LTtau.vector, &workp.vector);
+
+          /* final solution vector */
+          gsl_vector_add(c, &workp.vector);
 
           return GSL_SUCCESS;
         }
@@ -1153,7 +1131,7 @@ Inputs: p     - number of columns of L
         work  - workspace
 
 Notes:
-1) work->Linv is used to store intermediate L_k matrices
+1) work->LTQR is used to store intermediate L_k matrices
 */
 
 int
@@ -1194,7 +1172,7 @@ gsl_multifit_linear_Lsobolev(const size_t p, const size_t kmax,
 
       for (k = 1; k <= kmax; ++k)
         {
-          gsl_matrix_view Lk = gsl_matrix_submatrix(work->Linv, 0, 0, p - k, p);
+          gsl_matrix_view Lk = gsl_matrix_submatrix(work->LTQR, 0, 0, p - k, p);
           double ak = gsl_vector_get(alpha, k);
 
           /* compute a_k L_k */

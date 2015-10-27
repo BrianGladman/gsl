@@ -577,7 +577,7 @@ the dimensions of the standard form parameters (@math{\tilde{X}},@math{\tilde{y}
 depend on whether @math{m} is larger or less than @math{p}. For @math{m \ge p},
 @var{Xs} is @math{n}-by-@math{p}, @var{ys} is @math{n}-by-1, and @var{M} is
 additional @math{m}-by-@math{p} workspace. For @math{m < p}, @var{Xs} is @math{(n - p + m)}-by-@math{m},
-@var{ys} is @math{(n - p + m)}-by-1, and @var{M} is additional @math{p}-by-@math{n} workspace.
+@var{ys} is @math{(n - p + m)}-by-1, and @var{M} is additional @math{n}-by-@math{p} workspace.
 In both cases, @var{M} is required to recover the original solution vector after the system has been
 solved (see @code{gsl_multifit_linear_genform2}). Optional data weights may be supplied in the
 vector @var{w} of length @math{n}, where @math{W =} diag(w).

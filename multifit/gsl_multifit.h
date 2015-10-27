@@ -53,7 +53,8 @@ typedef struct
   gsl_vector * xt;
   gsl_vector * D;
 
-  gsl_matrix * Linv;   /* pseudo inverse of regularization matrix, p-by-p */
+  gsl_matrix * LTQR;   /* QR decomposition of L^T, p-by-p */
+  gsl_vector * LTtau;  /* Householder scalars for QR of L^T, size p */
 } 
 gsl_multifit_linear_workspace;
 

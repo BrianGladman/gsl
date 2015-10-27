@@ -286,6 +286,10 @@ int gsl_linalg_QR_QTmat (const gsl_matrix * QR,
                          const gsl_vector * tau,
                          gsl_matrix * A);
 
+int gsl_linalg_QR_matQ (const gsl_matrix * QR,
+                        const gsl_vector * tau,
+                        gsl_matrix * A);
+
 int gsl_linalg_QR_unpack (const gsl_matrix * QR,
                           const gsl_vector * tau,
                           gsl_matrix * Q,

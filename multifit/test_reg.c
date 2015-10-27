@@ -287,7 +287,7 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   gsl_permutation *perm = gsl_permutation_alloc(p);
   gsl_matrix *Xs = (m < p) ? gsl_matrix_alloc(n - (p - m), m) : gsl_matrix_alloc(n, p);
   gsl_vector *ys = (m < p) ? gsl_vector_alloc(n - (p - m)) : gsl_vector_alloc(n);
-  gsl_matrix *M = (m < p) ? gsl_matrix_alloc(p, n) : gsl_matrix_alloc(m, p);
+  gsl_matrix *M = (m < p) ? gsl_matrix_alloc(n, p) : gsl_matrix_alloc(m, p);
   gsl_vector *cs = (m < p) ? gsl_vector_alloc(m) : gsl_vector_alloc(p);
   gsl_matrix *WX = gsl_matrix_alloc(n, p);
   gsl_vector *Wy = gsl_vector_alloc(n);
@@ -419,7 +419,7 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
       test_reg4(lambda, L1, X, y, NULL, 1.0e-6, w, "L1 unweighted");
       test_reg4(lambda, L2, X, y, NULL, 1.0e-6, w, "L2 unweighted");
       test_reg4(lambda, L3, X, y, NULL, 1.0e-5, w, "L3 unweighted");
-      test_reg4(lambda, L5, X, y, NULL, 1.0e-2, w, "L5 unweighted");
+      test_reg4(lambda, L5, X, y, NULL, 1.0e-4, w, "L5 unweighted");
 
       /* test weighted */
       test_reg2(lambda, X, y, wts, 1.0e-6, w, "weighted");
@@ -428,7 +428,7 @@ test_reg_system(const size_t n, const size_t p, const gsl_rng *r)
       test_reg4(lambda, L1, X, y, wts, 1.0e-6, w, "L1 weighted");
       test_reg4(lambda, L2, X, y, wts, 1.0e-6, w, "L2 weighted");
       test_reg4(lambda, L3, X, y, wts, 1.0e-5, w, "L3 weighted");
-      test_reg4(lambda, L5, X, y, wts, 1.0e-2, w, "L5 weighted");
+      test_reg4(lambda, L5, X, y, wts, 1.0e-4, w, "L5 weighted");
 
       /* test again with larger workspace */
       test_reg2(lambda, X, y, NULL, 1.0e-6, wbig, "unweighted big");
