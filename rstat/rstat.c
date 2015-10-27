@@ -161,7 +161,8 @@ gsl_rstat_skew(gsl_rstat_workspace *w)
 {
   if (w->n > 0)
     {
-      double fac = pow(w->n - 1.0, 1.5) / (double) w->n;
+      double n = (double) w->n;
+      double fac = pow(n - 1.0, 1.5) / n;
       return ((fac * w->M3) / pow(w->M2, 1.5));
     }
   else
