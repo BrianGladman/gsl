@@ -524,7 +524,7 @@ hyperg_U_infinite_sum_simple(int N, double a, double bint, double b, double beps
         t_err = a0_err + b0_err;
         dchu_val += t_val;
         dchu_err += t_err;
-        if(!finite(t_val) || fabs(t_val) < EPS*fabs(dchu_val)) break;
+        if(!gsl_finite(t_val) || fabs(t_val) < EPS*fabs(dchu_val)) break;
       }
 
       result->val  = dchu_val;
@@ -685,10 +685,10 @@ double bint = ( b < 0.0 ? ceil(b-0.5) : floor(b+0.5) );
   double a_beps = a - beps;
   double r_a_beps = floor(a_beps + 0.5);
   double a_beps_int = ( fabs(a_beps - r_a_beps) < INT_THRESHOLD );
-//  double a_b_1 = a-b+1;
-//  double r_a_b_1 = floor(a_b_1+0.5);
-//  double r_a_b_1_int = (fabs(a_b_1-r_a_b_1)< INT_THRESHOLD);
-  // Check for (a-beps) being a member of -N; N being 0,1,...
+/*  double a_b_1 = a-b+1;
+  double r_a_b_1 = floor(a_b_1+0.5);
+  double r_a_b_1_int = (fabs(a_b_1-r_a_b_1)< INT_THRESHOLD);
+  Check for (a-beps) being a member of -N; N being 0,1,... */
   if (a_beps_int && a_beps <= 0)
   { 	beps=beps - 1 + floor(a_beps);bint=bint + 1 - floor(a_beps);
   }
@@ -706,7 +706,7 @@ double bint = ( b < 0.0 ? ceil(b-0.5) : floor(b+0.5) );
     return stat_e;
   }
   else {
-     int N = bint;
+     int N = (int) bint;
     
     double lnx  = log(x);
     double xeps = exp(-beps*lnx);
@@ -1625,20 +1625,21 @@ hyperg_U_int_negx (const int a, const int b, const double x, gsl_sf_result_e10 *
 except a<b<=0.  The b=1 case seems strange since the poch(1+a-b,-a) should blow up. 
 In order to do no (little) harm I fix up only a<b<=0 using DLMF 13.2.11.  These are the failing conditions
 */
-	if (a<b && b<=0) 
-	{	gsl_sf_result_e10 r1;
-		double	z21_z=pow(x, 1-b);
-		int	status = hyperg_U_negx (1+a-b,2-b, x, &r1);
-		double	res_tem=z21_z*r1.val;
-			result->val = res_tem;
-		double	res_tem_err = fabs(z21_z)*r1.err;
-			result->err = res_tem_err;
-	return status;
-	}
-	else {
-	  return hyperg_U_negx (a, b, x, result);
-	}
-	
+  if (a<b && b<=0) 
+    {
+      gsl_sf_result_e10 r1;
+      double z21_z = pow(x, 1-b);
+      int status = hyperg_U_negx (1+a-b,2-b, x, &r1);
+      double res_tem=z21_z*r1.val;
+      double res_tem_err = fabs(z21_z)*r1.err;
+      result->val = res_tem;
+      result->err = res_tem_err;
+      return status;
+    }
+  else
+    {
+      return hyperg_U_negx (a, b, x, result);
+    }
 }  
 
 
@@ -1712,7 +1713,7 @@ gsl_sf_hyperg_U_e10_e(const double a, const double b, const double x,
 /* This is DLMF 13.6.4 */
    {
      gsl_sf_result powx1N_1;
-     int stat_p_1 = gsl_sf_pow_int_e(x, -a, &powx1N_1);
+     gsl_sf_pow_int_e(x, -a, &powx1N_1);
      result->val = powx1N_1.val;
      result->err = powx1N_1.err;
      result->e10 = 0;
@@ -1754,7 +1755,7 @@ gsl_sf_hyperg_U_e10_e(const double a, const double b, const double x,
 int
 gsl_sf_hyperg_U_int_e(const int a, const int b, const double x, gsl_sf_result * result)
 {
-  gsl_sf_result_e10 re = {0};
+  gsl_sf_result_e10 re = {0, 0, 0};
   int stat_U = gsl_sf_hyperg_U_int_e10_e(a, b, x, &re);
   int stat_c = gsl_sf_result_smash_e(&re, result);
   return GSL_ERROR_SELECT_2(stat_c, stat_U);
@@ -1764,7 +1765,7 @@ gsl_sf_hyperg_U_int_e(const int a, const int b, const double x, gsl_sf_result * 
 int
 gsl_sf_hyperg_U_e(const double a, const double b, const double x, gsl_sf_result * result)
 {
-  gsl_sf_result_e10 re = {0};
+  gsl_sf_result_e10 re = {0, 0, 0};
   int stat_U = gsl_sf_hyperg_U_e10_e(a, b, x, &re);
   int stat_c = gsl_sf_result_smash_e(&re, result);
   return GSL_ERROR_SELECT_2(stat_c, stat_U);

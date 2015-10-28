@@ -423,7 +423,7 @@ gsl_sf_legendre_sphPlm_e(const int l, int m, const double x, gsl_sf_result * res
     }
     else{
       double y_ell = 0.0;
-      double y_ell_err;
+      double y_ell_err = 0.0;
       int ell;
 
       /* Compute Y_l^m, l > m+1, upward recursion on l. */
