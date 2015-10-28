@@ -623,7 +623,7 @@ FUNCTION (test, text) (const size_t M, const size_t N)
   int k = 0;
 
   char filename[] = "test.XXXXXX";
-#if !defined( _MSC_VER )
+#if !defined( _WIN32 )
   int fd = mkstemp(filename);
 #else
   char * fd = _mktemp(filename);
@@ -684,7 +684,7 @@ FUNCTION (test, binary) (const size_t M, const size_t N)
   size_t k = 0;
 
   char filename[] = "test.XXXXXX";
-#if !defined( _MSC_VER )
+#if !defined( _WIN32 )
   int fd = mkstemp(filename);
 #else
   char * fd = _mktemp(filename);
@@ -745,7 +745,7 @@ FUNCTION (test, binary_noncontiguous) (const size_t M, const size_t N)
   size_t k = 0;
 
   char filename[] = "test.XXXXXX";
-#if !defined( _MSC_VER )
+#if !defined( _WIN32 )
   int fd = mkstemp(filename);
 #else
   char * fd = _mktemp(filename);

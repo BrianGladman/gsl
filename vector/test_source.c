@@ -719,7 +719,7 @@ FUNCTION (test, file) (size_t stride, size_t N)
   size_t i;
 
   char filename[] = "test.XXXXXX";
-#if !defined( _MSC_VER )
+#if !defined( _WIN32 )
   int fd = mkstemp(filename);
 #else
   char * fd = _mktemp(filename);
@@ -773,7 +773,7 @@ FUNCTION (test, text) (size_t stride, size_t N)
   size_t i;
 
   char filename[] = "test.XXXXXX";
-#if !defined( _MSC_VER )
+#if !defined( _WIN32 )
    int fd = mkstemp(filename);
 #else
    char * fd = _mktemp(filename);
