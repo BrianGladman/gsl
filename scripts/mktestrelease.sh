@@ -1,4 +1,10 @@
 #!/bin/sh -e -x
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 <tarfile>"
+  exit
+fi
+
 NEWTAR="$1"
 if [ ! -e $NEWTAR ] ; then echo $NEWTAR not found ; exit ; fi
 
