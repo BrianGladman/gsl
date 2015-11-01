@@ -200,7 +200,7 @@ report uninitialized memory errors which don't really exist.
 > git tag release-X-Y
 
 * Upload to ftp-upload.gnu.org with GPG signatures (see http://www.gnu.org/prep/maintain/maintain.html)
-  /incoming/ftp for official releases
+  /incoming/ftp for official releases (use scripts/mkrelease.sh)
   /incoming/alpha for test releases (use scripts/mktestrelease.sh)
 
   3 files to upload:
