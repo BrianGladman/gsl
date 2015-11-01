@@ -1,4 +1,9 @@
-* What is new in gsl-2.0:
+* What is new in gsl-2.1:
+
+** added gsl_multilarge module for large linear least squares
+   systems
+
+* What was new in gsl-2.0:
 
 ** fixed bug #43258 for hypergeometric functions (Raymond Rogers)
 

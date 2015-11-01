@@ -20,6 +20,7 @@ two-parameter regression and multiple-parameter fits.
 * Multi-parameter regression::
 * Regularized regression::
 * Robust linear regression::
+* Large Linear Systems::
 * Troubleshooting::
 * Fitting Examples for linear regression::
 * Fitting Examples for multi-parameter linear regression::
@@ -1049,6 +1050,248 @@ in a reasonable way.
 
 @item gsl_vector * @code{r} This contains the final residual vector of length @var{n}, @math{r = y - X c}
 @end itemize
+@end deftypefun
+
+@node Large Linear Systems
+@section Large linear systems
+@cindex large linear least squares
+@cindex linear least squares, large
+
+This module is concerned with solving large least squares systems
+@math{X c = y} where the @math{n}-by-@math{p} matrix
+@math{X} has @math{n >> p} (ie: many more rows than columns).
+This type of matrix is called a ``tall skinny'' matrix, and for
+some applications, it may not be possible to fit the
+entire matrix in memory at once to use the standard SVD approach.
+Therefore, the algorithms in this module are designed to allow
+the user to construct smaller blocks of the matrix @math{X} and
+accumulate those blocks into the larger system one at a time. The
+algorithms in this module never need to store the entire matrix
+@math{X} in memory. The large linear least squares routines
+support data weights and Tikhonov regularization, and are
+designed to minimize the residual
+@tex
+\beforedisplay
+$$
+\chi^2 = || y - Xc ||_W^2 + \lambda^2 || L c ||^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\chi^2 = || y - Xc ||_W^2 + \lambda^2 || L c ||^2
+@end example
+@end ifinfo
+where @math{y} is the @math{n}-by-@math{1} observation vector,
+@math{X} is the @math{n}-by-@math{p} design matrix, @math{c} is
+the @math{p}-by-@math{1} solution vector,
+@math{W =} diag@math{(w_1,...,w_n)} is the data weighting matrix,
+@math{L} is an @math{m}-by-@math{p} regularization matrix,
+and @math{||r||_W^2 = r^T W r}.
+
+The basic idea is to partition the matrix @math{X} and observation
+vector @math{y} as
+@tex
+\beforedisplay
+$$
+\left(
+\matrix{
+X_1 \cr
+X_2 \cr
+X_3 \cr
+\vdots \cr
+X_k \cr
+}
+\right)
+c =
+\left(
+\matrix{
+y_1 \cr
+y_2 \cr
+y_3 \cr
+\vdots \cr
+y_k \cr
+}
+\right)
+$$
+\afterdisplay
+@end tex
+into @math{k} blocks, where each block (@math{X_i,y_i}) may have
+any number of rows, but each @math{X_i} has @math{p} columns.
+The sections below describe the methods available for solving
+this partitioned system.
+
+@menu
+* Large Linear Systems Normal Equations
+* Large Linear Systems TSQR
+* Large Linear Systems Routines
+@end menu
+
+@node Large Linear Systems Normal Equations
+@subsection Normal Equations Approach
+@cindex large linear least squares, normal equations
+
+The normal equations approach to the large linear least squares
+problem described above is popular due to its speed and simplicity.
+Since the normal equations solution to the problem is given by
+@tex
+\beforedisplay
+$$
+c = \left( X^T X + \lambda^2 I \right)^{-1} X^T y
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+c = ( X^T X + \lambda^2 I )^-1 X^T y
+@end example
+@end ifinfo
+only the @math{p}-by-@math{p} matrix @math{X^T X} and
+@math{p}-by-1 vector @math{X^T y} need to be stored. Using
+the partition scheme described above, these are given by
+@tex
+\beforedisplay
+$$
+\eqalign{
+X^T X &= \sum_i X_i^T X_i \cr
+X^T y &= \sum_i X_i^T y_i
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+X^T X = \sum_i X_i^T X_i
+X^T y = \sum_i X_i^T y_i
+@end example
+@end ifinfo
+Since the matrix @math{X^T X} is symmetric, only half of it
+needs to be calculated. Once all of the blocks (@math{X_i,y_i})
+have been accumulated into the final @math{X^T X} and @math{X^T y},
+the system can be solved with a Cholesky factorization of the
+@math{X^T X} matrix. The normal equations approach is the fastest
+method for solving the large least squares problem, and is accurate
+for well-conditioned matricies @math{X}. However, for ill-conditioned
+matrices, as is often the case for large systems, this method
+suffers from numerical instabilities (see Trefethen and Bau, 1997).
+The number of operations for this method is @math{O(np^2 + p^3/3)}.
+
+@node Large Linear Systems TSQR
+@subsection Tall Skinny QR (TSQR) Approach
+@cindex large linear least squares, TSQR
+
+An algorithm which has better numerical stability for ill-conditioned
+problems is known as the Tall Skinny QR (TSQR) method. This method
+is based on computing the thin QR decomposition of the least squares
+matrix @math{X = Q R}, where @math{Q} is an @math{n}-by-@math{p} matrix
+with orthogonal columns, and @math{R} is an @math{p}-by-@math{p}
+upper triangular matrix. Once these factors are calculated, the
+residual becomes
+@tex
+\beforedisplay
+$$
+\chi^2 = || Q^T y - R c ||^2 + \lambda^2 || c ||^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\chi^2 = || Q^T y - R c ||^2 + \lambda^2 || c ||^2
+@end example
+@end ifinfo
+which can be written as the matrix equation
+@tex
+\beforedisplay
+$$
+\left(
+\matrix{
+R \cr
+\lambda I
+} \right) c =
+\left(
+\matrix{
+Q^T y \cr
+0
+} \right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+[ R ; \lambda I ] c = [ Q^T b ; 0 ]
+@end example
+@end ifinfo
+The matrix on the left hand side is now a much
+smaller @math{2p}-by-@math{p} matrix which can
+be solved with a standard SVD approach. The
+@math{Q} matrix is just as large as the original
+matrix @math{X}, however it does not need to be
+explicitly constructed. The TSQR algorithm
+computes only the @math{p}-by-@math{p} matrix
+@math{R} and the @math{p}-by-1 vector @math{Q^T y},
+and updates these quantities as new blocks (@math{X_i,y_i})
+are added to the system. See Demmel et al, 2008 for
+more details on how this is accomplished. The number
+of operations for this method is @math{O(2np^2 - {2 \over 3}p^3)}.
+
+@node Large Linear Systems Routines
+@subsection Large Linear Least Squares Routines
+@cindex large linear least squares, routines
+
+@deftypefun {gsl_multilarge_linear_workspace *} gsl_multilarge_linear_alloc (const gsl_multilarge_linear_type * @var{T}, const size_t @var{nmax}, const size_t @var{p})
+This function allocates a workspace for solving large linear least squares
+systems. The least squares matrix @math{X} has @var{p} columns,
+but may have any number of rows. However each block (@math{X_i,y_i})
+which is added to the system may have at most @var{nmax} rows. The
+parameter @var{T} specifies the method to be used for solving
+the large least squares system and may be selected from the following
+choices
+@deffn {Multilarge type} gsl_multilarge_linear_normal
+This specifies the normal equations approach (see above) for
+solving the least squares system. This method is suitable
+in cases where performance is critical and it is known that the
+least squares matrix @math{X} is well conditioned.
+@end deffn
+
+@deffn {Multilarge type} gsl_multilarge_linear_tsqr
+This specifies the Tall Skinny QR (TSQR) approach (see above) for
+solving the least squares system. This method is a good
+general purpose choice for large systems.
+@end deffn
+@end deftypefun
+
+@deftypefun void gsl_multilarge_linear_free (gsl_multilarge_linear_workspace * @var{w})
+This function frees the memory associated with the
+workspace @var{w}.
+@end deftypefun
+
+@deftypefun {const char *} gsl_multilarge_linear_name (gsl_multilarge_linear_workspace * @var{w})
+This function returns a string pointer to the name
+of the multilarge solver.
+@end deftypefun
+
+@deftypefun int gsl_multilarge_linear_reset (gsl_multilarge_linear_workspace * @var{w})
+This function resets the workspace @var{w} so
+it can begin to accumulate a new least squares
+system.
+@end deftypefun
+
+@deftypefun int gsl_multilarge_linear_accumulate (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_multilarge_linear_workspace * @var{w})
+This function accumulates the block (@math{X,y}) into the
+current least squares system. @var{X} and @var{y} must
+have the same number of rows which cannot exceed the
+previously specified @math{nmax}. @var{X} must have
+@math{p} columns.
+@end deftypefun
+
+@deftypefun int gsl_multilarge_linear_solve (const double @var{lambda}, gsl_vector * @var{c}, double * @var{rnorm}, double * @var{snorm}, gsl_multilarge_linear_workspace * @var{w})
+After all blocks (@math{X_i,y_i}) have been accumulated into
+the large least squares system, this function will compute
+the solution vector which is stored in @var{c} on output.
+The regularization parameter @math{\lambda} is provided in
+@var{lambda}. On output, @var{rnorm} contains the residual norm
+@math{||y - X c||} and @var{snorm} contains the solution
+norm @math{||c||}.
 @end deftypefun
 
 @node Troubleshooting
