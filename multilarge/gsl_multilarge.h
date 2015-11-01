@@ -58,6 +58,7 @@ typedef struct
 
 /* available types */
 GSL_VAR const gsl_multilarge_linear_type * gsl_multilarge_linear_normal;
+GSL_VAR const gsl_multilarge_linear_type * gsl_multilarge_linear_tsqr;
 
 /*
  * Prototypes

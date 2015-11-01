@@ -1,5 +1,5 @@
 static void
-test_normal_system(const size_t n, const size_t p, const gsl_rng *r)
+test_tsqr_system(const size_t n, const size_t p, const gsl_rng *r)
 {
   const double tol = 1.0e-10;
   gsl_matrix *X = gsl_matrix_alloc(n, p);
@@ -20,19 +20,15 @@ test_normal_system(const size_t n, const size_t p, const gsl_rng *r)
 
   for (i = 0; i < 3; ++i)
     {
-      /*
-       * can't make lambda too small or normal equations
-       * approach won't work well
-       */
       double lambda = pow(10.0, -(double) i);
 
       /* solve system with multifit SVD approach */
       test_multifit_solve(lambda, X, y, c0);
 
-      /* solve system with large normal equations approach */
-      test_multilarge_solve(gsl_multilarge_linear_normal, lambda, X, y, c1);
+      /* solve system with TSQR approach */
+      test_multilarge_solve(gsl_multilarge_linear_tsqr, lambda, X, y, c1);
 
-      sprintf(str, "normal n=%zu p=%zu lambda=%g", n, p, lambda);
+      sprintf(str, "tsqr n=%zu p=%zu lambda=%g", n, p, lambda);
       test_compare_vectors(tol, c0, c1, str);
     }
 
@@ -43,10 +39,9 @@ test_normal_system(const size_t n, const size_t p, const gsl_rng *r)
   gsl_vector_free(c1);
 }
 
-/* test normal equations module */
+/* test TSQR module */
 static void
-test_normal(const gsl_rng * r)
+test_tsqr(const gsl_rng * r)
 {
-  test_normal_system(500, 350, r);
-  test_normal_system(456, 123, r);
+  test_tsqr_system(500, 350, r);
 }

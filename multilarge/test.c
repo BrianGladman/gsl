@@ -43,6 +43,7 @@ static void test_multilarge_solve(const gsl_multilarge_linear_type * T, const do
                                   const gsl_matrix * X, const gsl_vector * y, gsl_vector * c);
 
 #include "test_normal.c"
+#include "test_tsqr.c"
 
 /* generate random square orthogonal matrix via QR decomposition */
 static void
@@ -210,9 +211,14 @@ test_multilarge_solve(const gsl_multilarge_linear_type * T, const double lambda,
 int
 main (void)
 {
+  gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
+
   gsl_ieee_env_setup();
 
-  test_normal();
+  test_normal(r);
+  test_tsqr(r);
+
+  gsl_rng_free(r);
 
   exit (gsl_test_summary ());
 }

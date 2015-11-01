@@ -30,10 +30,10 @@ typedef struct
 {
   size_t nmax;          /* maximum rows to add at once */
   size_t p;             /* number of columns of LS matrix */
-  gsl_matrix *ATA;      /* A^T A */
-  gsl_vector *ATb;      /* A^T b */
+  gsl_matrix *ATA;      /* A^T A, p-by-p */
+  gsl_vector *ATb;      /* A^T b, p-by-1 */
   double bTb;           /* b^T b */
-  gsl_matrix *work_ATA; /* temporary workspace */
+  gsl_matrix *work_ATA; /* temporary workspace, p-by-p */
 } normal_state_t;
 
 static void *normal_alloc(const size_t nmax, const size_t p);
@@ -42,6 +42,9 @@ static int normal_reset(void *vstate);
 static int normal_accumulate(const gsl_matrix * A,
                              const gsl_vector * b,
                              void * vstate);
+static int normal_solve(const double lambda, gsl_vector * x,
+                        double * rnorm, double * snorm,
+                        void * vstate);
 
 /*
 normal_alloc()
