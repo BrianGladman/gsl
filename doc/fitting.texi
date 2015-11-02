@@ -1057,7 +1057,7 @@ in a reasonable way.
 @cindex large linear least squares
 @cindex linear least squares, large
 
-This module is concerned with solving large least squares systems
+This module is concerned with solving large dense least squares systems
 @math{X c = y} where the @math{n}-by-@math{p} matrix
 @math{X} has @math{n >> p} (ie: many more rows than columns).
 This type of matrix is called a ``tall skinny'' matrix, and for
