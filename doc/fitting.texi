@@ -1123,9 +1123,9 @@ this partitioned system. The functions are declared in
 the header file @file{gsl_multilarge.h}.
 
 @menu
-* Large Linear Systems Normal Equations
-* Large Linear Systems TSQR
-* Large Linear Systems Routines
+* Large Linear Systems Normal Equations::
+* Large Linear Systems TSQR::
+* Large Linear Systems Routines::
 @end menu
 
 @node Large Linear Systems Normal Equations
