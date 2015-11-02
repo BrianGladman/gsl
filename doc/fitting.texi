@@ -1119,7 +1119,8 @@ $$
 into @math{k} blocks, where each block (@math{X_i,y_i}) may have
 any number of rows, but each @math{X_i} has @math{p} columns.
 The sections below describe the methods available for solving
-this partitioned system.
+this partitioned system. The functions are declared in
+the header file @file{gsl_multilarge.h}.
 
 @menu
 * Large Linear Systems Normal Equations
@@ -1184,7 +1185,7 @@ An algorithm which has better numerical stability for ill-conditioned
 problems is known as the Tall Skinny QR (TSQR) method. This method
 is based on computing the thin QR decomposition of the least squares
 matrix @math{X = Q R}, where @math{Q} is an @math{n}-by-@math{p} matrix
-with orthogonal columns, and @math{R} is an @math{p}-by-@math{p}
+with orthogonal columns, and @math{R} is a @math{p}-by-@math{p}
 upper triangular matrix. Once these factors are calculated, the
 residual becomes
 @tex
@@ -1567,4 +1568,16 @@ Symposium on the Interface, American Statistical Association
 computing robust regression estimates via iteratively
 reweighted least squares," The American Statistician, v. 42, 
 pp. 152-154.
+@end itemize
+
+@noindent
+More information about the normal equations and TSQR approach for solving
+large linear least squares systems can be found in the publications
+
+@itemize @w{}
+@item Trefethen, L. N. and Bau, D. (1997), "Numerical Linear Algebra", SIAM.
+
+@item Demmel, J., Grigori, L., Hoemmen, M. F., and Langou, J.
+"Communication-optimal parallel and sequential QR and LU factorizations",
+UCB Technical Report No. UCB/EECS-2008-89, 2008.
 @end itemize
