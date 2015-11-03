@@ -25,6 +25,8 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_linalg.h>
 
+#include "linear_common.c"
+
 /* General weighted case */ 
 
 static int
@@ -218,10 +220,57 @@ gsl_multifit_wlinear (const gsl_matrix * X,
                       gsl_matrix * cov,
                       double *chisq, gsl_multifit_linear_workspace * work)
 {
-  size_t rank;
-  int status  = multifit_wlinear_svd (X, w, y, GSL_DBL_EPSILON, 1,  &rank, c,
-                                      cov, chisq, work);
-  return status;
+  int status;
+  size_t rank = 0;
+  double rnorm, snorm;
+  gsl_vector *b = gsl_vector_alloc(y->size);
+
+  /* compute A = sqrt(W) X, b = sqrt(W) y */
+  status = gsl_multifit_linear_applyW(X, w, y, work->A, b, work);
+  if (status)
+    return status;
+
+  /* compute SVD of A */
+  status = gsl_multifit_linear_bsvd(work->A, work);
+  if (status)
+    return status;
+
+  status = multifit_linear_solve(X, b, GSL_DBL_EPSILON, 0.0, &rank,
+                                 c, &rnorm, &snorm, work);
+  if (status)
+    return status;
+
+  *chisq = rnorm * rnorm;
+
+  /* variance-covariance matrix cov = s2 * (Q S^-1) (Q S^-1)^T */
+  {
+    const size_t p = X->size2;
+    size_t i, j;
+    gsl_matrix_view QSI = gsl_matrix_submatrix(work->QSI, 0, 0, p, p);
+    gsl_vector_view D = gsl_vector_subvector(work->D, 0, p);
+
+    for (i = 0; i < p; i++)
+      {
+        gsl_vector_view row_i = gsl_matrix_row (&QSI.matrix, i);
+        double d_i = gsl_vector_get (&D.vector, i);
+
+        for (j = i; j < p; j++)
+          {
+            gsl_vector_view row_j = gsl_matrix_row (&QSI.matrix, j);
+            double d_j = gsl_vector_get (&D.vector, j);
+            double s;
+
+            gsl_blas_ddot (&row_i.vector, &row_j.vector, &s);
+
+            gsl_matrix_set (cov, i, j, s / (d_i * d_j));
+            gsl_matrix_set (cov, j, i, s / (d_i * d_j));
+          }
+      }
+  }
+
+  gsl_vector_free(b);
+
+  return GSL_SUCCESS;
 }
 
 int

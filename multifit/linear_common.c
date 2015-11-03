@@ -35,6 +35,10 @@
  * Notes:
  * 1) The dimensions of X must match work->n and work->p which are set
  *    by multifit_linear_svd()
+ * 2) On input:
+ *    work->A contains U
+ *    work->Q contains Q
+ *    work->S contains singular values
  */
 
 static int
@@ -81,10 +85,13 @@ multifit_linear_solve (const gsl_matrix * X,
 
       size_t j, p_eff;
 
+      /* these inputs are previously computed by multifit_linear_svd() */
       gsl_matrix_view A = gsl_matrix_submatrix(work->A, 0, 0, n, p);
       gsl_matrix_view Q = gsl_matrix_submatrix(work->Q, 0, 0, p, p);
-      gsl_matrix_view QSI = gsl_matrix_submatrix(work->QSI, 0, 0, p, p);
       gsl_vector_view S = gsl_vector_subvector(work->S, 0, p);
+
+      /* workspace */
+      gsl_matrix_view QSI = gsl_matrix_submatrix(work->QSI, 0, 0, p, p);
       gsl_vector_view xt = gsl_vector_subvector(work->xt, 0, p);
       gsl_vector_view D = gsl_vector_subvector(work->D, 0, p);
       gsl_vector_view t = gsl_vector_subvector(work->t, 0, n);
