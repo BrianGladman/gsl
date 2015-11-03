@@ -135,7 +135,7 @@ gsl_multifit_fdfsolver_dif_fdf(const gsl_vector *x,
   if (status)
     return status;
 
-  status = fdjac(x, NULL, fdf, f, J);
+  status = fdjac(x, fdf, f, J);
   if (status)
     return status;
 

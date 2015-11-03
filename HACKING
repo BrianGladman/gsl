@@ -198,7 +198,6 @@ report uninitialized memory errors which don't really exist.
 
 * Tag release:
 > git tag release-X-Y
-> git push origin release-X-Y
 
 * Upload to ftp-upload.gnu.org with GPG signatures (see http://www.gnu.org/prep/maintain/maintain.html)
   /incoming/ftp for official releases (use scripts/mkrelease.sh)
