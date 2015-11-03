@@ -39,6 +39,10 @@
  *    work->A contains U
  *    work->Q contains Q
  *    work->S contains singular values
+ * 3) If this function is called from gsl_multifit_wlinear(), then
+ *    the input y points to work->t, which contains sqrt(W) y. Since
+ *    work->t is also used as scratch workspace by this function, we
+ *    do the necessary computations with y first to avoid problems.
  */
 
 static int

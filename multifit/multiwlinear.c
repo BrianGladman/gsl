@@ -223,10 +223,10 @@ gsl_multifit_wlinear (const gsl_matrix * X,
   int status;
   size_t rank = 0;
   double rnorm, snorm;
-  gsl_vector *b = gsl_vector_alloc(y->size);
+  gsl_vector_view b = gsl_vector_subvector(work->t, 0, y->size);
 
   /* compute A = sqrt(W) X, b = sqrt(W) y */
-  status = gsl_multifit_linear_applyW(X, w, y, work->A, b, work);
+  status = gsl_multifit_linear_applyW(X, w, y, work->A, &b.vector, work);
   if (status)
     return status;
 
@@ -235,7 +235,7 @@ gsl_multifit_wlinear (const gsl_matrix * X,
   if (status)
     return status;
 
-  status = multifit_linear_solve(X, b, GSL_DBL_EPSILON, 0.0, &rank,
+  status = multifit_linear_solve(X, &b.vector, GSL_DBL_EPSILON, 0.0, &rank,
                                  c, &rnorm, &snorm, work);
   if (status)
     return status;
@@ -267,8 +267,6 @@ gsl_multifit_wlinear (const gsl_matrix * X,
           }
       }
   }
-
-  gsl_vector_free(b);
 
   return GSL_SUCCESS;
 }
