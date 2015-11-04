@@ -588,6 +588,7 @@ deriv/Makefile         \
 dht/Makefile           \
 diff/Makefile          \
 doc/Makefile           \
+doc/examples/Makefile  \
 eigen/Makefile         \
 err/Makefile           \
 fit/Makefile           \

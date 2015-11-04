@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+SUBDIRS = . examples
+
 info_TEXINFOS = gsl-ref.texi
 noinst_TEXINFOS = gsl-design.texi
 gsl_ref_TEXINFOS = err.texi cblas.texi blas.texi min.texi fft.texi rng.texi randist.texi roots.texi rstat.texi statistics.texi specfunc.texi specfunc-airy.texi specfunc-bessel.texi specfunc-clausen.texi specfunc-coulomb.texi specfunc-coupling.texi specfunc-dawson.texi specfunc-debye.texi specfunc-dilog.texi specfunc-elementary.texi specfunc-ellint.texi specfunc-elljac.texi specfunc-erf.texi specfunc-exp.texi specfunc-expint.texi specfunc-fermi-dirac.texi specfunc-gamma.texi specfunc-gegenbauer.texi specfunc-hyperg.texi specfunc-lambert.texi specfunc-laguerre.texi specfunc-legendre.texi specfunc-log.texi specfunc-mathieu.texi specfunc-pow-int.texi specfunc-psi.texi specfunc-synchrotron.texi specfunc-transport.texi specfunc-trig.texi specfunc-zeta.texi siman.texi vectors.texi debug.texi histogram.texi ode-initval.texi integration.texi ieee754.texi montecarlo.texi sum.texi intro.texi usage.texi dwt.texi dht.texi interp.texi poly.texi linalg.texi eigen.texi multiroots.texi sort.texi permutation.texi combination.texi multiset.texi complex.texi math.texi fitting.texi multifit.texi const.texi ntuple.texi diff.texi qrng.texi cheb.texi multimin.texi gpl.texi fdl.texi autoconf.texi bspline.texi spblas.texi spmatrix.texi splinalg.texi

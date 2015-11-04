@@ -21,6 +21,7 @@ main (void)
   const size_t n = N;
   const size_t p = 3;
 
+  gsl_matrix *J = gsl_matrix_alloc(n, p);
   gsl_matrix *covar = gsl_matrix_alloc (p, p);
   double y[N], weights[N];
   struct data d = { n, y };
@@ -74,7 +75,8 @@ main (void)
   /* solve the system with a maximum of 20 iterations */
   status = gsl_multifit_fdfsolver_driver(s, 20, xtol, gtol, ftol, &info);
 
-  gsl_multifit_fdfsolver_covar (s, 0.0, covar);
+  gsl_multifit_fdfsolver_jac(s, J);
+  gsl_multifit_covar (J, 0.0, covar);
 
   /* compute final residual norm */
   chi = gsl_blas_dnrm2(res_f);
@@ -108,6 +110,7 @@ main (void)
 
   gsl_multifit_fdfsolver_free (s);
   gsl_matrix_free (covar);
+  gsl_matrix_free (J);
   gsl_rng_free (r);
   return 0;
 }
