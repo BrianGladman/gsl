@@ -174,7 +174,7 @@ The following program shows how to allocate a block,
 Here is the output from the program,
 
 @example
-@verbatiminclude examples/block.out
+@verbatiminclude examples/block.txt
 @end example
 @comment
 
@@ -1663,7 +1663,7 @@ Here is the output of the program,
 
 @example
 $ ./a.out
-@verbatiminclude examples/vectorview.out
+@verbatiminclude examples/vectorview.txt
 @end example
 
 @noindent

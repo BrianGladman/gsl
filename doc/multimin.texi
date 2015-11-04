@@ -525,7 +525,7 @@ terminates when the norm of the gradient has been reduced below
 0.001. The output of the program is shown below,
 
 @example
-@verbatiminclude examples/multimin.out
+@verbatiminclude examples/multimin.txt
 @end example
 
 @noindent
@@ -555,7 +555,7 @@ The minimum search stops when the Simplex size drops to 0.01. The output is
 shown below.
 
 @example
-@verbatiminclude examples/nmsimplex.out
+@verbatiminclude examples/nmsimplex.txt
 @end example
 
 @noindent

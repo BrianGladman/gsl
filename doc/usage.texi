@@ -38,7 +38,7 @@ accuracy,@footnote{The last few digits may vary slightly depending on
 the compiler and platform used---this is normal.}
 
 @example
-@verbatiminclude examples/intro.out
+@verbatiminclude examples/intro.txt
 @end example
 
 @noindent

@@ -194,7 +194,7 @@ Here is the output from the program,
 
 @example
 $ ./a.out
-@verbatiminclude examples/multiset.out
+@verbatiminclude examples/multiset.txt
 @end example
 
 @noindent

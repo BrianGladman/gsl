@@ -932,7 +932,7 @@ subdivisions.
 
 @example
 $ ./a.out 
-@verbatiminclude examples/integration.out
+@verbatiminclude examples/integration.txt
 @end example
 
 @noindent

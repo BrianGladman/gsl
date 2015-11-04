@@ -344,7 +344,7 @@ The output of the program is,
 
 @example
 $ ./a.out 
-@verbatiminclude examples/polyroots.out
+@verbatiminclude examples/polyroots.txt
 @end example
 
 @noindent

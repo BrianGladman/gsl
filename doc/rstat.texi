@@ -200,7 +200,7 @@ Here is a basic example of how to use the statistical functions:
 The program should produce the following output,
 
 @example
-@verbatiminclude examples/stat.out
+@verbatiminclude examples/stat.txt
 @end example
 
 @noindent
@@ -217,7 +217,7 @@ dataset.
 The program should produce the following output,
 
 @example
-@verbatiminclude examples/rquantile.out
+@verbatiminclude examples/rquantile.txt
 @end example
 
 @node Running Statistics References and Further Reading

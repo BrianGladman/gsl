@@ -1206,7 +1206,7 @@ and the solution is found using LU decomposition of the matrix @math{A}.
 Here is the output from the program,
 
 @example
-@verbatiminclude examples/linalglu.out
+@verbatiminclude examples/linalglu.txt
 @end example
 
 @noindent

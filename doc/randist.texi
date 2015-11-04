@@ -2180,7 +2180,7 @@ Here is the output of the program,
 
 @example
 $ ./a.out 
-@verbatiminclude examples/randpoisson.out
+@verbatiminclude examples/randpoisson.txt
 @end example
 
 @noindent
@@ -2191,7 +2191,7 @@ of variates,
 
 @example
 $ GSL_RNG_SEED=123 ./a.out 
-@verbatiminclude examples/randpoisson.2.out
+@verbatiminclude examples/randpoisson.2.txt
 @end example
 
 @noindent
@@ -2220,7 +2220,7 @@ distribution functions for the standard normal distribution at
 Here is the output of the program,
 
 @example
-@verbatiminclude examples/cdf.out
+@verbatiminclude examples/cdf.txt
 @end example
 
 @node Random Number Distribution References and Further Reading

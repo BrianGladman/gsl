@@ -325,7 +325,7 @@ defaults, an @code{mt19937} generator with a seed of 0,
 
 @example
 $ ./a.out 
-@verbatiminclude examples/rng.out
+@verbatiminclude examples/rng.txt
 @end example
 
 @noindent
@@ -1376,7 +1376,7 @@ Here is the output of the program,
 
 @example
 $ ./a.out 
-@verbatiminclude examples/rngunif.out
+@verbatiminclude examples/rngunif.txt
 @end example
 
 @noindent
@@ -1389,7 +1389,7 @@ multiple-recursive generator @code{mrg},
 
 @example
 $ GSL_RNG_SEED=123 GSL_RNG_TYPE=mrg ./a.out 
-@verbatiminclude examples/rngunif.2.out
+@verbatiminclude examples/rngunif.2.txt
 @end example
 
 @node Random Number References and Further Reading

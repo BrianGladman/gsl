@@ -197,7 +197,7 @@ Here is the output from the program,
 
 @example
 $ ./a.out 
-@verbatiminclude examples/combination.out
+@verbatiminclude examples/combination.txt
 @end example
 
 @noindent

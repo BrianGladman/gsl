@@ -288,7 +288,7 @@ Here are the results of running the program,
 
 @example
 $ ./a.out 
-@verbatiminclude examples/specfun_e.out
+@verbatiminclude examples/specfun_e.txt
 @end example
 
 @noindent
@@ -305,7 +305,7 @@ The results of the function are the same,
 
 @example
 $ ./a.out 
-@verbatiminclude examples/specfun.out
+@verbatiminclude examples/specfun.txt
 @end example
 
 

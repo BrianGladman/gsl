@@ -390,7 +390,7 @@ Here are the results of the minimization procedure.
 
 @smallexample
 $ ./a.out 
-@verbatiminclude examples/min.out
+@verbatiminclude examples/min.txt
 @end smallexample
 
 @node Minimization References and Further Reading

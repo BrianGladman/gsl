@@ -147,7 +147,7 @@ the correct number of significant digits.
 
 @example
 $ ./a.out 
-@verbatiminclude examples/sum.out
+@verbatiminclude examples/sum.txt
 @end example
 
 @noindent
