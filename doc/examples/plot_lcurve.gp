@@ -18,5 +18,5 @@ unset key
 set xlabel "residual norm ||y - X c||"
 set ylabel "solution norm ||c||"
 
-plot 'ridge.txt' index 0 us 1:2 w lp lt -1 pt 7, \
-     'ridge.txt' index 1 us 1:2 w p ps 3 pt 6 lt 7 lw 2
+plot 'fitreg.txt' index 0 us 1:2 w lp lt -1 pt 7, \
+     'fitreg.txt' index 1 us 1:2 w p ps 3 pt 6 lt 7 lw 2

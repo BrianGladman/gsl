@@ -18,4 +18,4 @@ set label 1 "z = 0" at graph 0.01,0.05 left front tc rgb "white"
 set label 2 "z = 1" at graph 0.01,0.95 left front tc rgb "white"
 set label 3 "z = 1" at graph 0.99,0.05 right front tc rgb "white"
 set label 4 "z = 0.5" at graph 0.99,0.95 right front tc rgb "white"
-splot 'interp2d.out' us 1:2:3
+splot 'interp2d.txt' us 1:2:3
