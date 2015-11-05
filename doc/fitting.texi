@@ -1087,7 +1087,24 @@ where @math{y} is the @math{n}-by-@math{1} observation vector,
 the @math{p}-by-@math{1} solution vector,
 @math{W =} diag@math{(w_1,...,w_n)} is the data weighting matrix,
 @math{L} is an @math{m}-by-@math{p} regularization matrix,
-and @math{||r||_W^2 = r^T W r}.
+and @math{||r||_W^2 = r^T W r}. In the discussion which follows,
+we will assume that the system has been converted into Tikhonov
+standard form,
+@tex
+\beforedisplay
+$$
+\chi^2 = || \tilde{y} - \tilde{X} \tilde{c} ||^2 + \lambda^2 || \tilde{c} ||^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\chi^2 = || y~ - X~ c~ ||^2 + \lambda^2 || c~ ||^2
+@end example
+@end ifinfo
+and we will drop the tilde characters from the various parameters.
+For a discussion of the transformation to standard form
+@pxref{Regularized regression}.
 
 The basic idea is to partition the matrix @math{X} and observation
 vector @math{y} as
@@ -1125,6 +1142,7 @@ the header file @file{gsl_multilarge.h}.
 @menu
 * Large Linear Systems Normal Equations::
 * Large Linear Systems TSQR::
+* Large Linear Systems Solution Steps::
 * Large Linear Systems Routines::
 @end menu
 
@@ -1273,6 +1291,38 @@ This QR decomposition is done efficiently taking into account
 the sparse structure of @math{R_{i-1}}. See Demmel et al, 2008 for
 more details on how this is accomplished. The number
 of operations for this method is @math{O(2np^2 - {2 \over 3}p^3)}.
+
+@node Large Linear Systems Solution Steps
+@subsection Large Linear Systems Solution Steps
+@cindex large linear least squares, steps
+The typical steps required to solve large regularized linear least
+squares problems are as follows:
+
+@enumerate
+
+@item Choose the regularization matrix @math{L}.
+
+@item Construct a block of rows of the least squares matrix, right
+hand side vector, and weight vector (@math{X_i}, @math{y_i}, @math{w_i}).
+
+@item Transform the block to standard form (@math{\tilde{X_i}},@math{\tilde{y_i}}). This
+step can be skipped if @math{L = I} and @math{W = I}.
+
+@item Accumulate the standard form block (@math{\tilde{X_i}},@math{\tilde{y_i}}) into
+the system.
+
+@item Repeat steps 2-4 until the entire matrix and right hand side vector have
+been accumulated.
+
+@item Determine an appropriate regularization parameter @math{\lambda} (using for example
+L-curve analysis).
+
+@item Solve the standard form system using the chosen @math{\lambda}.
+
+@item Backtransform the standard form solution @math{\tilde{c}} to recover the
+original solution vector @math{c}.
+
+@end enumerate
 
 @node Large Linear Systems Routines
 @subsection Large Linear Least Squares Routines
