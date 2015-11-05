@@ -65,7 +65,6 @@ Inputs: X    - least squares matrix n-by-p
         y    - right hand side n-by-1
         WX   - (output) sqrt(W) X
         Wy   - (output) sqrt(W) y
-        work - workspace
 
 Notes:
 1) If w = NULL, on output WX = X and Wy = y
@@ -77,8 +76,7 @@ gsl_multifit_linear_applyW(const gsl_matrix * X,
                            const gsl_vector * w,
                            const gsl_vector * y,
                            gsl_matrix * WX,
-                           gsl_vector * Wy,
-                           gsl_multifit_linear_workspace * work)
+                           gsl_vector * Wy)
 {
   const size_t n = X->size1;
   const size_t p = X->size2;
@@ -194,7 +192,7 @@ gsl_multifit_linear_wstdform1 (const gsl_vector * L,
       int status = GSL_SUCCESS;
 
       /* compute Xs = sqrt(W) X and ys = sqrt(W) y */
-      status = gsl_multifit_linear_applyW(X, w, y, Xs, ys, work);
+      status = gsl_multifit_linear_applyW(X, w, y, Xs, ys);
       if (status)
         return status;
 
@@ -369,7 +367,7 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
             return status;
 
           /* compute Xs = sqrt(W) X and ys = sqrt(W) y */
-          status = gsl_multifit_linear_applyW(X, w, y, Xs, ys, work);
+          status = gsl_multifit_linear_applyW(X, w, y, Xs, ys);
           if (status)
             return status;
 
@@ -429,7 +427,7 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
           size_t i;
 
           /* compute A = sqrt(W) X and b = sqrt(W) y */
-          status = gsl_multifit_linear_applyW(X, w, y, &A.matrix, &b.vector, work);
+          status = gsl_multifit_linear_applyW(X, w, y, &A.matrix, &b.vector);
           if (status)
             return status;
 
@@ -623,7 +621,7 @@ gsl_multifit_linear_wgenform2 (const gsl_matrix * L,
           gsl_vector_view v1, v2;
 
           /* compute A = sqrt(W) X and b = sqrt(W) y */
-          status = gsl_multifit_linear_applyW(X, w, y, &A.matrix, &b.vector, work);
+          status = gsl_multifit_linear_applyW(X, w, y, &A.matrix, &b.vector);
           if (status)
             return status;
 

@@ -22,6 +22,7 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_multifit.h>
 #include <gsl/gsl_multilarge.h>
 
 gsl_multilarge_linear_workspace *
@@ -46,6 +47,9 @@ gsl_multilarge_linear_alloc(const gsl_multilarge_linear_type *T,
       GSL_ERROR_NULL("failed to allocate space for multilarge state",
                      GSL_ENOMEM);
     }
+
+  w->nmax = nmax;
+  w->p = p;
 
   /* initialize newly allocated state */
   gsl_multilarge_linear_reset(w);
@@ -92,4 +96,135 @@ gsl_multilarge_linear_solve(const double lambda, gsl_vector * c,
 {
   int status = w->type->solve(lambda, c, rnorm, snorm, w->state);
   return status;
+}
+
+/*
+gsl_multilarge_linear_wstdform1()
+  Using regularization matrix
+L = diag(l_1,l_2,...,l_p), transform to Tikhonov standard form:
+
+X~ = sqrt(W) X L^{-1}
+y~ = sqrt(W) y
+c~ = L c
+
+Inputs: L    - Tikhonov matrix as a vector of diagonal elements p-by-1;
+               or NULL for L = I
+        X    - least squares matrix n-by-p
+        y    - right hand side vector n-by-1
+        w    - weight vector n-by-1; or NULL for W = I
+        Xs   - least squares matrix in standard form X~ n-by-p
+        ys   - right hand side vector in standard form y~ n-by-1
+        work - workspace
+
+Return: success/error
+
+Notes:
+1) It is allowed for X = Xs and y = ys
+*/
+
+int
+gsl_multilarge_linear_wstdform1 (const gsl_vector * L,
+                                 const gsl_matrix * X,
+                                 const gsl_vector * w,
+                                 const gsl_vector * y,
+                                 gsl_matrix * Xs,
+                                 gsl_vector * ys,
+                                 gsl_multilarge_linear_workspace * work)
+{
+  const size_t n = X->size1;
+  const size_t p = X->size2;
+
+  if (n > work->nmax)
+    {
+      GSL_ERROR("observation matrix larger than workspace", GSL_EBADLEN);
+    }
+  else if (p != work->p)
+    {
+      GSL_ERROR("observation matrix has different number of columns than workspace",
+                GSL_EBADLEN);
+    }
+  else if (L != NULL && p != L->size)
+    {
+      GSL_ERROR("L vector does not match X", GSL_EBADLEN);
+    }
+  else if (n != y->size)
+    {
+      GSL_ERROR("y vector does not match X", GSL_EBADLEN);
+    }
+  else if (w != NULL && n != w->size)
+    {
+      GSL_ERROR("weight vector does not match X", GSL_EBADLEN);
+    }
+  else if (n != Xs->size1 || p != Xs->size2)
+    {
+      GSL_ERROR("Xs matrix dimensions do not match X", GSL_EBADLEN);
+    }
+  else if (n != ys->size)
+    {
+      GSL_ERROR("ys vector must be length n", GSL_EBADLEN);
+    }
+  else
+    {
+      int status = GSL_SUCCESS;
+
+      /* compute Xs = sqrt(W) X and ys = sqrt(W) y */
+      status = gsl_multifit_linear_applyW(X, w, y, Xs, ys);
+      if (status)
+        return status;
+
+      if (L != NULL)
+        {
+          size_t j;
+
+          /* construct X~ = sqrt(W) X * L^{-1} matrix */
+          for (j = 0; j < p; ++j)
+            {
+              gsl_vector_view Xj = gsl_matrix_column(Xs, j);
+              double lj = gsl_vector_get(L, j);
+
+              if (lj == 0.0)
+                {
+                  GSL_ERROR("L matrix is singular", GSL_EDOM);
+                }
+
+              gsl_vector_scale(&Xj.vector, 1.0 / lj);
+            }
+        }
+
+      return status;
+    }
+}
+
+/*
+gsl_multilarge_linear_genform1()
+  Backtransform regularized solution vector using matrix
+L = diag(L)
+*/
+
+int
+gsl_multilarge_linear_genform1 (const gsl_vector * L,
+                                const gsl_vector * cs,
+                                gsl_vector * c,
+                                gsl_multilarge_linear_workspace * work)
+{
+  if (L->size != work->p)
+    {
+      GSL_ERROR("L vector does not match workspace", GSL_EBADLEN);
+    }
+  else if (L->size != cs->size)
+    {
+      GSL_ERROR("cs vector does not match L", GSL_EBADLEN);
+    }
+  else if (L->size != c->size)
+    {
+      GSL_ERROR("c vector does not match L", GSL_EBADLEN);
+    }
+  else
+    {
+      /* compute true solution vector c = L^{-1} c~ */
+      gsl_vector_memcpy(c, cs);
+      gsl_vector_div(c, L);
+
+      return GSL_SUCCESS;
+    }
 }

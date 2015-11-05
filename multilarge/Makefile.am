@@ -6,10 +6,6 @@ libgslmultilarge_la_SOURCES = multilarge.c normal.c tsqr.c
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
-noinst_HEADERS =         \
-  test_normal.c          \
-  test_tsqr.c
-
 check_PROGRAMS = test
 
 TESTS = $(check_PROGRAMS)

@@ -94,8 +94,7 @@ gsl_multifit_linear_applyW(const gsl_matrix * X,
                            const gsl_vector * w,
                            const gsl_vector * y,
                            gsl_matrix * WX,
-                           gsl_vector * Wy,
-                           gsl_multifit_linear_workspace * work);
+                           gsl_vector * Wy);
 
 int
 gsl_multifit_linear_stdform1 (const gsl_vector * L,

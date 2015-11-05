@@ -1230,8 +1230,47 @@ matrix @math{X}, however it does not need to be
 explicitly constructed. The TSQR algorithm
 computes only the @math{p}-by-@math{p} matrix
 @math{R} and the @math{p}-by-1 vector @math{Q^T y},
-and updates these quantities as new blocks (@math{X_i,y_i})
-are added to the system. See Demmel et al, 2008 for
+and updates these quantities as new blocks
+are added to the system. Each time a new block of rows
+(@math{X_i,y_i}) is added, the algorithm must perform a QR decomposition
+of the matrix
+@tex
+\beforedisplay
+$$
+\left(
+\matrix{
+R_{i-1} \cr
+X_i
+} \right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+[ R_{i-1} ; X_i ]
+@end example
+@end ifinfo
+where @math{R_{i-1}} is the upper triangular
+@math{R} factor for the matrix
+@tex
+\beforedisplay
+$$
+\left(
+\matrix{
+X_1 \cr
+\vdots \cr
+X_{i-1}
+} \right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+[ X_1 ; ... ; X_{i-1} ]
+@end example
+@end ifinfo
+This QR decomposition is done efficiently taking into account
+the sparse structure of @math{R_{i-1}}. See Demmel et al, 2008 for
 more details on how this is accomplished. The number
 of operations for this method is @math{O(2np^2 - {2 \over 3}p^3)}.
 
