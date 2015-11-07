@@ -68,15 +68,21 @@ GSL_VAR const gsl_multilarge_linear_type * gsl_multilarge_linear_tsqr;
 gsl_multilarge_linear_workspace *
 gsl_multilarge_linear_alloc(const gsl_multilarge_linear_type * T,
                             const size_t nmax, const size_t p);
+
 void gsl_multilarge_linear_free(gsl_multilarge_linear_workspace * w);
+
 const char *gsl_multilarge_linear_name(const gsl_multilarge_linear_workspace * w);
+
 int gsl_multilarge_linear_reset(gsl_multilarge_linear_workspace * w);
+
 int gsl_multilarge_linear_accumulate(const gsl_matrix * X,
                                      const gsl_vector * y,
                                      gsl_multilarge_linear_workspace * w);
+
 int gsl_multilarge_linear_solve(const double lambda, gsl_vector * c,
                                 double * rnorm, double * snorm,
                                 gsl_multilarge_linear_workspace * w);
+
 int gsl_multilarge_linear_wstdform1 (const gsl_vector * L,
                                      const gsl_matrix * X,
                                      const gsl_vector * w,
@@ -84,6 +90,14 @@ int gsl_multilarge_linear_wstdform1 (const gsl_vector * L,
                                      gsl_matrix * Xs,
                                      gsl_vector * ys,
                                      gsl_multilarge_linear_workspace * work);
+
+int gsl_multilarge_linear_stdform1 (const gsl_vector * L,
+                                    const gsl_matrix * X,
+                                    const gsl_vector * y,
+                                    gsl_matrix * Xs,
+                                    gsl_vector * ys,
+                                    gsl_multilarge_linear_workspace * work);
+
 int gsl_multilarge_linear_genform1 (const gsl_vector * L,
                                     const gsl_vector * cs,
                                     gsl_vector * c,

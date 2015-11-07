@@ -568,13 +568,24 @@ In order to perform a weighted regularized fit with @math{L = I}, the user may
 call @code{gsl_multifit_linear_applyW} to convert to standard form.
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_stdform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_matrix * @var{M}, gsl_multifit_linear_workspace * @var{work})
-@deftypefunx int gsl_multifit_linear_wstdform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_matrix * @var{M}, gsl_multifit_linear_workspace * @var{work})
-These functions convert the least squares system (@var{X},@var{y},@var{W},@var{L}) to standard
+@deftypefun int gsl_multifit_linear_L_decomp (gsl_matrix * @var{L}, gsl_vector * @var{tau})
+This function factors the @math{m}-by-@math{p} regularization matrix
+@var{L} into a form needed for the later transformation to standard form. @var{L}
+may have any number of rows @math{m}. If @math{m \ge p} the QR decomposition of
+@var{L} is computed and stored in @var{L} on output. If @math{m < p}, the QR decomposition
+of @math{L^T} is computed and stored in @var{L} on output. On output,
+the Householder scalars are stored in the vector @var{tau} of size @math{MIN(m,p)}.
+These outputs will be used by @code{gsl_multifit_linear_wstdform2} to complete the
+transformation to standard form.
+@end deftypefun
+
+@deftypefun int gsl_multifit_linear_stdform2 (const gsl_matrix * @var{LQR}, const gsl_vector * @var{Ltau}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_matrix * @var{M}, gsl_multifit_linear_workspace * @var{work})
+@deftypefunx int gsl_multifit_linear_wstdform2 (const gsl_matrix * @var{LQR}, const gsl_vector * @var{Ltau}, const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_matrix * @var{M}, gsl_multifit_linear_workspace * @var{work})
+These functions convert the least squares system (@var{X},@var{y},@var{W},@math{L}) to standard
 form (@math{\tilde{X}},@math{\tilde{y}}) which are stored in @var{Xs} and @var{ys}
-respectively. The regularization matrix @var{L} is a full rank
-@math{m}-by-@math{p} matrix with no restrictions on @math{m}. However,
-the dimensions of the standard form parameters (@math{\tilde{X}},@math{\tilde{y}})
+respectively. The @math{m}-by-@math{p} regularization matrix @var{L} is specified by the inputs
+@var{LQR} and @var{Ltau}, which are outputs from @code{gsl_multifit_linear_L_decomp}.
+The dimensions of the standard form parameters (@math{\tilde{X}},@math{\tilde{y}})
 depend on whether @math{m} is larger or less than @math{p}. For @math{m \ge p},
 @var{Xs} is @math{n}-by-@math{p}, @var{ys} is @math{n}-by-1, and @var{M} is
 additional @math{m}-by-@math{p} workspace. For @math{m < p}, @var{Xs} is @math{(n - p + m)}-by-@math{m},
@@ -610,10 +621,10 @@ the vector @var{L}. It is allowed to have @var{c} = @var{cs} for an
 in-place transform.
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_genform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, const gsl_vector * @var{cs}, const gsl_matrix * @var{M}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
-@deftypefunx int gsl_multifit_linear_wgenform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, const gsl_vector * @var{cs}, const gsl_matrix * @var{M}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_genform2 (const gsl_matrix * @var{LQR}, const gsl_vector * @var{Ltau}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, const gsl_vector * @var{cs}, const gsl_matrix * @var{M}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
+@deftypefunx int gsl_multifit_linear_wgenform2 (const gsl_matrix * @var{LQR}, const gsl_vector * @var{Ltau}, const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, const gsl_vector * @var{cs}, const gsl_matrix * @var{M}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
 After a regularized system has been solved with a general rectangular matrix @math{L},
-this function backtransforms the standard form solution @var{cs}
+specified by (@var{LQR},@var{Ltau}), this function backtransforms the standard form solution @var{cs}
 to recover the solution vector of the original problem, which is stored in @var{c},
 of length @math{p}. The original least squares matrix and observation vector are provided in
 @var{X} and @var{y} respectively. @var{M} is the matrix computed by
@@ -1087,6 +1098,7 @@ where @math{y} is the @math{n}-by-@math{1} observation vector,
 the @math{p}-by-@math{1} solution vector,
 @math{W =} diag@math{(w_1,...,w_n)} is the data weighting matrix,
 @math{L} is an @math{m}-by-@math{p} regularization matrix,
+@math{\lambda} is a regularization parameter,
 and @math{||r||_W^2 = r^T W r}. In the discussion which follows,
 we will assume that the system has been converted into Tikhonov
 standard form,
@@ -1250,7 +1262,7 @@ computes only the @math{p}-by-@math{p} matrix
 @math{R} and the @math{p}-by-1 vector @math{Q^T y},
 and updates these quantities as new blocks
 are added to the system. Each time a new block of rows
-(@math{X_i,y_i}) is added, the algorithm must perform a QR decomposition
+(@math{X_i,y_i}) is added, the algorithm performs a QR decomposition
 of the matrix
 @tex
 \beforedisplay
@@ -1265,7 +1277,7 @@ $$
 @end tex
 @ifinfo
 @example
-[ R_{i-1} ; X_i ]
+[ R_(i-1) ; X_i ]
 @end example
 @end ifinfo
 where @math{R_{i-1}} is the upper triangular
@@ -1284,7 +1296,7 @@ $$
 @end tex
 @ifinfo
 @example
-[ X_1 ; ... ; X_{i-1} ]
+[ X_1 ; ... ; X_(i-1) ]
 @end example
 @end ifinfo
 This QR decomposition is done efficiently taking into account
@@ -1380,8 +1392,8 @@ the large least squares system, this function will compute
 the solution vector which is stored in @var{c} on output.
 The regularization parameter @math{\lambda} is provided in
 @var{lambda}. On output, @var{rnorm} contains the residual norm
-@math{||y - X c||} and @var{snorm} contains the solution
-norm @math{||c||}.
+@math{||y - X c||_W} and @var{snorm} contains the solution
+norm @math{||L c||}.
 @end deftypefun
 
 @node Troubleshooting

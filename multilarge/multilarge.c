@@ -195,6 +195,21 @@ gsl_multilarge_linear_wstdform1 (const gsl_vector * L,
     }
 }
 
+int
+gsl_multilarge_linear_stdform1 (const gsl_vector * L,
+                                const gsl_matrix * X,
+                                const gsl_vector * y,
+                                gsl_matrix * Xs,
+                                gsl_vector * ys,
+                                gsl_multilarge_linear_workspace * work)
+{
+  int status;
+
+  status = gsl_multilarge_linear_wstdform1(L, X, NULL, y, Xs, ys, work);
+
+  return status;
+}
+
 /*
 gsl_multilarge_linear_genform1()
   Backtransform regularized solution vector using matrix

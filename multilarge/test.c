@@ -298,7 +298,6 @@ test_system(const gsl_multilarge_linear_type * T,
               T->name, n, p, lambda);
       test_compare_vectors(tol, c0, c1, str);
 
-#if 1
       /* weighted, L = diag(L) */
       test_multifit_solve(lambda, X, y, w, diagL, c0);
       test_multilarge_solve(T, lambda, X, y, w, diagL, c1);
@@ -306,7 +305,6 @@ test_system(const gsl_multilarge_linear_type * T,
       sprintf(str, "%s weighted diag(L) n=%zu p=%zu lambda=%g",
               T->name, n, p, lambda);
       test_compare_vectors(tol, c0, c1, str);
-#endif
     }
 
   gsl_matrix_free(X);
@@ -325,8 +323,20 @@ main (void)
 
   gsl_ieee_env_setup();
 
-  test_system(gsl_multilarge_linear_normal, 456, 323, r);
-  test_system(gsl_multilarge_linear_tsqr, 493, 267, r);
+  {
+    const size_t n_vals[] = { 40, 256, 673 };
+    const size_t p_vals[] = { 40, 213, 377 };
+    size_t i;
+
+    for (i = 0; i < 3; ++i)
+      {
+        size_t n = n_vals[i];
+        size_t p = p_vals[i];
+
+        test_system(gsl_multilarge_linear_normal, n, p, r);
+        test_system(gsl_multilarge_linear_tsqr, n, p, r);
+      }
+  }
 
   gsl_rng_free(r);
 
