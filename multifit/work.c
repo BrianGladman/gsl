@@ -38,6 +38,7 @@ gsl_multifit_linear_alloc (const size_t nmax, const size_t pmax)
   w->pmax = pmax;                     /* max number of parameters */
   w->n = 0;
   w->p = 0;
+  w->rcond = 0.0;
 
   w->A = gsl_matrix_alloc (nmax, pmax);
 

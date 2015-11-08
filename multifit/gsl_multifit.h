@@ -52,6 +52,7 @@ typedef struct
   gsl_vector * t;
   gsl_vector * xt;
   gsl_vector * D;
+  double rcond;        /* reciprocal condition number */
 } 
 gsl_multifit_linear_workspace;
 
@@ -224,6 +225,9 @@ int
 gsl_multifit_linear_est (const gsl_vector * x,
                          const gsl_vector * c,
                          const gsl_matrix * cov, double *y, double *y_err);
+
+double
+gsl_multifit_linear_rcond (const gsl_multifit_linear_workspace * w);
 
 int
 gsl_multifit_linear_residuals (const gsl_matrix *X, const gsl_vector *y,

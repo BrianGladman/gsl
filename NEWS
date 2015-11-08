@@ -1,5 +1,8 @@
 * What is new in gsl-2.1:
 
+** added gsl_multifit_linear_rcond() to compute reciprocal
+   condition number of least squares matrix
+
 ** added gsl_multilarge module for large linear least squares
    systems
 

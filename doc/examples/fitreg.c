@@ -45,10 +45,14 @@ main()
     gsl_vector *eta = gsl_vector_alloc(nL);  /* solution norms */
     double lambda;                           /* optimal regularization parameter */
     size_t reg_idx;                          /* index of optimal lambda */
+    double rcond;                            /* reciprocal condition number of X */
     double chisq, rnorm, snorm;
 
     /* compute SVD of X */
     gsl_multifit_linear_svd(X, w);
+
+    rcond = gsl_multifit_linear_rcond(w);
+    fprintf(stderr, "matrix condition number = %e\n", 1.0 / rcond);
 
     /* unregularized (standard) least squares fit, lambda = 0 */
     gsl_multifit_linear_solve(0.0, X, y, c, &rnorm, &snorm, w);

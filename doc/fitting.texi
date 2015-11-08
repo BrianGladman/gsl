@@ -711,6 +711,12 @@ is the weight assigned to the derivative of order @math{k}.  The output matrix @
 @var{p}-by-@var{p}.
 @end deftypefun
 
+@deftypefun double gsl_multifit_linear_rcond (const gsl_multifit_linear_workspace * @var{work})
+This function returns the reciprocal condition number of the least squares matrix @math{X},
+defined as the ratio of the smallest and largest singular values, rcond = @math{\sigma_{min}/\sigma_{max}}.
+The routine @code{gsl_multifit_linear_svd} must first be called to compute the SVD of @math{X}.
+@end deftypefun
+
 @node Robust linear regression
 @section Robust linear regression
 @cindex robust regression
@@ -1625,6 +1631,7 @@ singular, leading to unstable ordinary least squares solutions.
 @noindent
 Here is the program output:
 @example
+matrix condition number = 1.025113e+04
 === Unregularized fit ===
 best fit: y = -43.6588 u + 45.6636 v
 chisq/dof = 1.00213
