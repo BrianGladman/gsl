@@ -38,8 +38,6 @@
 
 #include "linear_common.c"
 
-#include "oct.c"
-
 int
 gsl_multifit_linear_solve (const double lambda,
                            const gsl_matrix * X,
@@ -304,7 +302,7 @@ that ||L c|| = ||R c|| where R is p-by-p. Therefore,
 X~ = X R^{-1} is n-by-p
 y~ = y is n-by-1
 c~ is p-by-1
-M is m-by-p (workspace)
+M is not used
 
 Case 2: m < p
 
@@ -325,7 +323,7 @@ Inputs: LQR  - output from gsl_multifit_linear_L_decomp()
                case 1: n-by-1
                case 2: (n - p + m)-by-1
         M    - (output) workspace matrix needed to reconstruct solution vector
-               case 1: m-by-p
+               case 1: not used
                case 2: n-by-p
         work - workspace
 
@@ -383,10 +381,6 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * LQR,
         {
           GSL_ERROR("ys vector must have length n", GSL_EBADLEN);
         }
-      else if (m != M->size1 || p != M->size2)
-        {
-          GSL_ERROR("M matrix must be m-by-p", GSL_EBADLEN);
-        }
       else
         {
           int status;
@@ -441,9 +435,6 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * LQR,
           gsl_matrix_view LTQR = gsl_matrix_view_array(LQR->data, p, m);           /* qr(L^T) */
           gsl_matrix_view Rp = gsl_matrix_view_array(LQR->data, m, m);             /* R factor of L^T */
           gsl_vector_const_view LTtau = gsl_vector_const_subvector(Ltau, 0, m);
-#if 0
-          gsl_matrix_const_view Rp = gsl_matrix_const_submatrix(LQR, 0, 0, m, m);  /* R factor of L^T */
-#endif
 
           /*
            * M(:,1:p-m) will hold QR decomposition of A K_o; M(:,p) will hold
@@ -460,14 +451,6 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * LQR,
           status = gsl_multifit_linear_applyW(X, w, y, &A.matrix, &b.vector);
           if (status)
             return status;
-
-#if 0
-          /* compute QR decomposition [K,R] = qr(L^T) */
-          gsl_matrix_transpose_memcpy(&LTQR.matrix, L);
-          status = gsl_linalg_QR_decomp(&LTQR.matrix, &LTtau.vector);
-          if (status)
-            return status;
-#endif
 
           /* compute: A <- A K = [ A K_p ; A K_o ] */
           gsl_linalg_QR_matQ(&LTQR.matrix, &LTtau.vector, &A.matrix);
@@ -567,7 +550,7 @@ Inputs: LQR  - output from gsl_multifit_linear_L_decomp()
         w    - original weight vector n-by-1 or NULL for W = I
         y    - original rhs vector n-by-1
         cs   - standard form solution vector
-        c    - (output) original solution vector
+        c    - (output) original solution vector p-by-1
         M    - matrix computed by gsl_multifit_linear_wstdform2()
         work - workspace
 */
@@ -612,10 +595,6 @@ gsl_multifit_linear_wgenform2 (const gsl_matrix * LQR,
       if (p != cs->size)
         {
           GSL_ERROR("cs vector must be length p", GSL_EBADLEN);
-        }
-      else if (m != M->size1 || p != M->size2)
-        {
-          GSL_ERROR("M matrix must be m-by-p", GSL_EBADLEN);
         }
       else
         {

@@ -24,6 +24,7 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_multifit.h>
 #include <gsl/gsl_multilarge.h>
+#include <gsl/gsl_blas.h>
 
 gsl_multilarge_linear_workspace *
 gsl_multilarge_linear_alloc(const gsl_multilarge_linear_type *T,
@@ -134,16 +135,7 @@ gsl_multilarge_linear_wstdform1 (const gsl_vector * L,
   const size_t n = X->size1;
   const size_t p = X->size2;
 
-  if (n > work->nmax)
-    {
-      GSL_ERROR("observation matrix larger than workspace", GSL_EBADLEN);
-    }
-  else if (p != work->p)
-    {
-      GSL_ERROR("observation matrix has different number of columns than workspace",
-                GSL_EBADLEN);
-    }
-  else if (L != NULL && p != L->size)
+  if (L != NULL && p != L->size)
     {
       GSL_ERROR("L vector does not match X", GSL_EBADLEN);
     }
@@ -210,6 +202,112 @@ gsl_multilarge_linear_stdform1 (const gsl_vector * L,
   return status;
 }
 
+int
+gsl_multilarge_linear_L_decomp (gsl_matrix * L, gsl_vector * tau)
+{
+  const size_t m = L->size1;
+  const size_t p = L->size2;
+
+  if (m < p)
+    {
+      GSL_ERROR("m < p not yet supported", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+
+      status = gsl_multifit_linear_L_decomp(L, tau);
+
+      return status;
+    }
+}
+
+int
+gsl_multilarge_linear_wstdform2 (const gsl_matrix * LQR,
+                                 const gsl_vector * Ltau,
+                                 const gsl_matrix * X,
+                                 const gsl_vector * w,
+                                 const gsl_vector * y,
+                                 gsl_matrix * Xs,
+                                 gsl_vector * ys,
+                                 gsl_multilarge_linear_workspace * work)
+{
+  const size_t m = LQR->size1;
+  const size_t n = X->size1;
+  const size_t p = X->size2;
+
+  if (n > work->nmax)
+    {
+      GSL_ERROR("X has too many rows", GSL_EBADLEN);
+    }
+  else if (p != work->p)
+    {
+      GSL_ERROR("X has wrong number of columns", GSL_EBADLEN);
+    }
+  else if (p != LQR->size2)
+    {
+      GSL_ERROR("LQR and X matrices have different numbers of columns", GSL_EBADLEN);
+    }
+  else if (n != y->size)
+    {
+      GSL_ERROR("y vector does not match X", GSL_EBADLEN);
+    }
+  else if (w != NULL && n != w->size)
+    {
+      GSL_ERROR("weights vector must be length n", GSL_EBADLEN);
+    }
+  else if (m < p)
+    {
+      GSL_ERROR("m < p not yet supported", GSL_EBADLEN);
+    }
+  else if (n != Xs->size1 || p != Xs->size2)
+    {
+      GSL_ERROR("Xs matrix must be n-by-p", GSL_EBADLEN);
+    }
+  else if (n != ys->size)
+    {
+      GSL_ERROR("ys vector must have length n", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+      size_t i;
+      gsl_matrix_const_view R = gsl_matrix_const_submatrix(LQR, 0, 0, p, p);
+
+      /* compute Xs = sqrt(W) X and ys = sqrt(W) y */
+      status = gsl_multifit_linear_applyW(X, w, y, Xs, ys);
+      if (status)
+        return status;
+
+      /* compute X~ = X R^{-1} using QR decomposition of L */
+      for (i = 0; i < n; ++i)
+        {
+          gsl_vector_view v = gsl_matrix_row(Xs, i);
+
+          /* solve: R^T y = X_i */
+          gsl_blas_dtrsv(CblasUpper, CblasTrans, CblasNonUnit, &R.matrix, &v.vector);
+        }
+
+      return GSL_SUCCESS;
+    }
+}
+
+int
+gsl_multilarge_linear_stdform2 (const gsl_matrix * LQR,
+                                const gsl_vector * Ltau,
+                                const gsl_matrix * X,
+                                const gsl_vector * y,
+                                gsl_matrix * Xs,
+                                gsl_vector * ys,
+                                gsl_multilarge_linear_workspace * work)
+{
+  int status;
+
+  status = gsl_multilarge_linear_wstdform2(LQR, Ltau, X, NULL, y, Xs, ys, work);
+
+  return status;
+}
+
 /*
 gsl_multilarge_linear_genform1()
   Backtransform regularized solution vector using matrix
@@ -241,5 +339,40 @@ gsl_multilarge_linear_genform1 (const gsl_vector * L,
       gsl_vector_div(c, L);
 
       return GSL_SUCCESS;
+    }
+}
+
+int
+gsl_multilarge_linear_genform2 (const gsl_matrix * LQR,
+                                const gsl_vector * Ltau,
+                                const gsl_vector * cs,
+                                gsl_vector * c,
+                                gsl_multilarge_linear_workspace * work)
+{
+  const size_t m = LQR->size1;
+  const size_t p = LQR->size2;
+
+  if (p != c->size)
+    {
+      GSL_ERROR("c vector does not match LQR", GSL_EBADLEN);
+    }
+  else if (m < p)
+    {
+      GSL_ERROR("m < p not yet supported", GSL_EBADLEN);
+    }
+  else if (p != cs->size)
+    {
+      GSL_ERROR("cs vector size does not match c", GSL_EBADLEN);
+    }
+  else
+    {
+      int s;
+      gsl_matrix_const_view R = gsl_matrix_const_submatrix(LQR, 0, 0, p, p); /* R factor of L */
+
+      /* solve R c = cs for true solution c, using QR decomposition of L */
+      gsl_vector_memcpy(c, cs);
+      s = gsl_blas_dtrsv(CblasUpper, CblasNoTrans, CblasNonUnit, &R.matrix, c);
+
+      return s;
     }
 }
