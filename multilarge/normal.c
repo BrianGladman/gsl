@@ -33,7 +33,7 @@ typedef struct
   gsl_matrix *ATA;      /* A^T A, p-by-p */
   gsl_vector *ATb;      /* A^T b, p-by-1 */
   double bTb;           /* b^T b */
-  gsl_matrix *work_ATA; /* temporary workspace, p-by-p */
+  gsl_matrix *work_ATA; /* workspace for chol(ATA), p-by-p */
 } normal_state_t;
 
 static void *normal_alloc(const size_t nmax, const size_t p);
