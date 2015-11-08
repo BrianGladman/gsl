@@ -17,6 +17,37 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/*
+ * This module implements the sequential TSQR algorithm
+ * described in
+ *
+ * [1] Demmel, J., Grigori, L., Hoemmen, M. F., and Langou, J.
+ *     "Communication-optimal parallel and sequential QR and LU factorizations",
+ *     UCB Technical Report No. UCB/EECS-2008-89, 2008.
+ *
+ * The algorithm operates on a tall least squares system:
+ *
+ * [ A_1 ] x = [ b_1 ]
+ * [ A_2 ]     [ b_2 ]
+ * [ ... ]     [ ... ]
+ * [ A_k ]     [ b_k ]
+ *
+ * as follows:
+ *
+ * 1. Initialize
+ *    a. [Q_1,R_1] = qr(A_1)
+ *    b. z_1 = Q_1^T b_1
+ * 2. Loop i = 2:k
+ *    a. [Q_i,R_i] = qr( [ R_{i-1} ; A_i ] )
+ *    b. z_i = Q_i^T [ z_{i-1} ; b_i ]
+ * 3. Output:
+ *    a. R = R_k
+ *    b. Q^T b = z_k
+ *
+ * Step 2(a) is optimized to take advantage
+ * of the sparse structure of the matrix
+ */
+
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
@@ -31,7 +62,9 @@ typedef struct
 {
   size_t nmax;          /* maximum rows to add at once */
   size_t p;             /* number of columns of LS matrix */
-  int init;             /* QR system is initialized? */
+  int init;             /* QR system has been initialized */
+  int svd;              /* SVD of R has been computed */
+  double normb;         /* || b || for computing residual norm */
 
   gsl_vector *tau;      /* Householder scalars, p-by-1 */
   gsl_matrix *R;        /* [ R ; A_i ], size (nmax + p)-by-p */
@@ -49,6 +82,10 @@ static int tsqr_accumulate(const gsl_matrix * A,
 static int tsqr_solve(const double lambda, gsl_vector * x,
                         double * rnorm, double * snorm,
                         void * vstate);
+static int tsqr_rcond(double * rcond, void * vstate);
+static int tsqr_lcurve(gsl_vector * reg_param, gsl_vector * rho,
+                       gsl_vector * eta, void * vstate);
+static int tsqr_svd(tsqr_state_t * state);
 static int tsqr_zero_R(gsl_matrix *R);
 static double tsqr_householder_transform (const size_t N, const size_t j,
                                           gsl_vector * v);
@@ -93,6 +130,8 @@ tsqr_alloc(const size_t nmax, const size_t p)
   state->nmax = nmax;
   state->p = p;
   state->init = 0;
+  state->svd = 0;
+  state->normb = 0.0;
 
   state->R = gsl_matrix_alloc(nmax + p, p);
   if (state->R == NULL)
@@ -152,6 +191,9 @@ tsqr_reset(void *vstate)
 
   gsl_matrix_set_zero(state->R);
   gsl_vector_set_zero(state->QTb);
+  state->init = 0;
+  state->svd = 0;
+  state->normb = 0.0;
 
   return GSL_SUCCESS;
 }
@@ -210,6 +252,9 @@ tsqr_accumulate(const gsl_matrix * A, const gsl_vector * b,
       gsl_vector_memcpy(&QTb.vector, b);
       gsl_linalg_QR_QTvec(&R.matrix, &tau.vector, &QTb.vector);
 
+      /* compute ||b|| */
+      state->normb = gsl_blas_dnrm2(b);
+
       state->init = 1;
 
       return GSL_SUCCESS;
@@ -247,6 +292,9 @@ tsqr_accumulate(const gsl_matrix * A, const gsl_vector * b,
             tsqr_householder_hv (p, i, ti, &(h.vector), &(w.vector));
           }
       }
+
+      /* update ||b|| */
+      state->normb = gsl_hypot(state->normb, gsl_blas_dnrm2(b));
 
       return GSL_SUCCESS;
     }
@@ -287,20 +335,130 @@ tsqr_solve(const double lambda, gsl_vector * x,
       gsl_matrix_view R = gsl_matrix_submatrix(state->R, 0, 0, p, p);
       gsl_vector_view QTb = gsl_vector_subvector(state->QTb, 0, p);
 
-      /* XXX: zero R below the diagonal for SVD routine - this could be
-       * optimized by developing SVD routine for triangular matrices */
-      tsqr_zero_R(state->R);
-      status = gsl_multifit_linear_svd(&R.matrix, state->multifit_workspace_p);
-      if (status)
-        return status;
+      /* compute SVD of R if not already computed */
+      if (state->svd == 0)
+        {
+          status = tsqr_svd(state);
+          if (status)
+            return status;
+        }
 
       status = gsl_multifit_linear_solve(lambda, &R.matrix, &QTb.vector, x, rnorm, snorm,
                                          state->multifit_workspace_p);
       if (status)
         return status;
 
+      /*
+       * Since we're solving a reduced square system above, we need
+       * to account for the full residual vector:
+       *
+       * rnorm = || [ Q1^T b - R x ; Q2^T b ] ||
+       *
+       * where Q1 is the thin Q factor of X, and Q2
+       * are the remaining columns of Q. But:
+       *
+       * || Q2^T b ||^2 = ||b||^2 - ||Q1^T b||^2
+       * 
+       * so add this into the rnorm calculation
+       */
+      {
+        double norm_Q1Tb = gsl_blas_dnrm2(&QTb.vector);
+        double ratio = norm_Q1Tb / state->normb;
+        double diff = 1.0 - ratio*ratio;
+
+        if (diff > GSL_DBL_EPSILON)
+          {
+            double norm_Q2Tb = state->normb * sqrt(diff);
+            *rnorm = gsl_hypot(*rnorm, norm_Q2Tb);
+          }
+      }
+
       return GSL_SUCCESS;
     }
+}
+
+/*
+tsqr_lcurve()
+  Compute L-curve of least squares system
+
+Inputs: reg_param - (output) vector of regularization parameters
+        rho       - (output) vector of residual norms
+        eta       - (output) vector of solution norms
+        vstate    - workspace
+
+Return: success/error
+*/
+
+static int
+tsqr_lcurve(gsl_vector * reg_param, gsl_vector * rho,
+            gsl_vector * eta, void * vstate)
+{
+  tsqr_state_t *state = (tsqr_state_t *) vstate;
+  const size_t p = state->p;
+  gsl_vector_view QTb = gsl_vector_subvector(state->QTb, 0, p);
+  int status;
+
+  /* compute SVD of R if not already computed */
+  if (state->svd == 0)
+    {
+      status = tsqr_svd(state);
+      if (status)
+        return status;
+    }
+
+  status = gsl_multifit_linear_lcurve(&QTb.vector, reg_param, rho, eta,
+                                      state->multifit_workspace_p);
+
+  return status;
+}
+
+static int
+tsqr_rcond(double * rcond, void * vstate)
+{
+  tsqr_state_t *state = (tsqr_state_t *) vstate;
+
+  /* compute SVD of R if not already computed */
+  if (state->svd == 0)
+    {
+      int status = tsqr_svd(state);
+      if (status)
+        {
+          GSL_ERROR("error computing SVD of R", GSL_EINVAL);
+        }
+    }
+
+  *rcond = gsl_multifit_linear_rcond(state->multifit_workspace_p);
+
+  return GSL_SUCCESS;
+}
+
+/*
+tsqr_svd()
+  Compute the SVD of the upper triangular
+R factor. This allows us to compute the upper/lower
+bounds on the regularization parameter and compute
+the matrix reciprocal condition number.
+
+Inputs: state - workspace
+
+Return: success/error
+*/
+
+static int
+tsqr_svd(tsqr_state_t * state)
+{
+  const size_t p = state->p;
+  gsl_matrix_view R = gsl_matrix_submatrix(state->R, 0, 0, p, p);
+  int status;
+
+  /* XXX: zero R below the diagonal for SVD routine - this could be
+   * optimized by developing SVD routine for triangular matrices */
+  tsqr_zero_R(state->R);
+  status = gsl_multifit_linear_svd(&R.matrix, state->multifit_workspace_p);
+
+  state->svd = 1;
+
+  return status;
 }
 
 /* zero everything below the diagonal */
@@ -533,6 +691,8 @@ static const gsl_multilarge_linear_type tsqr_type =
   tsqr_reset,
   tsqr_accumulate,
   tsqr_solve,
+  tsqr_rcond,
+  tsqr_lcurve,
   tsqr_free
 };
 

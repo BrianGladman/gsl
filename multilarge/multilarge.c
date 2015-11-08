@@ -99,6 +99,22 @@ gsl_multilarge_linear_solve(const double lambda, gsl_vector * c,
   return status;
 }
 
+int
+gsl_multilarge_linear_rcond(double *rcond, gsl_multilarge_linear_workspace * w)
+{
+  int status = w->type->rcond(rcond, w->state);
+  return status;
+}
+
+int
+gsl_multilarge_linear_lcurve(gsl_vector * reg_param, gsl_vector * rho,
+                             gsl_vector * eta,
+                             gsl_multilarge_linear_workspace * w)
+{
+  int status = w->type->lcurve(reg_param, rho, eta, w->state);
+  return status;
+}
+
 /*
 gsl_multilarge_linear_wstdform1()
   Using regularization matrix

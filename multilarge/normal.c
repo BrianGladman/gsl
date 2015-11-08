@@ -32,8 +32,9 @@ typedef struct
   size_t p;             /* number of columns of LS matrix */
   gsl_matrix *ATA;      /* A^T A, p-by-p */
   gsl_vector *ATb;      /* A^T b, p-by-1 */
-  double bTb;           /* b^T b */
+  double normb;         /* || b || */
   gsl_matrix *work_ATA; /* workspace for chol(ATA), p-by-p */
+  gsl_vector *work_ATb; /* workspace for computing residual norm */
 } normal_state_t;
 
 static void *normal_alloc(const size_t nmax, const size_t p);
@@ -45,6 +46,9 @@ static int normal_accumulate(const gsl_matrix * A,
 static int normal_solve(const double lambda, gsl_vector * x,
                         double * rnorm, double * snorm,
                         void * vstate);
+static int normal_rcond(double * rcond, void * vstate);
+static int normal_lcurve(gsl_vector * reg_param, gsl_vector * rho,
+                         gsl_vector * eta, void * vstate);
 
 /*
 normal_alloc()
@@ -104,6 +108,13 @@ normal_alloc(const size_t nmax, const size_t p)
       GSL_ERROR_NULL("failed to allocate ATb vector", GSL_ENOMEM);
     }
 
+  state->work_ATb = gsl_vector_alloc(p);
+  if (state->work_ATb == NULL)
+    {
+      normal_free(state);
+      GSL_ERROR_NULL("failed to allocate temporary ATb vector", GSL_ENOMEM);
+    }
+
   return state;
 }
 
@@ -121,6 +132,9 @@ normal_free(void *vstate)
   if (state->ATb)
     gsl_vector_free(state->ATb);
 
+  if (state->work_ATb)
+    gsl_vector_free(state->work_ATb);
+
   free(state);
 }
 
@@ -131,7 +145,7 @@ normal_reset(void *vstate)
 
   gsl_matrix_set_zero(state->ATA);
   gsl_vector_set_zero(state->ATb);
-  state->bTb = 0.0;
+  state->normb = 0.0;
 
   return GSL_SUCCESS;
 }
@@ -165,7 +179,6 @@ normal_accumulate(const gsl_matrix * A, const gsl_vector * b,
   else
     {
       int s;
-      double bnorm;
 
       /* ATA += A^T A, using only the lower half of the matrix */
       s = gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, A, 1.0, state->ATA);
@@ -177,9 +190,8 @@ normal_accumulate(const gsl_matrix * A, const gsl_vector * b,
       if (s)
         return s;
 
-      /* bTb += b^T b */
-      bnorm = gsl_blas_dnrm2(b);
-      state->bTb += bnorm * bnorm;
+      /* update || b || */
+      state->normb = gsl_hypot(state->normb, gsl_blas_dnrm2(b));
 
       return GSL_SUCCESS;
     }
@@ -217,6 +229,7 @@ normal_solve(const double lambda, gsl_vector * x,
     {
       int status;
       gsl_vector_view d = gsl_matrix_diagonal(state->work_ATA);
+      double r2;
 
       /* copy ATA matrix to temporary workspace and regularize */
       gsl_matrix_memcpy(state->work_ATA, state->ATA);
@@ -232,8 +245,51 @@ normal_solve(const double lambda, gsl_vector * x,
       if (status)
         return status;
 
+      /* compute solution norm ||x|| */
+      *snorm = gsl_blas_dnrm2(x);
+
+      /* compute residual norm ||b - Ax|| */
+
+      /* compute: A^T A x - 2 A^T b */
+      gsl_vector_memcpy(state->work_ATb, state->ATb);
+      gsl_blas_dsymv(CblasLower, 1.0, state->ATA, x, -2.0, state->work_ATb);
+
+      /* compute: x^T A^T A x - 2 x^T A^T b */
+      gsl_blas_ddot(x, state->work_ATb, &r2);
+
+      /* add b^T b */
+      r2 += state->normb * state->normb;
+
+      *rnorm = sqrt(r2);
+
       return GSL_SUCCESS;
     }
+}
+
+static int
+normal_rcond(double * rcond, void * vstate)
+{
+  *rcond = 0.0;
+  return GSL_SUCCESS;
+}
+
+/*
+normal_lcurve()
+  Compute L-curve of least squares system
+
+Inputs: reg_param - (output) vector of regularization parameters
+        rho       - (output) vector of residual norms
+        eta       - (output) vector of solution norms
+        vstate    - workspace
+
+Return: success/error
+*/
+
+static int
+normal_lcurve(gsl_vector * reg_param, gsl_vector * rho,
+              gsl_vector * eta, void * vstate)
+{
+  return GSL_SUCCESS;
 }
 
 static const gsl_multilarge_linear_type normal_type =
@@ -243,6 +299,8 @@ static const gsl_multilarge_linear_type normal_type =
   normal_reset,
   normal_accumulate,
   normal_solve,
+  normal_rcond,
+  normal_lcurve,
   normal_free
 };
 

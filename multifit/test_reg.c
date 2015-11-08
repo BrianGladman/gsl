@@ -90,7 +90,7 @@ test_reg1(const gsl_matrix * X, const gsl_vector * y,
       gsl_multifit_linear_solve(0.0, X, y, c1, &rnorm, &snorm, w);
     }
 
-  gsl_test_rel(rnorm*rnorm + snorm*snorm, chisq, tol,
+  gsl_test_rel(rnorm*rnorm, chisq, tol,
                "test_reg1: %s, lambda = 0, n=%zu p=%zu chisq", desc, n, p);
 
   /* test c0 = c1 */
