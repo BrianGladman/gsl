@@ -20,6 +20,7 @@ two-parameter regression and multiple-parameter fits.
 * Multi-parameter regression::
 * Regularized regression::
 * Robust linear regression::
+* Large Linear Systems::
 * Troubleshooting::
 * Fitting Examples for linear regression::
 * Fitting Examples for multi-parameter linear regression::
@@ -1731,4 +1732,16 @@ Symposium on the Interface, American Statistical Association
 computing robust regression estimates via iteratively
 reweighted least squares," The American Statistician, v. 42, 
 pp. 152-154.
+@end itemize
+
+@noindent
+More information about the normal equations and TSQR approach for solving
+large linear least squares systems can be found in the publications
+
+@itemize @w{}
+@item Trefethen, L. N. and Bau, D. (1997), "Numerical Linear Algebra", SIAM.
+
+@item Demmel, J., Grigori, L., Hoemmen, M. F., and Langou, J.
+"Communication-optimal parallel and sequential QR and LU factorizations",
+UCB Technical Report No. UCB/EECS-2008-89, 2008.
 @end itemize
