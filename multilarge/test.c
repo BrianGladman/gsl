@@ -28,8 +28,6 @@
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_ieee_utils.h>
 
-#include "oct.c"
-
 static void test_random_matrix_orth(gsl_matrix *m, const gsl_rng *r);
 static void test_random_matrix_ill(gsl_matrix *m, const gsl_rng *r);
 static void test_random_vector(gsl_vector *v, const gsl_rng *r,
