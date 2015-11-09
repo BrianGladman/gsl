@@ -226,7 +226,7 @@ gsl_multifit_wlinear (const gsl_matrix * X,
   gsl_vector_view b = gsl_vector_subvector(work->t, 0, y->size);
 
   /* compute A = sqrt(W) X, b = sqrt(W) y */
-  status = gsl_multifit_linear_applyW(X, w, y, work->A, &b.vector, work);
+  status = gsl_multifit_linear_applyW(X, w, y, work->A, &b.vector);
   if (status)
     return status;
 
