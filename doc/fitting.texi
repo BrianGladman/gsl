@@ -26,6 +26,7 @@ two-parameter regression and multiple-parameter fits.
 * Fitting Examples for multi-parameter linear regression::
 * Fitting Examples for regularized linear regression::
 * Fitting Examples for robust linear regression::
+* Fitting Examples for large linear systems::
 * Fitting References and Further Reading::  
 @end menu
 
@@ -1690,6 +1691,39 @@ The output from the program is shown in the following plot.
 @sp 1
 @center @image{robust,3.0in}
 @end iftex
+
+@node Fitting Examples for large linear systems
+@section Fitting Examples for large linear systems
+
+The following program demostrates the large linear least squares
+solvers. This example is adapted from Trefethen and Bau,
+and fits the function @math{f(t) = \exp{(\sin{4(t - 10)}})} on
+the interval @math{[10,11]} with a degree 14 polynomial. The
+program generates @math{n = 50000} equally spaced points
+@math{t_i} on this interval, calculates the function value
+and adds random noise to determine the observation value
+@math{y_i}. The entries of the least squares matrix are
+@math{X_{ij} = t_i^j}, representing a polynomial fit. The
+matrix is highly ill-conditioned, and we accumulate the
+matrix into the least squares system in 5 blocks, each with
+10000 rows. This way the full matrix @math{X} is never
+stored in memory. We solve the system with both the
+normal equations and TSQR methods. The results are shown
+in the plot below. In the left plot, we see the unregularized
+normal equations solution has large error due to
+the ill-conditioning of the matrix, while TSQR provides
+a good fit. In the right panel, we add regularization
+with @math{\lambda = 1} which allows the normal equations
+method to converge to a good solution.
+
+@iftex
+@sp 1
+@center @image{multilarge,6.0in}
+@end iftex
+
+@example
+@verbatiminclude examples/largefit.c
+@end example
 
 @node Fitting References and Further Reading
 @section References and Further Reading

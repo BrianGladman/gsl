@@ -85,7 +85,8 @@ solve_system(const gsl_multilarge_linear_type * T,
   gsl_multilarge_linear_rcond(&rcond, w);
 
   fprintf(stderr, "=== Method %s ===\n", gsl_multilarge_linear_name(w));
-  fprintf(stderr, "matrix condition number = %e\n", 1.0 / rcond);
+  if (rcond != 0.0)
+    fprintf(stderr, "matrix condition number = %e\n", 1.0 / rcond);
   fprintf(stderr, "residual norm  = %e\n", rnorm);
   fprintf(stderr, "solution norm  = %e\n", snorm);
 

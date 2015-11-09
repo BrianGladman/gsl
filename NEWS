@@ -1,5 +1,7 @@
 * What is new in gsl-2.1:
 
+** bug fix in gsl_multifit_wlinear()
+
 ** added gsl_multifit_linear_rcond() to compute reciprocal
    condition number of least squares matrix
 
