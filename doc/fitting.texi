@@ -421,7 +421,7 @@ the @math{p}-by-@math{1} solution vector,
 @math{W =} diag@math{(w_1,...,w_n)} is the data weighting matrix,
 and @math{||r||_W^2 = r^T W r}.
 In cases where the least squares matrix @math{X} is ill-conditioned,
-small perturbations of the matrix or observation vector could lead to
+small perturbations (ie: noise) in the observation vector could lead to
 widely different solution vectors @math{c}. In these cases it is often
 advantageous to include a regularization term in the least squares
 minimization
@@ -588,9 +588,9 @@ respectively. The @math{m}-by-@math{p} regularization matrix @var{L} is specifie
 The dimensions of the standard form parameters (@math{\tilde{X}},@math{\tilde{y}})
 depend on whether @math{m} is larger or less than @math{p}. For @math{m \ge p},
 @var{Xs} is @math{n}-by-@math{p}, @var{ys} is @math{n}-by-1, and @var{M} is
-additional @math{m}-by-@math{p} workspace. For @math{m < p}, @var{Xs} is @math{(n - p + m)}-by-@math{m},
-@var{ys} is @math{(n - p + m)}-by-1, and @var{M} is additional @math{n}-by-@math{p} workspace.
-In both cases, @var{M} is required to recover the original solution vector after the system has been
+not used. For @math{m < p}, @var{Xs} is @math{(n - p + m)}-by-@math{m},
+@var{ys} is @math{(n - p + m)}-by-1, and @var{M} is additional @math{n}-by-@math{p} workspace,
+which is required to recover the original solution vector after the system has been
 solved (see @code{gsl_multifit_linear_genform2}). Optional data weights may be supplied in the
 vector @var{w} of length @math{n}, where @math{W =} diag(w).
 @end deftypefun
@@ -1358,13 +1358,15 @@ choices
 This specifies the normal equations approach (see above) for
 solving the least squares system. This method is suitable
 in cases where performance is critical and it is known that the
-least squares matrix @math{X} is well conditioned.
+least squares matrix @math{X} is well conditioned. The size
+of this workspace is @math{O(p^2)}.
 @end deffn
 
 @deffn {Multilarge type} gsl_multilarge_linear_tsqr
 This specifies the Tall Skinny QR (TSQR) approach (see above) for
 solving the least squares system. This method is a good
-general purpose choice for large systems.
+general purpose choice for large systems. The size of this
+workspace is @math{O(nmax \cdot p + p^2)}.
 @end deffn
 @end deftypefun
 
@@ -1456,6 +1458,15 @@ After a regularized system has been solved with a regularization matrix @math{L}
 specified by (@var{LQR},@var{Ltau}), this function backtransforms the standard form solution @var{cs}
 to recover the solution vector of the original problem, which is stored in @var{c},
 of length @math{p}.
+@end deftypefun
+
+@deftypefun int gsl_multilarge_linear_rcond (double * @var{rcond}, gsl_multilarge_linear_workspace * @var{work})
+This function computes the reciprocal condition number, stored in
+@var{rcond}, of the least squares matrix after it has been accumulated
+into the workspace @var{work}. For the TSQR algorithm, this is
+accomplished by calculating the SVD of the @math{R} factor, which
+has the same singular values as the matrix @math{X}. This routine
+is currently not implemented for the normal equations method.
 @end deftypefun
 
 @node Troubleshooting
