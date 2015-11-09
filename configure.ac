@@ -603,6 +603,7 @@ matrix/Makefile        \
 min/Makefile           \
 monte/Makefile         \
 multifit/Makefile      \
+multilarge/Makefile    \
 multimin/Makefile      \
 multiroots/Makefile    \
 multiset/Makefile      \
