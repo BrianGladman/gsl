@@ -189,7 +189,7 @@ multifit_linear_solve (const gsl_matrix * X,
           /* Unscale the balancing factors */
           gsl_vector_div (c, &D.vector);
 
-          *snorm = 0.0;
+          *snorm = gsl_blas_dnrm2(c);
           *rnorm = rho_ls;
         }
 

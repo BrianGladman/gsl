@@ -65,7 +65,6 @@ Inputs: X    - least squares matrix n-by-p
         y    - right hand side n-by-1
         WX   - (output) sqrt(W) X
         Wy   - (output) sqrt(W) y
-        work - workspace
 
 Notes:
 1) If w = NULL, on output WX = X and Wy = y
@@ -77,8 +76,7 @@ gsl_multifit_linear_applyW(const gsl_matrix * X,
                            const gsl_vector * w,
                            const gsl_vector * y,
                            gsl_matrix * WX,
-                           gsl_vector * Wy,
-                           gsl_multifit_linear_workspace * work)
+                           gsl_vector * Wy)
 {
   const size_t n = X->size1;
   const size_t p = X->size2;
@@ -194,7 +192,7 @@ gsl_multifit_linear_wstdform1 (const gsl_vector * L,
       int status = GSL_SUCCESS;
 
       /* compute Xs = sqrt(W) X and ys = sqrt(W) y */
-      status = gsl_multifit_linear_applyW(X, w, y, Xs, ys, work);
+      status = gsl_multifit_linear_applyW(X, w, y, Xs, ys);
       if (status)
         return status;
 
@@ -258,6 +256,41 @@ gsl_multifit_linear_stdform1 (const gsl_vector * L,
   return status;
 }
 
+int
+gsl_multifit_linear_L_decomp (gsl_matrix * L, gsl_vector * tau)
+{
+  const size_t m = L->size1;
+  const size_t p = L->size2;
+  int status;
+
+  if (tau->size != GSL_MIN(m, p))
+    {
+      GSL_ERROR("tau vector must be min(m,p)", GSL_EBADLEN);
+    }
+  else if (m >= p)
+    {
+      /* square or tall L matrix */
+      status = gsl_linalg_QR_decomp(L, tau);
+      return status;
+    }
+  else
+    {
+      /* more columns than rows, compute qr(L^T) */
+      gsl_matrix_view LTQR = gsl_matrix_view_array(L->data, p, m);
+      gsl_matrix *LT = gsl_matrix_alloc(p, m);
+
+      /* XXX: use temporary storage due to difficulties in transforming
+       * a rectangular matrix in-place */
+      gsl_matrix_transpose_memcpy(LT, L);
+      gsl_matrix_memcpy(&LTQR.matrix, LT);
+      gsl_matrix_free(LT);
+
+      status = gsl_linalg_QR_decomp(&LTQR.matrix, tau);
+
+      return status;
+    }
+}
+
 /*
 gsl_multifit_linear_wstdform2()
   Using regularization matrix L which is m-by-p, transform to Tikhonov
@@ -269,7 +302,7 @@ that ||L c|| = ||R c|| where R is p-by-p. Therefore,
 X~ = X R^{-1} is n-by-p
 y~ = y is n-by-1
 c~ is p-by-1
-M is m-by-p (workspace)
+M is not used
 
 Case 2: m < p
 
@@ -278,7 +311,8 @@ y~ is (n - p + m)-by-1
 c~ is m-by-1
 M is n-by-p (workspace)
 
-Inputs: L    - regularization matrix m-by-p
+Inputs: LQR  - output from gsl_multifit_linear_L_decomp()
+        Ltau - output from gsl_multifit_linear_L_decomp()
         X    - least squares matrix n-by-p
         w    - weight vector n-by-1; or NULL for W = I
         y    - right hand side vector n-by-1
@@ -289,7 +323,7 @@ Inputs: L    - regularization matrix m-by-p
                case 1: n-by-1
                case 2: (n - p + m)-by-1
         M    - (output) workspace matrix needed to reconstruct solution vector
-               case 1: m-by-p
+               case 1: not used
                case 2: n-by-p
         work - workspace
 
@@ -297,18 +331,17 @@ Return: success/error
 
 Notes:
 1) If m >= p, on output:
-   M(1:p,1:p) = R factor in QR decomposition of L
    Xs = X R^{-1}
    ys = y
 
 2) If m < p, on output:
-   a) work->LTQR and work->LTtau contain QR decomposition of L^T
-   b) M(:,1:pm) contains QR decomposition of A * K_o, needed to reconstruct
-      solution vector, where pm = p - m; M(:,p) contains Householder scalars
+   M(:,1:pm) contains QR decomposition of A * K_o, needed to reconstruct
+   solution vector, where pm = p - m; M(:,p) contains Householder scalars
 */
 
 int
-gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
+gsl_multifit_linear_wstdform2 (const gsl_matrix * LQR,
+                               const gsl_vector * Ltau,
                                const gsl_matrix * X,
                                const gsl_vector * w,
                                const gsl_vector * y,
@@ -317,7 +350,7 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
                                gsl_matrix * M,
                                gsl_multifit_linear_workspace * work)
 {
-  const size_t m = L->size1;
+  const size_t m = LQR->size1;
   const size_t n = X->size1;
   const size_t p = X->size2;
 
@@ -325,9 +358,9 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
     {
       GSL_ERROR("observation matrix larger than workspace", GSL_EBADLEN);
     }
-  else if (p != L->size2)
+  else if (p != LQR->size2)
     {
-      GSL_ERROR("L and X matrices have different numbers of columns", GSL_EBADLEN);
+      GSL_ERROR("LQR and X matrices have different numbers of columns", GSL_EBADLEN);
     }
   else if (n != y->size)
     {
@@ -348,28 +381,14 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
         {
           GSL_ERROR("ys vector must have length n", GSL_EBADLEN);
         }
-      else if (m != M->size1 || p != M->size2)
-        {
-          GSL_ERROR("M matrix must be m-by-p", GSL_EBADLEN);
-        }
       else
         {
           int status;
           size_t i;
-          gsl_matrix_view QR = gsl_matrix_submatrix(M, 0, 0, m, p);
-          gsl_matrix_view R = gsl_matrix_submatrix(M, 0, 0, p, p);
-          gsl_vector_view tau = gsl_vector_subvector(work->xt, 0, GSL_MIN(m, p));
-
-          gsl_matrix_set_zero(M); /* not used */
-
-          /* compute QR decomposition of L */
-          gsl_matrix_memcpy(&QR.matrix, L);
-          status = gsl_linalg_QR_decomp(&QR.matrix, &tau.vector);
-          if (status)
-            return status;
+          gsl_matrix_const_view R = gsl_matrix_const_submatrix(LQR, 0, 0, p, p);
 
           /* compute Xs = sqrt(W) X and ys = sqrt(W) y */
-          status = gsl_multifit_linear_applyW(X, w, y, Xs, ys, work);
+          status = gsl_multifit_linear_applyW(X, w, y, Xs, ys);
           if (status)
             return status;
 
@@ -384,7 +403,6 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
 
           return GSL_SUCCESS;
         }
-
     }
   else /* L matrix with m < p */
     {
@@ -414,8 +432,9 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
           gsl_matrix_view A = gsl_matrix_submatrix(work->A, 0, 0, n, p);
           gsl_vector_view b = gsl_vector_subvector(work->t, 0, n);
 
-          gsl_matrix_view LTQR = gsl_matrix_submatrix(work->LTQR, 0, 0, p, m);  /* qr(L^T) */
-          gsl_vector_view LTtau = gsl_vector_subvector(work->LTtau, 0, m);
+          gsl_matrix_view LTQR = gsl_matrix_view_array(LQR->data, p, m);           /* qr(L^T) */
+          gsl_matrix_view Rp = gsl_matrix_view_array(LQR->data, m, m);             /* R factor of L^T */
+          gsl_vector_const_view LTtau = gsl_vector_const_subvector(Ltau, 0, m);
 
           /*
            * M(:,1:p-m) will hold QR decomposition of A K_o; M(:,p) will hold
@@ -424,18 +443,12 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
           gsl_matrix_view MQR = gsl_matrix_submatrix(M, 0, 0, n, pm);
           gsl_vector_view Mtau = gsl_matrix_subcolumn(M, p - 1, 0, GSL_MIN(n, pm));
 
-          gsl_matrix_view Rp, AKo, AKp, HqTAKp;
+          gsl_matrix_view AKo, AKp, HqTAKp;
           gsl_vector_view v;
           size_t i;
 
           /* compute A = sqrt(W) X and b = sqrt(W) y */
-          status = gsl_multifit_linear_applyW(X, w, y, &A.matrix, &b.vector, work);
-          if (status)
-            return status;
-
-          /* compute QR decomposition [K,R] = qr(L^T) */
-          gsl_matrix_transpose_memcpy(&LTQR.matrix, L);
-          status = gsl_linalg_QR_decomp(&LTQR.matrix, &LTtau.vector);
+          status = gsl_multifit_linear_applyW(X, w, y, &A.matrix, &b.vector);
           if (status)
             return status;
 
@@ -455,7 +468,6 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
           HqTAKp = gsl_matrix_submatrix(&AKp.matrix, pm, 0, npm, m);
 
           /* solve: Xs R_p^T = H_q^T A K_p for Xs */
-          Rp = gsl_matrix_submatrix(&LTQR.matrix, 0, 0, m, m);
           gsl_matrix_memcpy(Xs, &HqTAKp.matrix);
           for (i = 0; i < npm; ++i)
             {
@@ -477,7 +489,8 @@ gsl_multifit_linear_wstdform2 (const gsl_matrix * L,
 }
 
 int
-gsl_multifit_linear_stdform2 (const gsl_matrix * L,
+gsl_multifit_linear_stdform2 (const gsl_matrix * LQR,
+                              const gsl_vector * Ltau,
                               const gsl_matrix * X,
                               const gsl_vector * y,
                               gsl_matrix * Xs,
@@ -487,7 +500,7 @@ gsl_multifit_linear_stdform2 (const gsl_matrix * L,
 {
   int status;
 
-  status = gsl_multifit_linear_wstdform2(L, X, NULL, y, Xs, ys, M, work);
+  status = gsl_multifit_linear_wstdform2(LQR, Ltau, X, NULL, y, Xs, ys, M, work);
 
   return status;
 }
@@ -531,18 +544,20 @@ gsl_multifit_linear_wgenform2()
   Backtransform regularized solution vector in standard form to recover
 original vector
 
-Inputs: L    - regularization matrix m-by-p
+Inputs: LQR  - output from gsl_multifit_linear_L_decomp()
+        Ltau - output from gsl_multifit_linear_L_decomp()
         X    - original least squares matrix n-by-p
         w    - original weight vector n-by-1 or NULL for W = I
         y    - original rhs vector n-by-1
         cs   - standard form solution vector
-        c    - (output) original solution vector
+        c    - (output) original solution vector p-by-1
         M    - matrix computed by gsl_multifit_linear_wstdform2()
         work - workspace
 */
 
 int
-gsl_multifit_linear_wgenform2 (const gsl_matrix * L,
+gsl_multifit_linear_wgenform2 (const gsl_matrix * LQR,
+                               const gsl_vector * Ltau,
                                const gsl_matrix * X,
                                const gsl_vector * w,
                                const gsl_vector * y,
@@ -551,7 +566,7 @@ gsl_multifit_linear_wgenform2 (const gsl_matrix * L,
                                gsl_vector * c,
                                gsl_multifit_linear_workspace * work)
 {
-  const size_t m = L->size1;
+  const size_t m = LQR->size1;
   const size_t n = X->size1;
   const size_t p = X->size2;
 
@@ -559,9 +574,9 @@ gsl_multifit_linear_wgenform2 (const gsl_matrix * L,
     {
       GSL_ERROR("X matrix does not match workspace", GSL_EBADLEN);
     }
-  else if (p != L->size2)
+  else if (p != LQR->size2)
     {
-      GSL_ERROR("L matrix does not match X", GSL_EBADLEN);
+      GSL_ERROR("LQR matrix does not match X", GSL_EBADLEN);
     }
   else if (p != c->size)
     {
@@ -581,14 +596,10 @@ gsl_multifit_linear_wgenform2 (const gsl_matrix * L,
         {
           GSL_ERROR("cs vector must be length p", GSL_EBADLEN);
         }
-      else if (m != M->size1 || p != M->size2)
-        {
-          GSL_ERROR("M matrix must be m-by-p", GSL_EBADLEN);
-        }
       else
         {
           int s;
-          gsl_matrix_const_view R = gsl_matrix_const_submatrix(M, 0, 0, p, p); /* R factor of L */
+          gsl_matrix_const_view R = gsl_matrix_const_submatrix(LQR, 0, 0, p, p); /* R factor of L */
 
           /* solve R c = cs for true solution c, using QR decomposition of L */
           gsl_vector_memcpy(c, cs);
@@ -613,9 +624,9 @@ gsl_multifit_linear_wgenform2 (const gsl_matrix * L,
           const size_t pm = p - m;
           gsl_matrix_view A = gsl_matrix_submatrix(work->A, 0, 0, n, p);
           gsl_vector_view b = gsl_vector_subvector(work->t, 0, n);
-          gsl_matrix_view Rp = gsl_matrix_submatrix(work->LTQR, 0, 0, m, m); /* R_p */
-          gsl_matrix_view LTQR = gsl_matrix_submatrix(work->LTQR, 0, 0, p, m);
-          gsl_vector_view LTtau = gsl_vector_subvector(work->LTtau, 0, m);
+          gsl_matrix_view Rp = gsl_matrix_view_array(LQR->data, m, m); /* R_p */
+          gsl_matrix_view LTQR = gsl_matrix_view_array(LQR->data, p, m);
+          gsl_vector_const_view LTtau = gsl_vector_const_subvector(Ltau, 0, m);
           gsl_matrix_const_view MQR = gsl_matrix_const_submatrix(M, 0, 0, n, pm);
           gsl_vector_const_view Mtau = gsl_matrix_const_subcolumn(M, p - 1, 0, GSL_MIN(n, pm));
           gsl_matrix_const_view To = gsl_matrix_const_submatrix(&MQR.matrix, 0, 0, pm, pm);
@@ -623,7 +634,7 @@ gsl_multifit_linear_wgenform2 (const gsl_matrix * L,
           gsl_vector_view v1, v2;
 
           /* compute A = sqrt(W) X and b = sqrt(W) y */
-          status = gsl_multifit_linear_applyW(X, w, y, &A.matrix, &b.vector, work);
+          status = gsl_multifit_linear_applyW(X, w, y, &A.matrix, &b.vector);
           if (status)
             return status;
 
@@ -665,7 +676,8 @@ gsl_multifit_linear_wgenform2 (const gsl_matrix * L,
 }
 
 int
-gsl_multifit_linear_genform2 (const gsl_matrix * L,
+gsl_multifit_linear_genform2 (const gsl_matrix * LQR,
+                              const gsl_vector * Ltau,
                               const gsl_matrix * X,
                               const gsl_vector * y,
                               const gsl_vector * cs,
@@ -675,7 +687,7 @@ gsl_multifit_linear_genform2 (const gsl_matrix * L,
 {
   int status;
 
-  status = gsl_multifit_linear_wgenform2(L, X, NULL, y, cs, M, c, work);
+  status = gsl_multifit_linear_wgenform2(LQR, Ltau, X, NULL, y, cs, M, c, work);
 
   return status;
 }
@@ -1131,7 +1143,7 @@ Inputs: p     - number of columns of L
         work  - workspace
 
 Notes:
-1) work->LTQR is used to store intermediate L_k matrices
+1) work->Q is used to store intermediate L_k matrices
 */
 
 int
@@ -1172,7 +1184,7 @@ gsl_multifit_linear_Lsobolev(const size_t p, const size_t kmax,
 
       for (k = 1; k <= kmax; ++k)
         {
-          gsl_matrix_view Lk = gsl_matrix_submatrix(work->LTQR, 0, 0, p - k, p);
+          gsl_matrix_view Lk = gsl_matrix_submatrix(work->Q, 0, 0, p - k, p);
           double ak = gsl_vector_get(alpha, k);
 
           /* compute a_k L_k */

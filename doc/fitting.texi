@@ -567,13 +567,24 @@ In order to perform a weighted regularized fit with @math{L = I}, the user may
 call @code{gsl_multifit_linear_applyW} to convert to standard form.
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_stdform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_matrix * @var{M}, gsl_multifit_linear_workspace * @var{work})
-@deftypefunx int gsl_multifit_linear_wstdform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_matrix * @var{M}, gsl_multifit_linear_workspace * @var{work})
-These functions convert the least squares system (@var{X},@var{y},@var{W},@var{L}) to standard
+@deftypefun int gsl_multifit_linear_L_decomp (gsl_matrix * @var{L}, gsl_vector * @var{tau})
+This function factors the @math{m}-by-@math{p} regularization matrix
+@var{L} into a form needed for the later transformation to standard form. @var{L}
+may have any number of rows @math{m}. If @math{m \ge p} the QR decomposition of
+@var{L} is computed and stored in @var{L} on output. If @math{m < p}, the QR decomposition
+of @math{L^T} is computed and stored in @var{L} on output. On output,
+the Householder scalars are stored in the vector @var{tau} of size @math{MIN(m,p)}.
+These outputs will be used by @code{gsl_multifit_linear_wstdform2} to complete the
+transformation to standard form.
+@end deftypefun
+
+@deftypefun int gsl_multifit_linear_stdform2 (const gsl_matrix * @var{LQR}, const gsl_vector * @var{Ltau}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_matrix * @var{M}, gsl_multifit_linear_workspace * @var{work})
+@deftypefunx int gsl_multifit_linear_wstdform2 (const gsl_matrix * @var{LQR}, const gsl_vector * @var{Ltau}, const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_matrix * @var{M}, gsl_multifit_linear_workspace * @var{work})
+These functions convert the least squares system (@var{X},@var{y},@var{W},@math{L}) to standard
 form (@math{\tilde{X}},@math{\tilde{y}}) which are stored in @var{Xs} and @var{ys}
-respectively. The regularization matrix @var{L} is a full rank
-@math{m}-by-@math{p} matrix with no restrictions on @math{m}. However,
-the dimensions of the standard form parameters (@math{\tilde{X}},@math{\tilde{y}})
+respectively. The @math{m}-by-@math{p} regularization matrix @var{L} is specified by the inputs
+@var{LQR} and @var{Ltau}, which are outputs from @code{gsl_multifit_linear_L_decomp}.
+The dimensions of the standard form parameters (@math{\tilde{X}},@math{\tilde{y}})
 depend on whether @math{m} is larger or less than @math{p}. For @math{m \ge p},
 @var{Xs} is @math{n}-by-@math{p}, @var{ys} is @math{n}-by-1, and @var{M} is
 additional @math{m}-by-@math{p} workspace. For @math{m < p}, @var{Xs} is @math{(n - p + m)}-by-@math{m},
@@ -609,10 +620,10 @@ the vector @var{L}. It is allowed to have @var{c} = @var{cs} for an
 in-place transform.
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_genform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, const gsl_vector * @var{cs}, const gsl_matrix * @var{M}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
-@deftypefunx int gsl_multifit_linear_wgenform2 (const gsl_matrix * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, const gsl_vector * @var{cs}, const gsl_matrix * @var{M}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_genform2 (const gsl_matrix * @var{LQR}, const gsl_vector * @var{Ltau}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, const gsl_vector * @var{cs}, const gsl_matrix * @var{M}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
+@deftypefunx int gsl_multifit_linear_wgenform2 (const gsl_matrix * @var{LQR}, const gsl_vector * @var{Ltau}, const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, const gsl_vector * @var{cs}, const gsl_matrix * @var{M}, gsl_vector * @var{c}, gsl_multifit_linear_workspace * @var{work})
 After a regularized system has been solved with a general rectangular matrix @math{L},
-this function backtransforms the standard form solution @var{cs}
+specified by (@var{LQR},@var{Ltau}), this function backtransforms the standard form solution @var{cs}
 to recover the solution vector of the original problem, which is stored in @var{c},
 of length @math{p}. The original least squares matrix and observation vector are provided in
 @var{X} and @var{y} respectively. @var{M} is the matrix computed by
@@ -697,6 +708,12 @@ model parameters, @var{kmax} is the highest derivative to include in the summati
 @var{alpha} is the vector of weights of size @var{kmax} + 1, where @var{alpha}[k] = @math{\alpha_k}
 is the weight assigned to the derivative of order @math{k}.  The output matrix @var{L} is of size
 @var{p}-by-@var{p}.
+@end deftypefun
+
+@deftypefun double gsl_multifit_linear_rcond (const gsl_multifit_linear_workspace * @var{work})
+This function returns the reciprocal condition number of the least squares matrix @math{X},
+defined as the ratio of the smallest and largest singular values, rcond = @math{\sigma_{min}/\sigma_{max}}.
+The routine @code{gsl_multifit_linear_svd} must first be called to compute the SVD of @math{X}.
 @end deftypefun
 
 @node Robust linear regression
@@ -1051,6 +1068,395 @@ in a reasonable way.
 @end itemize
 @end deftypefun
 
+@node Large Linear Systems
+@section Large linear systems
+@cindex large linear least squares
+@cindex linear least squares, large
+
+This module is concerned with solving large dense least squares systems
+@math{X c = y} where the @math{n}-by-@math{p} matrix
+@math{X} has @math{n >> p} (ie: many more rows than columns).
+This type of matrix is called a ``tall skinny'' matrix, and for
+some applications, it may not be possible to fit the
+entire matrix in memory at once to use the standard SVD approach.
+Therefore, the algorithms in this module are designed to allow
+the user to construct smaller blocks of the matrix @math{X} and
+accumulate those blocks into the larger system one at a time. The
+algorithms in this module never need to store the entire matrix
+@math{X} in memory. The large linear least squares routines
+support data weights and Tikhonov regularization, and are
+designed to minimize the residual
+@tex
+\beforedisplay
+$$
+\chi^2 = || y - Xc ||_W^2 + \lambda^2 || L c ||^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\chi^2 = || y - Xc ||_W^2 + \lambda^2 || L c ||^2
+@end example
+@end ifinfo
+where @math{y} is the @math{n}-by-@math{1} observation vector,
+@math{X} is the @math{n}-by-@math{p} design matrix, @math{c} is
+the @math{p}-by-@math{1} solution vector,
+@math{W =} diag@math{(w_1,...,w_n)} is the data weighting matrix,
+@math{L} is an @math{m}-by-@math{p} regularization matrix,
+@math{\lambda} is a regularization parameter,
+and @math{||r||_W^2 = r^T W r}. In the discussion which follows,
+we will assume that the system has been converted into Tikhonov
+standard form,
+@tex
+\beforedisplay
+$$
+\chi^2 = || \tilde{y} - \tilde{X} \tilde{c} ||^2 + \lambda^2 || \tilde{c} ||^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\chi^2 = || y~ - X~ c~ ||^2 + \lambda^2 || c~ ||^2
+@end example
+@end ifinfo
+and we will drop the tilde characters from the various parameters.
+For a discussion of the transformation to standard form
+@pxref{Regularized regression}.
+
+The basic idea is to partition the matrix @math{X} and observation
+vector @math{y} as
+@tex
+\beforedisplay
+$$
+\left(
+\matrix{
+X_1 \cr
+X_2 \cr
+X_3 \cr
+\vdots \cr
+X_k \cr
+}
+\right)
+c =
+\left(
+\matrix{
+y_1 \cr
+y_2 \cr
+y_3 \cr
+\vdots \cr
+y_k \cr
+}
+\right)
+$$
+\afterdisplay
+@end tex
+into @math{k} blocks, where each block (@math{X_i,y_i}) may have
+any number of rows, but each @math{X_i} has @math{p} columns.
+The sections below describe the methods available for solving
+this partitioned system. The functions are declared in
+the header file @file{gsl_multilarge.h}.
+
+@menu
+* Large Linear Systems Normal Equations::
+* Large Linear Systems TSQR::
+* Large Linear Systems Solution Steps::
+* Large Linear Systems Routines::
+@end menu
+
+@node Large Linear Systems Normal Equations
+@subsection Normal Equations Approach
+@cindex large linear least squares, normal equations
+
+The normal equations approach to the large linear least squares
+problem described above is popular due to its speed and simplicity.
+Since the normal equations solution to the problem is given by
+@tex
+\beforedisplay
+$$
+c = \left( X^T X + \lambda^2 I \right)^{-1} X^T y
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+c = ( X^T X + \lambda^2 I )^-1 X^T y
+@end example
+@end ifinfo
+only the @math{p}-by-@math{p} matrix @math{X^T X} and
+@math{p}-by-1 vector @math{X^T y} need to be stored. Using
+the partition scheme described above, these are given by
+@tex
+\beforedisplay
+$$
+\eqalign{
+X^T X &= \sum_i X_i^T X_i \cr
+X^T y &= \sum_i X_i^T y_i
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+X^T X = \sum_i X_i^T X_i
+X^T y = \sum_i X_i^T y_i
+@end example
+@end ifinfo
+Since the matrix @math{X^T X} is symmetric, only half of it
+needs to be calculated. Once all of the blocks (@math{X_i,y_i})
+have been accumulated into the final @math{X^T X} and @math{X^T y},
+the system can be solved with a Cholesky factorization of the
+@math{X^T X} matrix. The normal equations approach is the fastest
+method for solving the large least squares problem, and is accurate
+for well-conditioned matricies @math{X}. However, for ill-conditioned
+matrices, as is often the case for large systems, this method
+suffers from numerical instabilities (see Trefethen and Bau, 1997).
+The number of operations for this method is @math{O(np^2 + p^3/3)}.
+
+@node Large Linear Systems TSQR
+@subsection Tall Skinny QR (TSQR) Approach
+@cindex large linear least squares, TSQR
+
+An algorithm which has better numerical stability for ill-conditioned
+problems is known as the Tall Skinny QR (TSQR) method. This method
+is based on computing the thin QR decomposition of the least squares
+matrix @math{X = Q R}, where @math{Q} is an @math{n}-by-@math{p} matrix
+with orthogonal columns, and @math{R} is a @math{p}-by-@math{p}
+upper triangular matrix. Once these factors are calculated, the
+residual becomes
+@tex
+\beforedisplay
+$$
+\chi^2 = || Q^T y - R c ||^2 + \lambda^2 || c ||^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+\chi^2 = || Q^T y - R c ||^2 + \lambda^2 || c ||^2
+@end example
+@end ifinfo
+which can be written as the matrix equation
+@tex
+\beforedisplay
+$$
+\left(
+\matrix{
+R \cr
+\lambda I
+} \right) c =
+\left(
+\matrix{
+Q^T y \cr
+0
+} \right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+[ R ; \lambda I ] c = [ Q^T b ; 0 ]
+@end example
+@end ifinfo
+The matrix on the left hand side is now a much
+smaller @math{2p}-by-@math{p} matrix which can
+be solved with a standard SVD approach. The
+@math{Q} matrix is just as large as the original
+matrix @math{X}, however it does not need to be
+explicitly constructed. The TSQR algorithm
+computes only the @math{p}-by-@math{p} matrix
+@math{R} and the @math{p}-by-1 vector @math{Q^T y},
+and updates these quantities as new blocks
+are added to the system. Each time a new block of rows
+(@math{X_i,y_i}) is added, the algorithm performs a QR decomposition
+of the matrix
+@tex
+\beforedisplay
+$$
+\left(
+\matrix{
+R_{i-1} \cr
+X_i
+} \right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+[ R_(i-1) ; X_i ]
+@end example
+@end ifinfo
+where @math{R_{i-1}} is the upper triangular
+@math{R} factor for the matrix
+@tex
+\beforedisplay
+$$
+\left(
+\matrix{
+X_1 \cr
+\vdots \cr
+X_{i-1}
+} \right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+@example
+[ X_1 ; ... ; X_(i-1) ]
+@end example
+@end ifinfo
+This QR decomposition is done efficiently taking into account
+the sparse structure of @math{R_{i-1}}. See Demmel et al, 2008 for
+more details on how this is accomplished. The number
+of operations for this method is @math{O(2np^2 - {2 \over 3}p^3)}.
+
+@node Large Linear Systems Solution Steps
+@subsection Large Linear Systems Solution Steps
+@cindex large linear least squares, steps
+The typical steps required to solve large regularized linear least
+squares problems are as follows:
+
+@enumerate
+
+@item Choose the regularization matrix @math{L}.
+
+@item Construct a block of rows of the least squares matrix, right
+hand side vector, and weight vector (@math{X_i}, @math{y_i}, @math{w_i}).
+
+@item Transform the block to standard form (@math{\tilde{X_i}},@math{\tilde{y_i}}). This
+step can be skipped if @math{L = I} and @math{W = I}.
+
+@item Accumulate the standard form block (@math{\tilde{X_i}},@math{\tilde{y_i}}) into
+the system.
+
+@item Repeat steps 2-4 until the entire matrix and right hand side vector have
+been accumulated.
+
+@item Determine an appropriate regularization parameter @math{\lambda} (using for example
+L-curve analysis).
+
+@item Solve the standard form system using the chosen @math{\lambda}.
+
+@item Backtransform the standard form solution @math{\tilde{c}} to recover the
+original solution vector @math{c}.
+
+@end enumerate
+
+@node Large Linear Systems Routines
+@subsection Large Linear Least Squares Routines
+@cindex large linear least squares, routines
+
+@deftypefun {gsl_multilarge_linear_workspace *} gsl_multilarge_linear_alloc (const gsl_multilarge_linear_type * @var{T}, const size_t @var{nmax}, const size_t @var{p})
+This function allocates a workspace for solving large linear least squares
+systems. The least squares matrix @math{X} has @var{p} columns,
+but may have any number of rows. However each block (@math{X_i,y_i})
+which is added to the system may have at most @var{nmax} rows. The
+parameter @var{T} specifies the method to be used for solving
+the large least squares system and may be selected from the following
+choices
+@deffn {Multilarge type} gsl_multilarge_linear_normal
+This specifies the normal equations approach (see above) for
+solving the least squares system. This method is suitable
+in cases where performance is critical and it is known that the
+least squares matrix @math{X} is well conditioned.
+@end deffn
+
+@deffn {Multilarge type} gsl_multilarge_linear_tsqr
+This specifies the Tall Skinny QR (TSQR) approach (see above) for
+solving the least squares system. This method is a good
+general purpose choice for large systems.
+@end deffn
+@end deftypefun
+
+@deftypefun void gsl_multilarge_linear_free (gsl_multilarge_linear_workspace * @var{w})
+This function frees the memory associated with the
+workspace @var{w}.
+@end deftypefun
+
+@deftypefun {const char *} gsl_multilarge_linear_name (gsl_multilarge_linear_workspace * @var{w})
+This function returns a string pointer to the name
+of the multilarge solver.
+@end deftypefun
+
+@deftypefun int gsl_multilarge_linear_reset (gsl_multilarge_linear_workspace * @var{w})
+This function resets the workspace @var{w} so
+it can begin to accumulate a new least squares
+system.
+@end deftypefun
+
+@deftypefun int gsl_multilarge_linear_stdform1 (const gsl_vector * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_multilarge_linear_workspace * @var{work})
+@deftypefunx int gsl_multilarge_linear_wstdform1 (const gsl_vector * @var{L}, const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_multilarge_linear_workspace * @var{work})
+These functions define a regularization matrix
+@math{L =} diag@math{(l_0,l_1,...,l_{p-1})}.
+The diagonal matrix element @math{l_i} is provided by the
+@math{i}th element of the input vector @var{L}.
+The block (@var{X},@var{y}) is converted to standard form and
+the parameters (@math{\tilde{X}},@math{\tilde{y}}) are stored in @var{Xs}
+and @var{ys} on output.  @var{Xs} and @var{ys} have the same dimensions as
+@var{X} and @var{y}. Optional data weights may be supplied in the
+vector @var{w}. In order to apply this transformation,
+@math{L^{-1}} must exist and so none of the @math{l_i}
+may be zero. After the standard form system has been solved,
+use @code{gsl_multilarge_linear_genform1} to recover the original solution vector.
+It is allowed to have @var{X} = @var{Xs} and @var{y} = @var{ys} for an in-place transform.
+@end deftypefun
+
+@deftypefun int gsl_multilarge_linear_L_decomp (gsl_matrix * @var{L}, gsl_vector * @var{tau})
+This function calculates the QR decomposition of the @math{m}-by-@math{p} regularization matrix
+@var{L}. @var{L} must have @math{m \ge p}.  On output,
+the Householder scalars are stored in the vector @var{tau} of size @math{p}.
+These outputs will be used by @code{gsl_multilarge_linear_wstdform2} to complete the
+transformation to standard form.
+@end deftypefun
+
+@deftypefun int gsl_multilarge_linear_stdform2 (const gsl_matrix * @var{LQR}, const gsl_vector * @var{Ltau}, const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_multilarge_linear_workspace * @var{work})
+@deftypefunx int gsl_multilarge_linear_wstdform2 (const gsl_matrix * @var{LQR}, const gsl_vector * @var{Ltau}, const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_multilarge_linear_workspace * @var{work})
+These functions convert a block of rows (@var{X},@var{y},@var{w}) to standard
+form (@math{\tilde{X}},@math{\tilde{y}}) which are stored in @var{Xs} and @var{ys}
+respectively. @var{X}, @var{y}, and @var{w} must all have the same number of rows
+which cannot exceed the previously specified @math{nmax}. The @math{m}-by-@math{p}
+regularization matrix @var{L} is specified by the inputs
+@var{LQR} and @var{Ltau}, which are outputs from @code{gsl_multilarge_linear_L_decomp}.
+@var{Xs} and @var{ys} have the same dimensions as @var{X} and @var{y}. After the
+standard form system has been solved, use @code{gsl_multilarge_linear_genform2} to
+recover the original solution vector. Optional data weights may be supplied in the
+vector @var{w}, where @math{W =} diag(w).
+@end deftypefun
+
+@deftypefun int gsl_multilarge_linear_accumulate (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_multilarge_linear_workspace * @var{w})
+This function accumulates the standard form block (@math{X,y}) into the
+current least squares system. @var{X} and @var{y} must
+have the same number of rows which cannot exceed the
+previously specified @math{nmax}. @var{X} must have
+@math{p} columns.
+@end deftypefun
+
+@deftypefun int gsl_multilarge_linear_solve (const double @var{lambda}, gsl_vector * @var{c}, double * @var{rnorm}, double * @var{snorm}, gsl_multilarge_linear_workspace * @var{w})
+After all blocks (@math{X_i,y_i}) have been accumulated into
+the large least squares system, this function will compute
+the solution vector which is stored in @var{c} on output.
+The regularization parameter @math{\lambda} is provided in
+@var{lambda}. On output, @var{rnorm} contains the residual norm
+@math{||y - X c||_W} and @var{snorm} contains the solution
+norm @math{||L c||}.
+@end deftypefun
+
+@deftypefun int gsl_multilarge_linear_genform1 (const gsl_vector * @var{L}, const gsl_vector * @var{cs}, gsl_vector * @var{c}, gsl_multilarge_linear_workspace * @var{work})
+After a regularized system has been solved with
+@math{L =} diag@math{(\l_0,\l_1,...,\l_{p-1})},
+this function backtransforms the standard form solution vector @var{cs}
+to recover the solution vector of the original problem @var{c}. The
+diagonal matrix elements @math{l_i} are provided in
+the vector @var{L}. It is allowed to have @var{c} = @var{cs} for an
+in-place transform.
+@end deftypefun
+
+@deftypefun int gsl_multilarge_linear_genform2 (const gsl_matrix * @var{LQR}, const gsl_vector * @var{Ltau}, const gsl_vector * @var{cs}, gsl_vector * @var{c}, gsl_multilarge_linear_workspace * @var{work})
+After a regularized system has been solved with a regularization matrix @math{L},
+specified by (@var{LQR},@var{Ltau}), this function backtransforms the standard form solution @var{cs}
+to recover the solution vector of the original problem, which is stored in @var{c},
+of length @math{p}.
+@end deftypefun
+
 @node Troubleshooting
 @section Troubleshooting
 @cindex least squares troubleshooting
@@ -1224,6 +1630,7 @@ singular, leading to unstable ordinary least squares solutions.
 @noindent
 Here is the program output:
 @example
+matrix condition number = 1.025113e+04
 === Unregularized fit ===
 best fit: y = -43.6588 u + 45.6636 v
 chisq/dof = 1.00213

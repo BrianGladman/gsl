@@ -165,6 +165,19 @@ gsl_multifit_linear_est (const gsl_vector * x,
 }
 
 /*
+gsl_multifit_linear_rcond()
+  Return reciprocal condition number of LS matrix;
+gsl_multifit_linear_svd() must first be called to
+compute the SVD of X and its reciprocal condition number
+*/
+
+double
+gsl_multifit_linear_rcond (const gsl_multifit_linear_workspace * w)
+{
+  return w->rcond;
+}
+
+/*
 gsl_multifit_linear_residuals()
   Compute vector of residuals from fit
 
@@ -218,6 +231,7 @@ gsl_multifit_linear_residuals (const gsl_matrix *X, const gsl_vector *y,
  * 2) The matrix X may have smaller dimensions than the workspace
  *    in the case of stdform2() - but the dimensions cannot be larger
  * 3) On output, work->n and work->p are set to the dimensions of X
+ * 4) On output, work->rcond is set to the reciprocal condition number of X
  */
 
 static int
@@ -256,10 +270,16 @@ multifit_linear_svd (const gsl_matrix * X,
           gsl_vector_set_all (&D.vector, 1.0);
         }
 
-      /* Decompose A into U S Q^T */
-
+      /* decompose A into U S Q^T */
       gsl_linalg_SV_decomp_mod (&A.matrix, &QSI.matrix, &Q.matrix,
                                 &S.vector, &xt.vector);
+
+      /* compute reciprocal condition number rcond = smin / smax */
+      {
+        double smin, smax;
+        gsl_vector_minmax(&S.vector, &smin, &smax);
+        work->rcond = smin / smax;
+      }
 
       work->n = n;
       work->p = p;

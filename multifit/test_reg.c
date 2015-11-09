@@ -90,7 +90,7 @@ test_reg1(const gsl_matrix * X, const gsl_vector * y,
       gsl_multifit_linear_solve(0.0, X, y, c1, &rnorm, &snorm, w);
     }
 
-  gsl_test_rel(rnorm*rnorm + snorm*snorm, chisq, tol,
+  gsl_test_rel(rnorm*rnorm, chisq, tol,
                "test_reg1: %s, lambda = 0, n=%zu p=%zu chisq", desc, n, p);
 
   /* test c0 = c1 */
@@ -293,6 +293,8 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   gsl_vector *Wy = gsl_vector_alloc(n);
   gsl_vector *Lc = gsl_vector_alloc(m);
   gsl_vector *r = gsl_vector_alloc(n);
+  gsl_matrix *LQR = gsl_matrix_alloc(m, p);
+  gsl_vector *Ltau = gsl_vector_alloc(GSL_MIN(m, p));
   int signum;
   size_t j;
 
@@ -314,10 +316,12 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   gsl_linalg_LU_solve(XTX, perm, XTy, c0);
 
   /* solve with reg routine */
-  gsl_multifit_linear_wstdform2(L, X, wts, y, Xs, ys, M, w);
+  gsl_matrix_memcpy(LQR, L);
+  gsl_multifit_linear_L_decomp(LQR, Ltau);
+  gsl_multifit_linear_wstdform2(LQR, Ltau, X, wts, y, Xs, ys, M, w);
   gsl_multifit_linear_svd(Xs, w);
   gsl_multifit_linear_solve(lambda, Xs, ys, cs, &rnorm0, &snorm0, w);
-  gsl_multifit_linear_wgenform2(L, X, wts, y, cs, M, c1, w);
+  gsl_multifit_linear_wgenform2(LQR, Ltau, X, wts, y, cs, M, c1, w);
 
   /* test snorm = ||L c1|| */
   gsl_blas_dgemv(CblasNoTrans, 1.0, L, c1, 0.0, Lc);
@@ -354,6 +358,8 @@ test_reg4(const double lambda, const gsl_matrix * L, const gsl_matrix * X,
   gsl_matrix_free(WX);
   gsl_vector_free(Wy);
   gsl_vector_free(r);
+  gsl_matrix_free(LQR);
+  gsl_vector_free(Ltau);
 }
 
 static void
