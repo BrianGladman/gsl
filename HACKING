@@ -16,25 +16,25 @@ GSL development is hosted at http://savannah.gnu.org/projects/gsl
 
 To do the initial checkout of the repository try:
 
-   bzr branch bzr://bzr.sv.gnu.org/
+   git clone git://git.savannah.gnu.org/gsl.git
 
-[from now on you can just do "bzr pull" in the gsl directory]
+[from now on you can just do "git pull" in the gsl directory]
 
 To generate the initial build scripts, run autoreconf -i -v or ./autogen.sh
 
 # PEOPLE WITH SAVANNAH SSH WRITE ACCESS:
 
-  bzr branch bzr+ssh://bzr.savannah.gnu.org/gsl/trunk/
+  git clone <membername>@git.sv.gnu.org:/srv/git/gsl.git
 
   # editing and committing
   <edit file1>
-  bzr add file2
-  bzr rm file3
-  bzr diff  # see changes
-  bzr commit -m 'commit message' file1 file2 file3
+  git add file2
+  git rm file3
+  git diff  # see changes
+  git commit -m 'commit message' file1 file2 file3
   
   # push to repository
-  bzr push
+  git push
 
 # PEOPLE WHO JUST WANT A WORKING VERSION
 grab the latest bundled release at
@@ -45,10 +45,10 @@ work.
 
 ---------- submitting patches
 
-The best way to send us a patch is to compile from an anonymous bzr
+The best way to send us a patch is to compile from an anonymous git
 checkout and to use a nice diff option, like 
 
-  bzr diff -p1
+  git diff -p1
 
 Note: Please test your patch before sending it, by applying it to a
 clean set of files and running 'make'.
@@ -91,14 +91,6 @@ with
     makestrict CC=c++ 
 
 then that's a good test for portability.
-
-Also do a compilation in c89 and c99 mode explicitly
-
-     ./configure CC=c89
-     make
-
-     ./configure CC=c99
-     make
 
 ---------- warning about picking up old header files
 
@@ -143,15 +135,18 @@ for HAVE_INLINE use in installed headers.
 > make clean; ./configure CFLAGS="-funsigned-char" ; make ; make check
 > make clean; ./configure CFLAGS="-std=c89 -ansi -pedantic" ; make ; make check
 
+* Also do a compilation in c89 and c99 mode explicitly
+> make clean ; ./configure CC=c89 ; make ; make check
+> make clean ; ./configure CC=c99 ; make ; make check
+
 * Make sure the library passes "make check" with export
 GSL_TEST_VERBOSE=1 (it is possible to get segfaults in the verbose
 test output functions if they are called with the wrong format string,
 and these don't show up otherwise).
 
 * Do make distcheck with /usr/bin/install and install-sh
-
 > make distcheck
-> make distcheck INSTALL=/home/bjg/gsl/gsl-1.13/install-sh  # absolute location of install-sh
+> make distcheck INSTALL=/path/to/gsl/install-sh  # absolute location of install-sh
 
 ----------- Notes on making a release
 

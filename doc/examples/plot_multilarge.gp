@@ -12,15 +12,15 @@ set multiplot layout 1,2
 set yrange [-1:*]
 
 set title "Not regularized ({/Symbol \154} = 0)"
-plot 'largefit.out' us 1:2 w li lw 4 ti "Exact", \
-     'largefit.out' us 1:3 w li lw 4 ti "TSQR", \
-     'largefit.out' us 1:4 w li lw 4 ti "Normal"
+plot 'largefit.txt' us 1:2 w li lw 3 ti "Exact", \
+     'largefit.txt' us 1:3 w li lw 3 ti "TSQR", \
+     'largefit.txt' us 1:4 w li lw 3 ti "Normal"
 
 unset key
 
 set title "Regularized ({/Symbol \154} = 1)"
-plot 'largefit2.out' us 1:2 w li lw 4 ti "Exact", \
-     'largefit2.out' us 1:3 w li lw 4 ti "TSQR", \
-     'largefit2.out' us 1:4 w li lw 4 ti "Normal"
+plot 'largefit2.txt' us 1:2 w li lw 3 ti "Exact", \
+     'largefit2.txt' us 1:3 w li lw 3 ti "TSQR", \
+     'largefit2.txt' us 1:4 w li lw 3 ti "Normal"
 
 unset multiplot
