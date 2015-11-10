@@ -1,5 +1,7 @@
 #!/bin/sh
 
+exdir="doc/examples"
+
 nfail=0
 npass=0
 ntot=0
@@ -17,10 +19,10 @@ function dotest
   echo "testing $prog"
   ntot=$((ntot+1))
 
-  eval ./${prog} ${args} 1> $tmpout 2> $tmperr
+  eval ${exdir}/${prog} ${args} 1> $tmpout 2> $tmperr
 
   # test stdout output
-  str=$(/bin/diff $tmpout $file_out)
+  str=$(/bin/diff $tmpout ${exdir}/${file_out})
   if [ -n "$str" ]; then
     echo "FAIL(stdout): $prog"
     echo "difference in $file_out:"
@@ -28,7 +30,7 @@ function dotest
     nfail=$((nfail+1))
   elif [ -n "$file_err" ]; then
     # test stderr output
-    str=$(/bin/diff $tmperr $file_err)
+    str=$(/bin/diff $tmperr ${exdir}/${file_err})
     if [ -n "$str" ]; then
       echo "FAIL(stderr): $prog"
       echo "difference in $file_err:"
@@ -56,7 +58,7 @@ dotest cheb cheb.txt "" ""
 dotest combination combination.txt "" ""
 dotest const const.txt "" ""
 dotest diff diff.txt "" ""
-dotest dwt dwt.txt "" "ecg.dat"
+dotest dwt dwt.txt "" "${exdir}/ecg.dat"
 dotest eigen eigen.txt "" ""
 dotest eigen_nonsymm eigen_nonsymm.txt "" ""
 dotest fft fft.txt "" ""
@@ -64,7 +66,7 @@ dotest fftmr fftmr.txt "" ""
 dotest fftreal fftreal.txt "" ""
 dotest fitreg fitreg.txt fitreg.err ""
 dotest fitting fitting.txt "" ""
-dotest fitting2 fitting2.txt "" "19 < exp.dat"
+dotest fitting2 fitting2.txt "" "19 < ${exdir}/exp.dat"
 dotest histogram2d histogram2d.txt "" ""
 dotest ieee ieee.txt "" ""
 dotest ieeeround ieeeround.txt "" ""
@@ -119,12 +121,12 @@ dotest randpoisson randpoisson2.txt randpoisson2.err ""
 unset GSL_RNG_SEED
 
 # write test.dat, perform test, and delete
-./ntuplew
+$exdir/ntuplew
 dotest ntupler ntuple.txt "" ""
 rm -f test.dat
 
 # test vector read/write
-./vectorw
+$exdir/vectorw
 dotest vectorr vectorr.txt "" ""
 rm -f test.dat
 

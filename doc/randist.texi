@@ -2191,7 +2191,7 @@ of variates,
 
 @example
 $ GSL_RNG_SEED=123 ./a.out 
-@verbatiminclude examples/randpoisson.2.txt
+@verbatiminclude examples/randpoisson2.txt
 @end example
 
 @noindent

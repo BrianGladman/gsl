@@ -1389,7 +1389,7 @@ multiple-recursive generator @code{mrg},
 
 @example
 $ GSL_RNG_SEED=123 GSL_RNG_TYPE=mrg ./a.out 
-@verbatiminclude examples/rngunif.2.txt
+@verbatiminclude examples/rngunif2.txt
 @end example
 
 @node Random Number References and Further Reading

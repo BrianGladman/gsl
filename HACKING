@@ -142,6 +142,9 @@ for HAVE_INLINE use in installed headers.
 > make clean ; ./configure CC=c89 ; make ; make check
 > make clean ; ./configure CC=c99 ; make ; make check
 
+* Test example programs compilation and output
+> make check ; sh scripts/test_examples.sh
+
 * Make sure the library passes "make check" with export
 GSL_TEST_VERBOSE=1 (it is possible to get segfaults in the verbose
 test output functions if they are called with the wrong format string,

@@ -200,7 +200,7 @@ Here is a basic example of how to use the statistical functions:
 The program should produce the following output,
 
 @example
-@verbatiminclude examples/stat.txt
+@verbatiminclude examples/rstat.txt
 @end example
 
 @noindent
