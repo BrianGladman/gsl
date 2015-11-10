@@ -1,0 +1,12 @@
+summary from method 'lmsder'
+number of iterations: 8
+function evaluations: 11
+Jacobian evaluations: 9
+reason for stopping: small step size
+initial |f(x)| = 31.1919
+final   |f(x)| = 5.45418
+chisq/dof = 0.804002
+A      = 5.17379 +/- 0.27938
+lambda = 0.11104 +/- 0.00817
+b      = 1.05283 +/- 0.05365
+status = success

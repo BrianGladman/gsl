@@ -1,4 +1,4 @@
-all multisets of {0,1,2,3} by size:
+All multisets of {0,1,2,3} by size:
 { }
 { 0 }
 { 1 }

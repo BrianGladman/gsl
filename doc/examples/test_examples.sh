@@ -77,8 +77,56 @@ dotest intro intro.txt "" ""
 dotest largefit largefit.txt largefit.err ""
 dotest largefit largefit2.txt largefit2.err "1"
 dotest linalglu linalglu.txt "" ""
-dotest matrix matrix.txt matrix.err ""
+#dotest matrix matrix.txt matrix.err ""
 dotest matrixw matrixw.txt "" ""
+dotest min min.txt "" ""
+dotest monte monte.txt "" ""
+dotest multiset multiset.txt "" ""
+dotest nlfit nlfit.txt nlfit.err ""
+dotest ode-initval ode-initval.txt "" ""
+dotest permseq permseq.txt "" ""
+dotest permshuffle permshuffle.txt "" ""
+dotest poisson poisson.txt poisson.err ""
+dotest polyroots polyroots.txt "" ""
+dotest qrng qrng.txt "" ""
+dotest randpoisson randpoisson.txt "" ""
+dotest randwalk randwalk.txt "" ""
+dotest rng rng.txt "" ""
+dotest rngunif rngunif.txt "" ""
+dotest robfit robfit.txt "" "100"
+dotest rootnewt rootnewt.txt "" ""
+dotest roots roots.txt "" ""
+dotest rquantile rquantile.txt "" ""
+dotest rstat rstat.txt "" ""
+dotest siman siman.txt "" ""
+dotest sortsmall sortsmall.txt "" ""
+dotest specfun specfun.txt "" ""
+dotest specfun_e specfun_e.txt "" ""
+dotest spmatrix spmatrix.txt "" ""
+dotest stat stat.txt "" ""
+dotest statsort statsort.txt "" ""
+dotest sum sum.txt "" ""
+dotest vectorview vectorview.txt "" ""
+
+export GSL_RNG_TYPE=mrg
+export GSL_RNG_SEED=123
+dotest rngunif rngunif2.txt rngunif2.err ""
+unset GSL_RNG_TYPE
+unset GSL_RNG_SEED
+
+export GSL_RNG_SEED=123
+dotest randpoisson randpoisson2.txt randpoisson2.err ""
+unset GSL_RNG_SEED
+
+# write test.dat, perform test, and delete
+./ntuplew
+dotest ntupler ntuple.txt "" ""
+rm -f test.dat
+
+# test vector read/write
+./vectorw
+dotest vectorr vectorr.txt "" ""
+rm -f test.dat
 
 echo "FAIL: ${nfail}/${ntot}"
 echo "PASS: ${npass}/${ntot}"
