@@ -1,5 +1,7 @@
 * What is new in gsl-2.1:
 
+** bug fix when compiling with #undef GSL_DISABLE_DEPRECATED
+
 ** bug fix in setting libtool age versioning
 
 ** bug fix in gsl_multifit_wlinear()

@@ -1,0 +1,8 @@
+matrix condition number = 1.025113e+04
+=== Unregularized fit ===
+best fit: y = -43.6588 u + 45.6636 v
+chisq/dof = 1.00213
+=== Regularized fit ===
+optimal lambda: 4.51103
+best fit: y = 1.00113 u + 1.0032 v
+chisq/dof = 1.04499

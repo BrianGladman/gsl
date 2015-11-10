@@ -347,8 +347,8 @@ transform, while setting the others to zero.
 The output can be used with the @sc{gnu} plotutils @code{graph} program,
 
 @example
-$ ./a.out ecg.dat > dwt.dat
-$ graph -T ps -x 0 256 32 -h 0.3 -a dwt.dat > dwt.ps
+$ ./a.out ecg.dat > dwt.txt
+$ graph -T ps -x 0 256 32 -h 0.3 -a dwt.txt > dwt.ps
 @end example
 
 @iftex

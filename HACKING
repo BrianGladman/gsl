@@ -130,6 +130,9 @@ for HAVE_INLINE use in installed headers.
 > cat gsl/*.h > tmp.c
 > gcc -g -Wall -W -c tmp.c
 
+* #undef GSL_DISABLE_DEPRECATED in config.h and
+> make clean ; make ; make check
+
 * Check that the library passes "make check" with various compiler flags
 > make clean; ./configure CFLAGS="-O3 -mfpmath=sse -msse2" ; make ; make check
 > make clean; ./configure CFLAGS="-funsigned-char" ; make ; make check
@@ -193,6 +196,7 @@ report uninitialized memory errors which don't really exist.
 
 * Tag release:
 > git tag release-X-Y
+> git push origin release-X-Y
 
 * Upload to ftp-upload.gnu.org with GPG signatures (see http://www.gnu.org/prep/maintain/maintain.html)
   /incoming/ftp for official releases (use scripts/mkrelease.sh)
