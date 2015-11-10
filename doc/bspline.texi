@@ -239,9 +239,9 @@ the interval @math{[0, 15]} with Gaussian noise added.
 The output can be plotted with @sc{gnu} @code{graph}.
 
 @example
-$ ./a.out > bspline.dat
+$ ./a.out > bspline.txt
 chisq/dof = 1.118217e+00, Rsq = 0.989771
-$ graph -T ps -X x -Y y -x 0 15 -y -1 1.3 < bspline.dat > bspline.ps
+$ graph -T ps -X x -Y y -x 0 15 -y -1 1.3 < bspline.txt > bspline.ps
 @end example
 
 @iftex

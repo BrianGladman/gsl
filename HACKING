@@ -131,19 +131,19 @@ for HAVE_INLINE use in installed headers.
 > gcc -g -Wall -W -c tmp.c
 
 * #undef GSL_DISABLE_DEPRECATED in config.h and
-> make clean ; make ; make check
+> make clean && make && make check
 
 * Check that the library passes "make check" with various compiler flags
-> make clean; ./configure CFLAGS="-O3 -mfpmath=sse -msse2" ; make ; make check
-> make clean; ./configure CFLAGS="-funsigned-char" ; make ; make check
-> make clean; ./configure CFLAGS="-std=c89 -ansi -pedantic" ; make ; make check
+> make clean && ./configure CFLAGS="-O3 -mfpmath=sse -msse2" && make && make check
+> make clean && ./configure CFLAGS="-funsigned-char" && make && make check
+> make clean && ./configure CFLAGS="-std=c89 -ansi -pedantic" && make && make check
 
 * Also do a compilation in c89 and c99 mode explicitly
-> make clean ; ./configure CC=c89 ; make ; make check
-> make clean ; ./configure CC=c99 ; make ; make check
+> make clean && ./configure CC=c89 && make && make check
+> make clean && ./configure CC=c99 && make && make check
 
 * Test example programs compilation and output
-> make check ; sh scripts/test_examples.sh
+> make check && sh scripts/test_examples.sh
 
 * Make sure the library passes "make check" with export
 GSL_TEST_VERBOSE=1 (it is possible to get segfaults in the verbose
