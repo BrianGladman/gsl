@@ -1353,8 +1353,9 @@ systems. The least squares matrix @math{X} has @var{p} columns,
 but may have any number of rows. The parameter @var{T} specifies
 the method to be used for solving the large least squares system
 and may be selected from the following choices
+
 @deffn {Multilarge type} gsl_multilarge_linear_normal
-This specifies the normal equations approach (see above) for
+This specifies the normal equations approach for
 solving the least squares system. This method is suitable
 in cases where performance is critical and it is known that the
 least squares matrix @math{X} is well conditioned. The size
@@ -1362,10 +1363,11 @@ of this workspace is @math{O(p^2)}.
 @end deffn
 
 @deffn {Multilarge type} gsl_multilarge_linear_tsqr
-This specifies the Tall Skinny QR (TSQR) approach (see above) for
+This specifies the sequential Tall Skinny QR (TSQR) approach for
 solving the least squares system. This method is a good
-general purpose choice for large systems. The size of this
-workspace is @math{O(p^2)}.
+general purpose choice for large systems, but requires about
+twice as many operations as the normal equations method for
+@math{n >> p}. The size of this workspace is @math{O(p^2)}.
 @end deffn
 @end deftypefun
 
