@@ -1347,14 +1347,12 @@ original solution vector @math{c}.
 @subsection Large Linear Least Squares Routines
 @cindex large linear least squares, routines
 
-@deftypefun {gsl_multilarge_linear_workspace *} gsl_multilarge_linear_alloc (const gsl_multilarge_linear_type * @var{T}, const size_t @var{nmax}, const size_t @var{p})
+@deftypefun {gsl_multilarge_linear_workspace *} gsl_multilarge_linear_alloc (const gsl_multilarge_linear_type * @var{T}, const size_t @var{p})
 This function allocates a workspace for solving large linear least squares
 systems. The least squares matrix @math{X} has @var{p} columns,
-but may have any number of rows. However each block (@math{X_i,y_i})
-which is added to the system may have at most @var{nmax} rows. The
-parameter @var{T} specifies the method to be used for solving
-the large least squares system and may be selected from the following
-choices
+but may have any number of rows. The parameter @var{T} specifies
+the method to be used for solving the large least squares system
+and may be selected from the following choices
 @deffn {Multilarge type} gsl_multilarge_linear_normal
 This specifies the normal equations approach (see above) for
 solving the least squares system. This method is suitable
@@ -1367,7 +1365,7 @@ of this workspace is @math{O(p^2)}.
 This specifies the Tall Skinny QR (TSQR) approach (see above) for
 solving the least squares system. This method is a good
 general purpose choice for large systems. The size of this
-workspace is @math{O(nmax \cdot p + p^2)}.
+workspace is @math{O(p^2)}.
 @end deffn
 @end deftypefun
 
@@ -1416,9 +1414,8 @@ transformation to standard form.
 @deftypefunx int gsl_multilarge_linear_wstdform2 (const gsl_matrix * @var{LQR}, const gsl_vector * @var{Ltau}, const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_matrix * @var{Xs}, gsl_vector * @var{ys}, gsl_multilarge_linear_workspace * @var{work})
 These functions convert a block of rows (@var{X},@var{y},@var{w}) to standard
 form (@math{\tilde{X}},@math{\tilde{y}}) which are stored in @var{Xs} and @var{ys}
-respectively. @var{X}, @var{y}, and @var{w} must all have the same number of rows
-which cannot exceed the previously specified @math{nmax}. The @math{m}-by-@math{p}
-regularization matrix @var{L} is specified by the inputs
+respectively. @var{X}, @var{y}, and @var{w} must all have the same number of rows.
+The @math{m}-by-@math{p} regularization matrix @var{L} is specified by the inputs
 @var{LQR} and @var{Ltau}, which are outputs from @code{gsl_multilarge_linear_L_decomp}.
 @var{Xs} and @var{ys} have the same dimensions as @var{X} and @var{y}. After the
 standard form system has been solved, use @code{gsl_multilarge_linear_genform2} to
@@ -1426,12 +1423,12 @@ recover the original solution vector. Optional data weights may be supplied in t
 vector @var{w}, where @math{W =} diag(w).
 @end deftypefun
 
-@deftypefun int gsl_multilarge_linear_accumulate (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, gsl_multilarge_linear_workspace * @var{w})
+@deftypefun int gsl_multilarge_linear_accumulate (gsl_matrix * @var{X}, gsl_vector * @var{y}, gsl_multilarge_linear_workspace * @var{w})
 This function accumulates the standard form block (@math{X,y}) into the
-current least squares system. @var{X} and @var{y} must
-have the same number of rows which cannot exceed the
-previously specified @math{nmax}. @var{X} must have
-@math{p} columns.
+current least squares system. @var{X} and @var{y} have the same number
+of rows, which can be arbitrary.  @var{X} must have @math{p} columns.
+For the TSQR method, @var{X} and @var{y} are destroyed on output.
+For the normal equations method, they are both unchanged.
 @end deftypefun
 
 @deftypefun int gsl_multilarge_linear_solve (const double @var{lambda}, gsl_vector * @var{c}, double * @var{rnorm}, double * @var{snorm}, gsl_multilarge_linear_workspace * @var{w})

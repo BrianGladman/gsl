@@ -39,7 +39,7 @@ solve_system(const gsl_multilarge_linear_type * T,
   const size_t nblock = 5;         /* number of blocks to accumulate */
   const size_t nrows = n / nblock; /* number of rows per block */
   gsl_multilarge_linear_workspace * w =
-    gsl_multilarge_linear_alloc(T, nrows, p);
+    gsl_multilarge_linear_alloc(T, p);
   gsl_matrix *X = gsl_matrix_alloc(nrows, p);
   gsl_vector *y = gsl_vector_alloc(nrows);
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
