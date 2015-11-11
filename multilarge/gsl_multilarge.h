@@ -41,9 +41,9 @@ __BEGIN_DECLS
 typedef struct
 {
   const char *name;
-  void * (*alloc) (const size_t n, const size_t m);
+  void * (*alloc) (const size_t p);
   int (*reset) (void *);
-  int (*accumulate) (const gsl_matrix * X, const gsl_vector * y,
+  int (*accumulate) (gsl_matrix * X, gsl_vector * y,
                      void *);
   int (*solve) (const double lambda, gsl_vector * c,
                 double * rnorm, double * snorm, void *);
@@ -57,7 +57,6 @@ typedef struct
 {
   const gsl_multilarge_linear_type * type;
   void * state;
-  size_t nmax;
   size_t p;
 } gsl_multilarge_linear_workspace;
 
@@ -70,7 +69,7 @@ GSL_VAR const gsl_multilarge_linear_type * gsl_multilarge_linear_tsqr;
  */
 gsl_multilarge_linear_workspace *
 gsl_multilarge_linear_alloc(const gsl_multilarge_linear_type * T,
-                            const size_t nmax, const size_t p);
+                            const size_t p);
 
 void gsl_multilarge_linear_free(gsl_multilarge_linear_workspace * w);
 
@@ -78,8 +77,8 @@ const char *gsl_multilarge_linear_name(const gsl_multilarge_linear_workspace * w
 
 int gsl_multilarge_linear_reset(gsl_multilarge_linear_workspace * w);
 
-int gsl_multilarge_linear_accumulate(const gsl_matrix * X,
-                                     const gsl_vector * y,
+int gsl_multilarge_linear_accumulate(gsl_matrix * X,
+                                     gsl_vector * y,
                                      gsl_multilarge_linear_workspace * w);
 
 int gsl_multilarge_linear_solve(const double lambda, gsl_vector * c,

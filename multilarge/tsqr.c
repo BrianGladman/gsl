@@ -60,60 +60,52 @@
 
 typedef struct
 {
-  size_t nmax;          /* maximum rows to add at once */
   size_t p;             /* number of columns of LS matrix */
   int init;             /* QR system has been initialized */
   int svd;              /* SVD of R has been computed */
   double normb;         /* || b || for computing residual norm */
 
   gsl_vector *tau;      /* Householder scalars, p-by-1 */
-  gsl_matrix *R;        /* [ R ; A_i ], size (nmax + p)-by-p */
-  gsl_vector *QTb;      /* [ Q^T b ; b_i ], size (nmax + p)-by-1 */
+  gsl_matrix *R;        /* [ R ; A_i ], size p-by-p */
+  gsl_vector *QTb;      /* [ Q^T b ; b_i ], size p-by-1 */
 
   gsl_multifit_linear_workspace *multifit_workspace_p;
 } tsqr_state_t;
 
-static void *tsqr_alloc(const size_t nmax, const size_t p);
+static void *tsqr_alloc(const size_t p);
 static void tsqr_free(void *vstate);
 static int tsqr_reset(void *vstate);
-static int tsqr_accumulate(const gsl_matrix * A,
-                             const gsl_vector * b,
-                             void * vstate);
+static int tsqr_accumulate(gsl_matrix * A, gsl_vector * b,
+                           void * vstate);
 static int tsqr_solve(const double lambda, gsl_vector * x,
-                        double * rnorm, double * snorm,
-                        void * vstate);
+                      double * rnorm, double * snorm,
+                      void * vstate);
 static int tsqr_rcond(double * rcond, void * vstate);
 static int tsqr_lcurve(gsl_vector * reg_param, gsl_vector * rho,
                        gsl_vector * eta, void * vstate);
 static int tsqr_svd(tsqr_state_t * state);
-static int tsqr_zero_R(gsl_matrix *R);
-static double tsqr_householder_transform (const size_t N, const size_t j,
-                                          gsl_vector * v);
-static int tsqr_householder_hv (const size_t N, const size_t colidx, const double tau,
-                                const gsl_vector * v, gsl_vector * w);
-static int tsqr_QR_decomp (gsl_matrix * A, gsl_vector * tau);
+static double tsqr_householder_transform (double *v0, gsl_vector * v);
+static int tsqr_householder_hv (const double tau, const gsl_vector * v, double *w0,
+                                gsl_vector * w);
+static int tsqr_householder_hm (const double tau, const gsl_vector * v, gsl_matrix * R,
+                                gsl_matrix * A);
+static int tsqr_QR_decomp (gsl_matrix * R, gsl_matrix * A, gsl_vector * tau);
+static int tsqr_copy_upper(gsl_matrix * dest, const gsl_matrix * src);
 
 /*
 tsqr_alloc()
   Allocate workspace for solving large linear least squares
 problems using the TSQR approach
 
-Inputs: nmax - maximum number of rows to accumulate at once
-        p    - number of columns of LS matrix
+Inputs: p    - number of columns of LS matrix
 
 Return: pointer to workspace
 */
 
 static void *
-tsqr_alloc(const size_t nmax, const size_t p)
+tsqr_alloc(const size_t p)
 {
   tsqr_state_t *state;
-
-  if (nmax == 0)
-    {
-      GSL_ERROR_NULL("nmax must be a positive integer",
-                     GSL_EINVAL);
-    }
 
   if (p == 0)
     {
@@ -127,20 +119,19 @@ tsqr_alloc(const size_t nmax, const size_t p)
       GSL_ERROR_NULL("failed to allocate tsqr state", GSL_ENOMEM);
     }
 
-  state->nmax = nmax;
   state->p = p;
   state->init = 0;
   state->svd = 0;
   state->normb = 0.0;
 
-  state->R = gsl_matrix_alloc(nmax + p, p);
+  state->R = gsl_matrix_alloc(p, p);
   if (state->R == NULL)
     {
       tsqr_free(state);
       GSL_ERROR_NULL("failed to allocate R matrix", GSL_ENOMEM);
     }
 
-  state->QTb = gsl_vector_alloc(nmax + p);
+  state->QTb = gsl_vector_alloc(p);
   if (state->QTb == NULL)
     {
       tsqr_free(state);
@@ -216,8 +207,7 @@ contains current R matrix
 */
 
 static int
-tsqr_accumulate(const gsl_matrix * A, const gsl_vector * b,
-                void * vstate)
+tsqr_accumulate(gsl_matrix * A, gsl_vector * b, void * vstate)
 {
   tsqr_state_t *state = (tsqr_state_t *) vstate;
   const size_t n = A->size1;
@@ -234,26 +224,29 @@ tsqr_accumulate(const gsl_matrix * A, const gsl_vector * b,
   else if (state->init == 0)
     {
       int status;
-      gsl_vector_view tau = gsl_vector_subvector(state->tau, 0, GSL_MIN(n, p));
-      gsl_matrix_view R = gsl_matrix_submatrix(state->R, 0, 0, n, p);
-      gsl_vector_view QTb = gsl_vector_subvector(state->QTb, 0, n);
+      const size_t npmin = GSL_MIN(n, p);
+      gsl_vector_view tau = gsl_vector_subvector(state->tau, 0, npmin);
+      gsl_matrix_view R = gsl_matrix_submatrix(state->R, 0, 0, npmin, p);
+      gsl_matrix_view Av = gsl_matrix_submatrix(A, 0, 0, npmin, p);
+      gsl_vector_view QTb = gsl_vector_subvector(state->QTb, 0, npmin);
+      gsl_vector_view bv = gsl_vector_subvector(b, 0, npmin);
 
       /* this is the first matrix block A_1, compute its (dense) QR decomposition */
 
-      /* copy A into the upper portion of state->R, so that R = [ A ; 0 ] */
-      gsl_matrix_memcpy(&R.matrix, A);
-
       /* compute QR decomposition of A */
-      status = gsl_linalg_QR_decomp(&R.matrix, &tau.vector);
+      status = gsl_linalg_QR_decomp(A, &tau.vector);
       if (status)
         return status;
 
-      /* compute Q^T b */
-      gsl_vector_memcpy(&QTb.vector, b);
-      gsl_linalg_QR_QTvec(&R.matrix, &tau.vector, &QTb.vector);
+      /* store upper triangular R factor in state->R */
+      tsqr_copy_upper(&R.matrix, &Av.matrix);
 
       /* compute ||b|| */
       state->normb = gsl_blas_dnrm2(b);
+
+      /* compute Q^T b and keep the first p elements */
+      gsl_linalg_QR_QTvec(A, &tau.vector, b);
+      gsl_vector_memcpy(&QTb.vector, &bv.vector);
 
       state->init = 1;
 
@@ -262,39 +255,31 @@ tsqr_accumulate(const gsl_matrix * A, const gsl_vector * b,
   else
     {
       int status;
-      const size_t npp = n + p;
-      gsl_vector_view tau = gsl_vector_subvector(state->tau, 0, p);
-      gsl_matrix_view R = gsl_matrix_submatrix(state->R, 0, 0, npp, p);
-      gsl_vector_view QTb = gsl_vector_subvector(state->QTb, 0, npp);
-      gsl_matrix_view Ai = gsl_matrix_submatrix(state->R, p, 0, n, p);
-      gsl_vector_view bi = gsl_vector_subvector(state->QTb, p, n);
 
-      /* form state->R = [ R_{i-1} ; A_i ] */
-      gsl_matrix_memcpy(&Ai.matrix, A);
-
-      /* compute QR decomposition of [ R_{i-1] ; A_i ], accounting for
+      /* compute QR decomposition of [ R_{i-1} ; A_i ], accounting for
        * sparse structure */
-      status = tsqr_QR_decomp(&R.matrix, &tau.vector);
+      status = tsqr_QR_decomp(state->R, A, state->tau);
       if (status)
         return status;
 
+      /* update ||b|| */
+      state->normb = gsl_hypot(state->normb, gsl_blas_dnrm2(b));
+
+      /*
+       * compute Q^T [ QTb_{i - 1}; b_i ], accounting for the sparse
+       * structure of the Householder reflectors
+       */
       {
         size_t i;
 
-        /* compute Q^T [ QTb_{i - 1}; b_i ], accounting for the sparse
-         * structure of the Householder reflectors */
-        gsl_vector_memcpy(&bi.vector, b);
         for (i = 0; i < p; i++)
           {
-            gsl_vector_const_view h = gsl_matrix_const_subcolumn (&R.matrix, i, i, npp - i);
-            gsl_vector_view w = gsl_vector_subvector (&QTb.vector, i, npp - i);
-            double ti = gsl_vector_get (&tau.vector, i);
-            tsqr_householder_hv (p, i, ti, &(h.vector), &(w.vector));
+            const double ti = gsl_vector_get (state->tau, i);
+            gsl_vector_const_view h = gsl_matrix_const_column (A, i);
+            double *wi = gsl_vector_ptr(state->QTb, i);
+            tsqr_householder_hv (ti, &(h.vector), wi, b);
           }
       }
-
-      /* update ||b|| */
-      state->normb = gsl_hypot(state->normb, gsl_blas_dnrm2(b));
 
       return GSL_SUCCESS;
     }
@@ -451,31 +436,11 @@ tsqr_svd(tsqr_state_t * state)
   gsl_matrix_view R = gsl_matrix_submatrix(state->R, 0, 0, p, p);
   int status;
 
-  /* XXX: zero R below the diagonal for SVD routine - this could be
-   * optimized by developing SVD routine for triangular matrices */
-  tsqr_zero_R(state->R);
   status = gsl_multifit_linear_svd(&R.matrix, state->multifit_workspace_p);
 
   state->svd = 1;
 
   return status;
-}
-
-/* zero everything below the diagonal */
-static int
-tsqr_zero_R(gsl_matrix *R)
-{
-  const size_t n = R->size1;
-  const size_t p = R->size2;
-  size_t j;
-
-  for (j = 0; j < p; ++j)
-    {
-      gsl_vector_view v = gsl_matrix_subcolumn(R, j, j + 1, n - j - 1);
-      gsl_vector_set_zero(&v.vector);
-    }
-
-  return GSL_SUCCESS;
 }
 
 /*
@@ -492,105 +457,136 @@ This routine computes a householder transformation (tau,v) of a
 x so that P x = [ I - tau*v*v' ] x annihilates x(1:n-1). x will
 be a subcolumn of the matrix T, and so its structure will be:
 
-x = [ * ] <- 1 nonzero value
-    [ 0 ] <- N - j - 1 zeros, where j is column of matrix in [0,N-1]
-    [ * ] <- M-N nonzero values for the dense part A
+x = [ x0 ] <- 1 nonzero value for the diagonal element of R
+    [ 0  ] <- N - j - 1 zeros, where j is column of matrix in [0,N-1]
+    [ x  ] <- M-N nonzero values for the dense part A
 
-Inputs: N      - number of columns in matrix T
-        colidx - column number in [0, N-1]
-        v      - on input, x vector
-                 on output, householder vector v
+Inputs: v0 - pointer to diagonal element of R
+             on input, v0 = x0;
+        v  - on input, x vector
+             on output, householder vector v
 */
 
 static double
-tsqr_householder_transform (const size_t N, const size_t colidx, gsl_vector * v)
+tsqr_householder_transform (double *v0, gsl_vector * v)
 {
   /* replace v[0:M-1] with a householder vector (v[0:M-1]) and
      coefficient tau that annihilate v[1:M-1] */
 
-  const size_t M = v->size ;
+  double alpha, beta, tau ;
+  
+  /* compute xnorm = || [ 0 ; v ] ||, ignoring zero part of vector */
+  double xnorm = gsl_blas_dnrm2(v);
 
-  if (M == 1)
+  if (xnorm == 0) 
     {
       return 0.0; /* tau = 0 */
     }
-  else
-    { 
-      double alpha, beta, tau ;
-      
-      /* A portion of vector */
-      gsl_vector_view x = gsl_vector_subvector (v, N - colidx, M - (N - colidx));
 
-      /* compute xnorm = || v[1:M-1] ||, ignoring zero part of vector */
-      double xnorm = gsl_blas_dnrm2(&x.vector);
-
-      if (xnorm == 0) 
-        {
-          return 0.0; /* tau = 0 */
-        }
-      
-      alpha = gsl_vector_get (v, 0) ;
-      beta = - (alpha >= 0.0 ? +1.0 : -1.0) * hypot(alpha, xnorm) ;
-      tau = (beta - alpha) / beta ;
-      
+  alpha = *v0;
+  beta = - (alpha >= 0.0 ? +1.0 : -1.0) * hypot(alpha, xnorm) ;
+  tau = (beta - alpha) / beta ;
+  
+  {
+    double s = (alpha - beta);
+    
+    if (fabs(s) > GSL_DBL_MIN) 
       {
-        double s = (alpha - beta);
-        
-        if (fabs(s) > GSL_DBL_MIN) 
-          {
-            gsl_blas_dscal (1.0 / s, &x.vector);
-            gsl_vector_set (v, 0, beta) ;
-          }
-        else
-          {
-            gsl_blas_dscal (GSL_DBL_EPSILON / s, &x.vector);
-            gsl_blas_dscal (1.0 / GSL_DBL_EPSILON, &x.vector);
-            gsl_vector_set (v, 0, beta) ;
-          }
+        gsl_blas_dscal (1.0 / s, v);
+        *v0 = beta;
       }
-      
-      return tau;
-    }
+    else
+      {
+        gsl_blas_dscal (GSL_DBL_EPSILON / s, v);
+        gsl_blas_dscal (1.0 / GSL_DBL_EPSILON, v);
+        *v0 = beta;
+      }
+  }
+  
+  return tau;
 }
 
+/*
+tsqr_householder_hv()
+  Apply Householder reflector to a vector. The Householder
+reflectors are for the QR decomposition of the matrix
+
+  [ R ]
+  [ A ]
+
+where R is p-by-p upper triangular and A is n-by-p dense.
+Therefore all relevant components of the Householder
+vector are stored in the columns of A, while the components
+in R are 0, except for diag(R) which are 1.
+
+The vector w to be transformed is partitioned as
+
+  [ w1 ]
+  [ w2 ]
+
+where w1 is p-by-1 and w2 is n-by-1. The w2 portion
+of w is transformed by v, but most of w1 remains unchanged
+except for the first element, w0
+
+Inputs: tau - Householder scalar
+        v   - Householder vector, n-by-1
+        w0  - (input/output)
+              on input, w1(0);
+              on output, transformed w1(0)
+        w   - (input/output)
+              on input, vector w2;
+              on output, P*w2
+*/
+
 static int
-tsqr_householder_hv (const size_t N, const size_t colidx, const double tau,
-                     const gsl_vector * v, gsl_vector * w)
+tsqr_householder_hv (const double tau, const gsl_vector * v, double *w0, gsl_vector * w)
 {
   /* applies a householder transformation v to vector w */
-  const size_t M = v->size;
  
   if (tau == 0)
     return GSL_SUCCESS ;
 
   {
-    /* compute d = v'w */
-
-    double w0 = gsl_vector_get(w,0);
     double d1, d;
 
-    gsl_vector_const_view v1 = gsl_vector_const_subvector(v, N - colidx, M - (N - colidx));
-    gsl_vector_view w1 = gsl_vector_subvector(w, N - colidx, M - (N - colidx));
-
     /* compute d1 = v(2:n)'w(2:n) */
-    gsl_blas_ddot (&v1.vector, &w1.vector, &d1);
+    gsl_blas_ddot (v, w, &d1);
 
     /* compute d = v'w = w(1) + d1 since v(1) = 1 */
-    d = w0 + d1;
+    d = *w0 + d1;
 
     /* compute w = w - tau (v) (v'w) */
-
-    gsl_vector_set (w, 0, w0 - tau * d);
-    gsl_blas_daxpy (-tau * d, &v1.vector, &w1.vector);
+    *w0 -= tau * d;
+    gsl_blas_daxpy (-tau * d, v, w);
   }
   
   return GSL_SUCCESS;
 }
 
+/*
+tsqr_householder_hm()
+  Apply Householder reflector to a submatrix of
+
+  [ R ]
+  [ A ]
+
+where R is p-by-p upper triangular and A is n-by-p dense.
+The diagonal terms of R are already transformed by
+tsqr_householder_transform(), so we just need to operate
+on the submatrix A(:,i:p) as well as the superdiagonal
+elements of R
+
+Inputs: tau - Householder scalar
+        v   - Householder vector
+        R   - upper triangular submatrix of R, (p-i)-by-(p-i-1)
+        A   - dense submatrix of A, n-by-(p-i)
+*/
+
 static int
-tsqr_householder_hm (const size_t N, const size_t colidx, const double tau, const gsl_vector * v, gsl_matrix * A)
+tsqr_householder_hm (const double tau, const gsl_vector * v, gsl_matrix * R,
+                     gsl_matrix * A)
 {
-  /* applies a householder transformation v,tau to matrix m */
+  /* applies a householder transformation v,tau to matrix [ R ; A ] */
 
   if (tau == 0.0)
     {
@@ -598,90 +594,105 @@ tsqr_householder_hm (const size_t N, const size_t colidx, const double tau, cons
     }
   else
     {
-      gsl_vector_const_view v1 = gsl_vector_const_subvector (v, N - colidx, v->size - (N - colidx));
-      gsl_matrix_view A1 = gsl_matrix_submatrix (A, N - colidx, 0, A->size1 - (N - colidx), A->size2);
       size_t j;
 
       for (j = 0; j < A->size2; j++)
         {
-          double A0j = gsl_matrix_get (A, 0, j);
+          double R0j = gsl_matrix_get (R, 0, j);
           double wj;
-          gsl_vector_view A1j = gsl_matrix_column(&A1.matrix, j);
+          gsl_vector_view A1j = gsl_matrix_column(A, j);
 
-          gsl_blas_ddot (&A1j.vector, &v1.vector, &wj);
-          wj += A0j;
+          gsl_blas_ddot (&A1j.vector, v, &wj);
+          wj += R0j;
 
-          gsl_matrix_set (A, 0, j, A0j - tau *  wj);
+          gsl_matrix_set (R, 0, j, R0j - tau *  wj);
 
-          gsl_blas_daxpy (-tau * wj, &v1.vector, &A1j.vector);
+          gsl_blas_daxpy (-tau * wj, v, &A1j.vector);
         }
 
       return GSL_SUCCESS;
     }
 }
 
-/* Factorise a general M x N matrix A into
- *  
- *   A = Q R
- *
- * where Q is orthogonal (M x M) and R is upper triangular (M x N).
- *
- * Q is stored as a packed set of Householder transformations in the
- * strict lower triangular part of the input matrix.
- *
- * R is stored in the diagonal and upper triangle of the input matrix.
- *
- * The full matrix for Q can be obtained as the product
- *
- *       Q = Q_k .. Q_2 Q_1
- *
- * where k = MIN(M,N) and
- *
- *       Q_i = (I - tau_i * v_i * v_i')
- *
- * and where v_i is a Householder vector
- *
- *       v_i = [1, m(i+1,i), m(i+2,i), ... , m(M,i)]
- *
- * This storage scheme is the same as in LAPACK.  */
+/*
+tsqr_QR_decomp()
+  Compute the QR decomposition of the matrix
+
+  [ R ]
+  [ A ]
+
+where R is p-by-p upper triangular and A is n-by-p dense.
+
+Inputs: R   - upper triangular p-by-p matrix
+        A   - dense n-by-p matrix
+        tau - Householder scalars
+*/
 
 static int
-tsqr_QR_decomp (gsl_matrix * A, gsl_vector * tau)
+tsqr_QR_decomp (gsl_matrix * R, gsl_matrix * A, gsl_vector * tau)
 {
-  const size_t M = A->size1;
-  const size_t N = A->size2;
+  const size_t n = A->size1;
+  const size_t p = R->size2;
 
-  if (tau->size != GSL_MIN (M, N))
+  if (R->size2 != A->size2)
     {
-      GSL_ERROR ("size of tau must be MIN(M,N)", GSL_EBADLEN);
+      GSL_ERROR ("R and A have different number of columns", GSL_EBADLEN);
+    }
+  else if (tau->size != p)
+    {
+      GSL_ERROR ("size of tau must be p", GSL_EBADLEN);
     }
   else
     {
       size_t i;
 
-      for (i = 0; i < GSL_MIN (M, N); i++)
+      for (i = 0; i < p; i++)
         {
           /* Compute the Householder transformation to reduce the j-th
-             column of the matrix to a multiple of the j-th unit vector,
-             taking into account the sparse structure of A */
+             column of the matrix [ R ; A ] to a multiple of the j-th unit vector,
+             taking into account the sparse structure of R */
 
-          gsl_vector_view c = gsl_matrix_subcolumn (A, i, i, M - i);
-          double tau_i = tsqr_householder_transform(N, i, &c.vector);
+          gsl_vector_view c = gsl_matrix_column(A, i);
+          double *Rii = gsl_matrix_ptr(R, i, i);
+          double tau_i = tsqr_householder_transform(Rii, &c.vector);
 
           gsl_vector_set (tau, i, tau_i);
 
           /* Apply the transformation to the remaining columns and
              update the norms */
 
-          if (i + 1 < N)
+          if (i + 1 < p)
             {
-              gsl_matrix_view m = gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i + 1));
-              tsqr_householder_hm (N, i, tau_i, &(c.vector), &(m.matrix));
+              gsl_matrix_view Rv = gsl_matrix_submatrix(R, i, i + 1, p - i, p - (i + 1));
+              gsl_matrix_view Av = gsl_matrix_submatrix(A, 0, i + 1, n, p - (i + 1));
+              tsqr_householder_hm (tau_i, &(c.vector), &(Rv.matrix), &(Av.matrix));
             }
         }
 
       return GSL_SUCCESS;
     }
+}
+
+/* copy upper triangle of src to dest, including diagonal */
+static int
+tsqr_copy_upper(gsl_matrix * dest, const gsl_matrix * src)
+{
+  const size_t src_size1 = src->size1;
+  const size_t src_size2 = src->size2;
+  const size_t src_tda = src->tda;
+  const size_t dest_tda = dest->tda;
+  size_t i, j;
+
+  for (i = 0; i < src_size1; i++)
+    {
+      for (j = i; j < src_size2; j++)
+        {
+          dest->data[dest_tda * i + j] 
+            = src->data[src_tda * i + j];
+        }
+    }
+
+  return GSL_SUCCESS;
 }
 
 static const gsl_multilarge_linear_type tsqr_type =

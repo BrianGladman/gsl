@@ -28,7 +28,7 @@
 
 gsl_multilarge_linear_workspace *
 gsl_multilarge_linear_alloc(const gsl_multilarge_linear_type *T,
-                            const size_t nmax, const size_t p)
+                            const size_t p)
 {
   gsl_multilarge_linear_workspace *w;
 
@@ -41,7 +41,7 @@ gsl_multilarge_linear_alloc(const gsl_multilarge_linear_type *T,
 
   w->type = T;
 
-  w->state = w->type->alloc(nmax, p);
+  w->state = w->type->alloc(p);
   if (w->state == NULL)
     {
       gsl_multilarge_linear_free(w);
@@ -49,7 +49,6 @@ gsl_multilarge_linear_alloc(const gsl_multilarge_linear_type *T,
                      GSL_ENOMEM);
     }
 
-  w->nmax = nmax;
   w->p = p;
 
   /* initialize newly allocated state */
@@ -83,7 +82,7 @@ gsl_multilarge_linear_reset(gsl_multilarge_linear_workspace *w)
 }
 
 int
-gsl_multilarge_linear_accumulate(const gsl_matrix * X, const gsl_vector * y,
+gsl_multilarge_linear_accumulate(gsl_matrix * X, gsl_vector * y,
                                  gsl_multilarge_linear_workspace * w)
 {
   int status = w->type->accumulate(X, y, w->state);
@@ -252,11 +251,7 @@ gsl_multilarge_linear_wstdform2 (const gsl_matrix * LQR,
   const size_t n = X->size1;
   const size_t p = X->size2;
 
-  if (n > work->nmax)
-    {
-      GSL_ERROR("X has too many rows", GSL_EBADLEN);
-    }
-  else if (p != work->p)
+  if (p != work->p)
     {
       GSL_ERROR("X has wrong number of columns", GSL_EBADLEN);
     }

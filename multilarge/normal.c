@@ -28,7 +28,6 @@
 
 typedef struct
 {
-  size_t nmax;          /* maximum rows to add at once */
   size_t p;             /* number of columns of LS matrix */
   gsl_matrix *ATA;      /* A^T A, p-by-p */
   gsl_vector *ATb;      /* A^T b, p-by-1 */
@@ -37,11 +36,10 @@ typedef struct
   gsl_vector *workp;    /* workspace size p */
 } normal_state_t;
 
-static void *normal_alloc(const size_t nmax, const size_t p);
+static void *normal_alloc(const size_t p);
 static void normal_free(void *vstate);
 static int normal_reset(void *vstate);
-static int normal_accumulate(const gsl_matrix * A,
-                             const gsl_vector * b,
+static int normal_accumulate(gsl_matrix * A, gsl_vector * b,
                              void * vstate);
 static int normal_solve(const double lambda, gsl_vector * x,
                         double * rnorm, double * snorm,
@@ -63,22 +61,15 @@ normal_alloc()
   Allocate workspace for solving large linear least squares
 problems using the normal equations approach
 
-Inputs: nmax - maximum number of rows to accumulate at once
-        p    - number of columns of LS matrix
+Inputs: p    - number of columns of LS matrix
 
 Return: pointer to workspace
 */
 
 static void *
-normal_alloc(const size_t nmax, const size_t p)
+normal_alloc(const size_t p)
 {
   normal_state_t *state;
-
-  if (nmax == 0)
-    {
-      GSL_ERROR_NULL("nmax must be a positive integer",
-                     GSL_EINVAL);
-    }
 
   if (p == 0)
     {
@@ -92,7 +83,6 @@ normal_alloc(const size_t nmax, const size_t p)
       GSL_ERROR_NULL("failed to allocate normal state", GSL_ENOMEM);
     }
 
-  state->nmax = nmax;
   state->p = p;
 
   state->ATA = gsl_matrix_alloc(p, p);
@@ -170,8 +160,7 @@ Return: success/error
 */
 
 static int
-normal_accumulate(const gsl_matrix * A, const gsl_vector * b,
-                  void * vstate)
+normal_accumulate(gsl_matrix * A, gsl_vector * b, void * vstate)
 {
   normal_state_t *state = (normal_state_t *) vstate;
   const size_t n = A->size1;
