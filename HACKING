@@ -232,6 +232,9 @@ na.digest@na-net.ornl.gov or freshmeat.net
 
 * edit doc/gsl-ref.texi and make sure copyright years are current
 
+* At minimum 'touch doc/gsl-ref.texi' so that the date on the first page
+  will be updated correctly
+
 * Make html docs using texi2html, 
 
     cd doc ; mkdir html ; cd html
