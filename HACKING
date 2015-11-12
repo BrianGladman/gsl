@@ -210,8 +210,8 @@ report uninitialized memory errors which don't really exist.
 
   3 files to upload:
   * gsl-X.Y.tar.gz
-  * gsl-X.Y.tar.gz.sig           (generate with gpg -b gsl-X.Y.tar.gz)
-  * gsl-X.Y.tar.gz.directive.asc (generate with gpg --clearsign gsl-X.Y.tar.gz.directive)
+  * gsl-X.Y.tar.gz.sig
+  * gsl-X.Y.tar.gz.directive.asc
 
   Ensure that the directive file contains a symlink for gsl-latest.tar.gz
 
