@@ -533,7 +533,7 @@ Inputs: tau - Householder scalar
         w0  - (input/output)
               on input, w1(0);
               on output, transformed w1(0)
-        w   - (input/output)
+        w   - (input/output) n-by-1
               on input, vector w2;
               on output, P*w2
 */
@@ -549,7 +549,7 @@ tsqr_householder_hv (const double tau, const gsl_vector * v, double *w0, gsl_vec
   {
     double d1, d;
 
-    /* compute d1 = v(2:n)'w(2:n) */
+    /* compute d1 = v(2:n)' w(2:n) */
     gsl_blas_ddot (v, w, &d1);
 
     /* compute d = v'w = w(1) + d1 since v(1) = 1 */

@@ -1152,6 +1152,15 @@ y_k \cr
 $$
 \afterdisplay
 @end tex
+@ifinfo
+@example
+[ X_1 ] c = [ y_1 ]
+[ X_2 ]     [ y_2 ]
+[ X_3 ]     [ y_3 ]
+[ ... ]     [ ... ]
+[ X_k ]     [ y_k ]
+@end example
+@end ifinfo
 into @math{k} blocks, where each block (@math{X_i,y_i}) may have
 any number of rows, but each @math{X_i} has @math{p} columns.
 The sections below describe the methods available for solving
