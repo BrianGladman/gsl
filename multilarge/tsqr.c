@@ -317,8 +317,6 @@ tsqr_solve(const double lambda, gsl_vector * x,
   else
     {
       int status;
-      gsl_matrix_view R = gsl_matrix_submatrix(state->R, 0, 0, p, p);
-      gsl_vector_view QTb = gsl_vector_subvector(state->QTb, 0, p);
 
       /* compute SVD of R if not already computed */
       if (state->svd == 0)
@@ -328,7 +326,7 @@ tsqr_solve(const double lambda, gsl_vector * x,
             return status;
         }
 
-      status = gsl_multifit_linear_solve(lambda, &R.matrix, &QTb.vector, x, rnorm, snorm,
+      status = gsl_multifit_linear_solve(lambda, state->R, state->QTb, x, rnorm, snorm,
                                          state->multifit_workspace_p);
       if (status)
         return status;
@@ -347,7 +345,7 @@ tsqr_solve(const double lambda, gsl_vector * x,
        * so add this into the rnorm calculation
        */
       {
-        double norm_Q1Tb = gsl_blas_dnrm2(&QTb.vector);
+        double norm_Q1Tb = gsl_blas_dnrm2(state->QTb);
         double ratio = norm_Q1Tb / state->normb;
         double diff = 1.0 - ratio*ratio;
 
@@ -379,8 +377,6 @@ tsqr_lcurve(gsl_vector * reg_param, gsl_vector * rho,
             gsl_vector * eta, void * vstate)
 {
   tsqr_state_t *state = (tsqr_state_t *) vstate;
-  const size_t p = state->p;
-  gsl_vector_view QTb = gsl_vector_subvector(state->QTb, 0, p);
   int status;
 
   /* compute SVD of R if not already computed */
@@ -391,7 +387,7 @@ tsqr_lcurve(gsl_vector * reg_param, gsl_vector * rho,
         return status;
     }
 
-  status = gsl_multifit_linear_lcurve(&QTb.vector, reg_param, rho, eta,
+  status = gsl_multifit_linear_lcurve(state->QTb, reg_param, rho, eta,
                                       state->multifit_workspace_p);
 
   return status;
@@ -407,9 +403,7 @@ tsqr_rcond(double * rcond, void * vstate)
     {
       int status = tsqr_svd(state);
       if (status)
-        {
-          GSL_ERROR("error computing SVD of R", GSL_EINVAL);
-        }
+        return status;
     }
 
   *rcond = gsl_multifit_linear_rcond(state->multifit_workspace_p);
@@ -432,15 +426,17 @@ Return: success/error
 static int
 tsqr_svd(tsqr_state_t * state)
 {
-  const size_t p = state->p;
-  gsl_matrix_view R = gsl_matrix_submatrix(state->R, 0, 0, p, p);
   int status;
 
-  status = gsl_multifit_linear_svd(&R.matrix, state->multifit_workspace_p);
+  status = gsl_multifit_linear_svd(state->R, state->multifit_workspace_p);
+  if (status)
+    {
+      GSL_ERROR("error computing SVD of R", status);
+    }
 
   state->svd = 1;
 
-  return status;
+  return GSL_SUCCESS;
 }
 
 /*
