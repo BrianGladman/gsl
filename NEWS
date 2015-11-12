@@ -1,5 +1,7 @@
 * What is new in gsl-2.1:
 
+** added test suite for example programs
+
 ** bug fix when compiling with #undef GSL_DISABLE_DEPRECATED
 
 ** bug fix in setting libtool age versioning

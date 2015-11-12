@@ -142,6 +142,9 @@ for HAVE_INLINE use in installed headers.
 > make clean && ./configure CC=c89 && make && make check
 > make clean && ./configure CC=c99 && make && make check
 
+* If intel compilers are available,
+> make clean && ./configure CC=icc && make && make check
+
 * Test example programs compilation and output
 > make check && sh scripts/test_examples.sh
 
