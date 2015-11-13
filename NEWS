@@ -1,4 +1,14 @@
-* What is new in gsl-2.1:
+* What is new in gsl-2.2:
+
+** updated multilarge normal equations method to use
+   new Cholesky scaling for better numerical stability
+
+** added new Cholesky routines
+   _decomp2, _solve2, _svx2, _scale
+   to attempt to reduce the condition number of
+   the matrix prior to factorization
+
+* What was new in gsl-2.1:
 
 ** added test suite for example programs
 
