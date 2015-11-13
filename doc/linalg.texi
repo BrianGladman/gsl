@@ -531,6 +531,26 @@ the linear system @math{A x = b} into a pair of triangular systems
 (@math{L y = b}, @math{L^T x = y}), which can be solved by forward and
 back-substitution.
 
+If the matrix @math{A} is near singular, it is sometimes possible to reduce
+the condition number by scaling as
+@tex
+\beforedisplay
+$$
+\left( D A D \right) \left( D^{-1} x \right) = D b
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+( D A D ) ( D^(-1) x ) = D b
+@end example
+
+@end ifinfo
+where @math{D} is a diagonal matrix whose elements are given by
+@math{D_{ii} = 1/\sqrt{A_{ii}}}. There are routines below to solve
+both the scaled and unscaled systems.
+
 @deftypefun int gsl_linalg_cholesky_decomp (gsl_matrix * @var{A})
 @deftypefunx int gsl_linalg_complex_cholesky_decomp (gsl_matrix_complex * @var{A})
 These functions factorize the symmetric, positive-definite square matrix
@@ -574,6 +594,48 @@ decomposition @var{cholesky}, which must have been previously computed
 by @code{gsl_linalg_cholesky_decomp} or
 @code{gsl_linalg_complex_cholesky_decomp}.  On output, the inverse is
 stored in-place in @var{cholesky}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_cholesky_decomp2 (gsl_matrix * @var{A}, gsl_vector * @var{D})
+This function calculates a diagonal scaling transformation @math{D} for
+the symmetric, positive-definite square matrix @var{A}, and then
+computes the Cholesky decomposition @math{D A D = L L^T}.
+On input, the values from the diagonal and lower-triangular part of the matrix @var{A} are
+used (the upper triangular part is ignored).  On output the diagonal and lower triangular part
+of the input matrix @var{A} contain the matrix @math{L}, while the upper triangular part
+of the input matrix is overwritten with @math{L^T} (the diagonal terms being
+identical for both @math{L} and @math{L^T}).  If the matrix is not
+positive-definite then the decomposition will fail, returning the
+error code @code{GSL_EDOM}. The diagonal scale factors are stored in @var{D}
+on output.
+
+When testing whether a matrix is positive-definite, disable the error
+handler first to avoid triggering an error.
+@end deftypefun
+
+@deftypefun int gsl_linalg_cholesky_solve2 (const gsl_matrix * @var{cholesky}, const gsl_vector * @var{D}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the system @math{(D A D) (D^{-1} x) = D b} using the Cholesky
+decomposition of @math{D A D} held in the matrix @var{cholesky} which must
+have been previously computed by @code{gsl_linalg_cholesky_decomp2}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_cholesky_svx2 (const gsl_matrix * @var{cholesky}, const gsl_vector * @var{D}, gsl_vector * @var{x})
+This function solves the system @math{(D A D) (D^{-1} x) = D b} in-place using the
+Cholesky decomposition of @math{D A D} held in the matrix @var{cholesky}
+which must have been previously computed by
+@code{gsl_linalg_cholesky_decomp2}.  On input @var{x} should
+contain the right-hand side @math{b}, which is replaced by the
+solution on output.
+@end deftypefun
+
+@deftypefun int gsl_linalg_cholesky_scale (gsl_matrix * @var{A}, gsl_vector * @var{D})
+This function calculates a diagonal scaling transformation of the
+symmetric, positive definite matrix @var{A}, such that
+@math{D A D} has a condition number within a factor of @math{N}
+of the matrix of smallest possible condition number over all
+possible diagonal scalings. On output, @var{D} contains the
+scale factors, given by @math{D_i = 1/\sqrt{A_{ii}}} and
+@var{A} contains the scaled matrix @math{D A D}.
 @end deftypefun
 
 @node Tridiagonal Decomposition of Real Symmetric Matrices

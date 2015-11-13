@@ -1216,12 +1216,17 @@ Since the matrix @math{X^T X} is symmetric, only half of it
 needs to be calculated. Once all of the blocks (@math{X_i,y_i})
 have been accumulated into the final @math{X^T X} and @math{X^T y},
 the system can be solved with a Cholesky factorization of the
-@math{X^T X} matrix. The normal equations approach is the fastest
-method for solving the large least squares problem, and is accurate
-for well-conditioned matricies @math{X}. However, for ill-conditioned
-matrices, as is often the case for large systems, this method
-suffers from numerical instabilities (see Trefethen and Bau, 1997).
-The number of operations for this method is @math{O(np^2 + p^3/3)}.
+@math{X^T X} matrix. If the Cholesky factorization fails (occasionally
+due to numerical rounding errors), a QR decomposition is then used.
+In both cases, the @math{X^T X} matrix is first transformed via
+a diagonal scaling transformation to attempt to reduce its condition
+number as much as possible to recover a more accurate solution vector.
+The normal equations approach is the fastest method for solving the
+large least squares problem, and is accurate for well-conditioned
+matrices @math{X}. However, for ill-conditioned matrices, as is often
+the case for large systems, this method can suffer from numerical
+instabilities (see Trefethen and Bau, 1997).  The number of operations
+for this method is @math{O(np^2 + {1 \over 3}p^3)}.
 
 @node Large Linear Systems TSQR
 @subsection Tall Skinny QR (TSQR) Approach

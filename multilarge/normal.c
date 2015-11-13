@@ -34,6 +34,7 @@ typedef struct
   double normb;         /* || b || */
   gsl_matrix *work_ATA; /* workspace for chol(ATA), p-by-p */
   gsl_vector *workp;    /* workspace size p */
+  gsl_vector *D;        /* scale factors for ATA, size p */
 } normal_state_t;
 
 static void *normal_alloc(const size_t p);
@@ -106,6 +107,13 @@ normal_alloc(const size_t p)
       GSL_ERROR_NULL("failed to allocate ATb vector", GSL_ENOMEM);
     }
 
+  state->D = gsl_vector_alloc(p);
+  if (state->D == NULL)
+    {
+      normal_free(state);
+      GSL_ERROR_NULL("failed to allocate D vector", GSL_ENOMEM);
+    }
+
   state->workp = gsl_vector_alloc(p);
   if (state->workp == NULL)
     {
@@ -129,6 +137,9 @@ normal_free(void *vstate)
 
   if (state->ATb)
     gsl_vector_free(state->ATb);
+
+  if (state->D)
+    gsl_vector_free(state->D);
 
   if (state->workp)
     gsl_vector_free(state->workp);
@@ -334,12 +345,12 @@ normal_solve_cholesky(gsl_matrix * ATA, const gsl_vector * ATb,
 {
   int status;
 
-  /* compute Cholesky decomposition of A^T A */
-  status = gsl_linalg_cholesky_decomp(ATA);
+  /* compute Cholesky decomposition of A^T A with scaling */
+  status = gsl_linalg_cholesky_decomp2(ATA, state->D);
   if (status)
     return status;
 
-  status = gsl_linalg_cholesky_solve(ATA, ATb, x);
+  status = gsl_linalg_cholesky_solve2(ATA, state->D, ATb, x);
   if (status)
     return status;
 
@@ -352,6 +363,11 @@ normal_solve_QR(gsl_matrix * ATA, const gsl_vector * ATb,
 {
   int status;
 
+  /* scale: ATA <- diag(D) ATA diag(D) to try to reduce cond(ATA) */
+  status = gsl_linalg_cholesky_scale(ATA, state->D);
+  if (status)
+    return status;
+
   /* copy lower triangle of ATA to upper */
   normal_copy_lowup(ATA);
 
@@ -359,9 +375,17 @@ normal_solve_QR(gsl_matrix * ATA, const gsl_vector * ATb,
   if (status)
     return status;
 
-  status = gsl_linalg_QR_solve(ATA, state->workp, ATb, x);
+  /* scale rhs vector: ATb <- diag(D) ATb */
+  gsl_vector_memcpy(x, ATb);
+  gsl_vector_mul(x, state->D);
+
+  /* solve system */
+  status = gsl_linalg_QR_svx(ATA, state->workp, x);
   if (status)
     return status;
+
+  /* undo scaling */
+  gsl_vector_mul(x, state->D);
 
   return GSL_SUCCESS;
 }
