@@ -3229,7 +3229,37 @@ test_cholesky_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   return s;
 }
 
-int test_cholesky_solve(void)
+int
+test_cholesky_solve2_dim(const gsl_matrix * m, const double * actual, double eps)
+{
+  int s = 0;
+  unsigned long i, dim = m->size1;
+
+  gsl_vector * rhs = gsl_vector_alloc(dim);
+  gsl_matrix * u  = gsl_matrix_alloc(dim,dim);
+  gsl_vector * x = gsl_vector_calloc(dim);
+  gsl_vector * D = gsl_vector_calloc(dim);
+  gsl_matrix_memcpy(u,m);
+  for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
+  s += gsl_linalg_cholesky_decomp2(u, D);
+  s += gsl_linalg_cholesky_solve2(u, D, rhs, x);
+  for(i=0; i<dim; i++) {
+    int foo = check(gsl_vector_get(x, i), actual[i], eps);
+    if(foo) {
+      printf("%3lu[%lu]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(x, i), actual[i]);
+    }
+    s += foo;
+  }
+  gsl_vector_free(x);
+  gsl_matrix_free(u);
+  gsl_vector_free(rhs);
+  gsl_vector_free(D);
+
+  return s;
+}
+
+int
+test_cholesky_solve(void)
 {
   int f;
   int s = 0;
@@ -3248,6 +3278,24 @@ int test_cholesky_solve(void)
 
   f = test_cholesky_solve_dim(hilb12, hilb12_solution, 0.5);
   gsl_test(f, "  cholesky_solve hilbert(12)");
+  s += f;
+
+  /* test scaled Cholesky routines */
+
+  f = test_cholesky_solve2_dim(hilb2, hilb2_solution, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  cholesky_solve2 hilbert(2)");
+  s += f;
+
+  f = test_cholesky_solve2_dim(hilb3, hilb3_solution, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  cholesky_solve2 hilbert(3)");
+  s += f;
+
+  f = test_cholesky_solve2_dim(hilb4, hilb4_solution, 2 * 2048.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  cholesky_solve2 hilbert(4)");
+  s += f;
+
+  f = test_cholesky_solve2_dim(hilb12, hilb12_solution, 0.5);
+  gsl_test(f, "  cholesky_solve2 hilbert(12)");
   s += f;
 
   return s;

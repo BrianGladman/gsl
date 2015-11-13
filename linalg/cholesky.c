@@ -356,3 +356,176 @@ gsl_linalg_cholesky_decomp_unit(gsl_matrix * A, gsl_vector * D)
 
   return stat_chol;
 }
+
+/*
+gsl_linalg_cholesky_scale()
+  This function computes scale factors diag(D), such that
+
+diag(D) A diag(D)
+
+has a condition number within a factor N of the matrix
+with the smallest condition number over all possible
+diagonal scalings. See Corollary 7.6 of:
+
+N. J. Higham, Accuracy and Stability of Numerical Algorithms (2nd Edition),
+SIAM, 2002.
+
+Inputs: A     - (input/output)
+                on input, symmetric positive definite matrix
+                on output, diag(D) * A * diag(D)
+        D     - (output) scale factors, D_i = 1 / sqrt(A_ii)
+*/
+
+int
+gsl_linalg_cholesky_scale(gsl_matrix * A, gsl_vector * D)
+{
+  const size_t M = A->size1;
+  const size_t N = A->size2;
+
+  if (M != N)
+    {
+      GSL_ERROR("A is not a square matrix", GSL_ENOTSQR);
+    }
+  else if (N != D->size)
+    {
+      GSL_ERROR("D must have length N", GSL_EBADLEN);
+    }
+  else
+    {
+      gsl_vector_view diag = gsl_matrix_diagonal(A);
+      double amin, amax;
+      size_t i, j;
+
+      /* compute minimum and maximum elements of diag(A) */
+      gsl_vector_minmax(&diag.vector, &amin, &amax);
+
+      if (amin <= 0.0)
+        {
+          GSL_ERROR ("matrix must be positive definite", GSL_EDOM);
+        }
+
+      /* compute D_i = 1/sqrt(A_{ii}) */
+      for (i = 0; i < N; ++i)
+        {
+          double Aii = gsl_matrix_get(A, i, i);
+          gsl_vector_set(D, i, 1.0 / sqrt(Aii));
+        }
+
+      /* compute: A <- diag(D) A diag(D) using lower triangle */
+      for (j = 0; j < N; ++j)
+        {
+          double dj = gsl_vector_get(D, j);
+
+          for (i = j; i < N; ++i)
+            {
+              double di = gsl_vector_get(D, i);
+              double *Aij = gsl_matrix_ptr(A, i, j);
+              *Aij *= di * dj;
+            }
+        }
+
+      return GSL_SUCCESS;
+    }
+}
+
+int
+gsl_linalg_cholesky_decomp2(gsl_matrix * A, gsl_vector * D)
+{
+  const size_t M = A->size1;
+  const size_t N = A->size2;
+
+  if (M != N)
+    {
+      GSL_ERROR("cholesky decomposition requires square matrix", GSL_ENOTSQR);
+    }
+  else if (N != D->size)
+    {
+      GSL_ERROR("D must have length N", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+
+      /* compute scaling factors to reduce cond(A) */
+      status = gsl_linalg_cholesky_scale(A, D);
+      if (status)
+        return status;
+
+      /* compute Cholesky decomposition of diag(D) A diag(D) */
+      status = gsl_linalg_cholesky_decomp(A);
+      if (status)
+        return status;
+
+      return GSL_SUCCESS;
+    }
+}
+
+int
+gsl_linalg_cholesky_svx2 (const gsl_matrix * LLT,
+                          const gsl_vector * D,
+                          gsl_vector * x)
+{
+  if (LLT->size1 != LLT->size2)
+    {
+      GSL_ERROR ("cholesky matrix must be square", GSL_ENOTSQR);
+    }
+  else if (LLT->size2 != D->size)
+    {
+      GSL_ERROR ("matrix size must match D", GSL_EBADLEN);
+    }
+  else if (LLT->size2 != x->size)
+    {
+      GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
+    }
+  else
+    {
+      /* b~ = diag(D) b */
+      gsl_vector_mul(x, D);
+
+      /* Solve for c using forward-substitution, L c = b~ */
+      gsl_blas_dtrsv (CblasLower, CblasNoTrans, CblasNonUnit, LLT, x);
+
+      /* Perform back-substitution, U x~ = c */
+      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, LLT, x);
+
+      /* compute original solution vector x = D x~ */
+      gsl_vector_mul(x, D);
+
+      return GSL_SUCCESS;
+    }
+}
+
+int
+gsl_linalg_cholesky_solve2 (const gsl_matrix * LLT,
+                            const gsl_vector * D,
+                            const gsl_vector * b,
+                            gsl_vector * x)
+{
+  if (LLT->size1 != LLT->size2)
+    {
+      GSL_ERROR ("cholesky matrix must be square", GSL_ENOTSQR);
+    }
+  else if (LLT->size1 != D->size)
+    {
+      GSL_ERROR ("matrix size must match D size", GSL_EBADLEN);
+    }
+  else if (LLT->size1 != b->size)
+    {
+      GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
+    }
+  else if (LLT->size2 != x->size)
+    {
+      GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+
+      /* Copy x <- b */
+      gsl_vector_memcpy (x, b);
+
+      status = gsl_linalg_cholesky_svx2(LLT, D, x);
+
+      return status;
+    }
+}

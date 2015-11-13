@@ -448,6 +448,19 @@ int gsl_linalg_cholesky_invert(gsl_matrix * cholesky);
  */
 int gsl_linalg_cholesky_decomp_unit(gsl_matrix * A, gsl_vector * D);
 
+int gsl_linalg_cholesky_scale(gsl_matrix * A, gsl_vector * D);
+
+int gsl_linalg_cholesky_decomp2(gsl_matrix * A, gsl_vector * D);
+
+int gsl_linalg_cholesky_svx2 (const gsl_matrix * LLT,
+                              const gsl_vector * D,
+                              gsl_vector * x);
+
+int gsl_linalg_cholesky_solve2 (const gsl_matrix * LLT,
+                                const gsl_vector * D,
+                                const gsl_vector * b,
+                                gsl_vector * x);
+
 /* Complex Cholesky Decomposition */
 
 int gsl_linalg_complex_cholesky_decomp (gsl_matrix_complex * A);
