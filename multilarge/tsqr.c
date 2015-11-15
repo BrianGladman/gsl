@@ -204,6 +204,8 @@ Notes:
 contains current R matrix
 
 2) state->QTb(1:p) contains current Q^T b vector
+
+3) A and b are destroyed
 */
 
 static int
