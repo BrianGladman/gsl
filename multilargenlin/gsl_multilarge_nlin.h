@@ -49,7 +49,6 @@ typedef struct
 typedef struct
 {
   const char *name;
-  const gsl_multilarge_linear_type **linear_type;
   void * (*alloc) (const size_t p);
   int (*init) (const gsl_vector * x,
                gsl_multilarge_function_fdf * fdf,
@@ -58,6 +57,8 @@ typedef struct
   int (*iterate) (gsl_vector * x, gsl_vector * dx,
                   gsl_multilarge_function_fdf * fdf,
                   void * fdf_work, void * vstate);
+  gsl_vector * (*gradient) (void *vstate);
+  double (*normf) (void *vstate);
   void (*free) (void * vstate);
 } gsl_multilarge_nlinear_type;
 
@@ -76,6 +77,7 @@ typedef struct
 
 /* available solvers */
 GSL_VAR const gsl_multilarge_nlinear_type * gsl_multilarge_nlinear_lmnormal;
+GSL_VAR const gsl_multilarge_nlinear_type * gsl_multilarge_nlinear_lmtsqr;
 
 gsl_multilarge_nlinear_workspace *
 gsl_multilarge_nlinear_alloc (const gsl_multilarge_nlinear_type * T, 
@@ -97,12 +99,20 @@ gsl_multilarge_nlinear_accumulate (gsl_matrix * J, gsl_vector * f,
 
 int gsl_multilarge_nlinear_iterate (gsl_multilarge_nlinear_workspace * w);
 
+double gsl_multilarge_nlinear_normf (const gsl_multilarge_nlinear_workspace * w);
+
+gsl_vector *gsl_multilarge_nlinear_position (const gsl_multilarge_nlinear_workspace * w);
+
 int gsl_multilarge_nlinear_driver (const size_t maxiter,
                                    const double xtol,
                                    const double gtol,
                                    const double ftol,
                                    int *info,
                                    gsl_multilarge_nlinear_workspace *w);
+
+int gsl_multilarge_nlinear_test (const double xtol, const double gtol,
+                                 const double ftol, int *info,
+                                 const gsl_multilarge_nlinear_workspace * w);
 
 __END_DECLS
 

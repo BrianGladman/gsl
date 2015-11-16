@@ -1,7 +1,7 @@
 #define kirby2_N       151
 #define kirby2_P       5
 
-#define kirby2_NTRIES  1
+#define kirby2_NTRIES  2
 
 static double kirby2_x0[kirby2_P] = { 1.5, -0.15, 0.0025, -0.0015, 0.00002 }; 
 

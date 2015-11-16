@@ -40,6 +40,8 @@ typedef struct
   gsl_multilarge_function_fdf *fdf;
 } test_fdf_problem;
 
+#include "test_enso.c"
+#include "test_hahn1.c"
 #include "test_kirby2.c"
 
 #if 0
@@ -52,10 +54,8 @@ typedef struct
 #include "test_brown2.c"
 #include "test_brown3.c"
 #include "test_eckerle.c"
-#include "test_enso.c"
 #include "test_exp1.c"
 #include "test_gaussian.c"
-#include "test_hahn1.c"
 #include "test_helical.c"
 #include "test_jennrich.c"
 #include "test_kowalik.c"
@@ -170,10 +170,12 @@ static test_fdf_problem *test_fdf_more[] = {
 
 /* NIST test cases */
 static test_fdf_problem *test_fdf_nist[] = {
-  &kirby2_problem,
 #if 0
+  &kirby2_problem,
   &hahn1_problem,
+#endif
   &enso_problem,
+#if 0
   &thurber_problem,
   &boxbod_problem,
   &rat42_problem,
@@ -235,11 +237,10 @@ test_fdf(const gsl_multilarge_nlinear_type * T, const double xtol,
   gsl_test(status, "%s/%s did not converge, status=%s",
            sname, pname, gsl_strerror(status));
 
-#if 0
-
   /* check solution */
-  test_fdf_checksol(sname, pname, epsrel, s, problem);
+  test_fdf_checksol(sname, pname, epsrel, w, problem);
 
+#if 0
   if (wts == NULL)
     {
       /* test again with weighting matrix W = I */
@@ -275,6 +276,11 @@ test_fdf_checksol(const char *sname, const char *pname,
                   const double epsrel, gsl_multilarge_nlinear_workspace *w,
                   test_fdf_problem *problem)
 {
+  const double normf = gsl_multilarge_nlinear_normf(w);
+  const double sumsq = normf * normf;
+  gsl_vector *x = gsl_multilarge_nlinear_position(w);
+
+  (problem->checksol)(x->data, sumsq, epsrel, sname, pname);
 }
 
 #if 0
@@ -412,9 +418,10 @@ main(void)
 
       for (j = 0; j < problem->ntries; ++j)
         {
-          double eps_scale = epsrel * scale;
-
           test_fdf(gsl_multilarge_nlinear_lmnormal, xtol, gtol, ftol,
+                   epsrel, scale, problem, NULL);
+
+          test_fdf(gsl_multilarge_nlinear_lmtsqr, xtol, gtol, ftol,
                    epsrel, scale, problem, NULL);
 
           scale *= 10.0;

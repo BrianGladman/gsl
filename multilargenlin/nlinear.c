@@ -157,9 +157,6 @@ gsl_multilarge_nlinear_accumulate (gsl_matrix * J, gsl_vector * f,
     {
       int status;
 
-      print_octave(J, "J");
-      printv_octave(f, "f");
-
       status = (w->type->accum) (J, f, w->state);
 
       return status;
@@ -174,6 +171,18 @@ gsl_multilarge_nlinear_iterate (gsl_multilarge_nlinear_workspace * w)
   status = (w->type->iterate) (w->x, w->dx, w->callback, w, w->state);
 
   return status;
+}
+
+double
+gsl_multilarge_nlinear_normf (const gsl_multilarge_nlinear_workspace * w)
+{
+  return (w->type->normf) (w->state);
+}
+
+gsl_vector *
+gsl_multilarge_nlinear_position (const gsl_multilarge_nlinear_workspace * w)
+{
+  return w->x;
 }
 
 /*
@@ -222,10 +231,8 @@ gsl_multilarge_nlinear_driver (const size_t maxiter,
       if (status != GSL_SUCCESS && status != GSL_ENOPROG)
         break;
 
-#if 0
       /* test for convergence */
-      status = gsl_multifit_fdfsolver_test(s, xtol, gtol, ftol, info);
-#endif
+      status = gsl_multilarge_nlinear_test(xtol, gtol, ftol, info, w);
     }
   while (status == GSL_CONTINUE && ++iter < maxiter);
 
