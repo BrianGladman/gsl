@@ -27,8 +27,6 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
 
-#include "oct.h"
-
 /*
  * This module contains an implementation of the Levenberg-Marquardt
  * algorithm for nonlinear optimization problems. This implementation
@@ -238,9 +236,6 @@ lmn_accumulate(gsl_matrix * J, gsl_vector * f, void * vstate)
             }
         }
 
-      print_octave(J, "J");
-      printv_octave(f, "f");
-
       /* update g += J^T f */
       gsl_blas_dgemv(CblasTrans, 1.0, J, f, 1.0, state->g);
 
@@ -306,8 +301,6 @@ lmn_iterate(gsl_vector * x, gsl_vector * dx,
       if (status)
         return status;
 
-      printv_octave(dx, "dx");
-
       /* compute x_trial = x + dx */
       lmn_trial_step(x, dx, x_trial);
 
@@ -357,20 +350,17 @@ lmn_iterate(gsl_vector * x, gsl_vector * dx,
           /* step did not reduce error, reject step */
           state->sqrt_mu *= sqrt((double) state->nu);
           nu2 = state->nu << 1; /* 2*nu */
-#if 0
           if (nu2 <= state->nu)
             {
-              gsl_vector_view d = gsl_matrix_diagonal(A);
-
               /*
                * nu has wrapped around / overflown, reset mu and nu
                * to original values and break to force another iteration
                */
               state->nu = 2;
-              state->mu = state->tau * gsl_vector_max(&d.vector);
+              state->sqrt_mu = sqrt(state->tau) * gsl_vector_max(state->sdiag);
               break;
             }
-#endif
+
           state->nu = nu2;
         }
     }

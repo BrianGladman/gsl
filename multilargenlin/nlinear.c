@@ -22,9 +22,8 @@
 #include <string.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_multifit.h>
 #include <gsl/gsl_multilarge_nlin.h>
-
-#include "oct.c"
 
 gsl_multilarge_nlinear_workspace *
 gsl_multilarge_nlinear_alloc (const gsl_multilarge_nlinear_type * T, 
@@ -130,6 +129,55 @@ gsl_multilarge_nlinear_init (const gsl_vector * x, gsl_multilarge_function_fdf *
 }
 
 /*
+gsl_multilarge_nlinear_waccumulate()
+  Accumulate weighted Jacobian and residual vector into
+linear LS system
+
+Inputs: wts - weight vector (NULL if unit weights)
+        J   - Jacobian matrix
+        f   - residual vector
+        w   - workspace
+*/
+
+int
+gsl_multilarge_nlinear_waccumulate (const gsl_vector * wts, gsl_matrix * J, gsl_vector * f,
+                                    gsl_multilarge_nlinear_workspace * w)
+{
+  const size_t n = J->size1;
+  const size_t p = J->size2;
+
+  if (f->size != n)
+    {
+      GSL_ERROR ("f vector does not match J", GSL_EBADLEN);
+    }
+  else if (wts != NULL && wts->size != n)
+    {
+      GSL_ERROR ("weight vector does not match J", GSL_EBADLEN);
+    }
+  else if (p != w->p)
+    {
+      GSL_ERROR ("Jacobian has wrong number of columns", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+
+      if (wts)
+        {
+          /* J <- sqrt(W) J; f <- sqrt(W) f */
+          status = gsl_multifit_linear_applyW(J, wts, f, J, f);
+          if (status)
+            return status;
+        }
+
+      /* accumulate (J,f) into solver */
+      status = (w->type->accum) (J, f, w->state);
+
+      return status;
+    }
+}
+
+/*
 gsl_multilarge_nlinear_accumulate()
   Accumulate Jacobian and residual vector into linear LS system
 
@@ -142,25 +190,11 @@ int
 gsl_multilarge_nlinear_accumulate (gsl_matrix * J, gsl_vector * f,
                                    gsl_multilarge_nlinear_workspace * w)
 {
-  const size_t n = J->size1;
-  const size_t p = J->size2;
+  int status;
 
-  if (f->size != n)
-    {
-      GSL_ERROR ("f vector does not match J", GSL_EBADLEN);
-    }
-  else if (p != w->p)
-    {
-      GSL_ERROR ("Jacobian has wrong number of columns", GSL_EBADLEN);
-    }
-  else
-    {
-      int status;
+  status = gsl_multilarge_nlinear_waccumulate(NULL, J, f, w);
 
-      status = (w->type->accum) (J, f, w->state);
-
-      return status;
-    }
+  return status;
 }
 
 int

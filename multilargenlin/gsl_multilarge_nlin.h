@@ -94,6 +94,10 @@ gsl_multilarge_nlinear_init (const gsl_vector * x, gsl_multilarge_function_fdf *
                              gsl_multilarge_nlinear_workspace * w);
 
 int
+gsl_multilarge_nlinear_waccumulate (const gsl_vector * wts, gsl_matrix * J, gsl_vector * f,
+                                    gsl_multilarge_nlinear_workspace * w);
+
+int
 gsl_multilarge_nlinear_accumulate (gsl_matrix * J, gsl_vector * f,
                                    gsl_multilarge_nlinear_workspace * w);
 

@@ -49,6 +49,8 @@ typedef struct
 #include "test_rat43.c"
 #include "test_thurber.c"
 
+#include "test_wnlin.c"
+
 #if 0
 #include "test_bard.c"
 #include "test_beale.c"
@@ -80,14 +82,12 @@ typedef struct
 #include "test_watson.c"
 #include "test_wood.c"
 
-#include "test_wnlin.c"
 #endif
 
 static void test_fdf(const gsl_multilarge_nlinear_type * T,
                      const double xtol, const double gtol,
                      const double ftol, const double epsrel,
-                     const double x0_scale, test_fdf_problem *problem,
-                     const double *wts);
+                     const double x0_scale, test_fdf_problem *problem);
 static void test_fdf_checksol(const char *sname, const char *pname,
                               const double epsrel,
                               gsl_multilarge_nlinear_workspace *w,
@@ -199,15 +199,13 @@ Inputs: T        - solver to use
                    If x0 = 0, then all components of x0 are set to
                    x0_scale
         problem  - contains the nonlinear problem and solution point
-        wts      - weight vector (NULL for unweighted)
 */
 
 static void
 test_fdf(const gsl_multilarge_nlinear_type * T, const double xtol,
          const double gtol, const double ftol,
          const double epsrel, const double x0_scale,
-         test_fdf_problem *problem,
-         const double *wts)
+         test_fdf_problem *problem)
 {
   gsl_multilarge_function_fdf *fdf = problem->fdf;
   const size_t p = fdf->p;
@@ -228,6 +226,7 @@ test_fdf(const gsl_multilarge_nlinear_type * T, const double xtol,
 
   gsl_multilarge_nlinear_init(x0, fdf, w);
 
+  /* solve problem */
   status = gsl_multilarge_nlinear_driver(max_iter, xtol, gtol,
                                          ftol, &info, w);
   gsl_test(status, "%s/%s did not converge, status=%s",
@@ -235,33 +234,6 @@ test_fdf(const gsl_multilarge_nlinear_type * T, const double xtol,
 
   /* check solution */
   test_fdf_checksol(sname, pname, epsrel, w, problem);
-
-#if 0
-  if (wts == NULL)
-    {
-      /* test again with weighting matrix W = I */
-      gsl_vector *wv = gsl_vector_alloc(n);
-
-      sprintf(sname, "%s/scale=%g%s/weights",
-        gsl_multifit_fdfsolver_name(s), x0_scale,
-        problem->fdf->df ? "" : "/fdiff");
-
-      gsl_vector_memcpy(x0, &x0v.vector);
-      test_scale_x0(x0, x0_scale);
-
-      gsl_vector_set_all(wv, 1.0);
-      gsl_multifit_fdfsolver_wset(s, fdf, x0, wv);
-  
-      status = gsl_multifit_fdfsolver_driver(s, max_iter, xtol, gtol,
-                                             ftol, &info);
-      gsl_test(status, "%s/%s did not converge, status=%s",
-               sname, pname, gsl_strerror(status));
-
-      test_fdf_checksol(sname, pname, epsrel, s, problem);
-
-      gsl_vector_free(wv);
-    }
-#endif
 
   gsl_multilarge_nlinear_free(w);
   gsl_vector_free(x0);
@@ -341,6 +313,14 @@ main(void)
   const double ftol = 0.0;
   size_t i, j;
 
+  /* test weighted nonlinear least squares */
+
+  test_fdf(gsl_multilarge_nlinear_lmnormal, xtol, gtol, ftol,
+           wnlin_epsrel, 1.0, &wnlin_problem);
+
+  test_fdf(gsl_multilarge_nlinear_lmtsqr, xtol, gtol, ftol,
+           wnlin_epsrel, 1.0, &wnlin_problem);
+
 #if 0
   /* Nielsen tests */
   for (i = 0; test_fdf_nielsen[i] != NULL; ++i)
@@ -415,10 +395,10 @@ main(void)
       for (j = 0; j < problem->ntries; ++j)
         {
           test_fdf(gsl_multilarge_nlinear_lmnormal, xtol, gtol, ftol,
-                   epsrel, scale, problem, NULL);
+                   epsrel, scale, problem);
 
           test_fdf(gsl_multilarge_nlinear_lmtsqr, xtol, gtol, ftol,
-                   epsrel, scale, problem, NULL);
+                   epsrel, scale, problem);
 
           scale *= 10.0;
         }
