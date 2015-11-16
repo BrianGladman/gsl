@@ -5,10 +5,10 @@
 
 static double enso_x0[enso_P] = { 10.0, 3.0, 0.5, 44.0, -1.5, 0.5, 26.0, 0.1, 1.5 };
 
+static double enso_epsrel = 1.0e-3;
+
 static double enso_f[enso_N];
 static double enso_J[enso_N * enso_P];
-
-static double enso_epsrel = 1.0e-3;
 
 static double enso_sigma[enso_P] = {
  1.7488832467E-01,
@@ -109,19 +109,22 @@ enso_fdf (const int eval_J, const gsl_vector * x, void *params, void * work)
       y += b[8] * sin(2*M_PI*t/b[6]);
       gsl_vector_set (&f.vector, i, enso_F[i] - y);
 
-      gsl_matrix_set (&J.matrix, i, 0, -1.0);
-      gsl_matrix_set (&J.matrix, i, 1, -cos(2*M_PI*t/12));
-      gsl_matrix_set (&J.matrix, i, 2, -sin(2*M_PI*t/12));
-      gsl_matrix_set (&J.matrix, i, 3, 
-                      -b[4]*(2*M_PI*t/(b[3]*b[3]))*sin(2*M_PI*t/b[3])
-                      +b[5]*(2*M_PI*t/(b[3]*b[3]))*cos(2*M_PI*t/b[3]));
-      gsl_matrix_set (&J.matrix, i, 4, -cos(2*M_PI*t/b[3]));
-      gsl_matrix_set (&J.matrix, i, 5, -sin(2*M_PI*t/b[3]));
-      gsl_matrix_set (&J.matrix, i, 6, 
-                     -b[7] * (2*M_PI*t/(b[6]*b[6])) * sin(2*M_PI*t/b[6])
-                     +b[8] * (2*M_PI*t/(b[6]*b[6])) * cos(2*M_PI*t/b[6]));
-      gsl_matrix_set (&J.matrix, i, 7, -cos(2*M_PI*t/b[6]));
-      gsl_matrix_set (&J.matrix, i, 8, -sin(2*M_PI*t/b[6]));
+      if (eval_J)
+        {
+          gsl_matrix_set (&J.matrix, i, 0, -1.0);
+          gsl_matrix_set (&J.matrix, i, 1, -cos(2*M_PI*t/12));
+          gsl_matrix_set (&J.matrix, i, 2, -sin(2*M_PI*t/12));
+          gsl_matrix_set (&J.matrix, i, 3, 
+                          -b[4]*(2*M_PI*t/(b[3]*b[3]))*sin(2*M_PI*t/b[3])
+                          +b[5]*(2*M_PI*t/(b[3]*b[3]))*cos(2*M_PI*t/b[3]));
+          gsl_matrix_set (&J.matrix, i, 4, -cos(2*M_PI*t/b[3]));
+          gsl_matrix_set (&J.matrix, i, 5, -sin(2*M_PI*t/b[3]));
+          gsl_matrix_set (&J.matrix, i, 6, 
+                         -b[7] * (2*M_PI*t/(b[6]*b[6])) * sin(2*M_PI*t/b[6])
+                         +b[8] * (2*M_PI*t/(b[6]*b[6])) * cos(2*M_PI*t/b[6]));
+          gsl_matrix_set (&J.matrix, i, 7, -cos(2*M_PI*t/b[6]));
+          gsl_matrix_set (&J.matrix, i, 8, -sin(2*M_PI*t/b[6]));
+        }
     }
 
   status = gsl_multilarge_nlinear_accumulate(&J.matrix, &f.vector, work);

@@ -40,20 +40,23 @@ typedef struct
   gsl_multilarge_function_fdf *fdf;
 } test_fdf_problem;
 
+#include "test_boxbod.c"
+#include "test_eckerle.c"
 #include "test_enso.c"
 #include "test_hahn1.c"
 #include "test_kirby2.c"
+#include "test_rat42.c"
+#include "test_rat43.c"
+#include "test_thurber.c"
 
 #if 0
 #include "test_bard.c"
 #include "test_beale.c"
 #include "test_biggs.c"
 #include "test_box.c"
-#include "test_boxbod.c"
 #include "test_brown1.c"
 #include "test_brown2.c"
 #include "test_brown3.c"
-#include "test_eckerle.c"
 #include "test_exp1.c"
 #include "test_gaussian.c"
 #include "test_helical.c"
@@ -70,12 +73,9 @@ typedef struct
 #include "test_powell1.c"
 #include "test_powell2.c"
 #include "test_powell3.c"
-#include "test_rat42.c"
-#include "test_rat43.c"
 #include "test_rosenbrock.c"
 #include "test_rosenbrocke.c"
 #include "test_roth.c"
-#include "test_thurber.c"
 #include "test_vardim.c"
 #include "test_watson.c"
 #include "test_wood.c"
@@ -170,18 +170,14 @@ static test_fdf_problem *test_fdf_more[] = {
 
 /* NIST test cases */
 static test_fdf_problem *test_fdf_nist[] = {
-#if 0
   &kirby2_problem,
   &hahn1_problem,
-#endif
   &enso_problem,
-#if 0
   &thurber_problem,
   &boxbod_problem,
   &rat42_problem,
   &eckerle_problem,
   &rat43_problem,
-#endif
 
   NULL
 };

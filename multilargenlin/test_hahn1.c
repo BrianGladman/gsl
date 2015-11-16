@@ -167,13 +167,16 @@ hahn1_fdf (const int eval_J, const gsl_vector * x, void * params, void * work)
 
       gsl_vector_set (&f.vector, i, hahn1_F1[i] - y);
 
-      gsl_matrix_set (&J.matrix, i, 0, -1/v);
-      gsl_matrix_set (&J.matrix, i, 1, -x/v);
-      gsl_matrix_set (&J.matrix, i, 2, -x*x/v);
-      gsl_matrix_set (&J.matrix, i, 3, -x*x*x/v);
-      gsl_matrix_set (&J.matrix, i, 4, x*u/(v*v));
-      gsl_matrix_set (&J.matrix, i, 5, x*x*u/(v*v));
-      gsl_matrix_set (&J.matrix, i, 6, x*x*x*u/(v*v));
+      if (eval_J)
+        {
+          gsl_matrix_set (&J.matrix, i, 0, -1/v);
+          gsl_matrix_set (&J.matrix, i, 1, -x/v);
+          gsl_matrix_set (&J.matrix, i, 2, -x*x/v);
+          gsl_matrix_set (&J.matrix, i, 3, -x*x*x/v);
+          gsl_matrix_set (&J.matrix, i, 4, x*u/(v*v));
+          gsl_matrix_set (&J.matrix, i, 5, x*x*u/(v*v));
+          gsl_matrix_set (&J.matrix, i, 6, x*x*x*u/(v*v));
+        }
     }
 
   status = gsl_multilarge_nlinear_accumulate(&J.matrix, &f.vector, work);
