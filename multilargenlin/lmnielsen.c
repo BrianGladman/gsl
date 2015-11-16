@@ -30,7 +30,7 @@
 /*
  * This module contains an implementation of the Levenberg-Marquardt
  * algorithm for nonlinear optimization problems. This implementation
- * closely follows the following works:
+ * closely follows the following work:
  *
  * [1] H. B. Nielsen, K. Madsen, Introduction to Optimization and
  *     Data Fitting, Informatics and Mathematical Modeling,
@@ -45,7 +45,7 @@ typedef struct
   gsl_vector *x_trial;       /* trial parameter vector, size p */
   long nu;                   /* nu */
   double sqrt_mu;            /* square root of LM damping parameter mu */
-  double tau;                /* initial scale factor for mu */
+  double sqrt_tau;           /* initial scale factor for mu */
   double normf;              /* || f(x) || */
   double normf_trial;        /* || f(x + dx) || */
   int eval_J;                /* 1 if we are currently accumulating full (J,f) */
@@ -54,7 +54,7 @@ typedef struct
   gsl_multilarge_linear_workspace *linear_workspace_p;
 } lmn_state_t;
 
-#define LM_SQRT_ONE_THIRD    (0.577350269189626)
+#define GSL_LM_SQRT_ONE_THIRD    (0.577350269189626)
 
 static void *lmn_alloc (const gsl_multilarge_linear_type * T,
                         const size_t p);
@@ -118,7 +118,7 @@ lmn_alloc (const gsl_multilarge_linear_type * T, const size_t p)
     }
 
   state->p = p;
-  state->tau = 1.0e-3;
+  state->sqrt_tau = sqrt(1.0e-3);
   state->sqrt_mu = 0.0;
   state->nu = 2;
   state->normf = 0.0;
@@ -190,7 +190,7 @@ lmn_init(const gsl_vector * x, gsl_multilarge_function_fdf * fdf,
   state->init = 1;
 
   /* initialize mu = tau * max [ (J^T J)_{ii} ] using square roots */
-  state->sqrt_mu = sqrt(state->tau) * gsl_vector_max(state->sdiag);
+  state->sqrt_mu = state->sqrt_tau * gsl_vector_max(state->sdiag);
 
   return GSL_SUCCESS;
 }
@@ -327,9 +327,9 @@ lmn_iterate(gsl_vector * x, gsl_vector * dx,
           b = 2.0 * (dF / dL) - 1.0;
           b = 1.0 - b*b*b;
           if (b > 0.0)
-            state->sqrt_mu *= GSL_MAX(LM_SQRT_ONE_THIRD, sqrt(b));
+            state->sqrt_mu *= GSL_MAX(GSL_LM_SQRT_ONE_THIRD, sqrt(b));
           else
-            state->sqrt_mu *= LM_SQRT_ONE_THIRD;
+            state->sqrt_mu *= GSL_LM_SQRT_ONE_THIRD;
 
           state->nu = 2;
 
@@ -357,7 +357,7 @@ lmn_iterate(gsl_vector * x, gsl_vector * dx,
                * to original values and break to force another iteration
                */
               state->nu = 2;
-              state->sqrt_mu = sqrt(state->tau) * gsl_vector_max(state->sdiag);
+              state->sqrt_mu = state->sqrt_tau * gsl_vector_max(state->sdiag);
               break;
             }
 

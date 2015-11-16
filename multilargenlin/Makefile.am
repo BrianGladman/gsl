@@ -6,6 +6,17 @@ libgslmultilargenlin_la_SOURCES = convergence.c lmnielsen.c nlinear.c
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
+noinst_HEADERS =     \
+test_boxbod.c        \
+test_eckerle.c       \
+test_enso.c          \
+test_hahn1.c         \
+test_kirby2.c        \
+test_rat42.c         \
+test_rat43.c         \
+test_thurber.c       \
+test_wnlin.c
+
 check_PROGRAMS = test
 
 TESTS = $(check_PROGRAMS)
