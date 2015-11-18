@@ -203,6 +203,7 @@ gsl_multilarge_nlinear_iterate (gsl_multilarge_nlinear_workspace * w)
   int status;
 
   status = (w->type->iterate) (w->x, w->dx, w->callback, w, w->state);
+  w->niter++;
 
   return status;
 }
