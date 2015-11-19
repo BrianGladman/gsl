@@ -469,8 +469,8 @@ main (void)
   gsl_ieee_env_setup();
 
   {
-    const double tol1 = 1.0e-7;
-    const double tol2 = 1.0e-10;
+    const double tol1 = 1.0e-8;
+    const double tol2 = 1.0e-11;
     const size_t n_vals[] = { 40, 356, 501 };
     const size_t p_vals[] = { 40, 213, 345 };
     size_t i;
