@@ -54,8 +54,6 @@ static int normal_solve_cholesky(gsl_matrix * ATA, const gsl_vector * ATb,
                                  gsl_vector * x, normal_state_t *state);
 static int normal_solve_QR(gsl_matrix * ATA, const gsl_vector * ATb,
                            gsl_vector * x, normal_state_t *state);
-static int normal_copy_lower(gsl_matrix * dest, const gsl_matrix * src);
-static int normal_copy_lowup(gsl_matrix * A);
 
 /*
 normal_alloc()
@@ -316,7 +314,7 @@ normal_solve_system(const double lambda, gsl_vector * x, normal_state_t *state)
   gsl_error_handler_t *err_handler;
 
   /* copy ATA matrix to temporary workspace and regularize */
-  normal_copy_lower(state->work_ATA, state->ATA);
+  gsl_matrix_tricpy('L', 'L', 1, state->work_ATA, state->ATA);
   gsl_vector_add_constant(&d.vector, lambda_sq);
 
   /* turn off error handler in case Cholesky fails */
@@ -327,7 +325,7 @@ normal_solve_system(const double lambda, gsl_vector * x, normal_state_t *state)
   if (status)
     {
       /* restore ATA matrix and try QR decomposition */
-      normal_copy_lower(state->work_ATA, state->ATA);
+      gsl_matrix_tricpy('L', 'L', 1, state->work_ATA, state->ATA);
       gsl_vector_add_constant(&d.vector, lambda_sq);
 
       status = normal_solve_QR(state->work_ATA, state->ATb, x, state);
@@ -369,7 +367,7 @@ normal_solve_QR(gsl_matrix * ATA, const gsl_vector * ATb,
     return status;
 
   /* copy lower triangle of ATA to upper */
-  normal_copy_lowup(ATA);
+  gsl_matrix_tricpy('U', 'L', 0, ATA, ATA);
 
   status = gsl_linalg_QR_decomp(ATA, state->workp);
   if (status)
@@ -386,48 +384,6 @@ normal_solve_QR(gsl_matrix * ATA, const gsl_vector * ATb,
 
   /* undo scaling */
   gsl_vector_mul(x, state->D);
-
-  return GSL_SUCCESS;
-}
-
-/* copy lower triangle of src to dest, including diagonal */
-static int
-normal_copy_lower(gsl_matrix * dest, const gsl_matrix * src)
-{
-  const size_t src_size1 = src->size1;
-  const size_t src_tda = src->tda;
-  const size_t dest_tda = dest->tda;
-  size_t i, j;
-
-  for (i = 0; i < src_size1 ; i++)
-    {
-      for (j = 0; j <= i; j++)
-        {
-          dest->data[dest_tda * i + j] 
-            = src->data[src_tda * i + j];
-        }
-    }
-
-  return GSL_SUCCESS;
-}
-
-/* copy lower triangular part of matrix to upper */
-static int
-normal_copy_lowup(gsl_matrix * A)
-{
-  const size_t size1 = A->size1;
-  const size_t size2 = A->size2;
-  const size_t tda = A->tda;
-  size_t i, j;
-
-  for (i = 0; i < size1; ++i)
-    {
-      for (j = i + 1; j < size2; ++j)
-        {
-          A->data[tda * i + j] 
-            = A->data[tda * j + i];
-        }
-    }
 
   return GSL_SUCCESS;
 }
