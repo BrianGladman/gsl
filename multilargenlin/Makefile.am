@@ -8,15 +8,19 @@ AM_CPPFLAGS = -I$(top_srcdir)
 
 noinst_HEADERS =     \
 test_bard.c          \
+test_beale.c         \
+test_biggs.c         \
 test_box.c           \
 test_boxbod.c        \
 test_brown1.c        \
 test_brown2.c        \
+test_brown3.c        \
 test_eckerle.c       \
 test_enso.c          \
 test_exp1.c          \
 test_hahn1.c         \
 test_helical.c       \
+test_gaussian.c      \
 test_jennrich.c      \
 test_kirby2.c        \
 test_kowalik.c       \
@@ -26,14 +30,20 @@ test_lin3.c          \
 test_meyer.c         \
 test_meyerscal.c     \
 test_osborne.c       \
+test_penalty1.c      \
+test_penalty2.c      \
 test_powell1.c       \
 test_powell2.c       \
+test_powell3.c       \
 test_rat42.c         \
 test_rat43.c         \
 test_rosenbrock.c    \
+test_rosenbrocke.c   \
 test_roth.c          \
 test_thurber.c       \
+test_vardim.c        \
 test_watson.c        \
+test_wood.c          \
 test_wnlin.c
 
 check_PROGRAMS = test

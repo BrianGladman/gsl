@@ -41,13 +41,17 @@ typedef struct
 } test_fdf_problem;
 
 #include "test_bard.c"
+#include "test_beale.c"
+#include "test_biggs.c"
 #include "test_box.c"
 #include "test_boxbod.c"
 #include "test_brown1.c"
 #include "test_brown2.c"
+#include "test_brown3.c"
 #include "test_eckerle.c"
 #include "test_enso.c"
 #include "test_exp1.c"
+#include "test_gaussian.c"
 #include "test_hahn1.c"
 #include "test_helical.c"
 #include "test_jennrich.c"
@@ -59,30 +63,22 @@ typedef struct
 #include "test_meyer.c"
 #include "test_meyerscal.c"
 #include "test_osborne.c"
+#include "test_penalty1.c"
+#include "test_penalty2.c"
 #include "test_powell1.c"
 #include "test_powell2.c"
+#include "test_powell3.c"
 #include "test_rat42.c"
 #include "test_rat43.c"
 #include "test_rosenbrock.c"
+#include "test_rosenbrocke.c"
 #include "test_roth.c"
 #include "test_thurber.c"
-#include "test_watson.c"
-
-#include "test_wnlin.c"
-
-#if 0
-#include "test_beale.c"
-#include "test_biggs.c"
-#include "test_brown3.c"
-#include "test_gaussian.c"
-#include "test_penalty1.c"
-#include "test_penalty2.c"
-#include "test_powell3.c"
-#include "test_rosenbrocke.c"
 #include "test_vardim.c"
+#include "test_watson.c"
 #include "test_wood.c"
 
-#endif
+#include "test_wnlin.c"
 
 static void test_fdf(const gsl_multilarge_nlinear_type * T,
                      const double xtol, const double gtol,
@@ -126,7 +122,6 @@ static test_fdf_problem *test_fdf_nielsen[] = {
   NULL
 };
 
-#if 0
 /*
  * These tests are from
  *
@@ -166,7 +161,6 @@ static test_fdf_problem *test_fdf_more[] = {
 
   NULL
 };
-#endif
 
 /* NIST test cases */
 static test_fdf_problem *test_fdf_nist[] = {
@@ -340,7 +334,6 @@ main(void)
         }
     }
 
-#if 0
   /* More tests */
   for (i = 0; test_fdf_more[i] != NULL; ++i)
     {
@@ -350,28 +343,15 @@ main(void)
 
       for (j = 0; j < problem->ntries; ++j)
         {
-          double eps_scale = epsrel * scale;
+          test_fdf(gsl_multilarge_nlinear_lmnormal, xtol, gtol, ftol,
+                   epsrel, scale, problem);
 
-          test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                   eps_scale, scale, problem, NULL);
-
-          /* test finite difference Jacobian */
-          {
-            gsl_multifit_function_fdf fdf;
-            fdf.df = problem->fdf->df;
-            problem->fdf->df = NULL;
-            test_fdf(gsl_multifit_fdfsolver_lmsder, xtol, gtol, ftol,
-                     1.0e5 * eps_scale, 1.0, problem, NULL);
-            problem->fdf->df = fdf.df;
-          }
+          test_fdf(gsl_multilarge_nlinear_lmtsqr, xtol, gtol, ftol,
+                   epsrel, scale, problem);
 
           scale *= 10.0;
         }
-
-      test_fdf(gsl_multifit_fdfsolver_lmniel, xtol, gtol, ftol,
-               10.0 * epsrel, 1.0, problem, NULL);
     }
-#endif
 
   /* NIST tests */
   for (i = 0; test_fdf_nist[i] != NULL; ++i)
