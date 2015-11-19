@@ -96,7 +96,7 @@ kirby2_checksol(const double x[], const double sumsq,
 }
 
 static int
-kirby2_fdf (const int eval_J, const gsl_vector * x, void *params, void * work)
+kirby2_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
 {
   int status;
   gsl_matrix_view J = gsl_matrix_view_array(kirby2_J, kirby2_N, kirby2_P);
@@ -118,7 +118,7 @@ kirby2_fdf (const int eval_J, const gsl_vector * x, void *params, void * work)
 
       gsl_vector_set (&f.vector, i, kirby2_F1[i] - y);
 
-      if (eval_J)
+      if (evaldf)
         {
           gsl_matrix_set (&J.matrix, i, 0, -1/v);
           gsl_matrix_set (&J.matrix, i, 1, -x/v);

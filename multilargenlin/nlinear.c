@@ -116,6 +116,9 @@ gsl_multilarge_nlinear_init (const gsl_vector * x, gsl_multilarge_function_fdf *
     {
       int status;
 
+      fdf->nevalf = 0;
+      fdf->nevaldf = 0;
+
       w->callback = fdf;
       gsl_vector_memcpy(w->x, x);
       w->niter = 0;

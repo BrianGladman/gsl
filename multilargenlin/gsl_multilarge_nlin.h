@@ -40,11 +40,20 @@ __BEGIN_DECLS
 
 typedef struct
 {
-  int (* fdf) (const int eval_J, const gsl_vector * x,
+  int (* fdf) (const int evaldf, const gsl_vector * x,
                void * params, void * work);
   size_t p;              /* number of independent variables */
   void * params;         /* user parameters */
+  size_t nevalf;         /* number of evaluations of f */
+  size_t nevaldf;        /* number of evaluations of Jacobian */
 } gsl_multilarge_function_fdf;
+
+#define GSL_MULTILARGE_EVAL_FDF(F, eval, x, work, status) \
+       do { \
+       status = (*((F)->fdf)) (eval, x, (F)->params, work); \
+       ++(F)->nevalf; \
+       if (eval) { ++(F)->nevaldf; } \
+       } while (0)
 
 typedef struct
 {
@@ -70,8 +79,6 @@ typedef struct
   gsl_vector * dx;       /* step dx */
   size_t p;              /* number of model parameters */
   size_t niter;          /* number of iterations performed */
-  size_t nevalf;         /* number of function evaluations */
-  size_t nevaldf;        /* number of Jacobian evaluations */
   void *state;           /* solver workspace */
 } gsl_multilarge_nlinear_workspace;
 

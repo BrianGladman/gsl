@@ -39,7 +39,7 @@ boxbod_checksol(const double x[], const double sumsq,
 }
 
 static int
-boxbod_fdf (const int eval_J, const gsl_vector * x, void *params, void * work)
+boxbod_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
 {
   int status;
   double b[boxbod_P];
@@ -60,7 +60,7 @@ boxbod_fdf (const int eval_J, const gsl_vector * x, void *params, void * work)
 
       gsl_vector_set (&f.vector, i, yi - boxbod_F[i]);
 
-      if (eval_J)
+      if (evaldf)
         {
           gsl_matrix_set (&J.matrix, i, 0, 1.0 - term);
           gsl_matrix_set (&J.matrix, i, 1, b[0] * term * xi);

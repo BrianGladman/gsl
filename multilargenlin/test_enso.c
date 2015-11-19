@@ -82,7 +82,7 @@ enso_checksol(const double x[], const double sumsq,
 }
 
 static int
-enso_fdf (const int eval_J, const gsl_vector * x, void *params, void * work)
+enso_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
 {
   int status;
   double b[enso_P];
@@ -109,7 +109,7 @@ enso_fdf (const int eval_J, const gsl_vector * x, void *params, void * work)
       y += b[8] * sin(2*M_PI*t/b[6]);
       gsl_vector_set (&f.vector, i, enso_F[i] - y);
 
-      if (eval_J)
+      if (evaldf)
         {
           gsl_matrix_set (&J.matrix, i, 0, -1.0);
           gsl_matrix_set (&J.matrix, i, 1, -cos(2*M_PI*t/12));

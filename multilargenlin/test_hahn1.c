@@ -145,7 +145,7 @@ hahn1_checksol(const double x[], const double sumsq,
 }
 
 static int
-hahn1_fdf (const int eval_J, const gsl_vector * x, void * params, void * work)
+hahn1_fdf (const int evaldf, const gsl_vector * x, void * params, void * work)
 {
   int status;
   double b[hahn1_P];
@@ -167,7 +167,7 @@ hahn1_fdf (const int eval_J, const gsl_vector * x, void * params, void * work)
 
       gsl_vector_set (&f.vector, i, hahn1_F1[i] - y);
 
-      if (eval_J)
+      if (evaldf)
         {
           gsl_matrix_set (&J.matrix, i, 0, -1/v);
           gsl_matrix_set (&J.matrix, i, 1, -x/v);

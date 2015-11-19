@@ -42,7 +42,7 @@ rat43_checksol(const double x[], const double sumsq,
 }
 
 static int
-rat43_fdf (const int eval_J, const gsl_vector * x, void *params, void * work)
+rat43_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
 {
   int status;
   double b[rat43_P];
@@ -65,7 +65,7 @@ rat43_fdf (const int eval_J, const gsl_vector * x, void *params, void * work)
 
       gsl_vector_set (&f.vector, i, yi - rat43_F[i]);
 
-      if (eval_J)
+      if (evaldf)
         {
           gsl_matrix_set (&J.matrix, i, 0, term2);
           gsl_matrix_set (&J.matrix, i, 1, -b[0] / b[3] * e * term2 / term1);

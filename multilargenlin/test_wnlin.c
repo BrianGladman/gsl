@@ -55,7 +55,7 @@ wnlin_checksol(const double x[], const double sumsq,
 }
 
 static int
-wnlin_fdf (const int eval_J, const gsl_vector *x, void *params, void *work)
+wnlin_fdf (const int evaldf, const gsl_vector *x, void *params, void *work)
 {
   int status;
   gsl_matrix_view J = gsl_matrix_view_array(wnlin_J, wnlin_N, wnlin_P);
@@ -75,9 +75,12 @@ wnlin_fdf (const int eval_J, const gsl_vector *x, void *params, void *work)
 
       gsl_vector_set (&f.vector, i, Mi - yi);
 
-      gsl_matrix_set(&J.matrix, i, 0, e);
-      gsl_matrix_set(&J.matrix, i, 1, -ti * A * e);
-      gsl_matrix_set(&J.matrix, i, 2, 1.0);
+      if (evaldf)
+        {
+          gsl_matrix_set(&J.matrix, i, 0, e);
+          gsl_matrix_set(&J.matrix, i, 1, -ti * A * e);
+          gsl_matrix_set(&J.matrix, i, 2, 1.0);
+        }
     }
 
   status = gsl_multilarge_nlinear_waccumulate(&wts.vector, &J.matrix, &f.vector, work);

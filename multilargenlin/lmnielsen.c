@@ -48,7 +48,7 @@ typedef struct
   double sqrt_tau;           /* initial scale factor for mu */
   double normf;              /* || f(x) || */
   double normf_trial;        /* || f(x + dx) || */
-  int eval_J;                /* 1 if we are currently accumulating full (J,f) */
+  int evaldf;                /* 1 if we are currently accumulating full (J,f) */
   int init;                  /* 0 if not yet initialized */
 
   gsl_multilarge_linear_workspace *linear_workspace_p;
@@ -67,7 +67,7 @@ static int lmn_accumulate(gsl_matrix * J, gsl_vector * f, void * vstate);
 static int lmn_iterate(gsl_vector * x, gsl_vector * dx,
                        gsl_multilarge_function_fdf * fdf,
                        void * fdf_work, void * vstate);
-static int lmn_eval(const int eval_J, const gsl_vector * x,
+static int lmn_eval(const int evaldf, const gsl_vector * x,
                     gsl_multilarge_function_fdf * fdf,
                     void * work, lmn_state_t * state);
 static void lmn_trial_step(const gsl_vector * x, const gsl_vector * dx,
@@ -123,7 +123,7 @@ lmn_alloc (const gsl_multilarge_linear_type * T, const size_t p)
   state->nu = 2;
   state->normf = 0.0;
   state->normf_trial = 0.0;
-  state->eval_J = 0;
+  state->evaldf = 0;
   state->init = 0;
 
   return state;
@@ -214,7 +214,7 @@ lmn_accumulate(gsl_matrix * J, gsl_vector * f, void * vstate)
   int status = GSL_SUCCESS;
   lmn_state_t *state = (lmn_state_t *) vstate;
 
-  if (state->eval_J)
+  if (state->evaldf)
     {
       /*
        * we are accumulating full (J,f) system for a new step size
@@ -387,10 +387,10 @@ lmn_eval()
   Evaluate user-supplied Jacobian and residual vector
 function. During iteration, it may be necessary to
 compute F(x+dx) = 1/2 ||f(x+dx)||^2 without accumulating
-the Jacobian. In this case the flag 'eval_J' determines
+the Jacobian. In this case the flag 'evaldf' determines
 whether we need the full (J,f) accumulation.
 
-Inputs: eval_J   - if 1, request full (J,f) system from fdf
+Inputs: evaldf   - if 1, request full (J,f) system from fdf
                    if 0, request only f from fdf
         x        - parameter vector for evaluation of (J,f)
         fdf      - user-supplied function
@@ -399,13 +399,13 @@ Inputs: eval_J   - if 1, request full (J,f) system from fdf
 */
 
 static int
-lmn_eval(const int eval_J, const gsl_vector * x,
+lmn_eval(const int evaldf, const gsl_vector * x,
          gsl_multilarge_function_fdf * fdf,
          void * fdf_work, lmn_state_t * state)
 {
   int status;
 
-  if (eval_J)
+  if (evaldf)
     {
       /* reset parameters for new (J,f) accumulation */
       gsl_multilarge_linear_reset(state->linear_workspace_p);
@@ -414,9 +414,9 @@ lmn_eval(const int eval_J, const gsl_vector * x,
     }
 
   state->normf_trial = 0.0;
-  state->eval_J = eval_J;
-  
-  status = (*(fdf->fdf)) (eval_J, x, fdf->params, fdf_work);
+  state->evaldf = evaldf;
+
+  GSL_MULTILARGE_EVAL_FDF(fdf, evaldf, x, fdf_work, status);
 
   return status;
 }

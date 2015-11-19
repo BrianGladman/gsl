@@ -58,7 +58,7 @@ thurber_checksol(const double x[], const double sumsq,
 }
 
 static int
-thurber_fdf (const int eval_J, const gsl_vector * x, void *params, void * work)
+thurber_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
 {
   int status;
   double b[thurber_P];
@@ -81,7 +81,7 @@ thurber_fdf (const int eval_J, const gsl_vector * x, void *params, void * work)
 
       gsl_vector_set (&f.vector, i, yi - thurber_F[i]);
 
-      if (eval_J)
+      if (evaldf)
         {
           gsl_matrix_set (&J.matrix, i, 0, 1.0 / d);
           gsl_matrix_set (&J.matrix, i, 1, xi / d);

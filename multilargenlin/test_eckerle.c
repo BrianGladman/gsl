@@ -53,7 +53,7 @@ eckerle_checksol(const double x[], const double sumsq,
 }
 
 static int
-eckerle_fdf (const int eval_J, const gsl_vector * x, void *params, void * work)
+eckerle_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
 {
   int status;
   double b[eckerle_P];
@@ -75,7 +75,7 @@ eckerle_fdf (const int eval_J, const gsl_vector * x, void *params, void * work)
 
       gsl_vector_set (&f.vector, i, yi - eckerle_F[i]);
 
-      if (eval_J)
+      if (evaldf)
         {
           gsl_matrix_set (&J.matrix, i, 0, term2 / b[1]);
           gsl_matrix_set (&J.matrix, i, 1,
