@@ -69,7 +69,7 @@ powell1_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
       gsl_matrix_set(&J.matrix, 3, 3, -2.0*sqrt(10.0)*term2);
     }
 
-  status = gsl_multilarge_nlinear_accumulate(&J.matrix, &f.vector, work);
+  status = test_accumulate(4, &J.matrix, &f.vector, work);
 
   return status;
 }

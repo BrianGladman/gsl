@@ -55,7 +55,7 @@ lin1_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
       gsl_vector_set(&f.vector, i, fi);
     }
 
-  status = gsl_multilarge_nlinear_accumulate(&J.matrix, &f.vector, work);
+  status = test_accumulate(3, &J.matrix, &f.vector, work);
 
   return status;
 }

@@ -64,7 +64,7 @@ wood_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
       gsl_matrix_set(&J.matrix, 5, 3, -1.0/s10);
     }
 
-  status = gsl_multilarge_nlinear_accumulate(&J.matrix, &f.vector, work);
+  status = test_accumulate(2, &J.matrix, &f.vector, work);
 
   return status;
 }

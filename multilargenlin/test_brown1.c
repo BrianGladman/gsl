@@ -59,7 +59,7 @@ brown1_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
         }
     }
 
-  status = gsl_multilarge_nlinear_accumulate(&J.matrix, &f.vector, work);
+  status = test_accumulate(5, &J.matrix, &f.vector, work);
 
   return status;
 }

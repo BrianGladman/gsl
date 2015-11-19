@@ -50,7 +50,7 @@ brown3_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
       gsl_matrix_set(&J.matrix, 2, 1, x1);
     }
 
-  status = gsl_multilarge_nlinear_accumulate(&J.matrix, &f.vector, work);
+  status = test_accumulate(2, &J.matrix, &f.vector, work);
 
   return status;
 }
