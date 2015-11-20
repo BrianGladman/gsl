@@ -1710,24 +1710,34 @@ The output from the program is shown in the following plot.
 
 The following program demostrates the large linear least squares
 solvers. This example is adapted from Trefethen and Bau,
-and fits the function @math{f(t) = \exp{(\sin{4(t - 10)}})} on
-the interval @math{[10,11]} with a degree 14 polynomial. The
+and fits the function @math{f(t) = \exp{(\sin^3{(10t)}})} on
+the interval @math{[0,1]} with a degree 15 polynomial. The
 program generates @math{n = 50000} equally spaced points
 @math{t_i} on this interval, calculates the function value
 and adds random noise to determine the observation value
 @math{y_i}. The entries of the least squares matrix are
 @math{X_{ij} = t_i^j}, representing a polynomial fit. The
-matrix is highly ill-conditioned, and we accumulate the
+matrix is highly ill-conditioned, with a condition number
+of about @math{1.4e11}. The program accumulates the
 matrix into the least squares system in 5 blocks, each with
 10000 rows. This way the full matrix @math{X} is never
 stored in memory. We solve the system with both the
 normal equations and TSQR methods. The results are shown
-in the plot below. In the left plot, we see the unregularized
-normal equations solution has large error due to
-the ill-conditioning of the matrix, while TSQR provides
-a good fit. In the right panel, we add regularization
-with @math{\lambda = 1} which allows the normal equations
-method to converge to a good solution.
+in the plot below. In the top left plot, we see the unregularized
+normal equations solution has larger error than TSQR due to
+the ill-conditioning of the matrix. In the bottom left plot,
+we show the L-curve, which exhibits multiple corners.
+In the top right panel, we plot a regularized solution using
+@math{\lambda = 1e-6}. The TSQR and normal solutions now agree,
+however they are unable to provide a good fit due to the damping.
+This indicates that for some ill-conditioned
+problems, regularizing the normal equations does not improve the
+solution. This is further illustrated in the bottom right panel,
+where we plot the L-curve calculated from the normal equations.
+The curve agrees with the TSQR curve for larger damping parameters,
+but for small @math{\lambda}, the normal equations approach cannot
+provide accurate solution vectors leading to numerical
+inaccuracies in the left portion of the curve.
 
 @iftex
 @sp 1

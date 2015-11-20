@@ -392,6 +392,25 @@ tsqr_lcurve(gsl_vector * reg_param, gsl_vector * rho,
   status = gsl_multifit_linear_lcurve(state->QTb, reg_param, rho, eta,
                                       state->multifit_workspace_p);
 
+  /* now add contribution to rnorm from Q2 factor */
+  {
+    double norm_Q1Tb = gsl_blas_dnrm2(state->QTb);
+    double ratio = norm_Q1Tb / state->normb;
+    double diff = 1.0 - ratio*ratio;
+    size_t i;
+
+    if (diff > GSL_DBL_EPSILON)
+      {
+        double norm_Q2Tb = state->normb * sqrt(diff);
+
+        for (i = 0; i < rho->size; ++i)
+          {
+            double *rhoi = gsl_vector_ptr(rho, i);
+            *rhoi = gsl_hypot(*rhoi, norm_Q2Tb);
+          }
+      }
+  }
+
   return status;
 }
 
