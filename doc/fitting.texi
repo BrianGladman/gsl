@@ -1474,13 +1474,31 @@ to recover the solution vector of the original problem, which is stored in @var{
 of length @math{p}.
 @end deftypefun
 
+@deftypefun int gsl_multilarge_linear_lcurve (gsl_vector * @var{reg_param}, gsl_vector * @var{rho}, gsl_vector * @var{eta}, gsl_multilarge_linear_workspace * @var{work})
+This function computes the L-curve for a large least squares system
+after it has been fully accumulated into the workspace @var{work}.
+The output vectors @var{reg_param}, @var{rho}, and @var{eta} must all
+be the same size, and will contain the regularization parameters
+@math{\lambda_i}, residual norms @math{||y - X c_i||}, and solution
+norms @math{|| L c_i ||} which compose the L-curve, where @math{c_i}
+is the regularized solution vector corresponding to @math{\lambda_i}.
+The user may determine the number of points on the L-curve by
+adjusting the size of these input arrays. For the TSQR method,
+the regularization parameters @math{\lambda_i} are estimated from the
+singular values of the triangular @math{R} factor. For the normal
+equations method, they are estimated from the eigenvalues of the
+@math{X^T X} matrix.
+@end deftypefun
+
 @deftypefun int gsl_multilarge_linear_rcond (double * @var{rcond}, gsl_multilarge_linear_workspace * @var{work})
 This function computes the reciprocal condition number, stored in
 @var{rcond}, of the least squares matrix after it has been accumulated
 into the workspace @var{work}. For the TSQR algorithm, this is
 accomplished by calculating the SVD of the @math{R} factor, which
-has the same singular values as the matrix @math{X}. This routine
-is currently not implemented for the normal equations method.
+has the same singular values as the matrix @math{X}. For the normal
+equations method, this is done by computing the eigenvalues of
+@math{X^T X}, which could be inaccurate for ill-conditioned matrices
+@math{X}.
 @end deftypefun
 
 @node Troubleshooting
