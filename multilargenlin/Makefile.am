@@ -51,4 +51,4 @@ check_PROGRAMS = test
 TESTS = $(check_PROGRAMS)
 
 test_SOURCES = test.c
-test_LDADD = libgslmultilargenlin.la ../test/libgsltest.la ../multilarge/libgslmultilarge.la ../multifit/libgslmultifit.la ../linalg/libgsllinalg.la ../blas/libgslblas.la ../cblas/libgslcblas.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la  ../sys/libgslsys.la ../utils/libutils.la ../rng/libgslrng.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../complex/libgslcomplex.la
+test_LDADD = libgslmultilargenlin.la ../test/libgsltest.la ../multilarge/libgslmultilarge.la ../multifit/libgslmultifit.la ../eigen/libgsleigen.la ../linalg/libgsllinalg.la ../blas/libgslblas.la ../cblas/libgslcblas.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la  ../sys/libgslsys.la ../utils/libutils.la ../rng/libgslrng.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../complex/libgslcomplex.la

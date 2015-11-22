@@ -223,16 +223,16 @@ lmn_accumulate(gsl_matrix * J, gsl_vector * f, void * vstate)
 
       if (state->init == 0)
         {
-          /* initialization step: compute diag(J^T J) for initial mu estimate */
+          /* initialization step: compute sqrt [ diag(J^T J) ] for initial mu estimate */
           size_t i;
 
           /* diag(J^T J) = sum_i diag(J_i^T J_i) */
           for (i = 0; i < state->p; ++i)
             {
               gsl_vector_view c = gsl_matrix_column(J, i);
-              double val = gsl_blas_dnrm2(&c.vector);
+              double normc = gsl_blas_dnrm2(&c.vector);
               double *di = gsl_vector_ptr(state->sdiag, i);
-              *di += val;
+              *di = gsl_hypot(*di, normc);
             }
         }
 
