@@ -68,6 +68,7 @@ typedef struct
                   void * fdf_work, void * vstate);
   gsl_vector * (*gradient) (void *vstate);
   double (*normf) (void *vstate);
+  int (*rcond) (double * rcond, void *vstate);
   void (*free) (void * vstate);
 } gsl_multilarge_nlinear_type;
 
@@ -111,6 +112,8 @@ gsl_multilarge_nlinear_accumulate (gsl_matrix * J, gsl_vector * f,
 int gsl_multilarge_nlinear_iterate (gsl_multilarge_nlinear_workspace * w);
 
 double gsl_multilarge_nlinear_normf (const gsl_multilarge_nlinear_workspace * w);
+
+int gsl_multilarge_nlinear_rcond (double * rcond, const gsl_multilarge_nlinear_workspace * w);
 
 gsl_vector *gsl_multilarge_nlinear_position (const gsl_multilarge_nlinear_workspace * w);
 

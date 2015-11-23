@@ -241,6 +241,12 @@ gsl_multilarge_nlinear_position (const gsl_multilarge_nlinear_workspace * w)
   return w->x;
 }
 
+int
+gsl_multilarge_nlinear_rcond (double * rcond, const gsl_multilarge_nlinear_workspace * w)
+{
+  return (w->type->rcond) (rcond, w->state);
+}
+
 /*
 gsl_multilarge_nlinear_driver()
   Iterate the nonlinear least squares solver until completion

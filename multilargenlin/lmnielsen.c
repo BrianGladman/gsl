@@ -67,6 +67,9 @@ static int lmn_accumulate(gsl_matrix * J, gsl_vector * f, void * vstate);
 static int lmn_iterate(gsl_vector * x, gsl_vector * dx,
                        gsl_multilarge_function_fdf * fdf,
                        void * fdf_work, void * vstate);
+static gsl_vector *lmn_gradient(void * vstate);
+static double lmn_normf(void * vstate);
+static int lmn_rcond(double *rcond, void * vstate);
 static int lmn_eval(const int evaldf, const gsl_vector * x,
                     gsl_multilarge_function_fdf * fdf,
                     void * work, lmn_state_t * state);
@@ -382,6 +385,13 @@ lmn_normf(void * vstate)
   return state->normf;
 }
 
+static int
+lmn_rcond(double *rcond, void * vstate)
+{
+  lmn_state_t *state = (lmn_state_t *) vstate;
+  return gsl_multilarge_linear_rcond(rcond, state->linear_workspace_p);
+}
+
 /*
 lmn_eval()
   Evaluate user-supplied Jacobian and residual vector
@@ -471,6 +481,7 @@ static const gsl_multilarge_nlinear_type lmnormal_type =
   lmn_iterate,
   lmn_gradient,
   lmn_normf,
+  lmn_rcond,
   lmn_free
 };
 
@@ -483,6 +494,7 @@ static const gsl_multilarge_nlinear_type lmtsqr_type =
   lmn_iterate,
   lmn_gradient,
   lmn_normf,
+  lmn_rcond,
   lmn_free
 };
 
