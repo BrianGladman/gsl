@@ -146,18 +146,17 @@ int
 gsl_multilarge_nlinear_waccumulate (const gsl_vector * wts, gsl_matrix * J, gsl_vector * f,
                                     gsl_multilarge_nlinear_workspace * w)
 {
-  const size_t n = J->size1;
-  const size_t p = J->size2;
+  const size_t n = f->size;
 
-  if (f->size != n)
+  if (J != NULL && n != J->size1)
     {
       GSL_ERROR ("f vector does not match J", GSL_EBADLEN);
     }
   else if (wts != NULL && wts->size != n)
     {
-      GSL_ERROR ("weight vector does not match J", GSL_EBADLEN);
+      GSL_ERROR ("weight vector does not match f", GSL_EBADLEN);
     }
-  else if (p != w->p)
+  else if (J != NULL && J->size2 != w->p)
     {
       GSL_ERROR ("Jacobian has wrong number of columns", GSL_EBADLEN);
     }
@@ -167,10 +166,29 @@ gsl_multilarge_nlinear_waccumulate (const gsl_vector * wts, gsl_matrix * J, gsl_
 
       if (wts)
         {
-          /* J <- sqrt(W) J; f <- sqrt(W) f */
-          status = gsl_multifit_linear_applyW(J, wts, f, J, f);
-          if (status)
-            return status;
+          if (J != NULL)
+            {
+              /* J <- sqrt(W) J; f <- sqrt(W) f */
+              status = gsl_multifit_linear_applyW(J, wts, f, J, f);
+              if (status)
+                return status;
+            }
+          else
+            {
+              size_t i;
+
+              /* f <- sqrt(W) f */
+              for (i = 0; i < n; ++i)
+                {
+                  double wi = gsl_vector_get(wts, i);
+                  double *fi = gsl_vector_ptr(f, i);
+
+                  if (wi < 0.0)
+                    wi = 0.0;
+
+                  *fi *= sqrt(wi);
+                }
+            }
         }
 
       /* accumulate (J,f) into solver */
