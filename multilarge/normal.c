@@ -399,7 +399,7 @@ normal_solve_system(const double lambda, gsl_vector * x, normal_state_t *state)
   gsl_error_handler_t *err_handler;
 
   /* copy ATA matrix to temporary workspace and regularize */
-  gsl_matrix_tricpy('L', 'L', 1, state->work_ATA, state->ATA);
+  gsl_matrix_tricpy('L', 1, state->work_ATA, state->ATA);
   gsl_vector_add_constant(&d.vector, lambda_sq);
 
   /* turn off error handler in case Cholesky fails */
@@ -410,7 +410,7 @@ normal_solve_system(const double lambda, gsl_vector * x, normal_state_t *state)
   if (status)
     {
       /* restore ATA matrix and try QR decomposition */
-      gsl_matrix_tricpy('L', 'L', 1, state->work_ATA, state->ATA);
+      gsl_matrix_tricpy('L', 1, state->work_ATA, state->ATA);
       gsl_vector_add_constant(&d.vector, lambda_sq);
 
       status = normal_solve_QR(state->work_ATA, state->ATb, x, state);
@@ -452,7 +452,7 @@ normal_solve_QR(gsl_matrix * ATA, const gsl_vector * ATb,
     return status;
 
   /* copy lower triangle of ATA to upper */
-  gsl_matrix_tricpy('U', 'L', 0, ATA, ATA);
+  gsl_matrix_transpose_tricpy('L', 0, ATA, ATA);
 
   status = gsl_linalg_QR_decomp(ATA, state->workp);
   if (status)
@@ -524,7 +524,7 @@ normal_eigen(normal_state_t *state)
   int status;
 
   /* copy lower triangle of ATA to temporary workspace */
-  gsl_matrix_tricpy('L', 'L', 1, state->work_ATA, state->ATA);
+  gsl_matrix_tricpy('L', 1, state->work_ATA, state->ATA);
 
   /* compute eigenvalues of ATA */
   status = gsl_eigen_symm(state->work_ATA, state->workp, state->eigen_p);

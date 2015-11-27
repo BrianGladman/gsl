@@ -85,7 +85,7 @@ FUNCTION (gsl_matrix, swap) (TYPE (gsl_matrix) * dest, TYPE (gsl_matrix) * src)
 
 
 int
-FUNCTION (gsl_matrix, tricpy) (const char uplo_dest, const char uplo_src,
+FUNCTION (gsl_matrix, tricpy) (const char uplo_src,
                                const int copy_diag, TYPE (gsl_matrix) * dest,
                                const TYPE (gsl_matrix) * src)
 {
@@ -104,7 +104,7 @@ FUNCTION (gsl_matrix, tricpy) (const char uplo_dest, const char uplo_src,
     const size_t dest_tda = dest->tda ;
     size_t i, j, k;
 
-    if (uplo_src == 'L' && uplo_dest == 'L')
+    if (uplo_src == 'L')
       {
         for (i = 0; i < src_size1 ; i++)
           {
@@ -119,7 +119,7 @@ FUNCTION (gsl_matrix, tricpy) (const char uplo_dest, const char uplo_src,
               }
           }
       }
-    else if (uplo_src == 'U' && uplo_dest == 'U')
+    else if (uplo_src == 'U')
       {
         for (i = 0; i < src_size1 ; i++)
           {
@@ -128,36 +128,6 @@ FUNCTION (gsl_matrix, tricpy) (const char uplo_dest, const char uplo_src,
                 for (k = 0; k < MULTIPLICITY; k++)
                   {
                     size_t e1 = (i *  dest_tda + j) * MULTIPLICITY + k ;
-                    size_t e2 = (i *  src_tda + j) * MULTIPLICITY + k ;
-                    dest->data[e1] = src->data[e2];
-                  }
-              }
-          }
-      }
-    else if (uplo_src == 'L' && uplo_dest == 'U')
-      {
-        for (i = 0; i < src_size1 ; i++)
-          {
-            for (j = 0; j < i; j++)
-              {
-                for (k = 0; k < MULTIPLICITY; k++)
-                  {
-                    size_t e1 = (j *  dest_tda + i) * MULTIPLICITY + k ;
-                    size_t e2 = (i *  src_tda + j) * MULTIPLICITY + k ;
-                    dest->data[e1] = src->data[e2];
-                  }
-              }
-          }
-      }
-    else if (uplo_src == 'U' && uplo_dest == 'L')
-      {
-        for (i = 0; i < src_size1 ; i++)
-          {
-            for (j = i + 1; j < src_size2; j++)
-              {
-                for (k = 0; k < MULTIPLICITY; k++)
-                  {
-                    size_t e1 = (j *  dest_tda + i) * MULTIPLICITY + k ;
                     size_t e2 = (i *  src_tda + j) * MULTIPLICITY + k ;
                     dest->data[e1] = src->data[e2];
                   }
