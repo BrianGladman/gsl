@@ -58,9 +58,9 @@ thurber_checksol(const double x[], const double sumsq,
 }
 
 static int
-thurber_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
+thurber_fdf (const gsl_vector * x, gsl_matrix * JTJ,
+             gsl_vector * JTf, double * normf, void *params)
 {
-  int status;
   double b[thurber_P];
   gsl_matrix_view J = gsl_matrix_view_array(thurber_J, thurber_N, thurber_P);
   gsl_vector_view f = gsl_vector_view_array(thurber_f, thurber_N);
@@ -81,7 +81,7 @@ thurber_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
 
       gsl_vector_set (&f.vector, i, yi - thurber_F[i]);
 
-      if (evaldf)
+      if (JTJ)
         {
           gsl_matrix_set (&J.matrix, i, 0, 1.0 / d);
           gsl_matrix_set (&J.matrix, i, 1, xi / d);
@@ -93,9 +93,15 @@ thurber_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
         }
     }
 
-  status = test_accumulate(6, &J.matrix, &f.vector, work);
+  *normf = gsl_blas_dnrm2(&f.vector);
 
-  return status;
+  if (JTJ)
+    {
+      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
+      gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
+    }
+
+  return GSL_SUCCESS;
 }
 
 static gsl_multilarge_function_fdf thurber_func =

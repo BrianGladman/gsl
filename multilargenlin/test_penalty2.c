@@ -21,9 +21,9 @@ penalty2_checksol(const double x[], const double sumsq,
 }
 
 static int
-penalty2_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
+penalty2_fdf (const gsl_vector * x, gsl_matrix * JTJ,
+              gsl_vector * JTf, double * normf, void *params)
 {
-  int status;
   gsl_matrix_view J = gsl_matrix_view_array(penalty2_J, penalty2_N, penalty2_P);
   gsl_vector_view f = gsl_vector_view_array(penalty2_f, penalty2_N);
   const double alpha = 1.0e-5;
@@ -57,49 +57,58 @@ penalty2_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
   /* row 2p */
   gsl_vector_set(&f.vector, penalty2_N - 1, sum - 1.0);
 
-  for (j = 0; j < penalty2_P; ++j)
+  if (JTJ)
     {
-      double xj = gsl_vector_get(x, j);
-      double delta1j = (j == 0) ? 1.0 : 0.0;
-
-      /* first and last rows */
-      gsl_matrix_set(&J.matrix, 0, j, delta1j);
-      gsl_matrix_set(&J.matrix, penalty2_N - 1, j, 2.0 * (penalty2_P - j) * xj);
-
-      /* rows [2:p] */
-      for (i = 1; i < penalty2_P; ++i)
+      for (j = 0; j < penalty2_P; ++j)
         {
-          double xi = gsl_vector_get(x, i);
-          double xim1 = gsl_vector_get(x, i - 1);
-          double Jij;
+          double xj = gsl_vector_get(x, j);
+          double delta1j = (j == 0) ? 1.0 : 0.0;
 
-          if (i == j)
-            Jij = exp(0.1 * xi);
-          else if (i - 1 == j)
-            Jij = exp(0.1 * xim1);
-          else
-            Jij = 0.0;
+          /* first and last rows */
+          gsl_matrix_set(&J.matrix, 0, j, delta1j);
+          gsl_matrix_set(&J.matrix, penalty2_N - 1, j, 2.0 * (penalty2_P - j) * xj);
 
-          Jij *= 0.1 * sqrt_alpha;
+          /* rows [2:p] */
+          for (i = 1; i < penalty2_P; ++i)
+            {
+              double xi = gsl_vector_get(x, i);
+              double xim1 = gsl_vector_get(x, i - 1);
+              double Jij;
 
-          gsl_matrix_set(&J.matrix, i, j, Jij);
-        }
+              if (i == j)
+                Jij = exp(0.1 * xi);
+              else if (i - 1 == j)
+                Jij = exp(0.1 * xim1);
+              else
+                Jij = 0.0;
 
-      /* rows [p+1:2p-1] */
-      for (i = penalty2_P; i < penalty2_N - 1; ++i)
-        {
-          double xi = gsl_vector_get(x, i - penalty2_P + 1);
+              Jij *= 0.1 * sqrt_alpha;
 
-          if (i - penalty2_P + 1 == j)
-            gsl_matrix_set(&J.matrix, i, j, 0.1 * sqrt_alpha * exp(0.1*xi));
-          else
-            gsl_matrix_set(&J.matrix, i, j, 0.0);
+              gsl_matrix_set(&J.matrix, i, j, Jij);
+            }
+
+          /* rows [p+1:2p-1] */
+          for (i = penalty2_P; i < penalty2_N - 1; ++i)
+            {
+              double xi = gsl_vector_get(x, i - penalty2_P + 1);
+
+              if (i - penalty2_P + 1 == j)
+                gsl_matrix_set(&J.matrix, i, j, 0.1 * sqrt_alpha * exp(0.1*xi));
+              else
+                gsl_matrix_set(&J.matrix, i, j, 0.0);
+            }
         }
     }
 
-  status = test_accumulate(2, &J.matrix, &f.vector, work);
+  *normf = gsl_blas_dnrm2(&f.vector);
 
-  return status;
+  if (JTJ)
+    {
+      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
+      gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
+    }
+
+  return GSL_SUCCESS;
 }
 
 static gsl_multilarge_function_fdf penalty2_func =

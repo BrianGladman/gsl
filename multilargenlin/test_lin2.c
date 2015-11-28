@@ -31,9 +31,9 @@ lin2_checksol(const double x[], const double sumsq,
 }
 
 static int
-lin2_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
+lin2_fdf (const gsl_vector * x, gsl_matrix * JTJ,
+          gsl_vector * JTf, double * normf, void *params)
 {
-  int status;
   gsl_matrix_view J = gsl_matrix_view_array(lin2_J, lin2_N, lin2_P);
   gsl_vector_view f = gsl_vector_view_array(lin2_f, lin2_N);
   size_t i, j;
@@ -47,7 +47,7 @@ lin2_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
           double xj = gsl_vector_get(x, j);
           fi += (j + 1) * xj;
 
-          if (evaldf)
+          if (JTJ)
             gsl_matrix_set(&J.matrix, i, j, (i + 1.0) * (j + 1.0));
         }
 
@@ -55,9 +55,15 @@ lin2_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
       gsl_vector_set(&f.vector, i, fi);
     }
 
-  status = test_accumulate(2, &J.matrix, &f.vector, work);
+  *normf = gsl_blas_dnrm2(&f.vector);
 
-  return status;
+  if (JTJ)
+    {
+      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
+      gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
+    }
+
+  return GSL_SUCCESS;
 }
 
 static gsl_multilarge_function_fdf lin2_func =

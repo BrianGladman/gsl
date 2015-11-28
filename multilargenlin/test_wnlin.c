@@ -55,9 +55,9 @@ wnlin_checksol(const double x[], const double sumsq,
 }
 
 static int
-wnlin_fdf (const int evaldf, const gsl_vector *x, void *params, void *work)
+wnlin_fdf (const gsl_vector * x, gsl_matrix * JTJ,
+           gsl_vector * JTf, double * normf, void *params)
 {
-  int status;
   gsl_matrix_view J = gsl_matrix_view_array(wnlin_J, wnlin_N, wnlin_P);
   gsl_vector_view f = gsl_vector_view_array(wnlin_f, wnlin_N);
   gsl_vector_view wts = gsl_vector_view_array(wnlin_W, wnlin_N);
@@ -75,7 +75,7 @@ wnlin_fdf (const int evaldf, const gsl_vector *x, void *params, void *work)
 
       gsl_vector_set (&f.vector, i, Mi - yi);
 
-      if (evaldf)
+      if (JTJ)
         {
           gsl_matrix_set(&J.matrix, i, 0, e);
           gsl_matrix_set(&J.matrix, i, 1, -ti * A * e);
@@ -83,9 +83,18 @@ wnlin_fdf (const int evaldf, const gsl_vector *x, void *params, void *work)
         }
     }
 
-  status = gsl_multilarge_nlinear_waccumulate(&wts.vector, &J.matrix, &f.vector, work);
+  if (JTJ)
+    {
+      gsl_multilarge_nlinear_applyW(&wts.vector, &J.matrix, &f.vector);
+      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
+      gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
+    }
+  else
+    gsl_multilarge_nlinear_applyW(&wts.vector, NULL, &f.vector);
 
-  return status;
+  *normf = gsl_blas_dnrm2(&f.vector);
+
+  return GSL_SUCCESS;
 }
 
 static gsl_multilarge_function_fdf wnlin_func =

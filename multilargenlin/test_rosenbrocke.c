@@ -31,9 +31,9 @@ rosenbrocke_checksol(const double x[], const double sumsq,
 }
 
 static int
-rosenbrocke_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
+rosenbrocke_fdf (const gsl_vector * x, gsl_matrix * JTJ,
+                 gsl_vector * JTf, double * normf, void *params)
 {
-  int status;
   gsl_matrix_view J = gsl_matrix_view_array(rosenbrocke_J, rosenbrocke_N, rosenbrocke_P);
   gsl_vector_view f = gsl_vector_view_array(rosenbrocke_f, rosenbrocke_N);
   size_t i;
@@ -48,7 +48,7 @@ rosenbrocke_fdf (const int evaldf, const gsl_vector * x, void *params, void * wo
       gsl_vector_set(&f.vector, 2*i, 10.0 * (x2i - x2im1*x2im1));
       gsl_vector_set(&f.vector, 2*i + 1, 1.0 - x2im1);
 
-      if (evaldf)
+      if (JTJ)
         {
           gsl_matrix_set(&J.matrix, 2*i, 2*i, -20.0*x2im1);
           gsl_matrix_set(&J.matrix, 2*i, 2*i + 1, 10.0);
@@ -56,9 +56,15 @@ rosenbrocke_fdf (const int evaldf, const gsl_vector * x, void *params, void * wo
         }
     }
 
-  status = test_accumulate(2, &J.matrix, &f.vector, work);
+  *normf = gsl_blas_dnrm2(&f.vector);
 
-  return status;
+  if (JTJ)
+    {
+      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
+      gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
+    }
+
+  return GSL_SUCCESS;
 }
 
 static gsl_multilarge_function_fdf rosenbrocke_func =

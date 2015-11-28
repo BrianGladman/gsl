@@ -28,9 +28,9 @@ powell1_checksol(const double x[], const double sumsq,
 }
 
 static int
-powell1_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
+powell1_fdf (const gsl_vector * x, gsl_matrix * JTJ,
+             gsl_vector * JTf, double * normf, void *params)
 {
-  int status;
   gsl_matrix_view J = gsl_matrix_view_array(powell1_J, powell1_N, powell1_P);
   gsl_vector_view f = gsl_vector_view_array(powell1_f, powell1_N);
   double x1 = gsl_vector_get (x, 0);
@@ -43,7 +43,7 @@ powell1_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
   gsl_vector_set(&f.vector, 2, pow(x2 - 2.0*x3, 2.0));
   gsl_vector_set(&f.vector, 3, sqrt(10.0) * pow((x1 - x4), 2.0));
 
-  if (evaldf)
+  if (JTJ)
     {
       double term1 = x2 - 2.0*x3;
       double term2 = x1 - x4;
@@ -69,9 +69,15 @@ powell1_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
       gsl_matrix_set(&J.matrix, 3, 3, -2.0*sqrt(10.0)*term2);
     }
 
-  status = test_accumulate(4, &J.matrix, &f.vector, work);
+  *normf = gsl_blas_dnrm2(&f.vector);
 
-  return status;
+  if (JTJ)
+    {
+      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
+      gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
+    }
+
+  return GSL_SUCCESS;
 }
 
 static gsl_multilarge_function_fdf powell1_func =

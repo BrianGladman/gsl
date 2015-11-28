@@ -27,9 +27,6 @@
 #include <gsl/gsl_multilarge_nlin.h>
 #include <gsl/gsl_ieee_utils.h>
 
-static int test_accumulate(const size_t nblock, gsl_matrix *df,
-                           gsl_vector *f, void *work);
-
 typedef struct
 {
   const char *name;
@@ -302,33 +299,6 @@ test_scale_x0(gsl_vector *x0, const double scale)
     gsl_vector_scale(x0, scale);
 }
 
-static int
-test_accumulate(const size_t nblock, gsl_matrix *df,
-                gsl_vector *f, void *work)
-{
-  int status;
-  const size_t n = df->size1;
-  const size_t p = df->size2;
-  const size_t nrows = n / nblock;
-  size_t rowidx = 0;
-
-  while (rowidx < n)
-    {
-      size_t nleft = n - rowidx;
-      size_t nr = GSL_MIN(nrows, nleft);
-      gsl_matrix_view m = gsl_matrix_submatrix(df, rowidx, 0, nr, p);
-      gsl_vector_view v = gsl_vector_subvector(f, rowidx, nr);
-
-      status = gsl_multilarge_nlinear_accumulate(&m.matrix, &v.vector, work);
-      if (status)
-        return status;
-
-      rowidx += nr;
-    }
-
-  return GSL_SUCCESS;
-}
-
 int
 main(void)
 {
@@ -339,10 +309,7 @@ main(void)
 
   /* test weighted nonlinear least squares */
 
-  test_fdf(gsl_multilarge_nlinear_lmnormal, xtol, gtol, ftol,
-           wnlin_epsrel, 1.0, &wnlin_problem);
-
-  test_fdf(gsl_multilarge_nlinear_lmtsqr, xtol, gtol, ftol,
+  test_fdf(gsl_multilarge_nlinear_lmnielsen, xtol, gtol, ftol,
            wnlin_epsrel, 1.0, &wnlin_problem);
 
   /* Nielsen tests */
@@ -354,10 +321,7 @@ main(void)
 
       for (j = 0; j < problem->ntries; ++j)
         {
-          test_fdf(gsl_multilarge_nlinear_lmnormal, xtol, gtol, ftol,
-                   epsrel, scale, problem);
-
-          test_fdf(gsl_multilarge_nlinear_lmtsqr, xtol, gtol, ftol,
+          test_fdf(gsl_multilarge_nlinear_lmnielsen, xtol, gtol, ftol,
                    epsrel, scale, problem);
 
           scale *= 10.0;
@@ -373,10 +337,7 @@ main(void)
 
       for (j = 0; j < problem->ntries; ++j)
         {
-          test_fdf(gsl_multilarge_nlinear_lmnormal, xtol, gtol, ftol,
-                   epsrel, scale, problem);
-
-          test_fdf(gsl_multilarge_nlinear_lmtsqr, xtol, gtol, ftol,
+          test_fdf(gsl_multilarge_nlinear_lmnielsen, xtol, gtol, ftol,
                    epsrel, scale, problem);
 
           scale *= 10.0;
@@ -392,10 +353,7 @@ main(void)
 
       for (j = 0; j < problem->ntries; ++j)
         {
-          test_fdf(gsl_multilarge_nlinear_lmnormal, xtol, gtol, ftol,
-                   epsrel, scale, problem);
-
-          test_fdf(gsl_multilarge_nlinear_lmtsqr, xtol, gtol, ftol,
+          test_fdf(gsl_multilarge_nlinear_lmnielsen, xtol, gtol, ftol,
                    epsrel, scale, problem);
 
           scale *= 10.0;

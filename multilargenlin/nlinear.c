@@ -123,7 +123,7 @@ gsl_multilarge_nlinear_init (const gsl_vector * x, gsl_multilarge_function_fdf *
       gsl_vector_memcpy(w->x, x);
       w->niter = 0;
 
-      status = (w->type->init)(x, fdf, w, w->state);
+      status = (w->type->init)(x, fdf, w->state);
       if (status)
         return status;
 
@@ -131,99 +131,12 @@ gsl_multilarge_nlinear_init (const gsl_vector * x, gsl_multilarge_function_fdf *
     }
 }
 
-/*
-gsl_multilarge_nlinear_waccumulate()
-  Accumulate weighted Jacobian and residual vector into
-linear LS system
-
-Inputs: wts - weight vector (NULL if unit weights)
-        J   - Jacobian matrix
-        f   - residual vector
-        w   - workspace
-*/
-
-int
-gsl_multilarge_nlinear_waccumulate (const gsl_vector * wts, gsl_matrix * J, gsl_vector * f,
-                                    gsl_multilarge_nlinear_workspace * w)
-{
-  const size_t n = f->size;
-
-  if (J != NULL && n != J->size1)
-    {
-      GSL_ERROR ("f vector does not match J", GSL_EBADLEN);
-    }
-  else if (wts != NULL && wts->size != n)
-    {
-      GSL_ERROR ("weight vector does not match f", GSL_EBADLEN);
-    }
-  else if (J != NULL && J->size2 != w->p)
-    {
-      GSL_ERROR ("Jacobian has wrong number of columns", GSL_EBADLEN);
-    }
-  else
-    {
-      int status;
-
-      if (wts)
-        {
-          if (J != NULL)
-            {
-              /* J <- sqrt(W) J; f <- sqrt(W) f */
-              status = gsl_multifit_linear_applyW(J, wts, f, J, f);
-              if (status)
-                return status;
-            }
-          else
-            {
-              size_t i;
-
-              /* f <- sqrt(W) f */
-              for (i = 0; i < n; ++i)
-                {
-                  double wi = gsl_vector_get(wts, i);
-                  double *fi = gsl_vector_ptr(f, i);
-
-                  if (wi < 0.0)
-                    wi = 0.0;
-
-                  *fi *= sqrt(wi);
-                }
-            }
-        }
-
-      /* accumulate (J,f) into solver */
-      status = (w->type->accum) (J, f, w->state);
-
-      return status;
-    }
-}
-
-/*
-gsl_multilarge_nlinear_accumulate()
-  Accumulate Jacobian and residual vector into linear LS system
-
-Inputs: J - Jacobian matrix
-        f - residual vector
-        w - workspace
-*/
-
-int
-gsl_multilarge_nlinear_accumulate (gsl_matrix * J, gsl_vector * f,
-                                   gsl_multilarge_nlinear_workspace * w)
-{
-  int status;
-
-  status = gsl_multilarge_nlinear_waccumulate(NULL, J, f, w);
-
-  return status;
-}
-
 int
 gsl_multilarge_nlinear_iterate (gsl_multilarge_nlinear_workspace * w)
 {
   int status;
 
-  status = (w->type->iterate) (w->x, w->dx, w->callback, w, w->state);
+  status = (w->type->iterate) (w->x, w->dx, w->callback, w->state);
   w->niter++;
 
   return status;
@@ -314,4 +227,70 @@ gsl_multilarge_nlinear_driver (const size_t maxiter,
     status = GSL_EMAXITER;
 
   return status;
+}
+
+/*
+gsl_multilarge_nlinear_applyW()
+  Apply weight matrix to (X,y) LS system
+
+Inputs: w    - weight vector n-by-1 or NULL for W = I
+        J    - Jacobian matrix n-by-p (can be NULL)
+        f    - residual vector n-by-1
+*/
+
+int
+gsl_multilarge_nlinear_applyW(const gsl_vector * w,
+                              gsl_matrix * J, gsl_vector * f)
+{
+  const size_t n = w->size;
+
+  if (n != f->size)
+    {
+      GSL_ERROR("f vector does not match w", GSL_EBADLEN);
+    }
+  else if (J != NULL && n != J->size1)
+    {
+      GSL_ERROR("weight vector does not match J", GSL_EBADLEN);
+    }
+  else
+    {
+      size_t i;
+
+      if (J == NULL)
+        {
+          /* construct sqrt(W) f */
+          for (i = 0; i < n; ++i)
+            {
+              double wi = gsl_vector_get(w, i);
+              double swi;
+              double *fi = gsl_vector_ptr(f, i);
+
+              if (wi < 0.0)
+                wi = 0.0;
+
+              swi = sqrt(wi);
+              *fi *= swi;
+            }
+        }
+      else
+        {
+          /* construct sqrt(W) J and sqrt(W) f */
+          for (i = 0; i < n; ++i)
+            {
+              double wi = gsl_vector_get(w, i);
+              double swi;
+              gsl_vector_view row = gsl_matrix_row(J, i);
+              double *fi = gsl_vector_ptr(f, i);
+
+              if (wi < 0.0)
+                wi = 0.0;
+
+              swi = sqrt(wi);
+              gsl_vector_scale(&row.vector, swi);
+              *fi *= swi;
+            }
+        }
+
+      return GSL_SUCCESS;
+    }
 }

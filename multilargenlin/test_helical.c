@@ -30,9 +30,9 @@ helical_checksol(const double x[], const double sumsq,
 }
 
 static int
-helical_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
+helical_fdf (const gsl_vector * x, gsl_matrix * JTJ,
+             gsl_vector * JTf, double * normf, void *params)
 {
-  int status;
   gsl_matrix_view J = gsl_matrix_view_array(helical_J, helical_N, helical_P);
   gsl_vector_view f = gsl_vector_view_array(helical_f, helical_N);
   double x1 = gsl_vector_get(x, 0);
@@ -45,7 +45,7 @@ helical_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
   gsl_vector_set(&f.vector, 1, 10.0*(nx - 1.0));
   gsl_vector_set(&f.vector, 2, x3);
 
-  if (evaldf)
+  if (JTJ)
     {
       double nx_sq = nx * nx;
       double term1 = 50.0 / (M_PI * nx_sq);
@@ -64,9 +64,15 @@ helical_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
       gsl_matrix_set(&J.matrix, 2, 2, 1.0);
     }
 
-  status = test_accumulate(1, &J.matrix, &f.vector, work);
+  *normf = gsl_blas_dnrm2(&f.vector);
 
-  return status;
+  if (JTJ)
+    {
+      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
+      gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
+    }
+
+  return GSL_SUCCESS;
 }
 
 static gsl_multilarge_function_fdf helical_func =

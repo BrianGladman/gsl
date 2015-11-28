@@ -82,9 +82,9 @@ enso_checksol(const double x[], const double sumsq,
 }
 
 static int
-enso_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
+enso_fdf (const gsl_vector * x, gsl_matrix * JTJ,
+          gsl_vector * JTf, double * normf, void *params)
 {
-  int status;
   double b[enso_P];
   gsl_matrix_view J = gsl_matrix_view_array(enso_J, enso_N, enso_P);
   gsl_vector_view f = gsl_vector_view_array(enso_f, enso_N);
@@ -109,7 +109,7 @@ enso_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
       y += b[8] * sin(2*M_PI*t/b[6]);
       gsl_vector_set (&f.vector, i, enso_F[i] - y);
 
-      if (evaldf)
+      if (JTJ)
         {
           gsl_matrix_set (&J.matrix, i, 0, -1.0);
           gsl_matrix_set (&J.matrix, i, 1, -cos(2*M_PI*t/12));
@@ -127,9 +127,15 @@ enso_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
         }
     }
 
-  status = test_accumulate(5, &J.matrix, &f.vector, work);
+  *normf = gsl_blas_dnrm2(&f.vector);
 
-  return status;
+  if (JTJ)
+    {
+      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
+      gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
+    }
+
+  return GSL_SUCCESS;
 }
 
 static gsl_multilarge_function_fdf enso_func =

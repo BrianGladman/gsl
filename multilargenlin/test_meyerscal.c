@@ -37,9 +37,9 @@ meyerscal_checksol(const double x[], const double sumsq,
 }
 
 static int
-meyerscal_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
+meyerscal_fdf (const gsl_vector * x, gsl_matrix * JTJ,
+               gsl_vector * JTf, double * normf, void *params)
 {
-  int status;
   gsl_matrix_view J = gsl_matrix_view_array(meyerscal_J, meyerscal_N, meyerscal_P);
   gsl_vector_view f = gsl_vector_view_array(meyerscal_f, meyerscal_N);
   double x1 = gsl_vector_get(x, 0);
@@ -57,7 +57,7 @@ meyerscal_fdf (const int evaldf, const gsl_vector * x, void *params, void * work
 
       gsl_vector_set(&f.vector, i, fi);
 
-      if (evaldf)
+      if (JTJ)
         {
           gsl_matrix_set(&J.matrix, i, 0, term2);
           gsl_matrix_set(&J.matrix, i, 1, 10.0*x1*term2/term1);
@@ -65,9 +65,15 @@ meyerscal_fdf (const int evaldf, const gsl_vector * x, void *params, void * work
         }
     }
 
-  status = test_accumulate(3, &J.matrix, &f.vector, work);
+  *normf = gsl_blas_dnrm2(&f.vector);
 
-  return status;
+  if (JTJ)
+    {
+      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
+      gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
+    }
+
+  return GSL_SUCCESS;
 }
 
 static gsl_multilarge_function_fdf meyerscal_func =

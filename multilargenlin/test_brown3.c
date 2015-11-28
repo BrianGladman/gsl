@@ -29,9 +29,9 @@ brown3_checksol(const double x[], const double sumsq,
 }
 
 static int
-brown3_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
+brown3_fdf (const gsl_vector * x, gsl_matrix * JTJ,
+            gsl_vector * JTf, double * normf, void *params)
 {
-  int status;
   gsl_matrix_view J = gsl_matrix_view_array(brown3_J, brown3_N, brown3_P);
   gsl_vector_view f = gsl_vector_view_array(brown3_f, brown3_N);
   double x1 = gsl_vector_get(x, 0);
@@ -41,7 +41,7 @@ brown3_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
   gsl_vector_set(&f.vector, 1, x2 - 2.0e-6);
   gsl_vector_set(&f.vector, 2, x1*x2 - 2.0);
 
-  if (evaldf)
+  if (JTJ)
     {
       gsl_matrix_set_zero(&J.matrix);
       gsl_matrix_set(&J.matrix, 0, 0, 1.0);
@@ -50,9 +50,15 @@ brown3_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
       gsl_matrix_set(&J.matrix, 2, 1, x1);
     }
 
-  status = test_accumulate(2, &J.matrix, &f.vector, work);
+  *normf = gsl_blas_dnrm2(&f.vector);
 
-  return status;
+  if (JTJ)
+    {
+      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
+      gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
+    }
+
+  return GSL_SUCCESS;
 }
 
 static gsl_multilarge_function_fdf brown3_func =

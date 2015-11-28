@@ -22,9 +22,9 @@ penalty1_checksol(const double x[], const double sumsq,
 }
 
 static int
-penalty1_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
+penalty1_fdf (const gsl_vector * x, gsl_matrix * JTJ,
+              gsl_vector * JTf, double * normf, void *params)
 {
-  int status;
   gsl_matrix_view J = gsl_matrix_view_array(penalty1_J, penalty1_N, penalty1_P);
   gsl_vector_view f = gsl_vector_view_array(penalty1_f, penalty1_N);
   const double alpha = 1.0e-5;
@@ -44,15 +44,21 @@ penalty1_fdf (const int evaldf, const gsl_vector * x, void *params, void * work)
       gsl_vector_set(&f.vector, i, sqrt_alpha*(xi - 1.0));
       sum += xi * xi;
 
-      if (evaldf)
+      if (JTJ)
         gsl_matrix_set(&J.matrix, penalty1_P, i, 2.0 * xi);
     }
 
   gsl_vector_set(&f.vector, penalty1_P, sum - 0.25);
 
-  status = test_accumulate(1, &J.matrix, &f.vector, work);
+  *normf = gsl_blas_dnrm2(&f.vector);
 
-  return status;
+  if (JTJ)
+    {
+      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
+      gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
+    }
+
+  return GSL_SUCCESS;
 }
 
 static gsl_multilarge_function_fdf penalty1_func =

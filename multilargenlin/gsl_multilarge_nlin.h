@@ -40,19 +40,20 @@ __BEGIN_DECLS
 
 typedef struct
 {
-  int (* fdf) (const int evaldf, const gsl_vector * x,
-               void * params, void * work);
+  int (* fdf) (const gsl_vector * x, gsl_matrix * JTJ,
+               gsl_vector * JTf, double * normf,
+               void * params);
   size_t p;              /* number of independent variables */
   void * params;         /* user parameters */
   size_t nevalf;         /* number of evaluations of f */
   size_t nevaldf;        /* number of evaluations of Jacobian */
 } gsl_multilarge_function_fdf;
 
-#define GSL_MULTILARGE_EVAL_FDF(F, eval, x, work, status) \
+#define GSL_MULTILARGE_EVAL_FDF(F, x, A, b, normf, status) \
        do { \
-       status = (*((F)->fdf)) (eval, x, (F)->params, work); \
+       status = (*((F)->fdf)) (x, A, b, normf, (F)->params); \
        ++(F)->nevalf; \
-       if (eval) { ++(F)->nevaldf; } \
+       if (evaldf) { ++(F)->nevaldf; } \
        } while (0)
 
 typedef struct
@@ -61,11 +62,10 @@ typedef struct
   void * (*alloc) (const size_t p);
   int (*init) (const gsl_vector * x,
                gsl_multilarge_function_fdf * fdf,
-               void * fdf_work, void * vstate);
-  int (*accum) (gsl_matrix * J, gsl_vector * f, void * vstate);
+               void * vstate);
   int (*iterate) (gsl_vector * x, gsl_vector * dx,
                   gsl_multilarge_function_fdf * fdf,
-                  void * fdf_work, void * vstate);
+                  void * vstate);
   gsl_vector * (*gradient) (void *vstate);
   double (*normf) (void *vstate);
   int (*rcond) (double * rcond, void *vstate);
@@ -84,8 +84,7 @@ typedef struct
 } gsl_multilarge_nlinear_workspace;
 
 /* available solvers */
-GSL_VAR const gsl_multilarge_nlinear_type * gsl_multilarge_nlinear_lmnormal;
-GSL_VAR const gsl_multilarge_nlinear_type * gsl_multilarge_nlinear_lmtsqr;
+GSL_VAR const gsl_multilarge_nlinear_type * gsl_multilarge_nlinear_lmnielsen;
 
 gsl_multilarge_nlinear_workspace *
 gsl_multilarge_nlinear_alloc (const gsl_multilarge_nlinear_type * T, 
@@ -101,14 +100,6 @@ int
 gsl_multilarge_nlinear_init (const gsl_vector * x, gsl_multilarge_function_fdf * fdf,
                              gsl_multilarge_nlinear_workspace * w);
 
-int
-gsl_multilarge_nlinear_waccumulate (const gsl_vector * wts, gsl_matrix * J, gsl_vector * f,
-                                    gsl_multilarge_nlinear_workspace * w);
-
-int
-gsl_multilarge_nlinear_accumulate (gsl_matrix * J, gsl_vector * f,
-                                   gsl_multilarge_nlinear_workspace * w);
-
 int gsl_multilarge_nlinear_iterate (gsl_multilarge_nlinear_workspace * w);
 
 double gsl_multilarge_nlinear_normf (const gsl_multilarge_nlinear_workspace * w);
@@ -123,6 +114,8 @@ int gsl_multilarge_nlinear_driver (const size_t maxiter,
                                    const double ftol,
                                    int *info,
                                    gsl_multilarge_nlinear_workspace *w);
+
+int gsl_multilarge_nlinear_applyW(const gsl_vector * w, gsl_matrix * J, gsl_vector * f);
 
 int gsl_multilarge_nlinear_test (const double xtol, const double gtol,
                                  const double ftol, int *info,
