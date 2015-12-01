@@ -532,7 +532,8 @@ the linear system @math{A x = b} into a pair of triangular systems
 back-substitution.
 
 If the matrix @math{A} is near singular, it is sometimes possible to reduce
-the condition number by scaling as
+the condition number and recover a more accurate solution vector @math{x}
+by scaling as
 @tex
 \beforedisplay
 $$
