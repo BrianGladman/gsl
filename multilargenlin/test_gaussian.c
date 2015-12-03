@@ -4,7 +4,7 @@
 #define gaussian_NTRIES    2
 
 static double gaussian_x0[gaussian_P] = { 0.4, 1.0, 0.0 };
-static double gaussian_epsrel = 1.0e-10;
+static double gaussian_epsrel = 1.0e-5;
 
 static double gaussian_f[gaussian_N];
 static double gaussian_J[gaussian_N * gaussian_P];
@@ -71,6 +71,8 @@ gaussian_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

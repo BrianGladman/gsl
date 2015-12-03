@@ -4,7 +4,7 @@
 #define rosenbrock_NTRIES    4
 
 static double rosenbrock_x0[rosenbrock_P] = { -1.2, 1.0 };
-static double rosenbrock_epsrel = 1.0e-12;
+static double rosenbrock_epsrel = 1.0e-5;
 
 static double rosenbrock_f[rosenbrock_N];
 static double rosenbrock_J[rosenbrock_N * rosenbrock_P];
@@ -54,6 +54,8 @@ rosenbrock_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

@@ -4,7 +4,7 @@
 #define lin2_NTRIES    3
 
 static double lin2_x0[lin2_P] = { 1.0, 1.0, 1.0, 1.0, 1.0 };
-static double lin2_epsrel = 1.0e-11;
+static double lin2_epsrel = 1.0e-7;
 
 static double lin2_f[lin2_N];
 static double lin2_J[lin2_N * lin2_P];
@@ -63,6 +63,8 @@ lin2_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -70,7 +72,9 @@ static gsl_multilarge_function_fdf lin2_func =
 {
   &lin2_fdf,
   lin2_P,
-  NULL
+  NULL,
+  0,
+  0
 };
 
 static test_fdf_problem lin2_problem =

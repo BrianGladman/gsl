@@ -22,7 +22,6 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_linalg.h>
-#include <gsl/gsl_multilarge.h>
 #include <gsl/gsl_multilarge_nlin.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
@@ -44,19 +43,20 @@ typedef struct
   gsl_matrix *work_A;        /* temporary J^T J matrix, size p-by-p */
   gsl_vector *rhs;           /* rhs vector, -J^T f, size p */
   gsl_vector *x_trial;       /* trial parameter vector, size p */
+  gsl_vector *diag;          /* diagonal elements of D^T D matrix added to normal equations, size p */
   gsl_vector *D;             /* scale factors for Cholesky decomposition, size p */
   long nu;                   /* nu */
-  double sqrt_mu;            /* square root of LM damping parameter mu */
-  double sqrt_tau;           /* initial scale factor for mu */
+  double mu;                 /* LM damping parameter mu */
+  double tau;                /* initial scale factor for mu */
   double normf;              /* || f(x) || */
   double normf_trial;        /* || f(x + dx) || */
+  int scale;                 /* use scale matrix in each LM step */
 } lmn_state_t;
 
 #define GSL_LM_SQRT_ONE_THIRD    (0.577350269189626)
+#define GSL_LM_ONE_THIRD         (0.333333333333333)
 
-static void *lmn_alloc (const gsl_multilarge_linear_type * T,
-                        const size_t p);
-static void *lmn_alloc_normal (const size_t p);
+static void *lmn_alloc (const int scale, const size_t p);
 static void lmn_free(void *vstate);
 static int lmn_init(const gsl_vector * x, gsl_multilarge_function_fdf * fdf,
                     void * vstate);
@@ -68,17 +68,17 @@ static int lmn_rcond(double *rcond, void * vstate);
 static int lmn_eval(const int evaldf, const gsl_vector * x,
                     gsl_multilarge_function_fdf * fdf,
                     lmn_state_t * state);
-static int lmn_solve(const double lambda, const gsl_matrix * A, const gsl_vector * b,
+static int lmn_solve(const double mu, const gsl_matrix * A, const gsl_vector * b,
                      gsl_vector * x, lmn_state_t * state);
-static int lmn_solve_cholesky(gsl_matrix * ATA, gsl_vector * ATb, gsl_vector * x,
+static int lmn_solve_cholesky(gsl_matrix * A, const gsl_vector * b, gsl_vector * x,
                               lmn_state_t * state);
 static void lmn_trial_step(const gsl_vector * x, const gsl_vector * dx,
                            gsl_vector * x_trial);
-static double lmn_calc_dL(const double sqrt_mu, const gsl_vector *dx,
-                          const gsl_vector *g);
+static double lmn_calc_rho(const double mu, const gsl_vector * dx,
+                           const gsl_vector * minus_g, lmn_state_t * state);
 
 static void *
-lmn_alloc (const gsl_multilarge_linear_type * T, const size_t p)
+lmn_alloc (const int scale, const size_t p)
 {
   lmn_state_t *state;
 
@@ -118,6 +118,12 @@ lmn_alloc (const gsl_multilarge_linear_type * T, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for x_trial", GSL_ENOMEM);
     }
 
+  state->diag = gsl_vector_alloc(p);
+  if (state->diag == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for diag", GSL_ENOMEM);
+    }
+
   state->D = gsl_vector_alloc(p);
   if (state->D == NULL)
     {
@@ -125,19 +131,26 @@ lmn_alloc (const gsl_multilarge_linear_type * T, const size_t p)
     }
 
   state->p = p;
-  state->sqrt_tau = sqrt(1.0e-3);
-  state->sqrt_mu = 0.0;
+  state->tau = 1.0e-3;
+  state->mu = 0.0;
   state->nu = 2;
   state->normf = 0.0;
   state->normf_trial = 0.0;
+  state->scale = scale;
 
   return state;
 }
 
 static void *
-lmn_alloc_normal (const size_t p)
+lmn_alloc_noscale (const size_t p)
 {
-  return lmn_alloc(gsl_multilarge_linear_normal, p);
+  return lmn_alloc(0, p);
+}
+
+static void *
+lmn_alloc_scale (const size_t p)
+{
+  return lmn_alloc(1, p);
 }
 
 static void
@@ -156,6 +169,9 @@ lmn_free(void *vstate)
 
   if (state->x_trial)
     gsl_vector_free(state->x_trial);
+
+  if (state->diag)
+    gsl_vector_free(state->diag);
 
   if (state->D)
     gsl_vector_free(state->D);
@@ -180,13 +196,22 @@ lmn_init(const gsl_vector * x, gsl_multilarge_function_fdf * fdf,
   lmn_state_t *state = (lmn_state_t *) vstate;
   gsl_vector_view diag = gsl_matrix_diagonal(state->A);
 
-  /* compute initial J^T, J^T f, and ||f|| */
+  /* compute initial J^T J, J^T f, and ||f|| */
   status = lmn_eval(1, x, fdf, state);
   if (status)
     return status;
 
-  /* initialize mu = tau * max [ (J^T J)_{ii} ] using square roots */
-  state->sqrt_mu = state->sqrt_tau * sqrt(gsl_vector_max(&diag.vector));
+  if (state->scale)
+    {
+      /* set mu = tau and use D^T D = diag(A) */
+      gsl_vector_memcpy(state->diag, &diag.vector);
+      state->mu = state->tau;
+    }
+  else
+    {
+      /* mu = tau * max [ A_ii ] with D = I */
+      state->mu = state->tau * gsl_vector_max(&diag.vector);
+    }
 
   return GSL_SUCCESS;
 }
@@ -214,18 +239,13 @@ lmn_iterate(gsl_vector * x, gsl_vector * dx,
   gsl_vector *x_trial = state->x_trial; /* trial x + dx */
   gsl_vector *rhs = state->rhs;         /* negative gradient -J^T f */
   int foundstep = 0;                    /* found step dx */
-  double dF;                            /* F(x) - F(x + dx) */
-  double dL;                            /* L(0) - L(dx) */
+  double rho;                           /* ratio [ F(x) - F(x + dx) ] / [ L(0) - L(dx) ] */
 
   /* loop until we find an acceptable step dx */
   while (!foundstep)
     {
-      /*
-       * solve:
-       * [      J     ] dx = [ -f ]
-       * [ sqrt(mu)*I ]      [  0 ]
-       */
-      status = lmn_solve(state->sqrt_mu, state->A, state->rhs, dx, state);
+      /* solve: (J^T J + mu D^T D) dx = - J^T f */
+      status = lmn_solve(state->mu, state->A, state->rhs, dx, state);
       if (status)
         return status;
 
@@ -237,27 +257,22 @@ lmn_iterate(gsl_vector * x, gsl_vector * dx,
       if (status)
         return status;
 
-      /* compute F(x) - F(x+dx) = 0.5*(||f||^2 - ||f_trial||^2) */
-      dF = 0.5 * (state->normf + state->normf_trial) *
-                 (state->normf - state->normf_trial);
+      rho = lmn_calc_rho(state->mu, dx, rhs, state);
 
-      /* compute L(0) - L(dx) = 0.5 * dx^T (mu*dx - g) */
-      dL = lmn_calc_dL(state->sqrt_mu, dx, rhs);
-
-      /* check that rho = dF/dL > 0 */
-      if ((dL > 0.0) && (dF >= 0.0))
+      /* check that rho > 0 */
+      if (rho > 0.0)
         {
           /* reduction in error, step acceptable */
 
           double b;
 
           /* update LM parameter mu */
-          b = 2.0 * (dF / dL) - 1.0;
+          b = 2.0 * rho - 1.0;
           b = 1.0 - b*b*b;
           if (b > 0.0)
-            state->sqrt_mu *= GSL_MAX(GSL_LM_SQRT_ONE_THIRD, sqrt(b));
+            state->mu *= GSL_MAX(GSL_LM_ONE_THIRD, b);
           else
-            state->sqrt_mu *= GSL_LM_SQRT_ONE_THIRD;
+            state->mu *= GSL_LM_ONE_THIRD;
 
           state->nu = 2;
 
@@ -276,7 +291,7 @@ lmn_iterate(gsl_vector * x, gsl_vector * dx,
           long nu2;
 
           /* step did not reduce error, reject step */
-          state->sqrt_mu *= sqrt((double) state->nu);
+          state->mu *= (double) state->nu;
           nu2 = state->nu << 1; /* 2*nu */
           if (nu2 <= state->nu)
             {
@@ -287,7 +302,12 @@ lmn_iterate(gsl_vector * x, gsl_vector * dx,
                * to original values and break to force another iteration
                */
               state->nu = 2;
-              state->sqrt_mu = state->sqrt_tau * sqrt(gsl_vector_max(&diag.vector));
+
+              if (state->scale)
+                state->mu = state->tau;
+              else
+                state->mu = state->tau * gsl_vector_max(&diag.vector);
+
               break;
             }
 
@@ -362,33 +382,32 @@ lmn_eval(const int evaldf, const gsl_vector * x,
 }
 
 static int
-lmn_solve(const double lambda, const gsl_matrix * A, const gsl_vector * b,
+lmn_solve(const double mu, const gsl_matrix * A, const gsl_vector * b,
           gsl_vector * x, lmn_state_t * state)
 {
   int status;
-  const double lambda_sq = lambda * lambda;
   gsl_vector_view diag = gsl_matrix_diagonal(state->work_A);
 
   gsl_matrix_tricpy('L', 1, state->work_A, A);
-  gsl_vector_add_constant(&diag.vector, lambda_sq);
+  gsl_vector_add_constant(&diag.vector, mu);
 
-  status = lmn_solve_cholesky(state->work_A, state->rhs, x, state);
+  status = lmn_solve_cholesky(state->work_A, b, x, state);
 
   return status;
 }
 
 static int
-lmn_solve_cholesky(gsl_matrix * ATA, gsl_vector * ATb, gsl_vector * x,
+lmn_solve_cholesky(gsl_matrix * A, const gsl_vector * b, gsl_vector * x,
                    lmn_state_t * state)
 {
   int status;
 
   /* compute Cholesky decomposition of A^T A with scaling */
-  status = gsl_linalg_cholesky_decomp2(ATA, state->D);
+  status = gsl_linalg_cholesky_decomp2(A, state->D);
   if (status)
     return status;
 
-  status = gsl_linalg_cholesky_solve2(ATA, state->D, ATb, x);
+  status = gsl_linalg_cholesky_solve2(A, state->D, b, x);
   if (status)
     return status;
 
@@ -410,36 +429,49 @@ lmn_trial_step(const gsl_vector * x, const gsl_vector * dx,
     }
 }
 
-/*
-lmn_calc_dL()
-  Compute dL = L(0) - L(dx) = 1/2 dx^T (mu * dx - g)
-*/
-
 static double
-lmn_calc_dL(const double sqrt_mu, const gsl_vector *dx, const gsl_vector *minus_g)
+lmn_calc_rho(const double mu, const gsl_vector * dx, const gsl_vector * minus_g,
+             lmn_state_t * state)
 {
-  const size_t p = dx->size;
-  const double mu = sqrt_mu * sqrt_mu;
+  double rho;
+  double actual_reduction;
+  double pred_reduction;
+  double u, norm_dx;
   size_t i;
-  double dL = 0.0;
 
-  for (i = 0; i < p; ++i)
+  /* if ||f(x+dx)|| > ||f(x)|| reject step immediately */
+  if (state->normf_trial > state->normf)
+    return 0.0;
+
+  /* compute numerator of rho */
+  u = state->normf_trial / state->normf;
+  actual_reduction = 1.0 - u*u;
+
+  /* compute denominator of rho */
+  norm_dx = gsl_blas_dnrm2(dx); /* || D dx || */
+  u = norm_dx / state->normf;
+  pred_reduction = mu * u * u;
+
+  for (i = 0; i < dx->size; ++i)
     {
       double dxi = gsl_vector_get(dx, i);
       double mgi = gsl_vector_get(minus_g, i);
 
-      dL += dxi * (mu * dxi + mgi);
+      pred_reduction += (dxi / state->normf) * (mgi / state->normf);
     }
 
-  dL *= 0.5;
+  if (pred_reduction > 0.0)
+    rho = actual_reduction / pred_reduction;
+  else
+    rho = 0.0;
 
-  return dL;
+  return rho;
 }
 
 static const gsl_multilarge_nlinear_type lmnielsen_type =
 {
   "lmnielsen",
-  lmn_alloc_normal,
+  lmn_alloc_noscale,
   lmn_init,
   lmn_iterate,
   lmn_gradient,

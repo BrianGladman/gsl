@@ -1,10 +1,10 @@
 #define osborne_N         33
 #define osborne_P         5
 
-#define osborne_NTRIES    3
+#define osborne_NTRIES    1
 
 static double osborne_x0[osborne_P] = { 0.5, 1.5, -1.0, 0.01, 0.02 };
-static double osborne_epsrel = 1.0e-8;
+static double osborne_epsrel = 1.0e-6;
 
 static double osborne_f[osborne_N];
 static double osborne_J[osborne_N * osborne_P];
@@ -74,6 +74,8 @@ osborne_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

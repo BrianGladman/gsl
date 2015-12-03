@@ -5,7 +5,7 @@
 
 static double penalty1_x0[penalty1_P] = { 1.0, 2.0, 3.0, 4.0, 5.0,
                                           6.0, 7.0, 8.0, 9.0, 10.0 };
-static double penalty1_epsrel = 1.0e-12;
+static double penalty1_epsrel = 1.0e-6;
 
 static double penalty1_f[penalty1_N];
 static double penalty1_J[penalty1_N * penalty1_P];
@@ -19,6 +19,8 @@ penalty1_checksol(const double x[], const double sumsq,
 
   gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
                sname, pname);
+
+  (void)x; /* avoid unused parameter warning */
 }
 
 static int
@@ -57,6 +59,8 @@ penalty1_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

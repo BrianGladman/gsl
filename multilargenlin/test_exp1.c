@@ -1,7 +1,7 @@
 #define exp1_N         45
 #define exp1_P         4
 
-#define exp1_NTRIES    3
+#define exp1_NTRIES    2
 
 static double exp1_x0[exp1_P] = { -1.0, -2.0, 1.0, -1.0 };
 static double exp1_epsrel = 1.0e-4;
@@ -78,6 +78,8 @@ exp1_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

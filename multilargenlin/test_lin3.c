@@ -4,7 +4,7 @@
 #define lin3_NTRIES    3
 
 static double lin3_x0[lin3_P] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
-static double lin3_epsrel = 1.0e-10;
+static double lin3_epsrel = 1.0e-6;
 
 static double lin3_f[lin3_N];
 static double lin3_J[lin3_N * lin3_P];
@@ -67,6 +67,8 @@ lin3_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

@@ -302,8 +302,10 @@ test_scale_x0(gsl_vector *x0, const double scale)
 int
 main(void)
 {
-  const double xtol = pow(GSL_DBL_EPSILON, 0.9);
-  const double gtol = pow(GSL_DBL_EPSILON, 0.9);
+  /*const double xtol = 2048.0 * GSL_DBL_EPSILON;
+  const double gtol = 2048.0 * GSL_DBL_EPSILON;*/
+  const double xtol = 1.0e-6;
+  const double gtol = 1.0e-6;
   const double ftol = 0.0;
   size_t i, j;
 

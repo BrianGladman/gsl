@@ -4,7 +4,7 @@
 #define biggs_NTRIES    2
 
 static double biggs_x0[biggs_P] = { 1.0, 2.0, 1.0, 1.0, 1.0, 1.0 };
-static double biggs_epsrel = 1.0e-9;
+static double biggs_epsrel = 1.0e-4;
 
 static double biggs_f[biggs_N];
 static double biggs_J[biggs_N * biggs_P];
@@ -29,6 +29,8 @@ biggs_checksol(const double x[], const double sumsq,
    */
   gsl_test_rel(norm, norm_exact, epsrel, "%s/%s norm",
                sname, pname);
+
+  (void)x; /* avoid unused parameter warning */
 }
 
 static int
@@ -71,6 +73,8 @@ biggs_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

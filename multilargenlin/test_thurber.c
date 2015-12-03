@@ -101,6 +101,8 @@ thurber_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -108,7 +110,9 @@ static gsl_multilarge_function_fdf thurber_func =
 {
   &thurber_fdf,
   thurber_P,
-  NULL
+  NULL,
+  0,
+  0
 };
 
 static test_fdf_problem thurber_problem =

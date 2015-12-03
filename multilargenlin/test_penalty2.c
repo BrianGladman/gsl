@@ -4,7 +4,7 @@
 #define penalty2_NTRIES    3
 
 static double penalty2_x0[penalty2_P] = { 0.5, 0.5, 0.5, 0.5 };
-static double penalty2_epsrel = 1.0e-12;
+static double penalty2_epsrel = 1.0e-6;
 
 static double penalty2_f[penalty2_N];
 static double penalty2_J[penalty2_N * penalty2_P];
@@ -18,6 +18,8 @@ penalty2_checksol(const double x[], const double sumsq,
 
   gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
                sname, pname);
+
+  (void)x; /* avoid unused parameter warning */
 }
 
 static int
@@ -107,6 +109,8 @@ penalty2_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

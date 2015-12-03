@@ -4,7 +4,7 @@
 #define box_NTRIES    1
 
 static double box_x0[box_P] = { 0.0, 10.0, 20.0 };
-static double box_epsrel = 1.0e-12;
+static double box_epsrel = 1.0e-6;
 
 static double box_f[box_N];
 static double box_J[box_N * box_P];
@@ -64,6 +64,8 @@ box_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

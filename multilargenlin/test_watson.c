@@ -4,7 +4,7 @@
 #define watson_NTRIES    4
 
 static double watson_x0[watson_P] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-static double watson_epsrel = 1.0e-6;
+static double watson_epsrel = 1.0e-4;
 
 static double watson_f[watson_N];
 static double watson_J[watson_N * watson_P];
@@ -93,6 +93,8 @@ watson_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

@@ -4,7 +4,7 @@
 #define wood_NTRIES    3
 
 static double wood_x0[wood_P] = { -3.0, -1.0, -3.0, -1.0 };
-static double wood_epsrel = 1.0e-12;
+static double wood_epsrel = 1.0e-5;
 
 static double wood_f[wood_N];
 static double wood_J[wood_N * wood_P];
@@ -71,6 +71,8 @@ wood_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

@@ -4,7 +4,7 @@
 #define wnlin_NTRIES    2
 
 static double wnlin_x0[wnlin_P] = { 1.0, 0.0, 0.0 };
-static double wnlin_epsrel = 1.0e-9;
+static double wnlin_epsrel = 1.0e-7;
 
 static double wnlin_f[wnlin_N];
 static double wnlin_J[wnlin_N * wnlin_P];
@@ -94,6 +94,8 @@ wnlin_fdf (const gsl_vector * x, gsl_matrix * JTJ,
 
   *normf = gsl_blas_dnrm2(&f.vector);
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -101,7 +103,9 @@ static gsl_multilarge_function_fdf wnlin_func =
 {
   &wnlin_fdf,
   wnlin_P,
-  NULL
+  NULL,
+  0,
+  0
 };
 
 static test_fdf_problem wnlin_problem =

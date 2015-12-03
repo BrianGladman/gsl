@@ -4,7 +4,7 @@
 #define vardim_NTRIES    4
 
 static double vardim_x0[vardim_P] = { 0.8, 0.6, 0.4, 0.2, 0.0 };
-static double vardim_epsrel = 1.0e-12;
+static double vardim_epsrel = 1.0e-6;
 
 static double vardim_f[vardim_N];
 static double vardim_J[vardim_N * vardim_P];
@@ -65,6 +65,8 @@ vardim_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

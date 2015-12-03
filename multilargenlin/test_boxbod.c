@@ -4,7 +4,7 @@
 #define boxbod_NTRIES  2
 
 static double boxbod_x0[boxbod_P] = { 100.0, 0.75 };
-static double boxbod_epsrel = 1.0e-7;
+static double boxbod_epsrel = 1.0e-6;
 
 static double boxbod_sigma[boxbod_P] = {
   1.2354515176E+01, 1.0455993237E-01
@@ -75,6 +75,8 @@ boxbod_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -82,7 +84,9 @@ static gsl_multilarge_function_fdf boxbod_func =
 {
   &boxbod_fdf,
   boxbod_P,
-  NULL
+  NULL,
+  0,
+  0
 };
 
 static test_fdf_problem boxbod_problem =

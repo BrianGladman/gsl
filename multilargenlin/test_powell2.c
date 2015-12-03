@@ -1,10 +1,10 @@
 #define powell2_N        2
 #define powell2_P        2
 
-#define powell2_NTRIES   3
+#define powell2_NTRIES   1
 
 static double powell2_x0[powell2_P] = { 3.0, 1.0 };
-static double powell2_epsrel = 1.0e-6;
+static double powell2_epsrel = 1.0e-2;
 
 static double powell2_f[powell2_N];
 static double powell2_J[powell2_N * powell2_P];
@@ -55,6 +55,8 @@ powell2_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

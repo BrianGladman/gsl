@@ -4,7 +4,7 @@
 #define brown3_NTRIES    3
 
 static double brown3_x0[brown3_P] = { 1.0, 1.0 };
-static double brown3_epsrel = 1.0e-12;
+static double brown3_epsrel = 1.0e-7;
 
 static double brown3_f[brown3_N];
 static double brown3_J[brown3_N * brown3_P];
@@ -57,6 +57,8 @@ brown3_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

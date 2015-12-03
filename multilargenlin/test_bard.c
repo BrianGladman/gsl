@@ -4,7 +4,7 @@
 #define bard_NTRIES    3
 
 static double bard_x0[bard_P] = { 1.0, 1.0, 1.0 };
-static double bard_epsrel = 1.0e-8;
+static double bard_epsrel = 1.0e-4;
 
 static double bard_f[bard_N];
 static double bard_J[bard_N * bard_P];
@@ -92,6 +92,8 @@ bard_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

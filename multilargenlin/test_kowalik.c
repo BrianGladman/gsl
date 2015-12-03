@@ -1,10 +1,10 @@
 #define kowalik_N         11
 #define kowalik_P         4
 
-#define kowalik_NTRIES    4
+#define kowalik_NTRIES    2
 
 static double kowalik_x0[kowalik_P] = { 0.25, 0.39, 0.415, 0.39 };
-static double kowalik_epsrel = 1.0e-7;
+static double kowalik_epsrel = 1.0e-3;
 
 static double kowalik_f[kowalik_N];
 static double kowalik_J[kowalik_N * kowalik_P];
@@ -102,6 +102,8 @@ kowalik_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

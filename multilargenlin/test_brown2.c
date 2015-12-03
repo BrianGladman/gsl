@@ -1,10 +1,10 @@
 #define brown2_N        5
 #define brown2_P        5
 
-#define brown2_NTRIES   3
+#define brown2_NTRIES   1
 
 static double brown2_x0[brown2_P] = { 0.5, 0.5, 0.5, 0.5, 0.5 };
-static double brown2_epsrel = 1.0e-12;
+static double brown2_epsrel = 1.0e-8;
 
 static double brown2_f[brown2_N];
 static double brown2_J[brown2_N * brown2_P];
@@ -105,6 +105,8 @@ brown2_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

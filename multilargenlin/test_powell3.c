@@ -4,7 +4,7 @@
 #define powell3_NTRIES    1
 
 static double powell3_x0[powell3_P] = { 0.0, 1.0 };
-static double powell3_epsrel = 1.0e-12;
+static double powell3_epsrel = 1.0e-7;
 
 static double powell3_f[powell3_N];
 static double powell3_J[powell3_N * powell3_P];
@@ -57,6 +57,8 @@ powell3_fdf (const gsl_vector * x, gsl_matrix * JTJ,
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
       gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, &f.vector, 0.0, JTf);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }
