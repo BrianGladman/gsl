@@ -2,7 +2,7 @@ noinst_LTLIBRARIES = libgslmultilargenlin.la
 
 pkginclude_HEADERS = gsl_multilarge_nlin.h
 
-libgslmultilargenlin_la_SOURCES = convergence.c lmnielsen.c nlinear.c
+libgslmultilargenlin_la_SOURCES = convergence.c lm.c nlinear.c
 
 AM_CPPFLAGS = -I$(top_srcdir)
 

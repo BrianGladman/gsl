@@ -84,7 +84,8 @@ typedef struct
 } gsl_multilarge_nlinear_workspace;
 
 /* available solvers */
-GSL_VAR const gsl_multilarge_nlinear_type * gsl_multilarge_nlinear_lmnielsen;
+GSL_VAR const gsl_multilarge_nlinear_type * gsl_multilarge_nlinear_lm;
+GSL_VAR const gsl_multilarge_nlinear_type * gsl_multilarge_nlinear_lms;
 
 gsl_multilarge_nlinear_workspace *
 gsl_multilarge_nlinear_alloc (const gsl_multilarge_nlinear_type * T, 

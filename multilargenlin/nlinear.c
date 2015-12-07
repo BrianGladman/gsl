@@ -199,11 +199,8 @@ gsl_multilarge_nlinear_driver (const size_t maxiter,
     {
       status = gsl_multilarge_nlinear_iterate (w);
 
-      /*
-       * if status is GSL_ENOPROG or GSL_SUCCESS, continue iterating,
-       * otherwise the method has converged with a GSL_ETOLx flag
-       */
-      if (status != GSL_SUCCESS && status != GSL_ENOPROG)
+      /* check for errors */
+      if (status != GSL_SUCCESS)
         break;
 
       /* test for convergence */

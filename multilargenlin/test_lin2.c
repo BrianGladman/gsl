@@ -1,7 +1,7 @@
 #define lin2_N         20  /* can be anything >= p */
 #define lin2_P         5
 
-#define lin2_NTRIES    3
+#define lin2_NTRIES    1
 
 static double lin2_x0[lin2_P] = { 1.0, 1.0, 1.0, 1.0, 1.0 };
 static double lin2_epsrel = 1.0e-7;

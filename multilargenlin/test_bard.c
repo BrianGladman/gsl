@@ -1,7 +1,7 @@
 #define bard_N         15
 #define bard_P         3
 
-#define bard_NTRIES    3
+#define bard_NTRIES    2
 
 static double bard_x0[bard_P] = { 1.0, 1.0, 1.0 };
 static double bard_epsrel = 1.0e-4;

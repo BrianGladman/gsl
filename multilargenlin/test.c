@@ -311,7 +311,10 @@ main(void)
 
   /* test weighted nonlinear least squares */
 
-  test_fdf(gsl_multilarge_nlinear_lmnielsen, xtol, gtol, ftol,
+  test_fdf(gsl_multilarge_nlinear_lm, xtol, gtol, ftol,
+           wnlin_epsrel, 1.0, &wnlin_problem);
+
+  test_fdf(gsl_multilarge_nlinear_lms, xtol, gtol, ftol,
            wnlin_epsrel, 1.0, &wnlin_problem);
 
   /* Nielsen tests */
@@ -323,7 +326,10 @@ main(void)
 
       for (j = 0; j < problem->ntries; ++j)
         {
-          test_fdf(gsl_multilarge_nlinear_lmnielsen, xtol, gtol, ftol,
+          test_fdf(gsl_multilarge_nlinear_lm, xtol, gtol, ftol,
+                   epsrel, scale, problem);
+
+          test_fdf(gsl_multilarge_nlinear_lms, xtol, gtol, ftol,
                    epsrel, scale, problem);
 
           scale *= 10.0;
@@ -339,7 +345,7 @@ main(void)
 
       for (j = 0; j < problem->ntries; ++j)
         {
-          test_fdf(gsl_multilarge_nlinear_lmnielsen, xtol, gtol, ftol,
+          test_fdf(gsl_multilarge_nlinear_lm, xtol, gtol, ftol,
                    epsrel, scale, problem);
 
           scale *= 10.0;
@@ -355,7 +361,7 @@ main(void)
 
       for (j = 0; j < problem->ntries; ++j)
         {
-          test_fdf(gsl_multilarge_nlinear_lmnielsen, xtol, gtol, ftol,
+          test_fdf(gsl_multilarge_nlinear_lm, xtol, gtol, ftol,
                    epsrel, scale, problem);
 
           scale *= 10.0;

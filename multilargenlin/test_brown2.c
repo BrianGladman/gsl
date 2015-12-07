@@ -4,7 +4,7 @@
 #define brown2_NTRIES   1
 
 static double brown2_x0[brown2_P] = { 0.5, 0.5, 0.5, 0.5, 0.5 };
-static double brown2_epsrel = 1.0e-8;
+static double brown2_epsrel = 1.0e-7;
 
 static double brown2_f[brown2_N];
 static double brown2_J[brown2_N * brown2_P];
