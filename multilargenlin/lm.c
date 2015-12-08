@@ -415,12 +415,14 @@ lm_rcond(double *rcond, void * vstate)
   if (status)
     return status;
 
+  gsl_vector_minmax(eval, &eval_min, &eval_max);
+
+  /*XXX*/
   {
+    gsl_vector_scale(eval, 1.0 / eval_max);
     gsl_sort_vector(eval);
     printv_octave(eval, "eval");
   }
-
-  gsl_vector_minmax(eval, &eval_min, &eval_max);
 
   if (eval_max > 0.0 && eval_min > 0.0)
     {

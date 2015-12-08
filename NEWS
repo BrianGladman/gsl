@@ -1,5 +1,7 @@
 * What is new in gsl-2.2:
 
+** added gsl_rstat_rms() for root mean square
+
 ** optimized lmniel nonlinear least squares solver
    (bug #46369)
 
