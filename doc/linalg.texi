@@ -549,7 +549,8 @@ $$
 
 @end ifinfo
 where @math{D} is a diagonal matrix whose elements are given by
-@math{D_{ii} = 1/\sqrt{A_{ii}}}. There are routines below to solve
+@math{D_{ii} = 1/\sqrt{A_{ii}}}. This scaling is also known as
+Jacobi preconditioning. There are routines below to solve
 both the scaled and unscaled systems.
 
 @deftypefun int gsl_linalg_cholesky_decomp (gsl_matrix * @var{A})
