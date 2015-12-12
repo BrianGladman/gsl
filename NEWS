@@ -1,5 +1,8 @@
 * What is new in gsl-2.2:
 
+** bug fix in convergence check of hypergeometric 2F1
+   function (bug #45926)
+
 ** updated multilarge normal equations method to use
    new Cholesky scaling for better numerical stability
 
