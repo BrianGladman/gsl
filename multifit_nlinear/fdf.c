@@ -113,7 +113,7 @@ gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
 
 int
 gsl_multifit_nlinear_set (gsl_multifit_nlinear_workspace * w, 
-                          gsl_multifit_function_fdf * f,
+                          gsl_multifit_nlinear_fdf * f,
                           const gsl_vector * x)
 {
   return gsl_multifit_nlinear_wset(w, f, x, NULL);
@@ -121,7 +121,7 @@ gsl_multifit_nlinear_set (gsl_multifit_nlinear_workspace * w,
 
 int
 gsl_multifit_nlinear_wset (gsl_multifit_nlinear_workspace * w,
-                           gsl_multifit_function_fdf * f, 
+                           gsl_multifit_nlinear_fdf * f, 
                            const gsl_vector * x,
                            const gsl_vector * wts)
 {
@@ -327,7 +327,7 @@ Inputs: fdf  - callback function
 */
 
 int
-gsl_multifit_eval_wf(gsl_multifit_function_fdf *fdf, const gsl_vector *x,
+gsl_multifit_eval_wf(gsl_multifit_nlinear_fdf *fdf, const gsl_vector *x,
                      const gsl_vector *swts, gsl_vector *y)
 {
   int s = ((*((fdf)->f)) (x, fdf->params, y));
@@ -356,7 +356,7 @@ Inputs: fdf  - callback function
 */
 
 int
-gsl_multifit_eval_wdf(gsl_multifit_function_fdf *fdf, const gsl_vector *x,
+gsl_multifit_eval_wdf(gsl_multifit_nlinear_fdf *fdf, const gsl_vector *x,
                       const gsl_vector *swts, gsl_matrix *dy)
 {
   int status = ((*((fdf)->df)) (x, fdf->params, dy));
