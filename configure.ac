@@ -610,6 +610,7 @@ matrix/Makefile            \
 min/Makefile               \
 monte/Makefile             \
 multifit/Makefile          \
+multifit_nlinear/Makefile  \
 multilarge/Makefile        \
 multilargenlin/Makefile    \
 multimin/Makefile          \
