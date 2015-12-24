@@ -29,8 +29,6 @@ gsl_multifit_nlinear_workspace *
 gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T, 
                             const size_t n, const size_t p)
 {
-  int status;
-
   gsl_multifit_nlinear_workspace * w;
 
   if (n < p)
@@ -46,7 +44,6 @@ gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
     }
 
   w->x = gsl_vector_calloc (p);
-
   if (w->x == 0) 
     {
       gsl_multifit_nlinear_free (w);
@@ -54,7 +51,6 @@ gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
     }
 
   w->f = gsl_vector_calloc (n);
-
   if (w->f == 0) 
     {
       gsl_multifit_nlinear_free (w);
@@ -62,7 +58,6 @@ gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
     }
 
   w->dx = gsl_vector_calloc (p);
-
   if (w->dx == 0) 
     {
       gsl_multifit_nlinear_free (w);
@@ -70,7 +65,6 @@ gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
     }
 
   w->g = gsl_vector_alloc (p);
-
   if (w->g == 0) 
     {
       gsl_multifit_nlinear_free (w);
@@ -78,7 +72,6 @@ gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
     }
 
   w->J = gsl_matrix_alloc(n, p);
-
   if (w->J == 0) 
     {
       gsl_multifit_nlinear_free (w);
@@ -86,34 +79,21 @@ gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
     }
 
   w->sqrt_wts = gsl_vector_calloc (n);
-
-  if (w->sqrt_wts == 0) 
+  if (w->sqrt_wts == 0)
     {
       gsl_multifit_nlinear_free (w);
       GSL_ERROR_VAL ("failed to allocate space for sqrt_wts", GSL_ENOMEM, 0);
     }
 
-  w->state = calloc (1, T->size);
-
+  w->state = (T->alloc)(n, p);
   if (w->state == 0)
     {
       gsl_multifit_nlinear_free (w);
-      GSL_ERROR_VAL ("failed to allocate space for multifit solver state",
-                     GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for multifit state", GSL_ENOMEM, 0);
     }
 
-  w->type = T ;
-
-  status = (w->type->alloc)(w->state, n, p);
-
-  if (status != GSL_SUCCESS)
-    {
-      gsl_multifit_nlinear_free (w);
-      GSL_ERROR_VAL ("failed to set solver", status, 0);
-    }
-
+  w->type = T;
   w->fdf = NULL;
-  
   w->niter = 0;
 
   return w;
@@ -125,10 +105,7 @@ gsl_multifit_nlinear_free (gsl_multifit_nlinear_workspace * w)
   RETURN_IF_NULL (w);
 
   if (w->state)
-    {
-      (w->type->free) (w->state);
-      free (w->state);
-    }
+    (w->type->free) (w->state);
 
   if (w->dx)
     gsl_vector_free (w->dx);

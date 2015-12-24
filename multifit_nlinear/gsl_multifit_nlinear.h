@@ -57,8 +57,7 @@ typedef struct
 typedef struct
 {
   const char *name;
-  size_t size;
-  int (*alloc) (void *state, size_t n, size_t p);
+  void * (*alloc) (const size_t n, const size_t p);
   int (*set) (void *state, const gsl_vector * wts,
               gsl_multifit_nlinear_fdf * fdf, gsl_vector * x,
               gsl_vector * f, gsl_matrix * J);

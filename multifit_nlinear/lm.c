@@ -56,7 +56,7 @@ typedef struct
 
 #define LM_ONE_THIRD         (0.333333333333333)
 
-static int lm_alloc (void *vstate, const size_t n, const size_t p);
+static void * lm_alloc (const size_t n, const size_t p);
 static void lm_free(void *vstate);
 static int lm_set(void *vstate, const gsl_vector * swts,
                       gsl_multifit_nlinear_fdf *fdf,
@@ -66,57 +66,63 @@ static int lm_iterate(void *vstate, const gsl_vector *swts,
                           gsl_vector *x, gsl_vector *f, gsl_matrix *J,
                           gsl_vector *dx);
 
-static int
-lm_alloc (void *vstate, const size_t n, const size_t p)
+static void *
+lm_alloc (const size_t n, const size_t p)
 {
-  lm_state_t *state = (lm_state_t *) vstate;
+  lm_state_t *state;
+  
+  state = calloc(1, sizeof(lm_state_t));
+  if (state == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate lm state", GSL_ENOMEM);
+    }
 
   state->A = gsl_matrix_alloc(p, p);
   if (state->A == NULL)
     {
-      GSL_ERROR ("failed to allocate space for A", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for A", GSL_ENOMEM);
     }
 
   state->diag = gsl_vector_alloc(p);
   if (state->diag == NULL)
     {
-      GSL_ERROR ("failed to allocate space for diag", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for diag", GSL_ENOMEM);
     }
 
   state->rhs = gsl_vector_alloc(p);
   if (state->rhs == NULL)
     {
-      GSL_ERROR ("failed to allocate space for rhs", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for rhs", GSL_ENOMEM);
     }
 
   state->work = gsl_vector_alloc(p);
   if (state->work == NULL)
     {
-      GSL_ERROR ("failed to allocate space for work", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for work", GSL_ENOMEM);
     }
 
   state->work_JTJ = gsl_matrix_alloc(p, p);
   if (state->work_JTJ == NULL)
     {
-      GSL_ERROR ("failed to allocate space for JTJ workspace", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for JTJ workspace", GSL_ENOMEM);
     }
 
   state->x_trial = gsl_vector_alloc(p);
   if (state->x_trial == NULL)
     {
-      GSL_ERROR ("failed to allocate space for x_trial", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for x_trial", GSL_ENOMEM);
     }
 
   state->f_trial = gsl_vector_alloc(n);
   if (state->f_trial == NULL)
     {
-      GSL_ERROR ("failed to allocate space for f_trial", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for f_trial", GSL_ENOMEM);
     }
 
   state->tau = 1.0e-3;
 
-  return GSL_SUCCESS;
-} /* lm_alloc() */
+  return state;
+}
 
 static void
 lm_free(void *vstate)
@@ -143,7 +149,9 @@ lm_free(void *vstate)
 
   if (state->f_trial)
     gsl_vector_free(state->f_trial);
-} /* lm_free() */
+
+  free(state);
+}
 
 static int
 lm_set(void *vstate, const gsl_vector *swts,
@@ -231,8 +239,8 @@ the correct g = J^T f
 
 static int
 lm_iterate(void *vstate, const gsl_vector *swts,
-               gsl_multifit_nlinear_fdf *fdf, gsl_vector *x,
-               gsl_vector *f, gsl_matrix *J, gsl_vector *dx)
+           gsl_multifit_nlinear_fdf *fdf, gsl_vector *x,
+           gsl_vector *f, gsl_matrix *J, gsl_vector *dx)
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
@@ -348,7 +356,6 @@ lm_gradient(void *vstate, gsl_vector * g)
 static const gsl_multifit_nlinear_type lm_type =
 {
   "lm",
-  sizeof(lm_state_t),
   &lm_alloc,
   &lm_set,
   &lm_iterate,
