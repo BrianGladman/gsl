@@ -77,6 +77,14 @@ gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
       GSL_ERROR_VAL ("failed to allocate space for g", GSL_ENOMEM, 0);
     }
 
+  w->J = gsl_matrix_alloc(n, p);
+
+  if (w->J == 0) 
+    {
+      gsl_multifit_nlinear_free (w);
+      GSL_ERROR_VAL ("failed to allocate space for Jacobian", GSL_ENOMEM, 0);
+    }
+
   w->sqrt_wts = gsl_vector_calloc (n);
 
   if (w->sqrt_wts == 0) 
@@ -111,19 +119,51 @@ gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
   return w;
 }
 
-int
-gsl_multifit_nlinear_set (gsl_multifit_nlinear_workspace * w, 
-                          gsl_multifit_nlinear_fdf * f,
-                          const gsl_vector * x)
+void
+gsl_multifit_nlinear_free (gsl_multifit_nlinear_workspace * w)
 {
-  return gsl_multifit_nlinear_wset(w, f, x, NULL);
+  RETURN_IF_NULL (w);
+
+  if (w->state)
+    {
+      (w->type->free) (w->state);
+      free (w->state);
+    }
+
+  if (w->dx)
+    gsl_vector_free (w->dx);
+
+  if (w->x)
+    gsl_vector_free (w->x);
+
+  if (w->f)
+    gsl_vector_free (w->f);
+
+  if (w->sqrt_wts)
+    gsl_vector_free (w->sqrt_wts);
+
+  if (w->g)
+    gsl_vector_free (w->g);
+
+  if (w->J)
+    gsl_matrix_free (w->J);
+
+  free (w);
 }
 
 int
-gsl_multifit_nlinear_wset (gsl_multifit_nlinear_workspace * w,
-                           gsl_multifit_nlinear_fdf * f, 
+gsl_multifit_nlinear_set (gsl_multifit_nlinear_fdf * f,
+                          const gsl_vector * x,
+                          gsl_multifit_nlinear_workspace * w)
+{
+  return gsl_multifit_nlinear_wset(f, x, NULL, w);
+}
+
+int
+gsl_multifit_nlinear_wset (gsl_multifit_nlinear_fdf * f, 
                            const gsl_vector * x,
-                           const gsl_vector * wts)
+                           const gsl_vector * wts,
+                           gsl_multifit_nlinear_workspace * w)
 {
   const size_t n = w->f->size;
 
@@ -158,7 +198,12 @@ gsl_multifit_nlinear_wset (gsl_multifit_nlinear_workspace * w,
       else
         gsl_vector_set_all(w->sqrt_wts, 1.0);
   
-      return (w->type->set) (w->state, w->sqrt_wts, w->fdf, w->x, w->f, w->dx);
+      return (w->type->set) (w->state,
+                             w->sqrt_wts,
+                             w->fdf,
+                             w->x,
+                             w->f,
+                             w->J);
     }
 }
 
@@ -166,7 +211,13 @@ int
 gsl_multifit_nlinear_iterate (gsl_multifit_nlinear_workspace * w)
 {
   int status =
-    (w->type->iterate) (w->state, w->sqrt_wts, w->fdf, w->x, w->f, w->dx);
+    (w->type->iterate) (w->state,
+                        w->sqrt_wts,
+                        w->fdf,
+                        w->x,
+                        w->f,
+                        w->J,
+                        w->dx);
 
   w->niter++;
 
@@ -177,8 +228,7 @@ gsl_multifit_nlinear_iterate (gsl_multifit_nlinear_workspace * w)
 gsl_multifit_nlinear_driver()
   Iterate the nonlinear least squares solver until completion
 
-Inputs: w       - workspace
-        maxiter - maximum iterations to allow
+Inputs: maxiter - maximum iterations to allow
         xtol    - tolerance in step x
         gtol    - tolerance in gradient
         ftol    - tolerance in ||f||
@@ -192,18 +242,19 @@ Inputs: w       - workspace
                               precision (gtol is too small)
                   GSL_ETOLF = change in ||f|| is smaller than machine
                               precision (ftol is too small)
+        w       - workspace
 
 Return: GSL_SUCCESS if converged, GSL_MAXITER if maxiter exceeded without
 converging
 */
 
 int
-gsl_multifit_nlinear_driver (gsl_multifit_nlinear_workspace * w,
-                             const size_t maxiter,
+gsl_multifit_nlinear_driver (const size_t maxiter,
                              const double xtol,
                              const double gtol,
                              const double ftol,
-                             int *info)
+                             int *info,
+                             gsl_multifit_nlinear_workspace * w)
 {
   int status;
   size_t iter = 0;
@@ -220,7 +271,7 @@ gsl_multifit_nlinear_driver (gsl_multifit_nlinear_workspace * w,
         break;
 
       /* test for convergence */
-      status = gsl_multifit_nlinear_test(w, xtol, gtol, ftol, info);
+      status = gsl_multifit_nlinear_test(xtol, gtol, ftol, info, w);
     }
   while (status == GSL_CONTINUE && ++iter < maxiter);
 
@@ -242,49 +293,10 @@ gsl_multifit_nlinear_driver (gsl_multifit_nlinear_workspace * w,
   return status;
 } /* gsl_multifit_nlinear_driver() */
 
-int
-gsl_multifit_nlinear_jac (gsl_multifit_nlinear_workspace * w, gsl_matrix * J)
+gsl_matrix *
+gsl_multifit_nlinear_jac (const gsl_multifit_nlinear_workspace * w)
 {
-  const size_t n = w->f->size;
-  const size_t p = w->x->size;
-
-  if (n != J->size1 || p != J->size2)
-    {
-      GSL_ERROR ("Jacobian dimensions do not match workspace", GSL_EBADLEN);
-    }
-  else
-    {
-      return (w->type->jac) (w->state, J);
-    }
-} /* gsl_multifit_nlinear_jac() */
-
-void
-gsl_multifit_nlinear_free (gsl_multifit_nlinear_workspace * w)
-{
-  RETURN_IF_NULL (w);
-
-  if (w->state)
-    {
-      (w->type->free) (w->state);
-      free (w->state);
-    }
-
-  if (w->dx)
-    gsl_vector_free (w->dx);
-
-  if (w->x)
-    gsl_vector_free (w->x);
-
-  if (w->f)
-    gsl_vector_free (w->f);
-
-  if (w->sqrt_wts)
-    gsl_vector_free (w->sqrt_wts);
-
-  if (w->g)
-    gsl_vector_free (w->g);
-
-  free (w);
+  return w->J;
 }
 
 const char *
@@ -312,7 +324,7 @@ gsl_multifit_nlinear_niter (const gsl_multifit_nlinear_workspace * w)
 }
 
 /*
-gsl_multifit_eval_wf()
+gsl_multifit_nlinear_eval_f()
   Compute residual vector y with user callback function, and apply
 weighting transform if given:
 
@@ -327,10 +339,13 @@ Inputs: fdf  - callback function
 */
 
 int
-gsl_multifit_eval_wf(gsl_multifit_nlinear_fdf *fdf, const gsl_vector *x,
-                     const gsl_vector *swts, gsl_vector *y)
+gsl_multifit_nlinear_eval_f(gsl_multifit_nlinear_fdf *fdf,
+                            const gsl_vector *x,
+                            const gsl_vector *swts,
+                            gsl_vector *y)
 {
   int s = ((*((fdf)->f)) (x, fdf->params, y));
+
   ++(fdf->nevalf);
 
   /* y <- sqrt(W) y */
@@ -341,7 +356,7 @@ gsl_multifit_eval_wf(gsl_multifit_nlinear_fdf *fdf, const gsl_vector *x,
 }
 
 /*
-gsl_multifit_eval_wdf()
+gsl_multifit_nlinear_eval_df()
   Compute Jacobian matrix J with user callback function, and apply
 weighting transform if given:
 
@@ -349,19 +364,37 @@ J~ = sqrt(W) J
 
 Inputs: fdf  - callback function
         x    - model parameters
+        f    - residual vector f(x)
         swts - weight matrix W = diag(w1,w2,...,wn)
                set to NULL for unweighted fit
-        dy   - (output) (weighted) Jacobian matrix
-               dy = sqrt(W) dy where dy is unweighted Jacobian
+        df   - (output) (weighted) Jacobian matrix
+               df = sqrt(W) df where df is unweighted Jacobian
 */
 
 int
-gsl_multifit_eval_wdf(gsl_multifit_nlinear_fdf *fdf, const gsl_vector *x,
-                      const gsl_vector *swts, gsl_matrix *dy)
+gsl_multifit_nlinear_eval_df(gsl_multifit_nlinear_fdf *fdf,
+                             const gsl_vector *x,
+                             const gsl_vector *f,
+                             const gsl_vector *swts,
+                             gsl_matrix *df)
 {
-  int status = ((*((fdf)->df)) (x, fdf->params, dy));
+  int status;
+
+  if (fdf->df)
+    {
+      /* call user-defined callback function */
+      status = ((*((fdf)->df)) (x, fdf->params, df));
+    }
+  else
+    {
+      /* use finite difference Jacobian approximation */
+      status = gsl_multifit_nlinear_df(x, swts, fdf, f, df);
+    }
 
   ++(fdf->nevaldf);
+
+  if (status)
+    return status;
 
   /* J <- sqrt(W) J */
   if (swts)
@@ -372,7 +405,7 @@ gsl_multifit_eval_wdf(gsl_multifit_nlinear_fdf *fdf, const gsl_vector *x,
       for (i = 0; i < n; ++i)
         {
           double swi = gsl_vector_get(swts, i);
-          gsl_vector_view v = gsl_matrix_row(dy, i);
+          gsl_vector_view v = gsl_matrix_row(df, i);
 
           gsl_vector_scale(&v.vector, swi);
         }

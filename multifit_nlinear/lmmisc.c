@@ -20,23 +20,23 @@
 /* compute step dx by solving (J^T J + mu*I) dx = -J^T f */
 static int
 lm_calc_dx(const double mu, const gsl_matrix *A, const gsl_vector *rhs,
-               gsl_vector *dx, lm_state_t *state)
+           gsl_vector *dx, lm_state_t *state)
 {
   int status;
-  gsl_matrix *A_copy = state->A_copy;
-  gsl_vector_view diag = gsl_matrix_diagonal(A_copy);
+  gsl_matrix *work_JTJ = state->work_JTJ;
+  gsl_vector_view diag = gsl_matrix_diagonal(work_JTJ);
 
   /* make a copy of J^T J matrix */
-  gsl_matrix_memcpy(A_copy, A);
+  gsl_matrix_memcpy(work_JTJ, A);
 
   /* augment normal equations with LM parameter: A -> A + mu*I */
   gsl_vector_add_constant(&diag.vector, mu);
 
-  status = gsl_linalg_QR_decomp(A_copy, state->work);
+  status = gsl_linalg_QR_decomp(work_JTJ, state->work);
   if (status)
     return status;
 
-  status = gsl_linalg_QR_solve(A_copy, state->work, rhs, dx);
+  status = gsl_linalg_QR_solve(work_JTJ, state->work, rhs, dx);
   if (status)
     return status;
 
@@ -90,7 +90,7 @@ Here, the mg input is -g
 
 static double
 lm_calc_dL(const double mu, const gsl_vector *diag,
-               const gsl_vector *dx, const gsl_vector *mg)
+           const gsl_vector *dx, const gsl_vector *mg)
 {
   const size_t p = dx->size;
   size_t i;

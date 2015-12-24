@@ -36,27 +36,27 @@ gsl_multifit_nlinear_test()
 (2) || g .* x ||_inf <= gtol ||f||^2
 (3) ||f(x+dx) - f(x)|| <= ftol * max(||f(x)||, 1)
 
-Inputs: s    - workspace
-        xtol - tolerance for step size
+Inputs: xtol - tolerance for step size
         gtol - tolerance for gradient vector
         ftol - tolerance for residual vector
         info - (output)
           1 - stopped by small x step
           2 - stopped by small gradient
           3 - stopped by small residual vector change
+        w    - workspace
 */
 
 int
-gsl_multifit_nlinear_test (const gsl_multifit_nlinear_workspace * s,
-                           const double xtol, const double gtol,
-                           const double ftol, int *info)
+gsl_multifit_nlinear_test (const double xtol, const double gtol,
+                           const double ftol, int *info,
+                           const gsl_multifit_nlinear_workspace * w)
 {
   int status;
   double gnorm, fnorm, phi;
 
   *info = 0;
 
-  status = test_delta(s->dx, s->x, xtol*xtol, xtol);
+  status = test_delta(w->dx, w->x, xtol*xtol, xtol);
   if (status == GSL_SUCCESS)
     {
       *info = 1;
@@ -64,13 +64,13 @@ gsl_multifit_nlinear_test (const gsl_multifit_nlinear_workspace * s,
     }
 
   /* compute gradient g = J^T f */
-  (s->type->gradient) (s->state, s->g);
+  (w->type->gradient) (w->state, w->g);
 
   /* compute gnorm = max_i( g_i * max(x_i, 1) ) */
-  gnorm = scaled_infnorm(s->x, s->g);
+  gnorm = scaled_infnorm(w->x, w->g);
 
   /* compute fnorm = ||f|| */
-  fnorm = gsl_blas_dnrm2(s->f);
+  fnorm = gsl_blas_dnrm2(w->f);
   phi = 0.5 * fnorm * fnorm;
 
   if (gnorm <= gtol * GSL_MAX(phi, 1.0))

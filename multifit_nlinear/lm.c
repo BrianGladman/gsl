@@ -41,8 +41,7 @@
 typedef struct
 {
   gsl_matrix *A;             /* J^T J */
-  gsl_matrix *A_copy;        /* copy of J^T J */
-  gsl_matrix *J;             /* Jacobian J(x) */
+  gsl_matrix *work_JTJ;      /* copy of J^T J */
   gsl_vector *diag;          /* D = diag(J^T J) */
   gsl_vector *rhs;           /* rhs vector = -g = -J^T f */
   gsl_vector *x_trial;       /* trial parameter vector */
@@ -61,10 +60,11 @@ static int lm_alloc (void *vstate, const size_t n, const size_t p);
 static void lm_free(void *vstate);
 static int lm_set(void *vstate, const gsl_vector * swts,
                       gsl_multifit_nlinear_fdf *fdf,
-                      gsl_vector *x, gsl_vector *f, gsl_vector *dx);
+                      gsl_vector *x, gsl_vector *f, gsl_matrix *J);
 static int lm_iterate(void *vstate, const gsl_vector *swts,
                           gsl_multifit_nlinear_fdf *fdf,
-                          gsl_vector *x, gsl_vector *f, gsl_vector *dx);
+                          gsl_vector *x, gsl_vector *f, gsl_matrix *J,
+                          gsl_vector *dx);
 
 static int
 lm_alloc (void *vstate, const size_t n, const size_t p)
@@ -75,12 +75,6 @@ lm_alloc (void *vstate, const size_t n, const size_t p)
   if (state->A == NULL)
     {
       GSL_ERROR ("failed to allocate space for A", GSL_ENOMEM);
-    }
-
-  state->J = gsl_matrix_alloc(n, p);
-  if (state->J == NULL)
-    {
-      GSL_ERROR ("failed to allocate space for J", GSL_ENOMEM);
     }
 
   state->diag = gsl_vector_alloc(p);
@@ -101,10 +95,10 @@ lm_alloc (void *vstate, const size_t n, const size_t p)
       GSL_ERROR ("failed to allocate space for work", GSL_ENOMEM);
     }
 
-  state->A_copy = gsl_matrix_alloc(p, p);
-  if (state->A_copy == NULL)
+  state->work_JTJ = gsl_matrix_alloc(p, p);
+  if (state->work_JTJ == NULL)
     {
-      GSL_ERROR ("failed to allocate space for A_copy", GSL_ENOMEM);
+      GSL_ERROR ("failed to allocate space for JTJ workspace", GSL_ENOMEM);
     }
 
   state->x_trial = gsl_vector_alloc(p);
@@ -132,9 +126,6 @@ lm_free(void *vstate)
   if (state->A)
     gsl_matrix_free(state->A);
 
-  if (state->J)
-    gsl_matrix_free(state->J);
-
   if (state->diag)
     gsl_vector_free(state->diag);
 
@@ -144,8 +135,8 @@ lm_free(void *vstate)
   if (state->work)
     gsl_vector_free(state->work);
 
-  if (state->A_copy)
-    gsl_matrix_free(state->A_copy);
+  if (state->work_JTJ)
+    gsl_matrix_free(state->work_JTJ);
 
   if (state->x_trial)
     gsl_vector_free(state->x_trial);
@@ -156,8 +147,8 @@ lm_free(void *vstate)
 
 static int
 lm_set(void *vstate, const gsl_vector *swts,
-           gsl_multifit_nlinear_fdf *fdf, gsl_vector *x,
-           gsl_vector *f, gsl_vector *dx)
+       gsl_multifit_nlinear_fdf *fdf, gsl_vector *x,
+       gsl_vector *f, gsl_matrix *J)
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
@@ -169,19 +160,16 @@ lm_set(void *vstate, const gsl_vector *swts,
   fdf->nevaldf = 0;
 
   /* evaluate function and Jacobian at x and apply weight transform */
-  status = gsl_multifit_eval_wf(fdf, x, swts, f);
+  status = gsl_multifit_nlinear_eval_f(fdf, x, swts, f);
   if (status)
    return status;
 
-  if (fdf->df)
-    status = gsl_multifit_eval_wdf(fdf, x, swts, state->J);
-  else
-    status = gsl_multifit_nlinear_df(x, swts, fdf, f, state->J);
+  status = gsl_multifit_nlinear_eval_df(fdf, x, f, swts, J);
   if (status)
     return status;
 
   /* compute rhs = -J^T f */
-  gsl_blas_dgemv(CblasTrans, -1.0, state->J, f, 0.0, state->rhs);
+  gsl_blas_dgemv(CblasTrans, -1.0, J, f, 0.0, state->rhs);
 
 #if SCALE
   gsl_vector_set_zero(state->diag);
@@ -199,7 +187,7 @@ lm_set(void *vstate, const gsl_vector *swts,
   state->mu = -1.0;
   for (i = 0; i < p; ++i)
     {
-      gsl_vector_view c = gsl_matrix_column(state->J, i);
+      gsl_vector_view c = gsl_matrix_column(J, i);
       double result; /* (J^T J)_{ii} */
 
       gsl_blas_ddot(&c.vector, &c.vector, &result);
@@ -226,14 +214,16 @@ Args: vstate - lm workspace
                on output, new parameter vector x + dx
       f      - on input, f(x)
                on output, f(x + dx)
+      J      - on input, J(x)
+               on output, J(x + dx)
       dx     - (output only) parameter step vector
 
 Notes:
 1) On input, the following must be initialized in state:
-nu, mu, rhs, J
+nu, mu, rhs
 
 2) On output, the following are updated with the current iterates:
-nu, mu, rhs, J
+nu, mu, rhs
 
 rhs needs to be set on each output, so that lm_gradient supplies
 the correct g = J^T f
@@ -242,11 +232,10 @@ the correct g = J^T f
 static int
 lm_iterate(void *vstate, const gsl_vector *swts,
                gsl_multifit_nlinear_fdf *fdf, gsl_vector *x,
-               gsl_vector *f, gsl_vector *dx)
+               gsl_vector *f, gsl_matrix *J, gsl_vector *dx)
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
-  gsl_matrix *J = state->J;                   /* Jacobian J(x) */
   gsl_matrix *A = state->A;                   /* J^T J */
   gsl_vector *rhs = state->rhs;               /* -g = -J^T f */
   gsl_vector *x_trial = state->x_trial;       /* trial x + dx */
@@ -280,7 +269,7 @@ lm_iterate(void *vstate, const gsl_vector *swts,
       lm_trial_step(x, dx, x_trial);
 
       /* compute f(x + dx) */
-      status = gsl_multifit_eval_wf(fdf, x_trial, swts, f_trial);
+      status = gsl_multifit_nlinear_eval_f(fdf, x_trial, swts, f_trial);
       if (status)
        return status;
 
@@ -304,10 +293,8 @@ lm_iterate(void *vstate, const gsl_vector *swts,
           state->nu = 2;
 
           /* compute J <- J(x + dx) */
-          if (fdf->df)
-            status = gsl_multifit_eval_wdf(fdf, x_trial, swts, J);
-          else
-            status = gsl_multifit_nlinear_df(x_trial, swts, fdf, f_trial, J);
+          status = gsl_multifit_nlinear_eval_df(fdf, x_trial, f_trial,
+                                                swts, J);
           if (status)
             return status;
 
@@ -358,15 +345,6 @@ lm_gradient(void *vstate, gsl_vector * g)
   return GSL_SUCCESS;
 }
 
-static int
-lm_jac(void *vstate, gsl_matrix * J)
-{
-  lm_state_t *state = (lm_state_t *) vstate;
-  int s = gsl_matrix_memcpy(J, state->J);
-
-  return s;
-}
-
 static const gsl_multifit_nlinear_type lm_type =
 {
   "lm",
@@ -375,7 +353,6 @@ static const gsl_multifit_nlinear_type lm_type =
   &lm_set,
   &lm_iterate,
   &lm_gradient,
-  &lm_jac,
   &lm_free
 };
 

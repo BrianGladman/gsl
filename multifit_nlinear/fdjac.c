@@ -68,7 +68,7 @@ fdjac(const gsl_vector *x, const gsl_vector *wts,
       /* perturb x_j to compute forward difference */
       gsl_vector_set((gsl_vector *) x, j, xj + h);
 
-      status += gsl_multifit_eval_wf (fdf, x, wts, &v.vector);
+      status += gsl_multifit_nlinear_eval_f (fdf, x, wts, &v.vector);
       if (status)
         return status;
 

@@ -81,14 +81,14 @@ static void test_fdf_checksol(const char *sname, const char *pname,
                               test_fdf_problem *problem);
 static void test_scale_x0(gsl_vector *x0, const double scale);
 
-/*
- * These test problems are taken from
- *
- * H. B. Nielsen, UCTP test problems for unconstrained optimization,
- * IMM Department of Mathematical Modeling, Tech. Report IMM-REP-2000-17,
- * 2000.
- */
-static test_fdf_problem *test_fdf_nielsen[] = {
+static test_fdf_problem *test_problems[] = {
+  /*
+   * These test problems are taken from
+   *
+   * H. B. Nielsen, UCTP test problems for unconstrained optimization,
+   * IMM Department of Mathematical Modeling, Tech. Report
+   * IMM-REP-2000-17, 2000.
+   */
   &lin1_problem,       /* 1 */
   &lin2_problem,       /* 2 */
   &lin3_problem,       /* 3 */
@@ -110,19 +110,15 @@ static test_fdf_problem *test_fdf_nielsen[] = {
 
   &powell2_problem,
 
-  NULL
-};
-
-/*
- * These tests are from
- *
- * J. J. More, B. S. Garbow and K. E. Hillstrom, Testing
- * Unconstrained Optimization Software, ACM Trans. Math. Soft.
- * Vol 7, No 1, 1981.
- *
- * Many of these overlap with the Nielsen tests
- */
-static test_fdf_problem *test_fdf_more[] = {
+  /*
+   * These tests are from
+   *
+   * J. J. More, B. S. Garbow and K. E. Hillstrom, Testing
+   * Unconstrained Optimization Software, ACM Trans. Math. Soft.
+   * Vol 7, No 1, 1981.
+   *
+   * Many of these overlap with the Nielsen tests
+   */
   &rosenbrock_problem,   /* 1 */
   &roth_problem,         /* 2 */
   &powell3_problem,      /* 3 */
@@ -150,11 +146,7 @@ static test_fdf_problem *test_fdf_more[] = {
   &lin2_problem,         /* 33 */
   &lin3_problem,         /* 34 */
 
-  NULL
-};
-
-/* NIST test cases */
-static test_fdf_problem *test_fdf_nist[] = {
+  /* NIST test cases */
   &kirby2_problem,
   &hahn1_problem,
   &enso_problem,
@@ -185,34 +177,23 @@ test_fdf_main(void)
   test_fdf(gsl_multifit_nlinear_lm, xtol, gtol, ftol,
            wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
 
-  /* Nielsen tests */
-  for (i = 0; test_fdf_nielsen[i] != NULL; ++i)
+  for (i = 0; test_problems[i] != NULL; ++i)
     {
-      test_fdf_problem *problem = test_fdf_nielsen[i];
+      test_fdf_problem *problem = test_problems[i];
       double epsrel = *(problem->epsrel);
+      gsl_multifit_nlinear_fdf fdf;
 
       test_fdf(gsl_multifit_nlinear_lm, xtol, gtol, ftol,
                10.0 * epsrel, 1.0, problem, NULL);
-    }
 
-  /* More tests */
-  for (i = 0; test_fdf_more[i] != NULL; ++i)
-    {
-      test_fdf_problem *problem = test_fdf_more[i];
-      double epsrel = *(problem->epsrel);
+      /* test finite difference Jacobian */
+      fdf.df = problem->fdf->df;
+      problem->fdf->df = NULL;
 
       test_fdf(gsl_multifit_nlinear_lm, xtol, gtol, ftol,
-               10.0 * epsrel, 1.0, problem, NULL);
-    }
+               1.0e3 * epsrel, 1.0, problem, NULL);
 
-  /* NIST tests */
-  for (i = 0; test_fdf_nist[i] != NULL; ++i)
-    {
-      test_fdf_problem *problem = test_fdf_nist[i];
-      double epsrel = *(problem->epsrel);
-
-      test_fdf(gsl_multifit_nlinear_lm, xtol, gtol, ftol,
-               epsrel, 1.0, problem, NULL);
+      problem->fdf->df = fdf.df;
     }
 }
 
@@ -248,13 +229,14 @@ test_fdf(const gsl_multifit_nlinear_type * T, const double xtol,
   const size_t max_iter = 1500;
   gsl_vector *x0 = gsl_vector_alloc(p);
   gsl_vector_view x0v = gsl_vector_view_array(problem->x0, p);
-  gsl_multifit_nlinear_workspace *s = gsl_multifit_nlinear_alloc (T, n, p);
+  gsl_multifit_nlinear_workspace *w =
+    gsl_multifit_nlinear_alloc (T, n, p);
   const char *pname = problem->name;
   char sname[2048];
   int status, info;
 
   sprintf(sname, "%s/scale=%g%s",
-    gsl_multifit_nlinear_name(s), x0_scale,
+    gsl_multifit_nlinear_name(w), x0_scale,
     problem->fdf->df ? "" : "/fdiff");
 
   /* scale starting point x0 */
@@ -264,18 +246,18 @@ test_fdf(const gsl_multifit_nlinear_type * T, const double xtol,
   if (wts)
     {
       gsl_vector_const_view wv = gsl_vector_const_view_array(wts, n);
-      gsl_multifit_nlinear_wset(s, fdf, x0, &wv.vector);
+      gsl_multifit_nlinear_wset(fdf, x0, &wv.vector, w);
     }
   else
-    gsl_multifit_nlinear_set(s, fdf, x0);
+    gsl_multifit_nlinear_set(fdf, x0, w);
 
-  status = gsl_multifit_nlinear_driver(s, max_iter, xtol, gtol,
-                                         ftol, &info);
+  status = gsl_multifit_nlinear_driver(max_iter, xtol, gtol,
+                                       ftol, &info, w);
   gsl_test(status, "%s/%s did not converge, status=%s",
            sname, pname, gsl_strerror(status));
 
   /* check solution */
-  test_fdf_checksol(sname, pname, epsrel, s, problem);
+  test_fdf_checksol(sname, pname, epsrel, w, problem);
 
   if (wts == NULL)
     {
@@ -283,38 +265,39 @@ test_fdf(const gsl_multifit_nlinear_type * T, const double xtol,
       gsl_vector *wv = gsl_vector_alloc(n);
 
       sprintf(sname, "%s/scale=%g%s/weights",
-        gsl_multifit_nlinear_name(s), x0_scale,
+        gsl_multifit_nlinear_name(w), x0_scale,
         problem->fdf->df ? "" : "/fdiff");
 
       gsl_vector_memcpy(x0, &x0v.vector);
       test_scale_x0(x0, x0_scale);
 
       gsl_vector_set_all(wv, 1.0);
-      gsl_multifit_nlinear_wset(s, fdf, x0, wv);
+      gsl_multifit_nlinear_wset(fdf, x0, wv, w);
   
-      status = gsl_multifit_nlinear_driver(s, max_iter, xtol, gtol,
-                                             ftol, &info);
+      status = gsl_multifit_nlinear_driver(max_iter, xtol, gtol,
+                                           ftol, &info, w);
       gsl_test(status, "%s/%s did not converge, status=%s",
                sname, pname, gsl_strerror(status));
 
-      test_fdf_checksol(sname, pname, epsrel, s, problem);
+      test_fdf_checksol(sname, pname, epsrel, w, problem);
 
       gsl_vector_free(wv);
     }
 
-  gsl_multifit_nlinear_free(s);
+  gsl_multifit_nlinear_free(w);
   gsl_vector_free(x0);
 }
 
 static void
 test_fdf_checksol(const char *sname, const char *pname,
-                  const double epsrel, gsl_multifit_nlinear_workspace *s,
+                  const double epsrel,
+                  gsl_multifit_nlinear_workspace *w,
                   test_fdf_problem *problem)
 {
   gsl_multifit_nlinear_fdf *fdf = problem->fdf;
   const double *sigma = problem->sigma;
-  gsl_vector *f = gsl_multifit_nlinear_residual(s);
-  gsl_vector *x = gsl_multifit_nlinear_position(s);
+  gsl_vector *f = gsl_multifit_nlinear_residual(w);
+  gsl_vector *x = gsl_multifit_nlinear_position(w);
   double sumsq;
 
   /* check solution vector x and sumsq = ||f||^2 */
@@ -327,10 +310,9 @@ test_fdf_checksol(const char *sname, const char *pname,
       const size_t n = fdf->n;
       const size_t p = fdf->p;
       size_t i;
-      gsl_matrix * J = gsl_matrix_alloc(n, p);
       gsl_matrix * covar = gsl_matrix_alloc (p, p);
+      gsl_matrix *J = gsl_multifit_nlinear_jac (w);
 
-      gsl_multifit_nlinear_jac (s, J);
       gsl_multifit_nlinear_covar (J, 0.0, covar);
 
       for (i = 0; i < p; i++) 
@@ -340,7 +322,6 @@ test_fdf_checksol(const char *sname, const char *pname,
                         "%s/%s, sigma(%d)", sname, pname, i) ;
         }
 
-      gsl_matrix_free (J);
       gsl_matrix_free (covar);
     }
 }
