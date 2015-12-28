@@ -129,18 +129,26 @@ gsl_multifit_nlinear_free (gsl_multifit_nlinear_workspace * w)
 }
 
 int
-gsl_multifit_nlinear_set (gsl_multifit_nlinear_fdf * f,
-                          const gsl_vector * x,
-                          gsl_multifit_nlinear_workspace * w)
+gsl_multifit_nlinear_set_params (const gsl_multifit_nlinear_parameters * params,
+                                 gsl_multifit_nlinear_workspace * w)
 {
-  return gsl_multifit_nlinear_wset(f, x, NULL, w);
+  int status = (w->type->params) (w->state, params);
+  return status;
 }
 
 int
-gsl_multifit_nlinear_wset (gsl_multifit_nlinear_fdf * f, 
+gsl_multifit_nlinear_init (gsl_multifit_nlinear_fdf * f,
                            const gsl_vector * x,
-                           const gsl_vector * wts,
                            gsl_multifit_nlinear_workspace * w)
+{
+  return gsl_multifit_nlinear_winit(f, x, NULL, w);
+}
+
+int
+gsl_multifit_nlinear_winit (gsl_multifit_nlinear_fdf * f, 
+                            const gsl_vector * x,
+                            const gsl_vector * wts,
+                            gsl_multifit_nlinear_workspace * w)
 {
   const size_t n = w->f->size;
 
@@ -175,12 +183,12 @@ gsl_multifit_nlinear_wset (gsl_multifit_nlinear_fdf * f,
       else
         gsl_vector_set_all(w->sqrt_wts, 1.0);
   
-      return (w->type->set) (w->state,
-                             w->sqrt_wts,
-                             w->fdf,
-                             w->x,
-                             w->f,
-                             w->J);
+      return (w->type->init) (w->state,
+                              w->sqrt_wts,
+                              w->fdf,
+                              w->x,
+                              w->f,
+                              w->J);
     }
 }
 

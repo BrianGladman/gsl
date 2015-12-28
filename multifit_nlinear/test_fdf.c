@@ -71,9 +71,11 @@ typedef struct
 #include "test_wnlin.c"
 
 static void test_fdf(const gsl_multifit_nlinear_type * T,
+                     const gsl_multifit_nlinear_parameters * params,
                      const double xtol, const double gtol,
-                     const double ftol, const double epsrel,
-                     const double x0_scale, test_fdf_problem *problem,
+                     const double ftol,
+                     const double epsrel, const double x0_scale,
+                     test_fdf_problem *problem,
                      const double *wts);
 static void test_fdf_checksol(const char *sname, const char *pname,
                               const double epsrel,
@@ -160,7 +162,7 @@ static test_fdf_problem *test_problems[] = {
 };
 
 static void
-test_fdf_main(void)
+test_fdf_main(const gsl_multifit_nlinear_parameters * params)
 {
   const double xtol = pow(GSL_DBL_EPSILON, 0.9);
   const double gtol = pow(GSL_DBL_EPSILON, 0.9);
@@ -170,11 +172,11 @@ test_fdf_main(void)
   /* test weighted nonlinear least squares */
 
   /* internal weighting in _f and _df functions */
-  test_fdf(gsl_multifit_nlinear_lm, xtol, gtol, ftol,
+  test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
            wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
 
-  /* weighting through nlinear_wset */
-  test_fdf(gsl_multifit_nlinear_lm, xtol, gtol, ftol,
+  /* weighting through nlinear_winit */
+  test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
            wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
 
   for (i = 0; test_problems[i] != NULL; ++i)
@@ -183,14 +185,14 @@ test_fdf_main(void)
       double epsrel = *(problem->epsrel);
       gsl_multifit_nlinear_fdf fdf;
 
-      test_fdf(gsl_multifit_nlinear_lm, xtol, gtol, ftol,
+      test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
                10.0 * epsrel, 1.0, problem, NULL);
 
       /* test finite difference Jacobian */
       fdf.df = problem->fdf->df;
       problem->fdf->df = NULL;
 
-      test_fdf(gsl_multifit_nlinear_lm, xtol, gtol, ftol,
+      test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
                1.0e3 * epsrel, 1.0, problem, NULL);
 
       problem->fdf->df = fdf.df;
@@ -202,6 +204,7 @@ test_fdf()
   Test a weighted nonlinear least squares problem
 
 Inputs: T        - solver to use
+        params   - solver parameters
         xtol     - tolerance in x
         gtol     - tolerance in gradient
         ftol     - tolerance in residual vector
@@ -217,8 +220,9 @@ Inputs: T        - solver to use
 */
 
 static void
-test_fdf(const gsl_multifit_nlinear_type * T, const double xtol,
-         const double gtol, const double ftol,
+test_fdf(const gsl_multifit_nlinear_type * T,
+         const gsl_multifit_nlinear_parameters * params,
+         const double xtol, const double gtol, const double ftol,
          const double epsrel, const double x0_scale,
          test_fdf_problem *problem,
          const double *wts)
@@ -235,6 +239,8 @@ test_fdf(const gsl_multifit_nlinear_type * T, const double xtol,
   char sname[2048];
   int status, info;
 
+  gsl_multifit_nlinear_set_params(params, w);
+
   sprintf(sname, "%s/scale=%g%s",
     gsl_multifit_nlinear_name(w), x0_scale,
     problem->fdf->df ? "" : "/fdiff");
@@ -246,10 +252,10 @@ test_fdf(const gsl_multifit_nlinear_type * T, const double xtol,
   if (wts)
     {
       gsl_vector_const_view wv = gsl_vector_const_view_array(wts, n);
-      gsl_multifit_nlinear_wset(fdf, x0, &wv.vector, w);
+      gsl_multifit_nlinear_winit(fdf, x0, &wv.vector, w);
     }
   else
-    gsl_multifit_nlinear_set(fdf, x0, w);
+    gsl_multifit_nlinear_init(fdf, x0, w);
 
   status = gsl_multifit_nlinear_driver(max_iter, xtol, gtol,
                                        ftol, &info, w);
@@ -272,7 +278,7 @@ test_fdf(const gsl_multifit_nlinear_type * T, const double xtol,
       test_scale_x0(x0, x0_scale);
 
       gsl_vector_set_all(wv, 1.0);
-      gsl_multifit_nlinear_wset(fdf, x0, wv, w);
+      gsl_multifit_nlinear_winit(fdf, x0, wv, w);
   
       status = gsl_multifit_nlinear_driver(max_iter, xtol, gtol,
                                            ftol, &info, w);

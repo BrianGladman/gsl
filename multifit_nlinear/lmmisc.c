@@ -1,6 +1,6 @@
 /* multifit_nlinear/lmmisc.c
  * 
- * Copyright (C) 2014 Patrick Alken
+ * Copyright (C) 2014, 2015 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,31 +17,40 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-/* compute step dx by solving (J^T J + mu*I) dx = -J^T f */
+static int lm_init_lambda(const gsl_matrix * J, lm_state_t * state);
+static double lm_calc_rho(const double lambda, const gsl_vector * dx,
+                          const gsl_vector * minus_g,
+                          const gsl_vector * f,
+                          const gsl_vector * f_trial,
+                          lm_state_t * state);
+
+/* initialize damping parameter lambda; state->diag must first be
+ * initialized */
 static int
-lm_calc_dx(const double mu, const gsl_matrix *A, const gsl_vector *rhs,
-           gsl_vector *dx, lm_state_t *state)
+lm_init_lambda(const gsl_matrix * J, lm_state_t * state)
 {
-  int status;
-  gsl_matrix *work_JTJ = state->work_JTJ;
-  gsl_vector_view diag = gsl_matrix_diagonal(work_JTJ);
+  state->lambda = state->lambda0;
 
-  /* make a copy of J^T J matrix */
-  gsl_matrix_memcpy(work_JTJ, A);
+  if (state->init_diag == init_diag_levenberg)
+    {
+      /* when D = I, set lambda = lambda0 * max(diag(J^T J)) */
 
-  /* augment normal equations with LM parameter: A -> A + mu*I */
-  gsl_vector_add_constant(&diag.vector, mu);
+      const size_t p = J->size2;
+      size_t j;
+      double max = -1.0;
 
-  status = gsl_linalg_QR_decomp(work_JTJ, state->work);
-  if (status)
-    return status;
+      for (j = 0; j < p; ++j)
+        {
+          gsl_vector_const_view v = gsl_matrix_const_column(J, j);
+          double norm = gsl_blas_dnrm2(&v.vector);
+          max = GSL_MAX(max, norm);
+        }
 
-  status = gsl_linalg_QR_solve(work_JTJ, state->work, rhs, dx);
-  if (status)
-    return status;
+      state->lambda *= max * max;
+    }
 
   return GSL_SUCCESS;
-} /* lm_calc_dx() */
+}
 
 /* compute x_trial = x + dx */
 static void
@@ -59,53 +68,60 @@ lm_trial_step(const gsl_vector * x, const gsl_vector * dx,
 } /* lm_trial_step() */
 
 /*
-lm_calc_dF()
-  Compute dF = F(x) - F(x + dx) = 1/2 (f - f_new)^T (f + f_new)
-*/
-static double
-lm_calc_dF(const gsl_vector *f, const gsl_vector *f_new)
-{
-  const size_t N = f->size;
-  size_t i;
-  double dF = 0.0;
-
-  for (i = 0; i < N; ++i)
-    {
-      double fi = gsl_vector_get(f, i);
-      double fnewi = gsl_vector_get(f_new, i);
-
-      dF += (fi - fnewi) * (fi + fnewi);
-    }
-
-  dF *= 0.5;
-
-  return dF;
-} /* lm_calc_dF() */
-
-/*
-lm_calc_dL()
-  Compute dL = L(0) - L(dx) = 1/2 dx^T (mu * D^T D dx - g)
-Here, the mg input is -g
+lm_calc_rho()
+  Calculate ratio of actual reduction to predicted
+reduction, given by Eq 4.4 of More, 1978.
 */
 
 static double
-lm_calc_dL(const double mu, const gsl_vector *diag,
-           const gsl_vector *dx, const gsl_vector *mg)
+lm_calc_rho(const double lambda, const gsl_vector * dx,
+            const gsl_vector * minus_g, const gsl_vector * f,
+            const gsl_vector * f_trial, lm_state_t * state)
 {
-  const size_t p = dx->size;
+  const double normf = gsl_blas_dnrm2(f);
+  const double normf_trial = gsl_blas_dnrm2(f_trial);
+  double rho;
+  double actual_reduction;
+  double pred_reduction;
+  double u;
+  double norm_Ddx; /* || D dx || */
   size_t i;
-  double dL = 0.0;
 
-  for (i = 0; i < p; ++i)
+  /* if ||f(x+dx)|| > ||f(x)|| reject step immediately */
+  if (normf_trial >= normf)
+    return -1.0;
+
+  /* compute numerator of rho */
+  u = normf_trial / normf;
+  actual_reduction = 1.0 - u*u;
+
+  /* compute || D dx || */
+  for (i = 0; i < dx->size; ++i)
     {
       double dxi = gsl_vector_get(dx, i);
-      double di = gsl_vector_get(diag, i);
-      double mgi = gsl_vector_get(mg, i); /* -g_i */
+      double di = gsl_vector_get(state->diag, i);
 
-      dL += dxi * (mu * di * di * dxi + mgi);
+      gsl_vector_set(state->workp, i, dxi * di);
     }
 
-  dL *= 0.5;
+  norm_Ddx = gsl_blas_dnrm2(state->workp);
 
-  return dL;
-} /* lm_calc_dL() */
+  /* compute denominator of rho */
+  u = norm_Ddx / normf;
+  pred_reduction = lambda * u * u;
+
+  for (i = 0; i < dx->size; ++i)
+    {
+      double dxi = gsl_vector_get(dx, i);
+      double mgi = gsl_vector_get(minus_g, i);
+
+      pred_reduction += (dxi / normf) * (mgi / normf);
+    }
+
+  if (pred_reduction > 0.0)
+    rho = actual_reduction / pred_reduction;
+  else
+    rho = -1.0;
+
+  return rho;
+}

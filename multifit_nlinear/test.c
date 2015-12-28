@@ -34,9 +34,22 @@
 int
 main (void)
 {
+  gsl_multifit_nlinear_parameters fdf_params;
+
   gsl_ieee_env_setup();
 
-  test_fdf_main();
+  fdf_params.solver = GSL_MULTIFIT_NLINEAR_SOLVER_NORMAL;
+
+  fdf_params.scale = GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG;
+  test_fdf_main(&fdf_params);
+
+#if 0
+  fdf_params.scale = GSL_MULTIFIT_NLINEAR_SCALE_MARQUARDT;
+  test_fdf_main(&fdf_params);
+#endif
+
+  fdf_params.scale = GSL_MULTIFIT_NLINEAR_SCALE_MORE;
+  test_fdf_main(&fdf_params);
 
   exit (gsl_test_summary ());
 }

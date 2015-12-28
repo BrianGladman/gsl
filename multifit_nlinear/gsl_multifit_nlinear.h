@@ -40,6 +40,27 @@
 
 __BEGIN_DECLS
 
+/* scaling matrix specification */
+typedef enum
+{
+  GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG, /* D^T D = I */
+  GSL_MULTIFIT_NLINEAR_SCALE_MARQUARDT, /* D^T D = diag(J^T J) */
+  GSL_MULTIFIT_NLINEAR_SCALE_MORE       /* D^T D = max(diag(J^T J)) */
+} gsl_multifit_nlinear_scale_t;
+
+typedef enum
+{
+  GSL_MULTIFIT_NLINEAR_SOLVER_NORMAL, /* normal equations approach */
+  GSL_MULTIFIT_NLINEAR_SOLVER_QR      /* QR decomposition of J */
+} gsl_multifit_nlinear_solver_t;
+
+/* tunable parameters for Levenberg-Marquardt method */
+typedef struct
+{
+  gsl_multifit_nlinear_scale_t scale;   /* scaling method */
+  gsl_multifit_nlinear_solver_t solver; /* solver method */
+} gsl_multifit_nlinear_parameters;
+
 /* Definition of vector-valued functions and gradient with parameters
    based on gsl_vector */
 
@@ -58,13 +79,14 @@ typedef struct
 {
   const char *name;
   void * (*alloc) (const size_t n, const size_t p);
-  int (*set) (void *state, const gsl_vector * wts,
-              gsl_multifit_nlinear_fdf * fdf, gsl_vector * x,
-              gsl_vector * f, gsl_matrix * J);
+  int (*init) (void *state, const gsl_vector * wts,
+               gsl_multifit_nlinear_fdf * fdf, gsl_vector * x,
+               gsl_vector * f, gsl_matrix * J);
   int (*iterate) (void *state, const gsl_vector * wts,
                   gsl_multifit_nlinear_fdf * fdf, gsl_vector * x,
                   gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
   int (*gradient) (void *state, gsl_vector * g);
+  int (*params) (void *state, const gsl_multifit_nlinear_parameters * params);
   void (*free) (void *state);
 } gsl_multifit_nlinear_type;
 
@@ -90,14 +112,18 @@ gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
 void gsl_multifit_nlinear_free (gsl_multifit_nlinear_workspace * w);
 
 int
-gsl_multifit_nlinear_set (gsl_multifit_nlinear_fdf * fdf,
-                          const gsl_vector * x,
-                          gsl_multifit_nlinear_workspace * w);
+gsl_multifit_nlinear_set_params (const gsl_multifit_nlinear_parameters * params,
+                                 gsl_multifit_nlinear_workspace * w);
 
-int gsl_multifit_nlinear_wset (gsl_multifit_nlinear_fdf * f, 
-                               const gsl_vector * x,
-                               const gsl_vector * wts,
-                               gsl_multifit_nlinear_workspace * w);
+int
+gsl_multifit_nlinear_init (gsl_multifit_nlinear_fdf * fdf,
+                           const gsl_vector * x,
+                           gsl_multifit_nlinear_workspace * w);
+
+int gsl_multifit_nlinear_winit (gsl_multifit_nlinear_fdf * f, 
+                                const gsl_vector * x,
+                                const gsl_vector * wts,
+                                gsl_multifit_nlinear_workspace * w);
 
 int
 gsl_multifit_nlinear_iterate (gsl_multifit_nlinear_workspace * w);
