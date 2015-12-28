@@ -72,7 +72,9 @@ gsl_multilarge_nlinear_test (const double xtol, const double gtol,
   fnorm = gsl_multilarge_nlinear_normf(w);
   phi = 0.5 * fnorm * fnorm;
 
+#if 0
   fprintf(stderr, "gnorm = %.12e fnorm = %.12e gnorm/phi = %.12e\n", gnorm, fnorm, gnorm / phi);
+#endif
 
   if (gnorm <= gtol * GSL_MAX(phi, 1.0))
     {

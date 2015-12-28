@@ -28,7 +28,7 @@
 #include <gsl/gsl_blas.h>
 
 #include "oct.h"
-#define DEBUG   1
+#define DEBUG   0
 
 /*
  * This module contains an implementation of the Levenberg-Marquardt
@@ -321,11 +321,7 @@ lm_iterate(gsl_vector * x, gsl_vector * dx,
           /* update LM parameter */
           b = 2.0 * rho - 1.0;
           b = 1.0 - b*b*b;
-          if (b > 0.0)
-            state->lambda *= GSL_MAX(GSL_LM_ONE_THIRD, b);
-          else
-            state->lambda *= GSL_LM_ONE_THIRD;
-
+          state->lambda *= GSL_MAX(GSL_LM_ONE_THIRD, b);
           state->nu = 2;
 
           /* compute new JTJ(x+dx), JTf(x+dx) and ||f(x+dx)|| */
@@ -417,12 +413,14 @@ lm_rcond(double *rcond, void * vstate)
 
   gsl_vector_minmax(eval, &eval_min, &eval_max);
 
+#if 0
   /*XXX*/
   {
     gsl_vector_scale(eval, 1.0 / eval_max);
     gsl_sort_vector(eval);
     printv_octave(eval, "eval");
   }
+#endif
 
   if (eval_max > 0.0 && eval_min > 0.0)
     {
@@ -618,8 +616,8 @@ reduction, given by Eq 4.4 of More, 1978.
 */
 
 static double
-lm_calc_rho(const double lambda, const gsl_vector * dx, const gsl_vector * minus_g,
-            lm_state_t * state)
+lm_calc_rho(const double lambda, const gsl_vector * dx,
+            const gsl_vector * minus_g, lm_state_t * state)
 {
   double rho;
   double actual_reduction;
