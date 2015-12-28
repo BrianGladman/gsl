@@ -27,7 +27,10 @@
  * using either the normal equations or QR approach
  */
 
-static int normal_init(const gsl_matrix * J, void * vstate);
+#include "qrsolv.c"
+
+static int normal_init(const gsl_vector * f, const gsl_matrix * J,
+                       void * vstate);
 static int normal_solve(const double lambda, gsl_vector *dx,
                         void *vstate);
 static int normal_regularize(const double lambda,
@@ -37,9 +40,13 @@ static int normal_solve_cholesky(gsl_matrix * A, const gsl_vector * b,
 static int normal_solve_QR(gsl_matrix * A, const gsl_vector * b,
                            gsl_vector * x, lm_state_t *state);
 
+static int qr_init(const gsl_vector * f, const gsl_matrix * J,
+                   void * vstate);
+static int qr_solve(const double lambda, gsl_vector *dx, void *vstate);
+
 /* compute A = J^T J */
 static int
-normal_init(const gsl_matrix * J, void * vstate)
+normal_init(const gsl_vector * f, const gsl_matrix * J, void * vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
   return gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, J, 0.0, state->A);
@@ -155,4 +162,45 @@ normal_solve_QR(gsl_matrix * A, const gsl_vector * b,
   gsl_vector_mul(x, D);
 
   return GSL_SUCCESS;
+}
+
+/* compute J = Q R PT and qtf = Q^T f */
+static int
+qr_init(const gsl_vector * f, const gsl_matrix * J, void * vstate)
+{
+  lm_state_t *state = (lm_state_t *) vstate;
+  int signum;
+
+  gsl_matrix_memcpy(state->R, J);
+  gsl_linalg_QRPT_decomp(state->R, state->tau, state->perm,
+                         &signum, state->workp);
+
+  gsl_vector_memcpy(state->qtf, f);
+  gsl_linalg_QR_QTvec(state->R, state->tau, state->qtf);
+
+  return GSL_SUCCESS;
+}
+
+static int
+qr_solve(const double lambda, gsl_vector *dx, void *vstate)
+{
+  lm_state_t *state = (lm_state_t *) vstate;
+  const double sqrt_lambda = sqrt(lambda);
+  int status;
+
+  /*
+   * solve:
+   *
+   * [       J       ] dx = [ f ]
+   * [ sqrt(lamba) D ]      [ 0 ]
+   *
+   * using QRPT factorization of J
+   */
+  status = qrsolv(state->R, state->perm, sqrt_lambda, state->diag,
+                  state->qtf, dx, state->workp, state->workn);
+
+  /* reverse step to go downhill */
+  gsl_vector_scale(dx, -1.0);
+
+  return status;
 }

@@ -27,6 +27,7 @@
 
 gsl_multifit_nlinear_workspace *
 gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T, 
+                            const gsl_multifit_nlinear_parameters * params,
                             const size_t n, const size_t p)
 {
   gsl_multifit_nlinear_workspace * w;
@@ -85,7 +86,7 @@ gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
       GSL_ERROR_VAL ("failed to allocate space for sqrt_wts", GSL_ENOMEM, 0);
     }
 
-  w->state = (T->alloc)(n, p);
+  w->state = (T->alloc)(params, n, p);
   if (w->state == 0)
     {
       gsl_multifit_nlinear_free (w);
@@ -126,14 +127,6 @@ gsl_multifit_nlinear_free (gsl_multifit_nlinear_workspace * w)
     gsl_matrix_free (w->J);
 
   free (w);
-}
-
-int
-gsl_multifit_nlinear_set_params (const gsl_multifit_nlinear_parameters * params,
-                                 gsl_multifit_nlinear_workspace * w)
-{
-  int status = (w->type->params) (w->state, params);
-  return status;
 }
 
 int

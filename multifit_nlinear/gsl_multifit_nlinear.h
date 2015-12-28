@@ -78,7 +78,8 @@ typedef struct
 typedef struct
 {
   const char *name;
-  void * (*alloc) (const size_t n, const size_t p);
+  void * (*alloc) (const gsl_multifit_nlinear_parameters * params,
+                   const size_t n, const size_t p);
   int (*init) (void *state, const gsl_vector * wts,
                gsl_multifit_nlinear_fdf * fdf, gsl_vector * x,
                gsl_vector * f, gsl_matrix * J);
@@ -86,7 +87,6 @@ typedef struct
                   gsl_multifit_nlinear_fdf * fdf, gsl_vector * x,
                   gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
   int (*gradient) (void *state, gsl_vector * g);
-  int (*params) (void *state, const gsl_multifit_nlinear_parameters * params);
   void (*free) (void *state);
 } gsl_multifit_nlinear_type;
 
@@ -106,14 +106,11 @@ typedef struct
 
 
 gsl_multifit_nlinear_workspace *
-gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T, 
+gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
+                            const gsl_multifit_nlinear_parameters * params,
                             size_t n, size_t p);
 
 void gsl_multifit_nlinear_free (gsl_multifit_nlinear_workspace * w);
-
-int
-gsl_multifit_nlinear_set_params (const gsl_multifit_nlinear_parameters * params,
-                                 gsl_multifit_nlinear_workspace * w);
 
 int
 gsl_multifit_nlinear_init (gsl_multifit_nlinear_fdf * fdf,

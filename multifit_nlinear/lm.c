@@ -25,6 +25,7 @@
 #include <gsl/gsl_multifit_nlinear.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
+#include <gsl/gsl_permutation.h>
 
 #include "oct.c"
 
@@ -43,8 +44,6 @@
 
 typedef struct
 {
-  gsl_matrix *A;             /* J^T J */
-  gsl_matrix *work_JTJ;      /* copy of J^T J */
   gsl_vector *diag;          /* D = diag(J^T J) */
   gsl_vector *rhs;           /* rhs vector = -g = -J^T f */
   gsl_vector *x_trial;       /* trial parameter vector */
@@ -55,12 +54,23 @@ typedef struct
   double lambda;             /* LM parameter lambda */
   double lambda0;            /* initial scale factor for lambda */
 
+  /* normal equations variables */
+  gsl_matrix *A;             /* J^T J */
+  gsl_matrix *work_JTJ;      /* copy of J^T J */
+
+  /* QR solver variables */
+  gsl_matrix *R;             /* QR factorization of J */
+  gsl_permutation *perm;     /* permutation matrix */
+  gsl_vector *qtf;           /* Q^T f */
+  gsl_vector *workn;         /* workspace, length n */
+
   /* tunable parameters */
 
   int (*init_diag) (const gsl_matrix * J, gsl_vector * diag);
   int (*update_diag) (const gsl_matrix * J, gsl_vector * diag);
 
-  int (*solver_init) (const gsl_matrix * J, void * vstate);
+  int (*solver_init) (const gsl_vector * f, const gsl_matrix * J,
+                      void * vstate);
   int (*solver) (const double lambda, gsl_vector * dx,
                  void * vstate);
 } lm_state_t;
@@ -71,10 +81,9 @@ typedef struct
 
 #define LM_ONE_THIRD         (0.333333333333333)
 
-static void * lm_alloc (const size_t n, const size_t p);
+static void * lm_alloc (const gsl_multifit_nlinear_parameters * params,
+                        const size_t n, const size_t p);
 static void lm_free(void *vstate);
-static int lm_params(void *vstate,
-                     const gsl_multifit_nlinear_parameters *params);
 static int lm_init(void *vstate, const gsl_vector * swts,
                    gsl_multifit_nlinear_fdf *fdf,
                    gsl_vector *x, gsl_vector *f, gsl_matrix *J);
@@ -84,21 +93,15 @@ static int lm_iterate(void *vstate, const gsl_vector *swts,
                       gsl_vector *dx);
 
 static void *
-lm_alloc (const size_t n, const size_t p)
+lm_alloc (const gsl_multifit_nlinear_parameters * params,
+          const size_t n, const size_t p)
 {
   lm_state_t *state;
-  gsl_multifit_nlinear_parameters params;
   
   state = calloc(1, sizeof(lm_state_t));
   if (state == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate lm state", GSL_ENOMEM);
-    }
-
-  state->A = gsl_matrix_alloc(p, p);
-  if (state->A == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for A", GSL_ENOMEM);
     }
 
   state->diag = gsl_vector_alloc(p);
@@ -125,12 +128,6 @@ lm_alloc (const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for tau", GSL_ENOMEM);
     }
 
-  state->work_JTJ = gsl_matrix_alloc(p, p);
-  if (state->work_JTJ == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for JTJ workspace", GSL_ENOMEM);
-    }
-
   state->x_trial = gsl_vector_alloc(p);
   if (state->x_trial == NULL)
     {
@@ -143,19 +140,86 @@ lm_alloc (const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for f_trial", GSL_ENOMEM);
     }
 
+  if (params->scale == GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG)
+    {
+      state->init_diag = init_diag_levenberg;
+      state->update_diag = update_diag_levenberg;
+    }
+  else if (params->scale == GSL_MULTIFIT_NLINEAR_SCALE_MARQUARDT)
+    {
+      state->init_diag = init_diag_marquardt;
+      state->update_diag = update_diag_marquardt;
+    }
+  else if (params->scale == GSL_MULTIFIT_NLINEAR_SCALE_MORE)
+    {
+      state->init_diag = init_diag_more;
+      state->update_diag = update_diag_more;
+    }
+  else
+    {
+      GSL_ERROR_NULL ("invalid scale parameter", GSL_EINVAL);
+    }
+
+  if (params->solver == GSL_MULTIFIT_NLINEAR_SOLVER_NORMAL)
+    {
+      /* allocate variables specific to normal equations solver */
+
+      state->A = gsl_matrix_alloc(p, p);
+      if (state->A == NULL)
+        {
+          GSL_ERROR_NULL ("failed to allocate space for A", GSL_ENOMEM);
+        }
+
+      state->work_JTJ = gsl_matrix_alloc(p, p);
+      if (state->work_JTJ == NULL)
+        {
+          GSL_ERROR_NULL ("failed to allocate space for JTJ workspace",
+                          GSL_ENOMEM);
+        }
+
+      state->solver_init = normal_init;
+      state->solver = normal_solve;
+    }
+  else if (params->solver == GSL_MULTIFIT_NLINEAR_SOLVER_QR)
+    {
+      /* allocate variables specific to QR solver */
+
+      state->R = gsl_matrix_alloc(n, p);
+      if (state->R == NULL)
+        {
+          GSL_ERROR_NULL ("failed to allocate space for R", GSL_ENOMEM);
+        }
+
+      state->qtf = gsl_vector_alloc(n);
+      if (state->qtf == NULL)
+        {
+          GSL_ERROR_NULL ("failed to allocate space for qtf",
+                          GSL_ENOMEM);
+        }
+
+      state->perm = gsl_permutation_calloc(p);
+      if (state->perm == NULL)
+        {
+          GSL_ERROR_NULL ("failed to allocate space for perm",
+                          GSL_ENOMEM);
+        }
+
+      state->workn = gsl_vector_alloc(n);
+      if (state->workn == NULL)
+        {
+          GSL_ERROR_NULL ("failed to allocate space for workn",
+                          GSL_ENOMEM);
+        }
+
+      state->solver_init = qr_init;
+      state->solver = qr_solve;
+    }
+  else
+    {
+      GSL_ERROR_NULL ("invalid solver parameter", GSL_EINVAL);
+    }
+
   state->lambda0 = 1.0e-3;
-
-  /* default parameters */
-  params.scale = GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG;
-  params.solver = GSL_MULTIFIT_NLINEAR_SOLVER_NORMAL;
-
-#if 0 /* XXX */
-  state->lambda0 = 0.081670006393155539;
-  params.scale = GSL_MULTIFIT_NLINEAR_SCALE_MORE;
-#endif
-
-  /* set default tunable parameters */
-  lm_params(state, &params);
 
   return state;
 }
@@ -189,45 +253,19 @@ lm_free(void *vstate)
   if (state->f_trial)
     gsl_vector_free(state->f_trial);
 
+  if (state->R)
+    gsl_matrix_free(state->R);
+
+  if (state->qtf)
+    gsl_vector_free(state->qtf);
+
+  if (state->perm)
+    gsl_permutation_free(state->perm);
+
+  if (state->workn)
+    gsl_vector_free(state->workn);
+
   free(state);
-}
-
-static int
-lm_params(void *vstate, const gsl_multifit_nlinear_parameters *params)
-{
-  lm_state_t *state = (lm_state_t *) vstate;
-
-  if (params->scale == GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG)
-    {
-      state->init_diag = init_diag_levenberg;
-      state->update_diag = update_diag_levenberg;
-    }
-  else if (params->scale == GSL_MULTIFIT_NLINEAR_SCALE_MARQUARDT)
-    {
-      state->init_diag = init_diag_marquardt;
-      state->update_diag = update_diag_marquardt;
-    }
-  else if (params->scale == GSL_MULTIFIT_NLINEAR_SCALE_MORE)
-    {
-      state->init_diag = init_diag_more;
-      state->update_diag = update_diag_more;
-    }
-  else
-    {
-      GSL_ERROR("invalid scale parameter", GSL_EINVAL);
-    }
-
-  if (params->solver == GSL_MULTIFIT_NLINEAR_SOLVER_NORMAL)
-    {
-      state->solver_init = normal_init;
-      state->solver = normal_solve;
-    }
-  else
-    {
-      GSL_ERROR("invalid solver parameter", GSL_EINVAL);
-    }
-
-  return GSL_SUCCESS;
 }
 
 static int
@@ -311,21 +349,13 @@ lm_iterate(void *vstate, const gsl_vector *swts,
   int bad_steps = 0;                          /* consecutive rejected steps */
 
   /* initialize linear least squares solver */
-  status = (state->solver_init)(J, vstate);
+  status = (state->solver_init)(f, J, vstate);
   if (status)
     return status;
 
   /* loop until we find an acceptable step dx */
   while (!foundstep)
     {
-#if 0
-      print_octave(J, "J");
-      print_octave(A, "A");
-      printv_octave(f, "f");
-      printv_octave(diag, "dvec");
-      printv_octave(rhs, "rhs");
-#endif
-
       /*
        * solve: [    J     ] dx = - [ f ]
        *        [ lambda*D ]        [ 0 ]
@@ -426,7 +456,6 @@ static const gsl_multifit_nlinear_type lm_type =
   lm_init,
   lm_iterate,
   lm_gradient,
-  lm_params,
   lm_free
 };
 

@@ -38,15 +38,20 @@ main (void)
 
   gsl_ieee_env_setup();
 
+  /* test normal equations method */
   fdf_params.solver = GSL_MULTIFIT_NLINEAR_SOLVER_NORMAL;
 
   fdf_params.scale = GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG;
   test_fdf_main(&fdf_params);
 
-#if 0
-  fdf_params.scale = GSL_MULTIFIT_NLINEAR_SCALE_MARQUARDT;
+  fdf_params.scale = GSL_MULTIFIT_NLINEAR_SCALE_MORE;
   test_fdf_main(&fdf_params);
-#endif
+
+  /* test QR method */
+  fdf_params.solver = GSL_MULTIFIT_NLINEAR_SOLVER_QR;
+
+  fdf_params.scale = GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG;
+  test_fdf_main(&fdf_params);
 
   fdf_params.scale = GSL_MULTIFIT_NLINEAR_SCALE_MORE;
   test_fdf_main(&fdf_params);
