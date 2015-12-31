@@ -71,6 +71,8 @@ eckerle_f (const gsl_vector * x, void *params, gsl_vector * f)
       gsl_vector_set (f, i, yi - eckerle_F[i]);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -96,6 +98,8 @@ eckerle_df (const gsl_vector * x, void *params, gsl_matrix * df)
         -b[0] * term2 / (b[1] * b[1]) + b[0] / pow(b[1], 4.0) * term2 * term1 * term1);
       gsl_matrix_set (df, i, 2, b[0] / pow(b[1], 3.0) * term1 * term2);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

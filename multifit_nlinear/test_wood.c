@@ -40,6 +40,8 @@ wood_f (const gsl_vector * x, void *params, gsl_vector * f)
   gsl_vector_set(f, 4, sqrt(10.0)*(x2 + x4 - 2.0));
   gsl_vector_set(f, 5, (x2 - x4) / sqrt(10.0));
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -63,6 +65,8 @@ wood_df (const gsl_vector * x, void *params, gsl_matrix * J)
   gsl_matrix_set(J, 4, 3, s10);
   gsl_matrix_set(J, 5, 1, 1.0/s10);
   gsl_matrix_set(J, 5, 3, -1.0/s10);
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

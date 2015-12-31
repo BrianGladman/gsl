@@ -57,6 +57,8 @@ rat42_f (const gsl_vector * x, void *params, gsl_vector * f)
       gsl_vector_set (f, i, yi - rat42_F[i]);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -81,6 +83,8 @@ rat42_df (const gsl_vector * x, void *params, gsl_matrix * df)
       gsl_matrix_set (df, i, 1, -b[0] * term1 / (term2 * term2));
       gsl_matrix_set (df, i, 2, b[0] * term1 * xi / (term2 * term2));
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

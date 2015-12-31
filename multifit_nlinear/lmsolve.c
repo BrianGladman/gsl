@@ -31,8 +31,8 @@
 
 static int normal_init(const gsl_vector * f, const gsl_matrix * J,
                        void * vstate);
-static int normal_solve(const double lambda, gsl_vector *dx,
-                        void *vstate);
+static int normal_solve(const double lambda, const gsl_vector *g,
+                        gsl_vector *dx, void *vstate);
 static int normal_regularize(const double lambda,
                              const gsl_vector * diag, gsl_matrix * A);
 static int normal_solve_cholesky(gsl_matrix * A, const gsl_vector * b,
@@ -42,19 +42,23 @@ static int normal_solve_QR(gsl_matrix * A, const gsl_vector * b,
 
 static int qr_init(const gsl_vector * f, const gsl_matrix * J,
                    void * vstate);
-static int qr_solve(const double lambda, gsl_vector *dx, void *vstate);
+static int qr_solve(const double lambda, const gsl_vector *g,
+                    gsl_vector *dx, void *vstate);
 
 /* compute A = J^T J */
 static int
 normal_init(const gsl_vector * f, const gsl_matrix * J, void * vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
+
+  (void)f; /* avoid unused parameter warning */
+
   return gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, J, 0.0, state->A);
 }
 
 /* compute step dx by solving (J^T J + lambda D^T D) dx = -J^T f */
 static int
-normal_solve(const double lambda, gsl_vector *dx, void *vstate)
+normal_solve(const double lambda, const gsl_vector *g, gsl_vector *dx, void *vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
   int status;
@@ -72,7 +76,7 @@ normal_solve(const double lambda, gsl_vector *dx, void *vstate)
   /* turn off error handler in case Cholesky fails */
   err_handler = gsl_set_error_handler_off();
 
-  status = normal_solve_cholesky(JTJ, state->rhs, dx, state);
+  status = normal_solve_cholesky(JTJ, g, dx, state);
 
   /* restore error handler */
   gsl_set_error_handler(err_handler);
@@ -83,10 +87,13 @@ normal_solve(const double lambda, gsl_vector *dx, void *vstate)
       gsl_matrix_tricpy('L', 1, JTJ, state->A);
       normal_regularize(lambda, state->diag, JTJ);
 
-      status = normal_solve_QR(JTJ, state->rhs, dx, state);
+      status = normal_solve_QR(JTJ, g, dx, state);
       if (status)
         return status;
     }
+
+  /* reverse step to go downhill */
+  gsl_vector_scale(dx, -1.0);
 
   return GSL_SUCCESS;
 }
@@ -182,7 +189,7 @@ qr_init(const gsl_vector * f, const gsl_matrix * J, void * vstate)
 }
 
 static int
-qr_solve(const double lambda, gsl_vector *dx, void *vstate)
+qr_solve(const double lambda, const gsl_vector *g, gsl_vector *dx, void *vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
   const double sqrt_lambda = sqrt(lambda);
@@ -201,6 +208,8 @@ qr_solve(const double lambda, gsl_vector *dx, void *vstate)
 
   /* reverse step to go downhill */
   gsl_vector_scale(dx, -1.0);
+
+  (void)g; /* avoid unused parameter warning */
 
   return status;
 }

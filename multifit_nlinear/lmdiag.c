@@ -40,6 +40,7 @@ static int update_diag_more(const gsl_matrix * J, gsl_vector * diag);
 static int
 init_diag_levenberg(const gsl_matrix * J, gsl_vector * diag)
 {
+  (void)J; /* avoid unused parameter warning */
   gsl_vector_set_all(diag, 1.0);
   return GSL_SUCCESS;
 }
@@ -47,6 +48,9 @@ init_diag_levenberg(const gsl_matrix * J, gsl_vector * diag)
 static int
 update_diag_levenberg(const gsl_matrix * J, gsl_vector * diag)
 {
+  (void)J;    /* avoid unused parameter warning */
+  (void)diag; /* avoid unused parameter warning */
+
   /* nothing to do */
   return GSL_SUCCESS;
 }

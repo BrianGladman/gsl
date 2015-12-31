@@ -45,6 +45,8 @@ brown1_f (const gsl_vector * x, void *params, gsl_vector * f)
       gsl_vector_set (f, i, ui * ui + vi * vi);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -69,6 +71,9 @@ brown1_df (const gsl_vector * x, void *params, gsl_matrix * df)
       gsl_matrix_set (df, i, 3, 2 * vi * sin (ti));
 
     }
+
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

@@ -43,6 +43,8 @@ vardim_f (const gsl_vector * x, void *params, gsl_vector * f)
   gsl_vector_set(f, vardim_P, sum);
   gsl_vector_set(f, vardim_P + 1, sum*sum);
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -66,6 +68,8 @@ vardim_df (const gsl_vector * x, void *params, gsl_matrix * J)
       gsl_matrix_set(J, vardim_P, i, i + 1.0);
       gsl_matrix_set(J, vardim_P + 1, i, 2*(i + 1.0)*sum);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

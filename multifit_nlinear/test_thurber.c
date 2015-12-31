@@ -77,6 +77,8 @@ thurber_f (const gsl_vector * x, void *params, gsl_vector * f)
       gsl_vector_set (f, i, yi - thurber_F[i]);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -108,6 +110,8 @@ thurber_df (const gsl_vector * x, void *params, gsl_matrix * df)
       gsl_matrix_set (df, i, 5, -xi * xi * n / d_sq);
       gsl_matrix_set (df, i, 6, -xi * xi * xi * n / d_sq);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

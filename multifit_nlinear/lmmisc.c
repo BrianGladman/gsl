@@ -19,7 +19,7 @@
 
 static int lm_init_lambda(const gsl_matrix * J, lm_state_t * state);
 static double lm_calc_rho(const double lambda, const gsl_vector * dx,
-                          const gsl_vector * minus_g,
+                          const gsl_vector * g,
                           const gsl_vector * f,
                           const gsl_vector * f_trial,
                           lm_state_t * state);
@@ -75,7 +75,7 @@ reduction, given by Eq 4.4 of More, 1978.
 
 static double
 lm_calc_rho(const double lambda, const gsl_vector * dx,
-            const gsl_vector * minus_g, const gsl_vector * f,
+            const gsl_vector * g, const gsl_vector * f,
             const gsl_vector * f_trial, lm_state_t * state)
 {
   const double normf = gsl_blas_dnrm2(f);
@@ -113,9 +113,9 @@ lm_calc_rho(const double lambda, const gsl_vector * dx,
   for (i = 0; i < dx->size; ++i)
     {
       double dxi = gsl_vector_get(dx, i);
-      double mgi = gsl_vector_get(minus_g, i);
+      double gi = gsl_vector_get(g, i);
 
-      pred_reduction += (dxi / normf) * (mgi / normf);
+      pred_reduction -= (dxi / normf) * (gi / normf);
     }
 
   if (pred_reduction > 0.0)

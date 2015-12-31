@@ -49,6 +49,8 @@ roth_f (const gsl_vector * x, void *params, gsl_vector * f)
   gsl_vector_set(f, 0, x1 - x2*(2.0 - x2*(5.0 - x2)) - 13.0);
   gsl_vector_set(f, 1, x1 - x2*(14.0 - x2*(1.0 + x2)) - 29.0);
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -61,6 +63,8 @@ roth_df (const gsl_vector * x, void *params, gsl_matrix * J)
   gsl_matrix_set(J, 0, 1, -2.0 + x2*(10.0 - 3.0*x2));
   gsl_matrix_set(J, 1, 0, 1.0);
   gsl_matrix_set(J, 1, 1, -14.0 + x2*(2.0 + 3.0*x2));
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

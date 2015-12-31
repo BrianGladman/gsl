@@ -366,6 +366,8 @@ kirby2_f (const gsl_vector * x, void *params, gsl_vector * f)
       gsl_vector_set (f, i, kirby2_F1[i] - y);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -391,6 +393,8 @@ kirby2_df (const gsl_vector * x, void *params, gsl_matrix * df)
       gsl_matrix_set (df, i, 3, x*u/(v*v));
       gsl_matrix_set (df, i, 4, x*x*u/(v*v));
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

@@ -79,6 +79,8 @@ kowalik_f (const gsl_vector * x, void *params, gsl_vector * f)
       gsl_vector_set(f, i, fi);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -102,6 +104,8 @@ kowalik_df (const gsl_vector * x, void *params, gsl_matrix * J)
       gsl_matrix_set(J, i, 2, ui*term1*x1 / (term2*term2));
       gsl_matrix_set(J, i, 3, term1*x1 / (term2*term2));
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

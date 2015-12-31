@@ -34,7 +34,8 @@
 int
 main (void)
 {
-  gsl_multifit_nlinear_parameters fdf_params;
+  gsl_multifit_nlinear_parameters fdf_params =
+    gsl_multifit_nlinear_default_parameters();
 
   gsl_ieee_env_setup();
 

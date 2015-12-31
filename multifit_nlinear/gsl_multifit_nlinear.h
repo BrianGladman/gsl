@@ -59,6 +59,7 @@ typedef struct
 {
   gsl_multifit_nlinear_scale_t scale;   /* scaling method */
   gsl_multifit_nlinear_solver_t solver; /* solver method */
+  int accel;                            /* use geodesic acceleration */
 } gsl_multifit_nlinear_parameters;
 
 /* Definition of vector-valued functions and gradient with parameters
@@ -81,12 +82,12 @@ typedef struct
   void * (*alloc) (const gsl_multifit_nlinear_parameters * params,
                    const size_t n, const size_t p);
   int (*init) (void *state, const gsl_vector * wts,
-               gsl_multifit_nlinear_fdf * fdf, gsl_vector * x,
-               gsl_vector * f, gsl_matrix * J);
+               gsl_multifit_nlinear_fdf * fdf, const gsl_vector * x,
+               gsl_vector * f, gsl_matrix * J, gsl_vector * g);
   int (*iterate) (void *state, const gsl_vector * wts,
                   gsl_multifit_nlinear_fdf * fdf, gsl_vector * x,
-                  gsl_vector * f, gsl_matrix * J, gsl_vector * dx);
-  int (*gradient) (void *state, gsl_vector * g);
+                  gsl_vector * f, gsl_matrix * J, gsl_vector * g,
+                  gsl_vector * dx);
   void (*free) (void *state);
 } gsl_multifit_nlinear_type;
 
@@ -111,6 +112,8 @@ gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
                             size_t n, size_t p);
 
 void gsl_multifit_nlinear_free (gsl_multifit_nlinear_workspace * w);
+
+gsl_multifit_nlinear_parameters gsl_multifit_nlinear_default_parameters(void);
 
 int
 gsl_multifit_nlinear_init (gsl_multifit_nlinear_fdf * fdf,

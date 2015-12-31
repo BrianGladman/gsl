@@ -37,6 +37,8 @@ powell1_f (const gsl_vector * x, void *params, gsl_vector * f)
   gsl_vector_set(f, 2, pow(x2 - 2.0*x3, 2.0));
   gsl_vector_set(f, 3, sqrt(10.0) * pow((x1 - x4), 2.0));
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -69,6 +71,8 @@ powell1_df (const gsl_vector * x, void *params, gsl_matrix * J)
   gsl_matrix_set(J, 3, 1, 0.0);
   gsl_matrix_set(J, 3, 2, 0.0);
   gsl_matrix_set(J, 3, 3, -2.0*sqrt(10.0)*term2);
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

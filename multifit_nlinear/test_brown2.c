@@ -74,6 +74,8 @@ brown2_f (const gsl_vector * x, void *params, gsl_vector * f)
 
   gsl_vector_set(f, brown2_N - 1, prod - 1.0);
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -100,6 +102,8 @@ brown2_df (const gsl_vector * x, void *params, gsl_matrix * J)
 
       gsl_matrix_set(J, brown2_N - 1, j, prod);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

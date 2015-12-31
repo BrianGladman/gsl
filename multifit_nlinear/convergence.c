@@ -63,9 +63,6 @@ gsl_multifit_nlinear_test (const double xtol, const double gtol,
       return GSL_SUCCESS;
     }
 
-  /* compute gradient g = J^T f */
-  (w->type->gradient) (w->state, w->g);
-
   /* compute gnorm = max_i( g_i * max(x_i, 1) ) */
   gnorm = scaled_infnorm(w->x, w->g);
 

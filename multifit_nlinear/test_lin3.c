@@ -25,6 +25,8 @@ lin3_checksol(const double x[], const double sumsq,
 
   gsl_test_rel(sum, sum_exact, epsrel, "%s/%s coeff sum",
                sname, pname);
+
+  (void)x; /* avoid unused parameter warning */
 }
 
 static int
@@ -49,6 +51,8 @@ lin3_f (const gsl_vector * x, void *params, gsl_vector * f)
       gsl_vector_set(f, i, fi);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -66,6 +70,9 @@ lin3_df (const gsl_vector * x, void *params, gsl_matrix * J)
           gsl_matrix_set(J, i, j, i * (j + 1.0));
         }
     }
+
+  (void)x;      /* avoid unused parameter warning */
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

@@ -540,6 +540,8 @@ hahn1_f (const gsl_vector * x, void *params, gsl_vector * f)
       gsl_vector_set (f, i, hahn1_F1[i] - y);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -567,6 +569,8 @@ hahn1_df (const gsl_vector * x, void *params, gsl_matrix * df)
       gsl_matrix_set (df, i, 5, x*x*u/(v*v));
       gsl_matrix_set (df, i, 6, x*x*x*u/(v*v));
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

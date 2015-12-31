@@ -72,6 +72,8 @@ bard_f (const gsl_vector * x, void *params, gsl_vector * f)
       gsl_vector_set(f, i, fi);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -93,6 +95,8 @@ bard_df (const gsl_vector * x, void *params, gsl_matrix * J)
       gsl_matrix_set(J, i, 1, ui * vi / (term * term));
       gsl_matrix_set(J, i, 2, ui * wi / (term * term));
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

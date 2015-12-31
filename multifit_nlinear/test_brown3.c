@@ -35,6 +35,8 @@ brown3_f (const gsl_vector * x, void *params, gsl_vector * f)
   gsl_vector_set(f, 1, x2 - 2.0e-6);
   gsl_vector_set(f, 2, x1*x2 - 2.0);
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -50,6 +52,8 @@ brown3_df (const gsl_vector * x, void *params, gsl_matrix * J)
   gsl_matrix_set(J, 1, 1, 1.0);
   gsl_matrix_set(J, 2, 0, x2);
   gsl_matrix_set(J, 2, 1, x1);
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

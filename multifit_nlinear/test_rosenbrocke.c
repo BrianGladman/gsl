@@ -42,6 +42,8 @@ rosenbrocke_f (const gsl_vector * x, void *params, gsl_vector * f)
       gsl_vector_set(f, 2*i + 1, 1.0 - x2im1);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -60,6 +62,8 @@ rosenbrocke_df (const gsl_vector * x, void *params, gsl_matrix * J)
       gsl_matrix_set(J, 2*i, 2*i + 1, 10.0);
       gsl_matrix_set(J, 2*i + 1, 2*i, -1.0);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

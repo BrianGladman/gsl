@@ -17,6 +17,8 @@ penalty1_checksol(const double x[], const double sumsq,
 
   gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
                sname, pname);
+
+  (void)x; /* avoid unused parameter warning */
 }
 
 static int
@@ -38,6 +40,8 @@ penalty1_f (const gsl_vector * x, void *params, gsl_vector * f)
 
   gsl_vector_set(f, penalty1_P, sum - 0.25);
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -58,6 +62,8 @@ penalty1_df (const gsl_vector * x, void *params, gsl_matrix * J)
       double xi = gsl_vector_get(x, i);
       gsl_matrix_set(J, penalty1_P, i, 2.0 * xi);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

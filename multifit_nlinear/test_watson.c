@@ -60,6 +60,8 @@ watson_f (const gsl_vector * x, void *params, gsl_vector * f)
   gsl_vector_set(f, watson_N - 2, x1);
   gsl_vector_set(f, watson_N - 1, x2 - x1*x1 - 1.0);
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -99,6 +101,8 @@ watson_df (const gsl_vector * x, void *params, gsl_matrix * J)
   gsl_matrix_set(J, watson_N - 2, 0, 1.0);
   gsl_matrix_set(J, watson_N - 1, 0, -2.0*x1);
   gsl_matrix_set(J, watson_N - 1, 1, 1.0);
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

@@ -46,6 +46,8 @@ lin2_f (const gsl_vector * x, void *params, gsl_vector * f)
       gsl_vector_set(f, i, fi);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -61,6 +63,9 @@ lin2_df (const gsl_vector * x, void *params, gsl_matrix * J)
           gsl_matrix_set(J, i, j, (i + 1.0) * (j + 1.0));
         }
     }
+
+  (void)x;      /* avoid unused parameter warning */
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

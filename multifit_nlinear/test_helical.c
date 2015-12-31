@@ -39,6 +39,8 @@ helical_f (const gsl_vector * x, void *params, gsl_vector * f)
   gsl_vector_set(f, 1, 10.0*(nx - 1.0));
   gsl_vector_set(f, 2, x3);
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -63,6 +65,8 @@ helical_df (const gsl_vector * x, void *params, gsl_matrix * J)
   gsl_matrix_set(J, 2, 0, 0.0);
   gsl_matrix_set(J, 2, 1, 0.0);
   gsl_matrix_set(J, 2, 2, 1.0);
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

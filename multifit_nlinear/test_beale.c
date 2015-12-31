@@ -42,6 +42,8 @@ beale_f (const gsl_vector * x, void *params, gsl_vector * f)
       gsl_vector_set(f, i, fi);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -59,6 +61,8 @@ beale_df (const gsl_vector * x, void *params, gsl_matrix * J)
       gsl_matrix_set(J, i, 0, term*x2 - 1.0);
       gsl_matrix_set(J, i, 1, (i + 1.0) * x1 * term);
     }
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }
