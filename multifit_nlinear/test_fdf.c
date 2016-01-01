@@ -84,6 +84,7 @@ static void test_fdf_checksol(const char *sname, const char *pname,
 static void test_scale_x0(gsl_vector *x0, const double scale);
 
 static test_fdf_problem *test_problems[] = {
+#if 0
   /*
    * These test problems are taken from
    *
@@ -111,6 +112,7 @@ static test_fdf_problem *test_problems[] = {
   &meyerscal_problem,  /* 20 */
 
   &powell2_problem,
+#endif
 
   /*
    * These tests are from
@@ -122,6 +124,7 @@ static test_fdf_problem *test_problems[] = {
    * Many of these overlap with the Nielsen tests
    */
   &rosenbrock_problem,   /* 1 */
+#if 0
   &roth_problem,         /* 2 */
   &powell3_problem,      /* 3 */
   &brown3_problem,       /* 4 */
@@ -157,6 +160,7 @@ static test_fdf_problem *test_problems[] = {
   &rat42_problem,
   &eckerle_problem,
   &rat43_problem,
+#endif
 
   NULL
 };
@@ -171,6 +175,7 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
 
   /* test weighted nonlinear least squares */
 
+#if 0
   /* internal weighting in _f and _df functions */
   test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
            wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
@@ -178,6 +183,7 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
   /* weighting through nlinear_winit */
   test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
            wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
+#endif
 
   for (i = 0; test_problems[i] != NULL; ++i)
     {
@@ -256,10 +262,12 @@ test_fdf(const gsl_multifit_nlinear_type * T,
   else
     gsl_multifit_nlinear_init(fdf, x0, w);
 
-  status = gsl_multifit_nlinear_driver(max_iter, xtol, gtol,
-                                       ftol, &info, w);
+  status = gsl_multifit_nlinear_driver(max_iter, xtol, gtol, ftol,
+                                       NULL, &info, w);
   gsl_test(status, "%s/%s did not converge, status=%s",
            sname, pname, gsl_strerror(status));
+
+  fprintf(stderr, "%s NJEV = %zu\n", pname, fdf->nevaldf);
 
   /* check solution */
   test_fdf_checksol(sname, pname, epsrel, w, problem);
@@ -280,8 +288,8 @@ test_fdf(const gsl_multifit_nlinear_type * T,
       gsl_vector_set_all(wv, 1.0);
       gsl_multifit_nlinear_winit(fdf, x0, wv, w);
   
-      status = gsl_multifit_nlinear_driver(max_iter, xtol, gtol,
-                                           ftol, &info, w);
+      status = gsl_multifit_nlinear_driver(max_iter, xtol, gtol, ftol,
+                                           NULL, &info, w);
       gsl_test(status, "%s/%s did not converge, status=%s",
                sname, pname, gsl_strerror(status));
 

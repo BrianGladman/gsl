@@ -71,13 +71,22 @@ lin1_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
+static int
+lin1_fvv (const gsl_vector * x, const gsl_vector * v,
+          void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf lin1_func =
 {
-  &lin1_f,
-  &lin1_df,
+  lin1_f,
+  lin1_df,
+  lin1_fvv,
   lin1_N,
   lin1_P,
   NULL,
+  0,
   0,
   0
 };

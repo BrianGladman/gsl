@@ -68,13 +68,22 @@ rosenbrocke_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
+static int
+rosenbrocke_fvv (const gsl_vector * x, const gsl_vector * v,
+                 void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf rosenbrocke_func =
 {
-  &rosenbrocke_f,
-  &rosenbrocke_df,
+  rosenbrocke_f,
+  rosenbrocke_df,
+  rosenbrocke_fvv,
   rosenbrocke_N,
   rosenbrocke_P,
   NULL,
+  0,
   0,
   0
 };

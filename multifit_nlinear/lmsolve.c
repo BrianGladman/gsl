@@ -21,22 +21,36 @@
  * This module handles the solution of the linear least squares
  * system:
  *
- * [    J     ] dx = - [ f ]
- * [ lambda*D ]        [ 0 ]
+ * [    J     ] v = - [ f ]
+ * [ lambda*D ]       [ 0 ]
  *
- * using either the normal equations or QR approach
+ * using either the normal equations or QR approach. The solvers are
+ * organized into 4 sequential steps:
+ *
+ * 1. init1: initialize solver for a given f(x) and J(x), independent of lambda
+ * 2. init2: further solver initialization once lambda is selected
+ * 3. solve_vel: solve above linear system for geodesic velocity (this is the
+ *               standard LM step)
+ * 4. solve_acc: solve a similar linear system for the geodesic acceleration:
+ *
+ * [    J     ] a = - [ fvv ]
+ * [ lambda*D ]       [  0  ]
+ *
+ * only the right hand side is different in this case (instead of f(x) we
+ * use the second directional derivative in the velocity direction).
  */
 
 #include "qrsolv.c"
 
-static int normal_init(const gsl_vector * f, const gsl_matrix * J,
-                       void * vstate);
-static int normal_solve(const double lambda, const gsl_vector *g,
-                        gsl_vector *dx, void *vstate);
+static int normal_init1(const gsl_vector * f, const gsl_matrix * J,
+                        const gsl_vector * g, void * vstate);
+static int normal_init2(const double lambda, void * vstate);
+static int normal_solve_vel(gsl_vector *v, void *vstate);
+static int normal_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
+                            gsl_vector *a, void *vstate);
+static int normal_solve(const gsl_vector * b, gsl_vector *x, lm_state_t *state);
 static int normal_regularize(const double lambda,
                              const gsl_vector * diag, gsl_matrix * A);
-static int normal_solve_cholesky(gsl_matrix * A, const gsl_vector * b,
-                                 gsl_vector * x, lm_state_t * state);
 static int normal_solve_QR(gsl_matrix * A, const gsl_vector * b,
                            gsl_vector * x, lm_state_t *state);
 
@@ -47,23 +61,45 @@ static int qr_solve(const double lambda, const gsl_vector *g,
 
 /* compute A = J^T J */
 static int
-normal_init(const gsl_vector * f, const gsl_matrix * J, void * vstate)
+normal_init1(const gsl_vector * f, const gsl_matrix * J,
+             const gsl_vector * g, void * vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
 
   (void)f; /* avoid unused parameter warning */
 
-  return gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, J, 0.0, state->A);
+  /* prepare rhs vector = -g = -J^T f */
+  gsl_vector_memcpy(state->rhs_vel, g);
+  gsl_vector_scale(state->rhs_vel, -1.0);
+
+  /* compute A = J^T J */
+  gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, J, 0.0, state->A);
+
+  return GSL_SUCCESS;
 }
 
-/* compute step dx by solving (J^T J + lambda D^T D) dx = -J^T f */
+/*
+normal_init2()
+  Compute the Cholesky decomposition of J^T J + lambda * D^T D
+
+Inputs: lambda - LM parameter
+        vstate - workspace
+
+Notes:
+1) On output, state->work_JTJ contains the Cholesky decomposition of
+J^T J + lambda D^T D
+
+2) On output, state->workp contains scale factors needed for a
+solution of the Cholesky system
+*/
+
 static int
-normal_solve(const double lambda, const gsl_vector *g, gsl_vector *dx, void *vstate)
+normal_init2(const double lambda, void * vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
-  int status;
   gsl_matrix *JTJ = state->work_JTJ;
   gsl_error_handler_t *err_handler;
+  int status;
 
   /* copy lower triangle of A to workspace */
   gsl_matrix_tricpy('L', 1, JTJ, state->A);
@@ -76,11 +112,70 @@ normal_solve(const double lambda, const gsl_vector *g, gsl_vector *dx, void *vst
   /* turn off error handler in case Cholesky fails */
   err_handler = gsl_set_error_handler_off();
 
-  status = normal_solve_cholesky(JTJ, g, dx, state);
+  status = gsl_linalg_cholesky_decomp2(JTJ, state->workp);
 
   /* restore error handler */
   gsl_set_error_handler(err_handler);
 
+  if (status == GSL_SUCCESS)
+    {
+      state->chol = 1;
+    }
+  else
+    {
+      state->chol = 0;
+    }
+
+  return GSL_SUCCESS;
+}
+
+/* compute velocity by solving (J^T J + lambda D^T D) v = -J^T f */
+static int
+normal_solve_vel(gsl_vector *v, void *vstate)
+{
+  lm_state_t *state = (lm_state_t *) vstate;
+  int status;
+
+  status = normal_solve(state->rhs_vel, v, state);
+
+  return status;
+}
+
+/* compute acceleration by solving (J^T J + lambda D^T D) a = -J^T fvv */
+static int
+normal_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
+                 gsl_vector *a, void *vstate)
+{
+  lm_state_t *state = (lm_state_t *) vstate;
+  int status;
+
+  /* compute rhs = -J^T fvv */
+  gsl_blas_dgemv(CblasTrans, -1.0, J, fvv, 0.0, state->rhs_acc);
+
+  status = normal_solve(state->rhs_acc, a, state);
+
+  return status;
+}
+
+/* solve: (J^T J + lambda D^T D) x = b */
+static int
+normal_solve(const gsl_vector * b, gsl_vector *x, lm_state_t *state)
+{
+  int status;
+  gsl_matrix *JTJ = state->work_JTJ;
+
+  if (state->chol == 1)
+    {
+      /* we have a Cholesky factorization of J^T J + lambda D^T D */
+      status = gsl_linalg_cholesky_solve2(JTJ, state->workp, b, x);
+      if (status)
+        return status;
+    }
+  else
+    {
+    }
+
+#if 0
   if (status)
     {
       /* Cholesky failed, restore matrix and use QR */
@@ -94,6 +189,7 @@ normal_solve(const double lambda, const gsl_vector *g, gsl_vector *dx, void *vst
 
   /* reverse step to go downhill */
   gsl_vector_scale(dx, -1.0);
+#endif
 
   return GSL_SUCCESS;
 }
@@ -113,25 +209,6 @@ normal_regularize(const double lambda, const gsl_vector * diag,
 
       *Aii += lambda * di * di;
     }
-
-  return GSL_SUCCESS;
-}
-
-/* solve: A x = b using Cholesky decomposition of A */
-static int
-normal_solve_cholesky(gsl_matrix * A, const gsl_vector * b,
-                      gsl_vector * x, lm_state_t * state)
-{
-  int status;
-
-  /* compute Cholesky decomposition of A with scaling */
-  status = gsl_linalg_cholesky_decomp2(A, state->workp);
-  if (status)
-    return status;
-
-  status = gsl_linalg_cholesky_solve2(A, state->workp, b, x);
-  if (status)
-    return status;
 
   return GSL_SUCCESS;
 }

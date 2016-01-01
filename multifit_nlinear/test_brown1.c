@@ -77,13 +77,22 @@ brown1_df (const gsl_vector * x, void *params, gsl_matrix * df)
   return GSL_SUCCESS;
 }
 
+static int
+brown1_fvv (const gsl_vector * x, const gsl_vector * v,
+            void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf brown1_func =
 {
-  &brown1_f,
-  &brown1_df,
+  brown1_f,
+  brown1_df,
+  brown1_fvv,
   brown1_N,
   brown1_P,
   NULL,
+  0,
   0,
   0
 };

@@ -53,13 +53,29 @@ rosenbrock_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
+static int
+rosenbrock_fvv (const gsl_vector * x, const gsl_vector * v,
+                void *params, gsl_vector * fvv)
+{
+  double v1 = gsl_vector_get(v, 0);
+
+  gsl_vector_set(fvv, 0, -20.0 * v1 * v1);
+  gsl_vector_set(fvv, 1, 0.0);
+
+  (void)params; /* avoid unused parameter warning */
+
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf rosenbrock_func =
 {
-  &rosenbrock_f,
-  &rosenbrock_df,
+  rosenbrock_f,
+  rosenbrock_df,
+  rosenbrock_fvv,
   rosenbrock_N,
   rosenbrock_P,
   NULL,
+  0,
   0,
   0
 };

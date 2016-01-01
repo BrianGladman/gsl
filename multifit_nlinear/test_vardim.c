@@ -74,13 +74,22 @@ vardim_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
+static int
+vardim_fvv (const gsl_vector * x, const gsl_vector * v,
+            void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf vardim_func =
 {
-  &vardim_f,
-  &vardim_df,
+  vardim_f,
+  vardim_df,
+  vardim_fvv,
   vardim_N,
   vardim_P,
   NULL,
+  0,
   0,
   0
 };

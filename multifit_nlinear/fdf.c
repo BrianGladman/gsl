@@ -142,22 +142,22 @@ gsl_multifit_nlinear_default_parameters(void)
 }
 
 int
-gsl_multifit_nlinear_init (gsl_multifit_nlinear_fdf * f,
+gsl_multifit_nlinear_init (gsl_multifit_nlinear_fdf * fdf,
                            const gsl_vector * x,
                            gsl_multifit_nlinear_workspace * w)
 {
-  return gsl_multifit_nlinear_winit(f, x, NULL, w);
+  return gsl_multifit_nlinear_winit(fdf, x, NULL, w);
 }
 
 int
-gsl_multifit_nlinear_winit (gsl_multifit_nlinear_fdf * f, 
+gsl_multifit_nlinear_winit (gsl_multifit_nlinear_fdf * fdf, 
                             const gsl_vector * x,
                             const gsl_vector * wts,
                             gsl_multifit_nlinear_workspace * w)
 {
   const size_t n = w->f->size;
 
-  if (n != f->n)
+  if (n != fdf->n)
     {
       GSL_ERROR ("function size does not match workspace", GSL_EBADLEN);
     }
@@ -173,7 +173,12 @@ gsl_multifit_nlinear_winit (gsl_multifit_nlinear_fdf * f,
     {
       size_t i;
 
-      w->fdf = f;
+      /* initialize counters for function and Jacobian evaluations */
+      fdf->nevalf = 0;
+      fdf->nevaldf = 0;
+      fdf->nevalfvv = 0;
+
+      w->fdf = fdf;
       gsl_vector_memcpy(w->x, x);
       w->niter = 0;
 
@@ -209,21 +214,22 @@ gsl_multifit_nlinear_iterate (gsl_multifit_nlinear_workspace * w)
 gsl_multifit_nlinear_driver()
   Iterate the nonlinear least squares solver until completion
 
-Inputs: maxiter - maximum iterations to allow
-        xtol    - tolerance in step x
-        gtol    - tolerance in gradient
-        ftol    - tolerance in ||f||
-        info    - (output) info flag on why iteration terminated
-                  1 = stopped due to small step size ||dx|
-                  2 = stopped due to small gradient
-                  3 = stopped due to small change in f
-                  GSL_ETOLX = ||dx|| has converged to within machine
-                              precision (and xtol is too small)
-                  GSL_ETOLG = ||g||_inf is smaller than machine
-                              precision (gtol is too small)
-                  GSL_ETOLF = change in ||f|| is smaller than machine
-                              precision (ftol is too small)
-        w       - workspace
+Inputs: maxiter  - maximum iterations to allow
+        xtol     - tolerance in step x
+        gtol     - tolerance in gradient
+        ftol     - tolerance in ||f||
+        callback - callback function to call each iteration
+        info     - (output) info flag on why iteration terminated
+                   1 = stopped due to small step size ||dx|
+                   2 = stopped due to small gradient
+                   3 = stopped due to small change in f
+                   GSL_ETOLX = ||dx|| has converged to within machine
+                               precision (and xtol is too small)
+                   GSL_ETOLG = ||g||_inf is smaller than machine
+                               precision (gtol is too small)
+                   GSL_ETOLF = change in ||f|| is smaller than machine
+                               precision (ftol is too small)
+        w        - workspace
 
 Return: GSL_SUCCESS if converged, GSL_MAXITER if maxiter exceeded without
 converging
@@ -234,6 +240,9 @@ gsl_multifit_nlinear_driver (const size_t maxiter,
                              const double xtol,
                              const double gtol,
                              const double ftol,
+                             void (*callback)(const size_t iter,
+                                              void *params,
+                                              const gsl_multifit_nlinear_workspace *w),
                              int *info,
                              gsl_multifit_nlinear_workspace * w)
 {
@@ -242,6 +251,9 @@ gsl_multifit_nlinear_driver (const size_t maxiter,
 
   do
     {
+      if (callback)
+        callback(iter, NULL, w);
+
       status = gsl_multifit_nlinear_iterate (w);
 
       /*
@@ -255,6 +267,10 @@ gsl_multifit_nlinear_driver (const size_t maxiter,
       status = gsl_multifit_nlinear_test(xtol, gtol, ftol, info, w);
     }
   while (status == GSL_CONTINUE && ++iter < maxiter);
+
+  /* callback for final iteration */
+  if (callback)
+    callback(iter, NULL, w);
 
   /*
    * the following error codes mean that the solution has converged
@@ -393,4 +409,37 @@ gsl_multifit_nlinear_eval_df(gsl_multifit_nlinear_fdf *fdf,
     }
 
   return status;
+}
+
+/*
+gsl_multifit_nlinear_eval_fvv()
+  Compute second direction derivative vector yvv with user
+callback function, and apply weighting transform if given:
+
+yvv~ = sqrt(W) yvv
+
+Inputs: fdf  - callback function
+        x    - model parameters
+        swts - weight matrix sqrt(W) = sqrt(diag(w1,w2,...,wn))
+               set to NULL for unweighted fit
+        yvv  - (output) (weighted) second directional derivative vector
+               yvv_i = sqrt(w_i) fvv_i where f_i is unweighted
+*/
+
+int
+gsl_multifit_nlinear_eval_fvv(gsl_multifit_nlinear_fdf *fdf,
+                              const gsl_vector *x,
+                              const gsl_vector *v,
+                              const gsl_vector *swts,
+                              gsl_vector *yvv)
+{
+  int s = ((*((fdf)->fvv)) (x, v, fdf->params, yvv));
+
+  ++(fdf->nevalfvv);
+
+  /* yvv <- sqrt(W) yvv */
+  if (swts)
+    gsl_vector_mul(yvv, swts);
+
+  return s;
 }

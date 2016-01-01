@@ -42,12 +42,17 @@ main (void)
   /* test normal equations method */
   fdf_params.solver = GSL_MULTIFIT_NLINEAR_SOLVER_NORMAL;
 
+#if 0
   fdf_params.scale = GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG;
   test_fdf_main(&fdf_params);
+#else
+  fdf_params.accel = 1;
+#endif
 
   fdf_params.scale = GSL_MULTIFIT_NLINEAR_SCALE_MORE;
   test_fdf_main(&fdf_params);
 
+#if 0
   /* test QR method */
   fdf_params.solver = GSL_MULTIFIT_NLINEAR_SOLVER_QR;
 
@@ -56,6 +61,7 @@ main (void)
 
   fdf_params.scale = GSL_MULTIFIT_NLINEAR_SCALE_MORE;
   test_fdf_main(&fdf_params);
+#endif
 
   exit (gsl_test_summary ());
 }

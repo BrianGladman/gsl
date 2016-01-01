@@ -101,13 +101,22 @@ bard_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
+static int
+bard_fvv (const gsl_vector * x, const gsl_vector * v,
+          void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf bard_func =
 {
-  &bard_f,
-  &bard_df,
+  bard_f,
+  bard_df,
+  bard_fvv,
   bard_N,
   bard_P,
   NULL,
+  0,
   0,
   0
 };

@@ -575,13 +575,22 @@ hahn1_df (const gsl_vector * x, void *params, gsl_matrix * df)
   return GSL_SUCCESS;
 }
 
+static int
+hahn1_fvv (const gsl_vector * x, const gsl_vector * v,
+           void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf hahn1_func =
 {
-  &hahn1_f,
-  &hahn1_df,
+  hahn1_f,
+  hahn1_df,
+  hahn1_fvv,
   hahn1_N,
   hahn1_P,
   NULL,
+  0,
   0,
   0
 };

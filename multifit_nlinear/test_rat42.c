@@ -89,13 +89,22 @@ rat42_df (const gsl_vector * x, void *params, gsl_matrix * df)
   return GSL_SUCCESS;
 }
 
+static int
+rat42_fvv (const gsl_vector * x, const gsl_vector * v,
+           void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf rat42_func =
 {
-  &rat42_f,
-  &rat42_df,
+  rat42_f,
+  rat42_df,
+  rat42_fvv,
   rat42_N,
   rat42_P,
   NULL,
+  0,
   0,
   0
 };

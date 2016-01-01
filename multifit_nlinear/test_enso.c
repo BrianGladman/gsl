@@ -139,13 +139,22 @@ enso_df (const gsl_vector * x, void *params, gsl_matrix * df)
   return GSL_SUCCESS;
 }
 
+static int
+enso_fvv (const gsl_vector * x, const gsl_vector * v,
+          void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf enso_func =
 {
-  &enso_f,
-  &enso_df,
+  enso_f,
+  enso_df,
+  enso_fvv,
   enso_N,
   enso_P,
   NULL,
+  0,
   0,
   0
 };

@@ -65,13 +65,22 @@ jennrich_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
+static int
+jennrich_fvv (const gsl_vector * x, const gsl_vector * v,
+              void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf jennrich_func =
 {
-  &jennrich_f,
-  &jennrich_df,
+  jennrich_f,
+  jennrich_df,
+  jennrich_fvv,
   jennrich_N,
   jennrich_P,
   NULL,
+  0,
   0,
   0
 };

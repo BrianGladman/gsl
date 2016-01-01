@@ -85,13 +85,22 @@ exp1_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
+static int
+exp1_fvv (const gsl_vector * x, const gsl_vector * v,
+          void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf exp1_func =
 {
-  &exp1_f,
-  &exp1_df,
+  exp1_f,
+  exp1_df,
+  exp1_fvv,
   exp1_N,
   exp1_P,
   NULL,
+  0,
   0,
   0
 };

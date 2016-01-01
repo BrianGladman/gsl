@@ -57,13 +57,22 @@ powell3_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
+static int
+powell3_fvv (const gsl_vector * x, const gsl_vector * v,
+             void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf powell3_func =
 {
-  &powell3_f,
-  &powell3_df,
+  powell3_f,
+  powell3_df,
+  powell3_fvv,
   powell3_N,
   powell3_P,
   NULL,
+  0,
   0,
   0
 };

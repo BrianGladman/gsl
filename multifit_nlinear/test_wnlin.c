@@ -107,24 +107,35 @@ wnlin_df (const gsl_vector *x, void *params, gsl_matrix *df)
   return GSL_SUCCESS;
 }
 
+static int
+wnlin_fvv (const gsl_vector * x, const gsl_vector * v,
+           void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf wnlin_func1 =
 {
-  &wnlin_f,
-  &wnlin_df,
+  wnlin_f,
+  wnlin_df,
+  wnlin_fvv,
   wnlin_N,
   wnlin_P,
   (void *) &wnlin_internal_weight,
+  0,
   0,
   0
 };
 
 static gsl_multifit_nlinear_fdf wnlin_func2 =
 {
-  &wnlin_f,
-  &wnlin_df,
+  wnlin_f,
+  wnlin_df,
+  wnlin_fvv,
   wnlin_N,
   wnlin_P,
   NULL,
+  0,
   0,
   0
 };

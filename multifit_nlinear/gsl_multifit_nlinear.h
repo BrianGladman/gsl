@@ -69,11 +69,14 @@ typedef struct
 {
   int (* f) (const gsl_vector * x, void * params, gsl_vector * f);
   int (* df) (const gsl_vector * x, void * params, gsl_matrix * df);
-  size_t n;       /* number of functions */
-  size_t p;       /* number of independent variables */
-  void * params;  /* user parameters */
-  size_t nevalf;  /* number of function evaluations */
-  size_t nevaldf; /* number of Jacobian evaluations */
+  int (* fvv) (const gsl_vector * x, const gsl_vector * v, void * params,
+               gsl_vector * fvv);
+  size_t n;        /* number of functions */
+  size_t p;        /* number of independent variables */
+  void * params;   /* user parameters */
+  size_t nevalf;   /* number of function evaluations */
+  size_t nevaldf;  /* number of Jacobian evaluations */
+  size_t nevalfvv; /* number of fvv evaluations */
 } gsl_multifit_nlinear_fdf;
 
 typedef struct
@@ -132,6 +135,9 @@ int gsl_multifit_nlinear_driver (const size_t maxiter,
                                  const double xtol,
                                  const double gtol,
                                  const double ftol,
+                                 void (*callback)(const size_t iter,
+                                                  void *params,
+                                                  const gsl_multifit_nlinear_workspace *w),
                                  int *info,
                                  gsl_multifit_nlinear_workspace * w);
 
@@ -160,6 +166,13 @@ int gsl_multifit_nlinear_eval_df(gsl_multifit_nlinear_fdf *fdf,
                                  const gsl_vector *f,
                                  const gsl_vector *swts,
                                  gsl_matrix *df);
+
+int
+gsl_multifit_nlinear_eval_fvv(gsl_multifit_nlinear_fdf *fdf,
+                              const gsl_vector *x,
+                              const gsl_vector *v,
+                              const gsl_vector *swts,
+                              gsl_vector *yvv);
 
 /* covar.c */
 int

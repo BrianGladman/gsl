@@ -107,13 +107,22 @@ watson_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
+static int
+watson_fvv (const gsl_vector * x, const gsl_vector * v,
+            void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf watson_func =
 {
-  &watson_f,
-  &watson_df,
+  watson_f,
+  watson_df,
+  watson_fvv,
   watson_N,
   watson_P,
   NULL,
+  0,
   0,
   0
 };

@@ -110,13 +110,22 @@ penalty2_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
+static int
+penalty2_fvv (const gsl_vector * x, const gsl_vector * v,
+              void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf penalty2_func =
 {
-  &penalty2_f,
-  &penalty2_df,
+  penalty2_f,
+  penalty2_df,
+  penalty2_fvv,
   penalty2_N,
   penalty2_P,
   NULL,
+  0,
   0,
   0
 };

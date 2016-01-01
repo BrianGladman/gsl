@@ -116,13 +116,22 @@ thurber_df (const gsl_vector * x, void *params, gsl_matrix * df)
   return GSL_SUCCESS;
 }
 
+static int
+thurber_fvv (const gsl_vector * x, const gsl_vector * v,
+             void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf thurber_func =
 {
-  &thurber_f,
-  &thurber_df,
+  thurber_f,
+  thurber_df,
+  thurber_fvv,
   thurber_N,
   thurber_P,
   NULL,
+  0,
   0,
   0
 };

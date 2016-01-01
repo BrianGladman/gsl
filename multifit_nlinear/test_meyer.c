@@ -78,13 +78,22 @@ meyer_df (const gsl_vector * x, void *params, gsl_matrix * J)
   return GSL_SUCCESS;
 }
 
+static int
+meyer_fvv (const gsl_vector * x, const gsl_vector * v,
+           void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf meyer_func =
 {
-  &meyer_f,
-  &meyer_df,
+  meyer_f,
+  meyer_df,
+  meyer_fvv,
   meyer_N,
   meyer_P,
   NULL,
+  0,
   0,
   0
 };

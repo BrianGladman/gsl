@@ -399,13 +399,22 @@ kirby2_df (const gsl_vector * x, void *params, gsl_matrix * df)
   return GSL_SUCCESS;
 }
 
+static int
+kirby2_fvv (const gsl_vector * x, const gsl_vector * v,
+            void *params, gsl_vector * fvv)
+{
+  return GSL_SUCCESS;
+}
+
 static gsl_multifit_nlinear_fdf kirby2_func =
 {
-  &kirby2_f,
-  &kirby2_df,
+  kirby2_f,
+  kirby2_df,
+  kirby2_fvv,
   kirby2_N,
   kirby2_P,
   NULL,
+  0,
   0,
   0
 };

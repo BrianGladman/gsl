@@ -44,11 +44,16 @@
 
 typedef struct
 {
+  size_t n;                  /* number of observations */
+  size_t p;                  /* number of parameters */
   gsl_vector *diag;          /* D = diag(J^T J) */
   gsl_vector *x_trial;       /* trial parameter vector */
   gsl_vector *f_trial;       /* trial function vector */
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *tau;           /* Householder scalars for QR */
+  gsl_vector *fvv;           /* D_v^2 f(x), size n */
+  gsl_vector *vel;           /* geodesic velocity (standard LM step), size p */
+  gsl_vector *acc;           /* geodesic acceleration, size p */
   long nu;                   /* nu */
   double lambda;             /* LM parameter lambda */
   double lambda0;            /* initial scale factor for lambda */
@@ -56,6 +61,9 @@ typedef struct
   /* normal equations variables */
   gsl_matrix *A;             /* J^T J */
   gsl_matrix *work_JTJ;      /* copy of J^T J */
+  gsl_vector *rhs_vel;       /* -J^T f */
+  gsl_vector *rhs_acc;       /* -J^T fvv */
+  int chol;                  /* Cholesky factorization successful */
 
   /* QR solver variables */
   gsl_matrix *R;             /* QR factorization of J */
@@ -65,13 +73,23 @@ typedef struct
 
   /* tunable parameters */
 
+  int accel;                 /* use geodesic acceleration */
   int (*init_diag) (const gsl_matrix * J, gsl_vector * diag);
   int (*update_diag) (const gsl_matrix * J, gsl_vector * diag);
 
-  int (*solver_init) (const gsl_vector * f, const gsl_matrix * J,
-                      void * vstate);
-  int (*solver) (const double lambda, const gsl_vector * g,
-                 gsl_vector * dx, void * vstate);
+  /* solver initialization independent of lambda */
+  int (*solver_init1) (const gsl_vector * f, const gsl_matrix * J,
+                       const gsl_vector * g, void * vstate);
+
+  /* solver initialization with lambda */
+  int (*solver_init2) (const double lambda, void * vstate);
+
+  /* solve linear system for geodesic velocity (standard LM step) */
+  int (*solver_vel) (gsl_vector * v, void * vstate);
+
+  /* solve linear system for geodesic acceleration */
+  int (*solver_acc) (const gsl_matrix * J, const gsl_vector * fvv,
+                     gsl_vector * a, void * vstate);
 } lm_state_t;
 
 #include "lmdiag.c"
@@ -119,6 +137,24 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
   if (state->tau == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for tau", GSL_ENOMEM);
+    }
+
+  state->fvv = gsl_vector_alloc(n);
+  if (state->fvv == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for fvv", GSL_ENOMEM);
+    }
+
+  state->vel = gsl_vector_alloc(p);
+  if (state->vel == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for vel", GSL_ENOMEM);
+    }
+
+  state->acc = gsl_vector_alloc(p);
+  if (state->acc == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for acc", GSL_ENOMEM);
     }
 
   state->x_trial = gsl_vector_alloc(p);
@@ -170,9 +206,24 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
                           GSL_ENOMEM);
         }
 
-      state->solver_init = normal_init;
-      state->solver = normal_solve;
+      state->rhs_vel = gsl_vector_alloc(p);
+      if (state->rhs_vel == NULL)
+        {
+          GSL_ERROR_NULL ("failed to allocate space for rhs_vel", GSL_ENOMEM);
+        }
+
+      state->rhs_acc = gsl_vector_alloc(p);
+      if (state->rhs_acc == NULL)
+        {
+          GSL_ERROR_NULL ("failed to allocate space for rhs_acc", GSL_ENOMEM);
+        }
+
+      state->solver_init1 = normal_init1;
+      state->solver_init2 = normal_init2;
+      state->solver_vel = normal_solve_vel;
+      state->solver_acc = normal_solve_acc;
     }
+#if 0
   else if (params->solver == GSL_MULTIFIT_NLINEAR_SOLVER_QR)
     {
       /* allocate variables specific to QR solver */
@@ -207,12 +258,16 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
       state->solver_init = qr_init;
       state->solver = qr_solve;
     }
+#endif
   else
     {
       GSL_ERROR_NULL ("invalid solver parameter", GSL_EINVAL);
     }
 
+  state->n = n;
+  state->p = p;
   state->lambda0 = 1.0e-3;
+  state->accel = params->accel;
 
   return state;
 }
@@ -234,6 +289,15 @@ lm_free(void *vstate)
   if (state->tau)
     gsl_vector_free(state->tau);
 
+  if (state->fvv)
+    gsl_vector_free(state->fvv);
+
+  if (state->vel)
+    gsl_vector_free(state->vel);
+
+  if (state->acc)
+    gsl_vector_free(state->acc);
+
   if (state->work_JTJ)
     gsl_matrix_free(state->work_JTJ);
 
@@ -254,6 +318,12 @@ lm_free(void *vstate)
 
   if (state->workn)
     gsl_vector_free(state->workn);
+
+  if (state->rhs_vel)
+    gsl_vector_free(state->rhs_vel);
+
+  if (state->rhs_acc)
+    gsl_vector_free(state->rhs_acc);
 
   free(state);
 }
@@ -281,10 +351,6 @@ lm_init(void *vstate, const gsl_vector *swts,
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
 
-  /* initialize counters for function and Jacobian evaluations */
-  fdf->nevalf = 0;
-  fdf->nevaldf = 0;
-
   /* evaluate function and Jacobian at x and apply weight transform */
   status = gsl_multifit_nlinear_eval_f(fdf, x, swts, f);
   if (status)
@@ -302,6 +368,9 @@ lm_init(void *vstate, const gsl_vector *swts,
 
   /* initialize LM parameter lambda */
   lm_init_lambda(J, state);
+
+  gsl_vector_set_zero(state->vel);
+  gsl_vector_set_zero(state->acc);
 
   /* set default parameters */
   state->nu = 2;
@@ -346,28 +415,55 @@ lm_iterate(void *vstate, const gsl_vector *swts,
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
+  const size_t p = state->p;
   gsl_vector *x_trial = state->x_trial;       /* trial x + dx */
   gsl_vector *f_trial = state->f_trial;       /* trial f(x + dx) */
   gsl_vector *diag = state->diag;             /* diag(D) */
   double rho;                                 /* ratio dF/dL */
   int foundstep = 0;                          /* found step dx */
   int bad_steps = 0;                          /* consecutive rejected steps */
+  size_t i;
 
   /* initialize linear least squares solver */
-  status = (state->solver_init)(f, J, vstate);
+  status = (state->solver_init1)(f, J, g, vstate);
   if (status)
     return status;
 
   /* loop until we find an acceptable step dx */
   while (!foundstep)
     {
+      /* further solver initialization with current lambda */
+      status = (state->solver_init2)(state->lambda, vstate);
+      if (status)
+        return status;
+
       /*
        * solve: [    J     ] dx = - [ f ]
        *        [ lambda*D ]        [ 0 ]
        */
-      status = (state->solver)(state->lambda, g, dx, vstate);
+      status = (state->solver_vel)(state->vel, vstate);
       if (status)
         return status;
+
+      if (state->accel)
+        {
+          /* compute geodesic acceleration */
+          status = gsl_multifit_nlinear_eval_fvv(fdf, x, state->vel, swts, state->fvv);
+          if (status)
+            return status;
+
+          status = (state->solver_acc)(J, state->fvv, state->acc, vstate);
+          if (status)
+            return status;
+        }
+
+      /* compute step dx = v + 1/2 a */
+      for (i = 0; i < p; ++i)
+        {
+          double vi = gsl_vector_get(state->vel, i);
+          double ai = gsl_vector_get(state->acc, i);
+          gsl_vector_set(dx, i, vi + 0.5 * ai);
+        }
 
       /* compute x_trial = x + dx */
       lm_trial_step(x, dx, x_trial);
