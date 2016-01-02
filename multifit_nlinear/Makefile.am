@@ -10,6 +10,7 @@ noinst_HEADERS =        \
 lmdiag.c                \
 lmmisc.c                \
 lmsolve.c               \
+qrsolv.c                \
 test_bard.c             \
 test_beale.c            \
 test_biggs.c            \

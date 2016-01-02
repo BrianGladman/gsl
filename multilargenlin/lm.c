@@ -27,7 +27,6 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
 
-#include "oct.h"
 #define DEBUG   0
 
 /*

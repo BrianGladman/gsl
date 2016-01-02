@@ -449,7 +449,7 @@ project homepage thanks to Daisuke Tominaga.
 
 @node Nonlinear Least-Squares Fitting, Basis Splines, Least-Squares Fitting, Top
 @chapter Nonlinear Least-Squares Fitting
-@include multifit.texi
+@include multifit-nlinear.texi
 
 @node Basis Splines, Sparse Matrices, Nonlinear Least-Squares Fitting, Top
 @chapter Basis Splines

@@ -27,8 +27,6 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_permutation.h>
 
-#include "oct.c"
-
 /*
  * This module contains an implementation of the Levenberg-Marquardt
  * algorithm for nonlinear optimization problems. This implementation

@@ -22,11 +22,7 @@ two-parameter regression and multiple-parameter fits.
 * Robust linear regression::
 * Large Linear Systems::
 * Troubleshooting::
-* Fitting Examples for linear regression::
-* Fitting Examples for multi-parameter linear regression::
-* Fitting Examples for regularized linear regression::
-* Fitting Examples for robust linear regression::
-* Fitting Examples for large linear systems::
+* Fitting Examples::
 * Fitting References and Further Reading::  
 @end menu
 
@@ -1526,8 +1522,21 @@ x' = (x - mu)/sigma
 @noindent
 and then construct the @math{X} matrix using the transformed values @math{x'}.
 
-@node Fitting Examples for linear regression
-@section Examples for linear regression
+@node Fitting Examples
+@section Examples
+
+The example programs in this section demonstrate the various linear regression methods.
+
+@menu
+* Fitting linear regression example::
+* Fitting multi-parameter linear regression example::
+* Fitting regularized linear regression example::
+* Fitting robust linear regression example::
+* Fitting large linear systems example::
+@end menu
+
+@node Fitting linear regression example
+@subsection Simple Linear Regression Example
 
 The following program computes a least squares straight-line fit to a
 simple dataset, and outputs the best-fit line and its
@@ -1563,8 +1572,8 @@ $ graph -T X -X x -Y y -y 0 20 -m 0 -S 2 -Ie data
 @center @image{fit-wlinear,3.0in}
 @end iftex
 
-@node Fitting Examples for multi-parameter linear regression
-@section Fitting Examples for multi-parameter linear regression
+@node Fitting multi-parameter linear regression example
+@subsection Multi-parameter Linear Regression Example
 
 The following program performs a quadratic fit @math{y = c_0 + c_1 x + c_2
 x^2} to a weighted dataset using the generalised linear fitting function
@@ -1658,8 +1667,8 @@ of freedom is 1.4, indicating a reasonable fit to the data.
 @center @image{fit-wlinear2,3.0in}
 @end iftex
 
-@node Fitting Examples for regularized linear regression
-@section Fitting Examples for regularized linear regression
+@node Fitting regularized linear regression example
+@subsection Regularized Linear Regression Example
 
 The next program demonstrates the difference between ordinary and
 regularized least squares when the design matrix is near-singular.
@@ -1702,8 +1711,8 @@ finding its corner. The L-curve and its computed corner are plotted below.
 @verbatiminclude examples/fitreg.c
 @end example
 
-@node Fitting Examples for robust linear regression
-@section Fitting Examples for robust linear regression
+@node Fitting robust linear regression example
+@subsection Robust Linear Regression Example
 
 The next program demonstrates the advantage of robust least squares on
 a dataset with outliers. The program generates linear @math{(x,y)}
@@ -1723,8 +1732,8 @@ The output from the program is shown in the following plot.
 @center @image{robust,3.0in}
 @end iftex
 
-@node Fitting Examples for large linear systems
-@section Fitting Examples for large linear systems
+@node Fitting large linear systems example
+@subsection Large Linear Regression Example
 
 The following program demostrates the large linear least squares
 solvers. This example is adapted from Trefethen and Bau,

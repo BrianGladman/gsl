@@ -5,21 +5,14 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_multifit_nlinear.h>
 
-#define NEW 1
-
 int
 func_f (const gsl_vector * x, void *params, gsl_vector * f)
 {
   double x1 = gsl_vector_get(x, 0);
   double x2 = gsl_vector_get(x, 1);
 
-#if NEW
   gsl_vector_set(f, 0, 100.0 * (x2 - x1*x1));
-  gsl_vector_set(f, 1, x1);
-#else
-  gsl_vector_set(f, 0, 10.0 * (x2 - x1*x1));
   gsl_vector_set(f, 1, 1.0 - x1);
-#endif
 
   return GSL_SUCCESS;
 }
@@ -29,17 +22,10 @@ func_df (const gsl_vector * x, void *params, gsl_matrix * J)
 {
   double x1 = gsl_vector_get(x, 0);
 
-#if NEW
   gsl_matrix_set(J, 0, 0, -200.0*x1);
   gsl_matrix_set(J, 0, 1, 100.0);
-  gsl_matrix_set(J, 1, 0, 1.0);
-  gsl_matrix_set(J, 1, 1, 0.0);
-#else
-  gsl_matrix_set(J, 0, 0, -20.0*x1);
-  gsl_matrix_set(J, 0, 1, 10.0);
   gsl_matrix_set(J, 1, 0, -1.0);
   gsl_matrix_set(J, 1, 1, 0.0);
-#endif
 
   return GSL_SUCCESS;
 }
@@ -50,13 +36,8 @@ func_fvv (const gsl_vector * x, const gsl_vector * v,
 {
   double v1 = gsl_vector_get(v, 0);
 
-#if NEW
   gsl_vector_set(fvv, 0, -200.0 * v1 * v1);
   gsl_vector_set(fvv, 1, 0.0);
-#else
-  gsl_vector_set(fvv, 0, -20.0 * v1 * v1);
-  gsl_vector_set(fvv, 1, 0.0);
-#endif
 
   return GSL_SUCCESS;
 }
@@ -133,7 +114,7 @@ main (void)
     double *f1 = gsl_vector_ptr(f, 0);
     double *f2 = gsl_vector_ptr(f, 1);
 
-    for (x1 = -1.2; x1 < 0.1; x1 += 0.1)
+    for (x1 = -1.2; x1 < 1.3; x1 += 0.1)
       {
         for (x2 = -0.5; x2 < 2.1; x2 += 0.1)
           {
@@ -160,13 +141,8 @@ main (void)
   fdf_params.solver = GSL_MULTIFIT_NLINEAR_SOLVER_NORMAL;
 
   /* starting point */
-#if NEW
-  gsl_vector_set(x, 0, -1.0);
-  gsl_vector_set(x, 1, 1.0);
-#else
-  gsl_vector_set(x, 0, -1.2);
-  gsl_vector_set(x, 1, 1.0);
-#endif
+  gsl_vector_set(x, 0, -0.5);
+  gsl_vector_set(x, 1, 1.75);
 
   fprintf(stderr, "=== Solving system without acceleration ===\n");
   solve_system(x, &fdf, &fdf_params);
