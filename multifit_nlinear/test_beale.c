@@ -71,6 +71,20 @@ static int
 beale_fvv (const gsl_vector * x, const gsl_vector * v,
            void *params, gsl_vector * fvv)
 {
+  double x1 = gsl_vector_get(x, 0);
+  double x2 = gsl_vector_get(x, 1);
+  double v1 = gsl_vector_get(v, 0);
+  double v2 = gsl_vector_get(v, 1);
+  size_t i;
+
+  for (i = 0; i < beale_N; ++i)
+    {
+      double term = pow(x2, (double)i - 1.0);
+
+      gsl_vector_set(fvv, i, (i + 1.0) * v2 * term *
+                             (i * v2 * x1 + 2.0 * v1 * x2));
+    }
+
   return GSL_SUCCESS;
 }
 

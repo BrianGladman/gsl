@@ -60,6 +60,7 @@ typedef struct
   gsl_multifit_nlinear_scale_t scale;   /* scaling method */
   gsl_multifit_nlinear_solver_t solver; /* solver method */
   int accel;                            /* use geodesic acceleration */
+  double accel_alpha;                   /* max |a|/|v| */
 } gsl_multifit_nlinear_parameters;
 
 /* Definition of vector-valued functions and gradient with parameters

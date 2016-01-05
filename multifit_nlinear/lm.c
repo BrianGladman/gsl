@@ -27,6 +27,8 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_permutation.h>
 
+#include "oct.h"
+
 /*
  * This module contains an implementation of the Levenberg-Marquardt
  * algorithm for nonlinear optimization problems. This implementation
@@ -65,22 +67,25 @@ typedef struct
 
   /* QR solver variables */
   gsl_matrix *R;             /* QR factorization of J */
+  gsl_matrix *Q;             /* Householder reflectors for J */
   gsl_permutation *perm;     /* permutation matrix */
   gsl_vector *qtf;           /* Q^T f */
+  gsl_vector *qtfvv;         /* Q^T fvv */
   gsl_vector *workn;         /* workspace, length n */
 
   /* tunable parameters */
 
   int accel;                 /* use geodesic acceleration */
+  double accel_alpha;        /* max |a| / |v| */
   int (*init_diag) (const gsl_matrix * J, gsl_vector * diag);
   int (*update_diag) (const gsl_matrix * J, gsl_vector * diag);
 
   /* solver initialization independent of lambda */
-  int (*solver_init1) (const gsl_vector * f, const gsl_matrix * J,
-                       const gsl_vector * g, void * vstate);
+  int (*solver_init) (const gsl_vector * f, const gsl_matrix * J,
+                      const gsl_vector * g, void * vstate);
 
   /* solver initialization with lambda */
-  int (*solver_init2) (const double lambda, void * vstate);
+  int (*solver_init_lambda) (const double lambda, void * vstate);
 
   /* solve linear system for geodesic velocity (standard LM step) */
   int (*solver_vel) (gsl_vector * v, void * vstate);
@@ -216,12 +221,11 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
           GSL_ERROR_NULL ("failed to allocate space for rhs_acc", GSL_ENOMEM);
         }
 
-      state->solver_init1 = normal_init1;
-      state->solver_init2 = normal_init2;
+      state->solver_init = normal_init;
+      state->solver_init_lambda = normal_init_lambda;
       state->solver_vel = normal_solve_vel;
       state->solver_acc = normal_solve_acc;
     }
-#if 0
   else if (params->solver == GSL_MULTIFIT_NLINEAR_SOLVER_QR)
     {
       /* allocate variables specific to QR solver */
@@ -232,10 +236,23 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
           GSL_ERROR_NULL ("failed to allocate space for R", GSL_ENOMEM);
         }
 
+      state->Q = gsl_matrix_alloc(n, p);
+      if (state->Q == NULL)
+        {
+          GSL_ERROR_NULL ("failed to allocate space for Q", GSL_ENOMEM);
+        }
+
       state->qtf = gsl_vector_alloc(n);
       if (state->qtf == NULL)
         {
           GSL_ERROR_NULL ("failed to allocate space for qtf",
+                          GSL_ENOMEM);
+        }
+
+      state->qtfvv = gsl_vector_alloc(n);
+      if (state->qtfvv == NULL)
+        {
+          GSL_ERROR_NULL ("failed to allocate space for qtfvv",
                           GSL_ENOMEM);
         }
 
@@ -254,9 +271,10 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
         }
 
       state->solver_init = qr_init;
-      state->solver = qr_solve;
+      state->solver_init_lambda = qr_init_lambda;
+      state->solver_vel = qr_solve_vel;
+      state->solver_acc = qr_solve_acc;
     }
-#endif
   else
     {
       GSL_ERROR_NULL ("invalid solver parameter", GSL_EINVAL);
@@ -266,6 +284,7 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
   state->p = p;
   state->lambda0 = 1.0e-3;
   state->accel = params->accel;
+  state->accel_alpha = params->accel_alpha;
 
   return state;
 }
@@ -308,8 +327,14 @@ lm_free(void *vstate)
   if (state->R)
     gsl_matrix_free(state->R);
 
+  if (state->Q)
+    gsl_matrix_free(state->Q);
+
   if (state->qtf)
     gsl_vector_free(state->qtf);
+
+  if (state->qtfvv)
+    gsl_vector_free(state->qtfvv);
 
   if (state->perm)
     gsl_permutation_free(state->perm);
@@ -397,6 +422,13 @@ Args: vstate - lm workspace
       dx     - (output only) parameter step vector
                dx = v + 1/2 a
 
+Return:
+1) GSL_SUCCESS if we found a step which reduces the cost
+function
+
+2) GSL_ENOPROG if 15 successive attempts were to made to
+find a good step without success
+
 Notes:
 1) On input, the following must be initialized in state:
 nu, lambda
@@ -423,7 +455,7 @@ lm_iterate(void *vstate, const gsl_vector *swts,
   size_t i;
 
   /* initialize linear least squares solver */
-  status = (state->solver_init1)(f, J, g, vstate);
+  status = (state->solver_init)(f, J, g, vstate);
   if (status)
     return status;
 
@@ -431,7 +463,7 @@ lm_iterate(void *vstate, const gsl_vector *swts,
   while (!foundstep)
     {
       /* further solver initialization with current lambda */
-      status = (state->solver_init2)(state->lambda, vstate);
+      status = (state->solver_init_lambda)(state->lambda, vstate);
       if (status)
         return status;
 
@@ -469,13 +501,12 @@ lm_iterate(void *vstate, const gsl_vector *swts,
       /* compute f(x + dx) */
       status = gsl_multifit_nlinear_eval_f(fdf, x_trial, swts, f_trial);
       if (status)
-       return status;
+        return status;
 
-      /* compute ratio of actual to predicted reduction */
-      rho = lm_calc_rho(state->lambda, dx, g, f, f_trial, state);
+      /* determine whether to accept or reject proposed step */
+      status = lm_check_step(state->vel, g, f, f_trial, &rho, state);
 
-      /* check that rho > 0 */
-      if (rho > 0.0)
+      if (status == GSL_SUCCESS)
         {
           /* reduction in cost function, step acceptable */
 

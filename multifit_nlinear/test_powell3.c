@@ -61,6 +61,14 @@ static int
 powell3_fvv (const gsl_vector * x, const gsl_vector * v,
              void *params, gsl_vector * fvv)
 {
+  double x1 = gsl_vector_get(x, 0);
+  double x2 = gsl_vector_get(x, 1);
+  double v1 = gsl_vector_get(v, 0);
+  double v2 = gsl_vector_get(v, 1);
+
+  gsl_vector_set(fvv, 0, 2.0e4 * v1 * v2);
+  gsl_vector_set(fvv, 1, v1*v1*exp(-x1) + v2*v2*exp(-x2));
+
   return GSL_SUCCESS;
 }
 

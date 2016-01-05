@@ -84,7 +84,6 @@ static void test_fdf_checksol(const char *sname, const char *pname,
 static void test_scale_x0(gsl_vector *x0, const double scale);
 
 static test_fdf_problem *test_problems[] = {
-#if 0
   /*
    * These test problems are taken from
    *
@@ -92,6 +91,7 @@ static test_fdf_problem *test_problems[] = {
    * IMM Department of Mathematical Modeling, Tech. Report
    * IMM-REP-2000-17, 2000.
    */
+#if 0
   &lin1_problem,       /* 1 */
   &lin2_problem,       /* 2 */
   &lin3_problem,       /* 3 */
@@ -124,7 +124,6 @@ static test_fdf_problem *test_problems[] = {
    * Many of these overlap with the Nielsen tests
    */
   &rosenbrock_problem,   /* 1 */
-#if 0
   &roth_problem,         /* 2 */
   &powell3_problem,      /* 3 */
   &brown3_problem,       /* 4 */
@@ -144,13 +143,16 @@ static test_fdf_problem *test_problems[] = {
   &watson_problem,       /* 20 */
   &rosenbrocke_problem,  /* 21 */
   &penalty1_problem,     /* 23 */
+#if 0
   &penalty2_problem,     /* 24 */
+#endif
   &vardim_problem,       /* 25 */
   &brown2_problem,       /* 27 */
   &lin1_problem,         /* 32 */
   &lin2_problem,         /* 33 */
   &lin3_problem,         /* 34 */
 
+#if 0
   /* NIST test cases */
   &kirby2_problem,
   &hahn1_problem,

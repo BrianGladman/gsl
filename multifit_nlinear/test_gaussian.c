@@ -83,6 +83,31 @@ static int
 gaussian_fvv (const gsl_vector * x, const gsl_vector * v,
               void *params, gsl_vector * fvv)
 {
+  double x1 = gsl_vector_get(x, 0);
+  double x2 = gsl_vector_get(x, 1);
+  double x3 = gsl_vector_get(x, 2);
+  double v1 = gsl_vector_get(v, 0);
+  double v2 = gsl_vector_get(v, 1);
+  double v3 = gsl_vector_get(v, 2);
+  size_t i;
+
+  for (i = 0; i < gaussian_N; ++i)
+    {
+      double ti = (7.0 - i) / 2.0;
+      double term1 = ti - x3;
+      double term2 = exp(-x2*term1*term1/2.0);
+
+      gsl_vector_set(fvv, i, 0.25 * term2 *
+                             (ti*ti*ti*ti*v2*v2*x1 -
+                              4*ti*ti*ti*v2*x1*(v3*x2 + v2*x3) +
+                              v2*x3*x3*(v2*x1*x3*x3 - 4*v1) +
+                              4*v3*v3*x1*x2*(x2*x3*x3 - 1.0) +
+                              4*v3*x3*(-2*v1*x2 + v2*x1*(x2*x3*x3 - 2.0)) +
+                              ti*ti*(4*v3*v3*x1*x2*x2 + 2*v2*(-2*v1 + 3*x1*x3*(2*v3*x2 + v2*x3))) -
+                              4*ti*(v2*v2*x1*x3*x3*x3 + 2*v3*x2*(-v1 + v3*x1*x2*x3) +
+                                    v2*(-2*v1*x3 + v3*x1*(-2.0 + 3*x2*x3*x3)))));
+    }
+
   return GSL_SUCCESS;
 }
 

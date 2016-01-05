@@ -18,11 +18,16 @@
  */
 
 static int lm_init_lambda(const gsl_matrix * J, lm_state_t * state);
-static double lm_calc_rho(const double lambda, const gsl_vector * dx,
+static double lm_calc_rho(const double lambda, const gsl_vector * v,
                           const gsl_vector * g,
                           const gsl_vector * f,
                           const gsl_vector * f_trial,
                           lm_state_t * state);
+static int lm_check_step(const gsl_vector * v, const gsl_vector * g,
+                         const gsl_vector * f, const gsl_vector * f_trial,
+                         double * rho, lm_state_t * state);
+static double lm_scaled_norm(const gsl_vector *a, const gsl_vector *b,
+                             gsl_vector *work);
 
 /* initialize damping parameter lambda; state->diag must first be
  * initialized */
@@ -71,10 +76,17 @@ lm_trial_step(const gsl_vector * x, const gsl_vector * dx,
 lm_calc_rho()
   Calculate ratio of actual reduction to predicted
 reduction, given by Eq 4.4 of More, 1978.
+
+Inputs: lambda  - LM parameter
+        v       - velocity vector (p in Eq 4.4)
+        g       - gradient J^T f
+        f       - f(x)
+        f_trial - f(x + dx)
+        state   - workspace
 */
 
 static double
-lm_calc_rho(const double lambda, const gsl_vector * dx,
+lm_calc_rho(const double lambda, const gsl_vector * v,
             const gsl_vector * g, const gsl_vector * f,
             const gsl_vector * f_trial, lm_state_t * state)
 {
@@ -84,8 +96,7 @@ lm_calc_rho(const double lambda, const gsl_vector * dx,
   double actual_reduction;
   double pred_reduction;
   double u;
-  double norm_Ddx; /* || D dx || */
-  size_t i;
+  double norm_Dp; /* || D p || */
 
   /* if ||f(x+dx)|| > ||f(x)|| reject step immediately */
   if (normf_trial >= normf)
@@ -95,28 +106,21 @@ lm_calc_rho(const double lambda, const gsl_vector * dx,
   u = normf_trial / normf;
   actual_reduction = 1.0 - u*u;
 
-  /* compute || D dx || */
-  for (i = 0; i < dx->size; ++i)
-    {
-      double dxi = gsl_vector_get(dx, i);
-      double di = gsl_vector_get(state->diag, i);
+  /* compute || D p || */
+  norm_Dp = lm_scaled_norm(state->diag, v, state->workp);
 
-      gsl_vector_set(state->workp, i, dxi * di);
-    }
-
-  norm_Ddx = gsl_blas_dnrm2(state->workp);
-
-  /* compute denominator of rho */
-  u = norm_Ddx / normf;
+  /*
+   * compute denominator of rho; instead of computing J*v,
+   * we note that:
+   *
+   * ||Jv||^2 + 2*lambda*||Dv||^2 = lambda*||Dv||^2 - v^T g
+   * and g = J^T f
+   */
+  u = norm_Dp / normf;
   pred_reduction = lambda * u * u;
 
-  for (i = 0; i < dx->size; ++i)
-    {
-      double dxi = gsl_vector_get(dx, i);
-      double gi = gsl_vector_get(g, i);
-
-      pred_reduction -= (dxi / normf) * (gi / normf);
-    }
+  gsl_blas_ddot(v, g, &u);
+  pred_reduction -= u / (normf * normf);
 
   if (pred_reduction > 0.0)
     rho = actual_reduction / pred_reduction;
@@ -124,4 +128,65 @@ lm_calc_rho(const double lambda, const gsl_vector * dx,
     rho = -1.0;
 
   return rho;
+}
+
+/*
+lm_check_step()
+  Check if a proposed step should be accepted or
+rejected
+
+Inputs: v       - proposed step velocity
+        g       - gradient J^T f
+        f       - f(x)
+        f_trial - f(x + dx)
+        rho     - (output) ratio of actual to predicted reduction
+        state   - workspace
+
+Return: GSL_SUCCESS to accept
+        GSL_FAILURE to reject
+*/
+
+static int
+lm_check_step(const gsl_vector * v, const gsl_vector * g,
+              const gsl_vector * f, const gsl_vector * f_trial,
+              double * rho, lm_state_t * state)
+{
+  /* if using geodesic acceleration, check that |a|/|v| < alpha */
+  if (state->accel)
+    {
+      double anorm = lm_scaled_norm(state->diag, state->acc, state->workp);
+      double vnorm = lm_scaled_norm(state->diag, state->vel, state->workp);
+      double ratio = anorm / vnorm;
+
+      /* reject step if acceleration is too large compared to velocity */
+      if (ratio > state->accel_alpha)
+        return GSL_FAILURE;
+    }
+
+  *rho = lm_calc_rho(state->lambda, v, g, f, f_trial, state);
+
+  /* if rho <= 0, the step does not reduce the cost function, reject */
+  if (*rho <= 0.0)
+    return GSL_FAILURE;
+
+  return GSL_SUCCESS;
+}
+
+/* compute || diag(D) a || */
+static double
+lm_scaled_norm(const gsl_vector *D, const gsl_vector *a,
+               gsl_vector *work)
+{
+  const size_t n = a->size;
+  size_t i;
+
+  for (i = 0; i < n; ++i)
+    {
+      double Di = gsl_vector_get(D, i);
+      double ai = gsl_vector_get(a, i);
+
+      gsl_vector_set(work, i, Di * ai);
+    }
+
+  return gsl_blas_dnrm2(work);
 }

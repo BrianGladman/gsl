@@ -114,6 +114,28 @@ static int
 kowalik_fvv (const gsl_vector * x, const gsl_vector * v,
              void *params, gsl_vector * fvv)
 {
+  double x1 = gsl_vector_get(x, 0);
+  double x2 = gsl_vector_get(x, 1);
+  double x3 = gsl_vector_get(x, 2);
+  double x4 = gsl_vector_get(x, 3);
+  double v1 = gsl_vector_get(v, 0);
+  double v2 = gsl_vector_get(v, 1);
+  double v3 = gsl_vector_get(v, 2);
+  double v4 = gsl_vector_get(v, 3);
+  size_t i;
+
+  for (i = 0; i < kowalik_N; ++i)
+    {
+      double ui = kowalik_U[i];
+      double term2 = ui*(ui + x3) + x4;
+      double term3 = ui*ui*v1 - ui*v3*x1 - v4*x1 +
+                     ui*v1*x3 + v1*x4;
+      double term4 = ui*ui*(v3-v2) + v4*x2 +
+                     ui*(v4 + v3*x2 - v2*x3) - v2*x4;
+
+      gsl_vector_set(fvv, i, 2.0*ui*term3*term4 / pow(term2, 3.0));
+    }
+
   return GSL_SUCCESS;
 }
 

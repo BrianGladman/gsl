@@ -78,6 +78,19 @@ static int
 vardim_fvv (const gsl_vector * x, const gsl_vector * v,
             void *params, gsl_vector * fvv)
 {
+  size_t i;
+  double sum = 0.0;
+
+  gsl_vector_set_zero(fvv);
+
+  for (i = 0; i < vardim_P; ++i)
+    {
+      double vi = gsl_vector_get(v, i);
+      sum += (i + 1.0) * vi;
+    }
+
+  gsl_vector_set(fvv, vardim_N - 1, 2.0 * sum * sum);
+
   return GSL_SUCCESS;
 }
 

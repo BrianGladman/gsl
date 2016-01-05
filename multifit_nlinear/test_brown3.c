@@ -62,6 +62,13 @@ static int
 brown3_fvv (const gsl_vector * x, const gsl_vector * v,
             void *params, gsl_vector * fvv)
 {
+  double v1 = gsl_vector_get(v, 0);
+  double v2 = gsl_vector_get(v, 1);
+
+  gsl_vector_set(fvv, 0, 0.0);
+  gsl_vector_set(fvv, 1, 0.0);
+  gsl_vector_set(fvv, 2, 2.0 * v1 * v2);
+
   return GSL_SUCCESS;
 }
 

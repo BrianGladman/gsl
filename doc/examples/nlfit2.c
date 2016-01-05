@@ -108,7 +108,8 @@ main (void)
   gsl_multifit_nlinear_fdf fdf;
   gsl_multifit_nlinear_parameters fdf_params =
     gsl_multifit_nlinear_default_parameters();
-  
+
+  /* print map of chi^2(x1, x2) */
   {
     double x1, x2, chisq;
     double *f1 = gsl_vector_ptr(f, 0);

@@ -85,6 +85,28 @@ static int
 osborne_fvv (const gsl_vector * x, const gsl_vector * v,
              void *params, gsl_vector * fvv)
 {
+  double x2 = gsl_vector_get(x, 1);
+  double x3 = gsl_vector_get(x, 2);
+  double x4 = gsl_vector_get(x, 3);
+  double x5 = gsl_vector_get(x, 4);
+  double v2 = gsl_vector_get(v, 1);
+  double v3 = gsl_vector_get(v, 2);
+  double v4 = gsl_vector_get(v, 3);
+  double v5 = gsl_vector_get(v, 4);
+  size_t i;
+
+  for (i = 0; i < osborne_N; ++i)
+    {
+      double ti = 10.0*i;
+      double term1 = exp(-x4*ti);
+      double term2 = exp(-x5*ti);
+      double term3 = -2*v2 + ti*v4*x2;
+      double term4 = -2*v3 + ti*v5*x3;
+
+      gsl_vector_set(fvv, i, -term1 * term2 * ti *
+                             (v4 / term2 * term3 + v5 / term1 * term4));
+    }
+
   return GSL_SUCCESS;
 }
 

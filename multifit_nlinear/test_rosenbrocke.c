@@ -72,6 +72,16 @@ static int
 rosenbrocke_fvv (const gsl_vector * x, const gsl_vector * v,
                  void *params, gsl_vector * fvv)
 {
+  size_t i;
+
+  for (i = 0; i < rosenbrocke_N / 2; ++i)
+    {
+      double v2im1 = gsl_vector_get(v, 2*i);
+
+      gsl_vector_set(fvv, 2*i, -20.0 * v2im1 * v2im1);
+      gsl_vector_set(fvv, 2*i + 1, 0.0);
+    }
+
   return GSL_SUCCESS;
 }
 

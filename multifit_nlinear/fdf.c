@@ -137,6 +137,7 @@ gsl_multifit_nlinear_default_parameters(void)
   params.scale = GSL_MULTIFIT_NLINEAR_SCALE_MORE;
   params.solver = GSL_MULTIFIT_NLINEAR_SOLVER_QR;
   params.accel = 0;
+  params.accel_alpha = 0.75;
 
   return params;
 }
@@ -257,11 +258,20 @@ gsl_multifit_nlinear_driver (const size_t maxiter,
       status = gsl_multifit_nlinear_iterate (w);
 
       /*
-       * if status is GSL_ENOPROG or GSL_SUCCESS, continue iterating,
-       * otherwise the method has converged with a GSL_ETOLx flag
+       * If the solver reports no progress on the first iteration,
+       * then it didn't find a single step to reduce the
+       * cost function and more iterations won't help so return.
+       *
+       * If we get a no progress flag on subsequent iterations,
+       * it means we did find a good step in a previous iteration,
+       * so continue iterating since the solver has now reset
+       * lambda to its initial value.
        */
-      if (status != GSL_SUCCESS && status != GSL_ENOPROG)
-        break;
+      if (status == GSL_ENOPROG && iter == 0)
+        {
+          *info = status;
+          return GSL_EMAXITER;
+        }
 
       /* test for convergence */
       status = gsl_multifit_nlinear_test(xtol, gtol, ftol, info, w);

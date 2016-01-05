@@ -69,6 +69,21 @@ static int
 jennrich_fvv (const gsl_vector * x, const gsl_vector * v,
               void *params, gsl_vector * fvv)
 {
+  double x1 = gsl_vector_get(x, 0);
+  double x2 = gsl_vector_get(x, 1);
+  double v1 = gsl_vector_get(v, 0);
+  double v2 = gsl_vector_get(v, 1);
+  size_t i;
+
+  for (i = 0; i < jennrich_N; ++i)
+    {
+      double ip1 = i + 1.0;
+      double term1 = exp(ip1*x1);
+      double term2 = exp(ip1*x2);
+
+      gsl_vector_set(fvv, i, -ip1*ip1*(v1*v1*term1 + v2*v2*term2));
+    }
+
   return GSL_SUCCESS;
 }
 

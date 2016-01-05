@@ -1251,7 +1251,7 @@ x* = [ 1 ; 1 ]
 @noindent
 The program output is shown below.
 
-@example
+@smallexample
 === Solving system without acceleration ===
 NITER        = 53
 NFEV         = 56
@@ -1266,7 +1266,7 @@ NJEV         = 22
 NAEV         = 27
 initial cost = 2.250225000000e+04
 final cost   = 1.706925409434e-16
-@end example
+@end smallexample
 
 @noindent
 We can see that enabling geodesic acceleration requires less

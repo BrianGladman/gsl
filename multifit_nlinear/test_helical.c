@@ -75,6 +75,18 @@ static int
 helical_fvv (const gsl_vector * x, const gsl_vector * v,
              void *params, gsl_vector * fvv)
 {
+  double x1 = gsl_vector_get(x, 0);
+  double x2 = gsl_vector_get(x, 1);
+  double v1 = gsl_vector_get(v, 0);
+  double v2 = gsl_vector_get(v, 1);
+  double term1 = v2*x1 - v1*x2;
+  double term2 = v1*x1 + v2*x2;
+  double term3 = x1*x1 + x2*x2;
+
+  gsl_vector_set(fvv, 0, 100.0 / M_PI * (term1 / term3) * (term2 / term3));
+  gsl_vector_set(fvv, 1, 10.0 * (term1 * term1) / pow(term3, 1.5));
+  gsl_vector_set(fvv, 2, 0.0);
+
   return GSL_SUCCESS;
 }
 

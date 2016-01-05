@@ -73,6 +73,12 @@ static int
 roth_fvv (const gsl_vector * x, const gsl_vector * v,
           void *params, gsl_vector * fvv)
 {
+  double x2 = gsl_vector_get(x, 1);
+  double v2 = gsl_vector_get(v, 1);
+
+  gsl_vector_set(fvv, 0, (10.0 - 6.0*x2) * v2 * v2);
+  gsl_vector_set(fvv, 1, (2.0 + 6.0*x2) * v2 * v2);
+
   return GSL_SUCCESS;
 }
 

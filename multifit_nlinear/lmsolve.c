@@ -27,8 +27,8 @@
  * using either the normal equations or QR approach. The solvers are
  * organized into 4 sequential steps:
  *
- * 1. init1: initialize solver for a given f(x) and J(x), independent of lambda
- * 2. init2: further solver initialization once lambda is selected
+ * 1. init: initialize solver for a given f(x) and J(x), independent of lambda
+ * 2. init_lambda: further solver initialization once lambda is selected
  * 3. solve_vel: solve above linear system for geodesic velocity (this is the
  *               standard LM step)
  * 4. solve_acc: solve a similar linear system for the geodesic acceleration:
@@ -41,10 +41,11 @@
  */
 
 #include "qrsolv.c"
+#include "oct.c"
 
-static int normal_init1(const gsl_vector * f, const gsl_matrix * J,
-                        const gsl_vector * g, void * vstate);
-static int normal_init2(const double lambda, void * vstate);
+static int normal_init(const gsl_vector * f, const gsl_matrix * J,
+                       const gsl_vector * g, void * vstate);
+static int normal_init_lambda(const double lambda, void * vstate);
 static int normal_solve_vel(gsl_vector *v, void *vstate);
 static int normal_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
                             gsl_vector *a, void *vstate);
@@ -55,14 +56,16 @@ static int normal_solve_QR(gsl_matrix * A, const gsl_vector * b,
                            gsl_vector * x, lm_state_t *state);
 
 static int qr_init(const gsl_vector * f, const gsl_matrix * J,
-                   void * vstate);
-static int qr_solve(const double lambda, const gsl_vector *g,
-                    gsl_vector *dx, void *vstate);
+                   const gsl_vector * g, void * vstate);
+static int qr_init_lambda(const double lambda, void * vstate);
+static int qr_solve_vel(gsl_vector *v, void *vstate);
+static int qr_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
+                        gsl_vector *a, void *vstate);
 
 /* compute A = J^T J */
 static int
-normal_init1(const gsl_vector * f, const gsl_matrix * J,
-             const gsl_vector * g, void * vstate)
+normal_init(const gsl_vector * f, const gsl_matrix * J,
+            const gsl_vector * g, void * vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
 
@@ -79,7 +82,7 @@ normal_init1(const gsl_vector * f, const gsl_matrix * J,
 }
 
 /*
-normal_init2()
+normal_init_lambda()
   Compute the Cholesky decomposition of J^T J + lambda * D^T D
 
 Inputs: lambda - LM parameter
@@ -94,7 +97,7 @@ solution of the Cholesky system
 */
 
 static int
-normal_init2(const double lambda, void * vstate)
+normal_init_lambda(const double lambda, void * vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
   gsl_matrix *JTJ = state->work_JTJ;
@@ -250,7 +253,8 @@ normal_solve_QR(gsl_matrix * A, const gsl_vector * b,
 
 /* compute J = Q R PT and qtf = Q^T f */
 static int
-qr_init(const gsl_vector * f, const gsl_matrix * J, void * vstate)
+qr_init(const gsl_vector * f, const gsl_matrix * J,
+        const gsl_vector * g, void * vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
   int signum;
@@ -262,31 +266,83 @@ qr_init(const gsl_vector * f, const gsl_matrix * J, void * vstate)
   gsl_vector_memcpy(state->qtf, f);
   gsl_linalg_QR_QTvec(state->R, state->tau, state->qtf);
 
+  /* save Householder part of R matrix which is destroyed by qrsolv() */
+  gsl_matrix_memcpy(state->Q, state->R);
+
+  (void)g; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
 static int
-qr_solve(const double lambda, const gsl_vector *g, gsl_vector *dx, void *vstate)
+qr_init_lambda(const double lambda, void * vstate)
+{
+  /* nothing to do */
+
+  (void)lambda; /* avoid unused parameter warning */
+  (void)vstate; /* avoid unused parameter warning */
+
+  return GSL_SUCCESS;
+}
+
+static int
+qr_solve_vel(gsl_vector *v, void *vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
-  const double sqrt_lambda = sqrt(lambda);
+  const double sqrt_lambda = sqrt(state->lambda);
   int status;
 
   /*
    * solve:
    *
-   * [       J       ] dx = [ f ]
-   * [ sqrt(lamba) D ]      [ 0 ]
+   * [       J       ] v = [ f ]
+   * [ sqrt(lamba) D ]     [ 0 ]
    *
    * using QRPT factorization of J
    */
   status = qrsolv(state->R, state->perm, sqrt_lambda, state->diag,
-                  state->qtf, dx, state->workp, state->workn);
+                  state->qtf, v, state->workp, state->workn);
 
   /* reverse step to go downhill */
-  gsl_vector_scale(dx, -1.0);
+  gsl_vector_scale(v, -1.0);
 
-  (void)g; /* avoid unused parameter warning */
+  return status;
+}
+
+static int
+qr_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
+             gsl_vector *a, void *vstate)
+{
+  lm_state_t *state = (lm_state_t *) vstate;
+  const double sqrt_lambda = sqrt(state->lambda);
+  int status;
+
+  print_octave(J, "J");
+  printv_octave(fvv, "fvv");
+
+  /* compute qtfvv = Q^T fvv */
+  gsl_vector_memcpy(state->qtfvv, fvv);
+  gsl_linalg_QR_QTvec(state->Q, state->tau, state->qtfvv);
+
+  printv_octave(state->qtfvv, "qtfvv");
+  print_octave(state->R, "R");
+
+  /*
+   * solve:
+   *
+   * [       J       ] a = [ fvv ]
+   * [ sqrt(lamba) D ]     [  0  ]
+   *
+   * using QRPT factorization of J
+   */
+
+  status = qrsolv(state->R, state->perm, sqrt_lambda, state->diag,
+                  state->qtfvv, a, state->workp, state->workn);
+
+  /* reverse step to go downhill */
+  gsl_vector_scale(a, -1.0);
+
+  (void)J; /* avoid unused parameter warning */
 
   return status;
 }

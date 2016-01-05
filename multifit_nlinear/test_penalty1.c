@@ -38,7 +38,7 @@ penalty1_f (const gsl_vector * x, void *params, gsl_vector * f)
       sum += xi * xi;
     }
 
-  gsl_vector_set(f, penalty1_P, sum - 0.25);
+  gsl_vector_set(f, penalty1_N - 1, sum - 0.25);
 
   (void)params; /* avoid unused parameter warning */
 
@@ -60,7 +60,7 @@ penalty1_df (const gsl_vector * x, void *params, gsl_matrix * J)
   for (i = 0; i < penalty1_P; ++i)
     {
       double xi = gsl_vector_get(x, i);
-      gsl_matrix_set(J, penalty1_P, i, 2.0 * xi);
+      gsl_matrix_set(J, penalty1_N - 1, i, 2.0 * xi);
     }
 
   (void)params; /* avoid unused parameter warning */
@@ -72,6 +72,13 @@ static int
 penalty1_fvv (const gsl_vector * x, const gsl_vector * v,
               void *params, gsl_vector * fvv)
 {
+  double u;
+
+  gsl_vector_set_zero(fvv);
+
+  gsl_blas_ddot(v, v, &u);
+  gsl_vector_set(fvv, penalty1_N - 1, 2.0 * u);
+
   return GSL_SUCCESS;
 }
 

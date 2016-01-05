@@ -75,6 +75,17 @@ static int
 wood_fvv (const gsl_vector * x, const gsl_vector * v,
           void *params, gsl_vector * fvv)
 {
+  const double s10 = sqrt(10.0);
+  double v1 = gsl_vector_get(v, 0);
+  double v3 = gsl_vector_get(v, 2);
+
+  gsl_vector_set(fvv, 0, -20.0 * v1 * v1);
+  gsl_vector_set(fvv, 1, 0.0);
+  gsl_vector_set(fvv, 2, -6.0 * s10 * v3 * v3);
+  gsl_vector_set(fvv, 3, 0.0);
+  gsl_vector_set(fvv, 4, 0.0);
+  gsl_vector_set(fvv, 5, 0.0);
+
   return GSL_SUCCESS;
 }
 

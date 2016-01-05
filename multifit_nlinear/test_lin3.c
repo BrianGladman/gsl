@@ -81,6 +81,12 @@ static int
 lin3_fvv (const gsl_vector * x, const gsl_vector * v,
           void *params, gsl_vector * fvv)
 {
+  (void)x; /* avoid unused parameter warnings */
+  (void)v;
+  (void)params;
+
+  gsl_vector_set_zero(fvv);
+
   return GSL_SUCCESS;
 }
 

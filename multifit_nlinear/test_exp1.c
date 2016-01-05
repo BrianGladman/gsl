@@ -89,6 +89,27 @@ static int
 exp1_fvv (const gsl_vector * x, const gsl_vector * v,
           void *params, gsl_vector * fvv)
 {
+  double x1 = gsl_vector_get(x, 0);
+  double x2 = gsl_vector_get(x, 1);
+  double x3 = gsl_vector_get(x, 2);
+  double x4 = gsl_vector_get(x, 3);
+  double v1 = gsl_vector_get(v, 0);
+  double v2 = gsl_vector_get(v, 1);
+  double v3 = gsl_vector_get(v, 2);
+  double v4 = gsl_vector_get(v, 3);
+  size_t i;
+
+  for (i = 0; i < exp1_N; ++i)
+    {
+      double ti = 0.02*(i + 1.0);
+      double term1 = exp(x1*ti);
+      double term2 = exp(x2*ti);
+      double term3 = 2*v3 + ti*v1*x3;
+      double term4 = 2*v4 + ti*v2*x4;
+
+      gsl_vector_set(fvv, i, -ti*(v1*term1*term3 + v2*term2*term4));
+    }
+
   return GSL_SUCCESS;
 }
 

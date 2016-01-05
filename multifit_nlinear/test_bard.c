@@ -105,6 +105,24 @@ static int
 bard_fvv (const gsl_vector * x, const gsl_vector * v,
           void *params, gsl_vector * fvv)
 {
+  double x2 = gsl_vector_get(x, 1);
+  double x3 = gsl_vector_get(x, 2);
+  double v2 = gsl_vector_get(v, 1);
+  double v3 = gsl_vector_get(v, 2);
+  size_t i;
+
+  for (i = 0; i < bard_N; ++i)
+    {
+      double ui = i + 1.0;
+      double vi = 16.0 - i - 1.0;
+      double wi = GSL_MIN(ui, vi);
+      double term1 = x2 * vi + x3 * wi;
+      double term2 = v2 * vi + v3 * wi;
+      double ratio = term2 / term1;
+
+      gsl_vector_set(fvv, i, -2.0 * ui * ratio * ratio / term1);
+    }
+
   return GSL_SUCCESS;
 }
 

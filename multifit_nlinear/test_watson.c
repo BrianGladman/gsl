@@ -111,6 +111,28 @@ static int
 watson_fvv (const gsl_vector * x, const gsl_vector * v,
             void *params, gsl_vector * fvv)
 {
+  double v1 = gsl_vector_get (v, 0);
+  size_t i, j;
+
+  for (i = 0; i < watson_N - 2; ++i)
+    {
+      double ti = (i + 1) / 29.0;
+      double sum = 0.0;
+      double tjm1 = 1.0;
+
+      for (j = 0; j < watson_P; ++j)
+        {
+          double vj = gsl_vector_get(v, j);
+          sum += vj * tjm1;
+          tjm1 *= ti;
+        }
+
+      gsl_vector_set(fvv, i, -2.0*sum*sum);
+    }
+
+  gsl_vector_set(fvv, watson_N - 2, 0.0);
+  gsl_vector_set(fvv, watson_N - 1, -2.0*v1*v1);
+
   return GSL_SUCCESS;
 }
 

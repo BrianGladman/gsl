@@ -82,6 +82,28 @@ static int
 meyerscal_fvv (const gsl_vector * x, const gsl_vector * v,
                void *params, gsl_vector * fvv)
 {
+  double x1 = gsl_vector_get(x, 0);
+  double x2 = gsl_vector_get(x, 1);
+  double x3 = gsl_vector_get(x, 2);
+  double v1 = gsl_vector_get(v, 0);
+  double v2 = gsl_vector_get(v, 1);
+  double v3 = gsl_vector_get(v, 2);
+  size_t i;
+
+  for (i = 0; i < meyerscal_N; ++i)
+    {
+      double ti = 0.45 + 0.05*(i + 1.0);
+      double term1 = ti + x3;
+      double term2 = exp(10.0*x2/term1 - 13.0);
+      double term3 = v2*term1 - v3*x2;
+      double term4 = ti*ti*v1 -
+                     v3*x1*(5*x2 + x3) +
+                     x3*(5*v2*x1 + v1*x3) +
+                     ti*(5*v2*x1 - v3*x1 + 2*v1*x3);
+
+      gsl_vector_set(fvv, i, 20*term2*term3*term4 / pow(term1, 4.0));
+    }
+
   return GSL_SUCCESS;
 }
 

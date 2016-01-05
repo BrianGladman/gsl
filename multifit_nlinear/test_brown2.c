@@ -112,6 +112,36 @@ static int
 brown2_fvv (const gsl_vector * x, const gsl_vector * v,
             void *params, gsl_vector * fvv)
 {
+  size_t i, j, k;
+  double sum = 0.0;
+
+  gsl_vector_set_zero(fvv);
+
+  for (k = 0; k < brown2_P; ++k)
+    {
+      double vk = gsl_vector_get(v, k);
+
+      for (i = 0; i < brown2_P; ++i)
+        {
+          double vi = gsl_vector_get(v, i);
+          double delta = (i == k) ? 1.0 : 0.0;
+          double prod = 1.0;
+
+          for (j = 0; j < brown2_N; ++j)
+            {
+              if (j != i && j != k)
+                {
+                  double xj = gsl_vector_get(x, j);
+                  prod *= xj;
+                }
+            }
+
+          sum += vk * vi * (1.0 - delta) * prod;
+        }
+    }
+
+  gsl_vector_set(fvv, brown2_N - 1, sum);
+
   return GSL_SUCCESS;
 }
 
