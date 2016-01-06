@@ -139,8 +139,6 @@ main (void)
   fdf.p = p;
   fdf.params = NULL;
 
-  fdf_params.solver = GSL_MULTIFIT_NLINEAR_SOLVER_NORMAL;
-
   /* starting point */
   gsl_vector_set(x, 0, -0.5);
   gsl_vector_set(x, 1, 1.75);

@@ -1194,18 +1194,19 @@ J = [ -200*x1 100 ; -1 0 ]
 @noindent
 In order to use geodesic acceleration, the user must provide
 the second directional derivative of each residual in the
-velocity direction, @math{D_v^2 f_i}, where @math{D_v f_i = \nabla f_i \cdot v},
-and @math{\nabla f_i} is the @math{i}th row of the Jacobian.
+velocity direction,
+@math{D_v^2 f_i = \sum_{\alpha\beta} v_{\alpha} v_{\beta} \partial_{\alpha} \partial_{\beta} f_i}.
 The velocity vector @math{v} is provided by the solver. For this example,
 these derivatives are given by
 @tex
 \beforedisplay
 $$
 f_{vv} =
+D_v^2
 \left(
 \matrix{
-D_v^2 f_1 \cr
-D_v^2 f_2
+f_1 \cr
+f_2
 }
 \right) =
 \left(
@@ -1260,17 +1261,17 @@ NAEV         = 0
 initial cost = 2.250225000000e+04
 final cost   = 6.674986031430e-18
 === Solving system with acceleration ===
-NITER        = 21
-NFEV         = 28
-NJEV         = 22
-NAEV         = 27
+NITER        = 15
+NFEV         = 16
+NJEV         = 16
+NAEV         = 15
 initial cost = 2.250225000000e+04
-final cost   = 1.706925409434e-16
+final cost   = 1.778587232284e-21
 @end smallexample
 
 @noindent
 We can see that enabling geodesic acceleration requires less
-than half the number of Jacobian evaluations in order to locate
+than a third of the number of Jacobian evaluations in order to locate
 the minimum. The path taken by both methods is shown in the
 figure below. The color map shows the cost function
 @math{\chi^2(x_1,x_2)}. We see that both methods quickly

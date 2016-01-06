@@ -81,10 +81,6 @@ static int
 brown1_fvv (const gsl_vector * x, const gsl_vector * v,
             void *params, gsl_vector * fvv)
 {
-  double x0 = gsl_vector_get (x, 0);
-  double x1 = gsl_vector_get (x, 1);
-  double x2 = gsl_vector_get (x, 2);
-  double x3 = gsl_vector_get (x, 3);
   double v0 = gsl_vector_get (v, 0);
   double v1 = gsl_vector_get (v, 1);
   double v2 = gsl_vector_get (v, 2);
@@ -94,8 +90,6 @@ brown1_fvv (const gsl_vector * x, const gsl_vector * v,
   for (i = 0; i < brown1_N; i++)
     {
       double ti = 0.2 * (i + 1);
-      double ui = x0 + x1 * ti - exp (ti);
-      double vi = x2 + x3 * sin (ti) - cos (ti);
       double term1 = v0 + ti*v1;
       double term2 = v3*sin(ti);
 

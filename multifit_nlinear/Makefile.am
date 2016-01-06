@@ -9,7 +9,8 @@ libgslmultifit_nlinear_la_SOURCES = convergence.c covar.c fdf.c fdjac.c lm.c
 noinst_HEADERS =        \
 lmdiag.c                \
 lmmisc.c                \
-lmsolve.c               \
+lmnormal.c              \
+lmqr.c                  \
 qrsolv.c                \
 test_bard.c             \
 test_beale.c            \

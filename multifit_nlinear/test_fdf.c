@@ -91,7 +91,7 @@ static test_fdf_problem *test_problems[] = {
    * IMM Department of Mathematical Modeling, Tech. Report
    * IMM-REP-2000-17, 2000.
    */
-#if 0
+#if 1
   &lin1_problem,       /* 1 */
   &lin2_problem,       /* 2 */
   &lin3_problem,       /* 3 */
@@ -123,6 +123,7 @@ static test_fdf_problem *test_problems[] = {
    *
    * Many of these overlap with the Nielsen tests
    */
+#if 1
   &rosenbrock_problem,   /* 1 */
   &roth_problem,         /* 2 */
   &powell3_problem,      /* 3 */
@@ -143,14 +144,13 @@ static test_fdf_problem *test_problems[] = {
   &watson_problem,       /* 20 */
   &rosenbrocke_problem,  /* 21 */
   &penalty1_problem,     /* 23 */
-#if 0
   &penalty2_problem,     /* 24 */
-#endif
   &vardim_problem,       /* 25 */
   &brown2_problem,       /* 27 */
   &lin1_problem,         /* 32 */
   &lin2_problem,         /* 33 */
   &lin3_problem,         /* 34 */
+#endif
 
 #if 0
   /* NIST test cases */
@@ -247,9 +247,9 @@ test_fdf(const gsl_multifit_nlinear_type * T,
   char sname[2048];
   int status, info;
 
-  sprintf(sname, "%s/scale_matrix=%d/solver=%d/scale=%g%s",
+  sprintf(sname, "%s/scale_matrix=%d/solver=%s/scale=%g%s",
     gsl_multifit_nlinear_name(w),
-    params->scale, params->solver, x0_scale,
+    params->scale, params->solver->name, x0_scale,
     problem->fdf->df ? "" : "/fdiff");
 
   /* scale starting point x0 */
@@ -279,9 +279,9 @@ test_fdf(const gsl_multifit_nlinear_type * T,
       /* test again with weighting matrix W = I */
       gsl_vector *wv = gsl_vector_alloc(n);
 
-      sprintf(sname, "%s/scale_matrix=%d/solver=%d/scale=%g%s/weights",
+      sprintf(sname, "%s/scale_matrix=%d/solver=%s/scale=%g%s/weights",
         gsl_multifit_nlinear_name(w),
-        params->scale, params->solver, x0_scale,
+        params->scale, params->solver->name, x0_scale,
         problem->fdf->df ? "" : "/fdiff");
 
       gsl_vector_memcpy(x0, &x0v.vector);

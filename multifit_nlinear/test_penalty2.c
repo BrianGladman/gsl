@@ -114,6 +114,43 @@ static int
 penalty2_fvv (const gsl_vector * x, const gsl_vector * v,
               void *params, gsl_vector * fvv)
 {
+  const double alpha = 1.0e-5;
+  const double sqrt_alpha = sqrt(alpha);
+  double v1 = gsl_vector_get(v, 0);
+  double sum = penalty2_P * v1 * v1;
+  size_t i;
+
+  /* first row */
+  gsl_vector_set(fvv, 0, 0.0);
+
+  /* rows [2:p] */
+  for (i = 1; i < penalty2_P; ++i)
+    {
+      double xi = gsl_vector_get(x, i);
+      double xim1 = gsl_vector_get(x, i - 1);
+      double vi = gsl_vector_get(v, i);
+      double vim1 = gsl_vector_get(v, i - 1);
+      double term1 = exp(xi / 10.0);
+      double term2 = exp(xim1 / 10.0);
+
+      gsl_vector_set(fvv, i,
+        sqrt_alpha / 100.0 * (term1 * vi * vi + term2 * vim1 * vim1));
+
+      sum += (penalty2_P - i) * vi * vi;
+    }
+
+  /* last row */
+  gsl_vector_set(fvv, penalty2_N - 1, 2.0 * sum);
+
+  /* rows [p+1:2p-1] */
+  for (i = penalty2_P; i < penalty2_N - 1; ++i)
+    {
+      double xi = gsl_vector_get(x, i - penalty2_P + 1);
+      double vi = gsl_vector_get(v, i - penalty2_P + 1);
+
+      gsl_vector_set(fvv, i, sqrt_alpha / 100.0 * exp(xi / 10.0) * vi * vi);
+    }
+
   return GSL_SUCCESS;
 }
 

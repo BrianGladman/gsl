@@ -135,7 +135,7 @@ gsl_multifit_nlinear_default_parameters(void)
   gsl_multifit_nlinear_parameters params;
 
   params.scale = GSL_MULTIFIT_NLINEAR_SCALE_MORE;
-  params.solver = GSL_MULTIFIT_NLINEAR_SOLVER_QR;
+  params.solver = gsl_multifit_nlinear_solver_qr;
   params.accel = 0;
   params.accel_alpha = 0.75;
 

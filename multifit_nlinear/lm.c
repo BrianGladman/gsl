@@ -50,7 +50,6 @@ typedef struct
   gsl_vector *x_trial;       /* trial parameter vector */
   gsl_vector *f_trial;       /* trial function vector */
   gsl_vector *workp;         /* workspace, length p */
-  gsl_vector *tau;           /* Householder scalars for QR */
   gsl_vector *fvv;           /* D_v^2 f(x), size n */
   gsl_vector *vel;           /* geodesic velocity (standard LM step), size p */
   gsl_vector *acc;           /* geodesic acceleration, size p */
@@ -58,20 +57,9 @@ typedef struct
   double lambda;             /* LM parameter lambda */
   double lambda0;            /* initial scale factor for lambda */
 
-  /* normal equations variables */
-  gsl_matrix *A;             /* J^T J */
-  gsl_matrix *work_JTJ;      /* copy of J^T J */
-  gsl_vector *rhs_vel;       /* -J^T f */
-  gsl_vector *rhs_acc;       /* -J^T fvv */
-  int chol;                  /* Cholesky factorization successful */
+  const gsl_multifit_nlinear_solver *solver;
 
-  /* QR solver variables */
-  gsl_matrix *R;             /* QR factorization of J */
-  gsl_matrix *Q;             /* Householder reflectors for J */
-  gsl_permutation *perm;     /* permutation matrix */
-  gsl_vector *qtf;           /* Q^T f */
-  gsl_vector *qtfvv;         /* Q^T fvv */
-  gsl_vector *workn;         /* workspace, length n */
+  void *solver_state;        /* workspace for linear solver */
 
   /* tunable parameters */
 
@@ -79,25 +67,12 @@ typedef struct
   double accel_alpha;        /* max |a| / |v| */
   int (*init_diag) (const gsl_matrix * J, gsl_vector * diag);
   int (*update_diag) (const gsl_matrix * J, gsl_vector * diag);
-
-  /* solver initialization independent of lambda */
-  int (*solver_init) (const gsl_vector * f, const gsl_matrix * J,
-                      const gsl_vector * g, void * vstate);
-
-  /* solver initialization with lambda */
-  int (*solver_init_lambda) (const double lambda, void * vstate);
-
-  /* solve linear system for geodesic velocity (standard LM step) */
-  int (*solver_vel) (gsl_vector * v, void * vstate);
-
-  /* solve linear system for geodesic acceleration */
-  int (*solver_acc) (const gsl_matrix * J, const gsl_vector * fvv,
-                     gsl_vector * a, void * vstate);
 } lm_state_t;
 
 #include "lmdiag.c"
 #include "lmmisc.c"
-#include "lmsolve.c"
+#include "lmnormal.c"
+#include "lmqr.c"
 
 #define LM_ONE_THIRD         (0.333333333333333)
 
@@ -134,12 +109,6 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
   if (state->workp == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for workp", GSL_ENOMEM);
-    }
-
-  state->tau = gsl_vector_alloc(p);
-  if (state->tau == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for tau", GSL_ENOMEM);
     }
 
   state->fvv = gsl_vector_alloc(n);
@@ -192,92 +161,10 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
       GSL_ERROR_NULL ("invalid scale parameter", GSL_EINVAL);
     }
 
-  if (params->solver == GSL_MULTIFIT_NLINEAR_SOLVER_NORMAL)
+  state->solver_state = (params->solver->alloc)(n, p);
+  if (state->solver_state == NULL)
     {
-      /* allocate variables specific to normal equations solver */
-
-      state->A = gsl_matrix_alloc(p, p);
-      if (state->A == NULL)
-        {
-          GSL_ERROR_NULL ("failed to allocate space for A", GSL_ENOMEM);
-        }
-
-      state->work_JTJ = gsl_matrix_alloc(p, p);
-      if (state->work_JTJ == NULL)
-        {
-          GSL_ERROR_NULL ("failed to allocate space for JTJ workspace",
-                          GSL_ENOMEM);
-        }
-
-      state->rhs_vel = gsl_vector_alloc(p);
-      if (state->rhs_vel == NULL)
-        {
-          GSL_ERROR_NULL ("failed to allocate space for rhs_vel", GSL_ENOMEM);
-        }
-
-      state->rhs_acc = gsl_vector_alloc(p);
-      if (state->rhs_acc == NULL)
-        {
-          GSL_ERROR_NULL ("failed to allocate space for rhs_acc", GSL_ENOMEM);
-        }
-
-      state->solver_init = normal_init;
-      state->solver_init_lambda = normal_init_lambda;
-      state->solver_vel = normal_solve_vel;
-      state->solver_acc = normal_solve_acc;
-    }
-  else if (params->solver == GSL_MULTIFIT_NLINEAR_SOLVER_QR)
-    {
-      /* allocate variables specific to QR solver */
-
-      state->R = gsl_matrix_alloc(n, p);
-      if (state->R == NULL)
-        {
-          GSL_ERROR_NULL ("failed to allocate space for R", GSL_ENOMEM);
-        }
-
-      state->Q = gsl_matrix_alloc(n, p);
-      if (state->Q == NULL)
-        {
-          GSL_ERROR_NULL ("failed to allocate space for Q", GSL_ENOMEM);
-        }
-
-      state->qtf = gsl_vector_alloc(n);
-      if (state->qtf == NULL)
-        {
-          GSL_ERROR_NULL ("failed to allocate space for qtf",
-                          GSL_ENOMEM);
-        }
-
-      state->qtfvv = gsl_vector_alloc(n);
-      if (state->qtfvv == NULL)
-        {
-          GSL_ERROR_NULL ("failed to allocate space for qtfvv",
-                          GSL_ENOMEM);
-        }
-
-      state->perm = gsl_permutation_calloc(p);
-      if (state->perm == NULL)
-        {
-          GSL_ERROR_NULL ("failed to allocate space for perm",
-                          GSL_ENOMEM);
-        }
-
-      state->workn = gsl_vector_alloc(n);
-      if (state->workn == NULL)
-        {
-          GSL_ERROR_NULL ("failed to allocate space for workn",
-                          GSL_ENOMEM);
-        }
-
-      state->solver_init = qr_init;
-      state->solver_init_lambda = qr_init_lambda;
-      state->solver_vel = qr_solve_vel;
-      state->solver_acc = qr_solve_acc;
-    }
-  else
-    {
-      GSL_ERROR_NULL ("invalid solver parameter", GSL_EINVAL);
+      GSL_ERROR_NULL ("failed to allocate space for solver state", GSL_ENOMEM);
     }
 
   state->n = n;
@@ -285,6 +172,7 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
   state->lambda0 = 1.0e-3;
   state->accel = params->accel;
   state->accel_alpha = params->accel_alpha;
+  state->solver = params->solver;
 
   return state;
 }
@@ -294,17 +182,11 @@ lm_free(void *vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
 
-  if (state->A)
-    gsl_matrix_free(state->A);
-
   if (state->diag)
     gsl_vector_free(state->diag);
 
   if (state->workp)
     gsl_vector_free(state->workp);
-
-  if (state->tau)
-    gsl_vector_free(state->tau);
 
   if (state->fvv)
     gsl_vector_free(state->fvv);
@@ -315,38 +197,14 @@ lm_free(void *vstate)
   if (state->acc)
     gsl_vector_free(state->acc);
 
-  if (state->work_JTJ)
-    gsl_matrix_free(state->work_JTJ);
-
   if (state->x_trial)
     gsl_vector_free(state->x_trial);
 
   if (state->f_trial)
     gsl_vector_free(state->f_trial);
 
-  if (state->R)
-    gsl_matrix_free(state->R);
-
-  if (state->Q)
-    gsl_matrix_free(state->Q);
-
-  if (state->qtf)
-    gsl_vector_free(state->qtf);
-
-  if (state->qtfvv)
-    gsl_vector_free(state->qtfvv);
-
-  if (state->perm)
-    gsl_permutation_free(state->perm);
-
-  if (state->workn)
-    gsl_vector_free(state->workn);
-
-  if (state->rhs_vel)
-    gsl_vector_free(state->rhs_vel);
-
-  if (state->rhs_acc)
-    gsl_vector_free(state->rhs_acc);
+  if (state->solver_state)
+    (state->solver->free)(state->solver_state);
 
   free(state);
 }
@@ -455,7 +313,7 @@ lm_iterate(void *vstate, const gsl_vector *swts,
   size_t i;
 
   /* initialize linear least squares solver */
-  status = (state->solver_init)(f, J, g, vstate);
+  status = (state->solver->init)(f, J, g, state->solver_state);
   if (status)
     return status;
 
@@ -463,15 +321,16 @@ lm_iterate(void *vstate, const gsl_vector *swts,
   while (!foundstep)
     {
       /* further solver initialization with current lambda */
-      status = (state->solver_init_lambda)(state->lambda, vstate);
+      status = (state->solver->init_lambda)(state->lambda, state->diag,
+                                            state->solver_state);
       if (status)
         return status;
 
       /*
-       * solve: [    J     ] dx = - [ f ]
-       *        [ lambda*D ]        [ 0 ]
+       * solve: [       J        ] v = - [ f ]
+       *        [ sqrt(lambda)*D ]       [ 0 ]
        */
-      status = (state->solver_vel)(state->vel, vstate);
+      status = (state->solver->solve_vel)(state->vel, state->solver_state);
       if (status)
         return status;
 
@@ -482,7 +341,11 @@ lm_iterate(void *vstate, const gsl_vector *swts,
           if (status)
             return status;
 
-          status = (state->solver_acc)(J, state->fvv, state->acc, vstate);
+          /*
+           * solve: [       J        ] a = - [ fvv ]
+           *        [ sqrt(lambda)*D ]       [  0  ]
+           */
+          status = (state->solver->solve_acc)(J, state->fvv, state->acc, state->solver_state);
           if (status)
             return status;
         }

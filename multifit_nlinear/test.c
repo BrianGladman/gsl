@@ -34,7 +34,6 @@
 int
 main (void)
 {
-  gsl_multifit_nlinear_solver_t solver;
   gsl_multifit_nlinear_scale_t scale;
   int accel;
   gsl_multifit_nlinear_parameters fdf_params =
@@ -44,31 +43,30 @@ main (void)
 
   /* loop over all parameter combinations and run testsuite */
 
-#if 1
-  fdf_params.solver = GSL_MULTIFIT_NLINEAR_SOLVER_NORMAL;
+#if 0
+  fdf_params.solver = gsl_multifit_nlinear_solver_normal;
   fdf_params.scale = GSL_MULTIFIT_NLINEAR_SCALE_MORE;
   fdf_params.accel = 1;
   test_fdf_main(&fdf_params);
 #else
-  for (solver = GSL_MULTIFIT_NLINEAR_SOLVER_NORMAL;
-       solver <= GSL_MULTIFIT_NLINEAR_SOLVER_QR; ++solver)
+  for (scale = GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG;
+       scale <= GSL_MULTIFIT_NLINEAR_SCALE_MORE; ++scale)
     {
-      for (scale = GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG;
-           scale <= GSL_MULTIFIT_NLINEAR_SCALE_MORE; ++scale)
+      /* Marquardt scaling does not pass testsuite */
+      if (scale == GSL_MULTIFIT_NLINEAR_SCALE_MARQUARDT)
+        continue;
+
+      for (accel = 0; accel <= 1; ++accel)
         {
-          /* Marquardt scaling does not pass testsuite */
-          if (scale == GSL_MULTIFIT_NLINEAR_SCALE_MARQUARDT)
-            continue;
+          fdf_params.scale = scale;
+          fdf_params.accel = accel;
 
-          for (accel = 0; accel <= 1; ++accel)
-            {
-              fdf_params.solver = solver;
-              fdf_params.scale = scale;
-              fdf_params.accel = accel;
+          fprintf(stderr, "accel = %d\n", accel);
+          fdf_params.solver = gsl_multifit_nlinear_solver_normal;
+          test_fdf_main(&fdf_params);
 
-              fprintf(stderr, "accel = %d\n", accel);
-              test_fdf_main(&fdf_params);
-            }
+          fdf_params.solver = gsl_multifit_nlinear_solver_qr;
+          test_fdf_main(&fdf_params);
         }
     }
 #endif

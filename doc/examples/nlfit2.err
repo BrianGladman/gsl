@@ -6,9 +6,9 @@ NAEV         = 0
 initial cost = 2.250225000000e+04
 final cost   = 6.674986031430e-18
 === Solving system with acceleration ===
-NITER        = 21
-NFEV         = 28
-NJEV         = 22
-NAEV         = 27
+NITER        = 15
+NFEV         = 16
+NJEV         = 16
+NAEV         = 15
 initial cost = 2.250225000000e+04
-final cost   = 1.706925409434e-16
+final cost   = 1.778587232284e-21
