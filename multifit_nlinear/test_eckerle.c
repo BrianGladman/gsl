@@ -3,7 +3,8 @@
 
 #define eckerle_NTRIES  1
 
-static double eckerle_x0[eckerle_P] = { 1.0, 10.0, 500.0 };
+static double eckerle_x0a[eckerle_P] = { 1.0, 10.0, 500.0 };
+static double eckerle_x0b[eckerle_P] = { 1.5, 5.0, 450.0 };
 static double eckerle_epsrel = 1.0e-7;
 
 static double eckerle_sigma[eckerle_P] = {
@@ -104,18 +105,11 @@ eckerle_df (const gsl_vector * x, void *params, gsl_matrix * df)
   return GSL_SUCCESS;
 }
 
-static int
-eckerle_fvv (const gsl_vector * x, const gsl_vector * v,
-             void *params, gsl_vector * fvv)
-{
-  return GSL_SUCCESS;
-}
-
 static gsl_multifit_nlinear_fdf eckerle_func =
 {
   eckerle_f,
   eckerle_df,
-  eckerle_fvv,
+  NULL, /* analytic expression too complex */
   eckerle_N,
   eckerle_P,
   NULL,
@@ -124,10 +118,21 @@ static gsl_multifit_nlinear_fdf eckerle_func =
   0
 };
 
-static test_fdf_problem eckerle_problem =
+static test_fdf_problem eckerlea_problem =
 {
-  "nist-eckerle",
-  eckerle_x0,
+  "nist-eckerlea",
+  eckerle_x0a,
+  eckerle_sigma,
+  &eckerle_epsrel,
+  eckerle_NTRIES,
+  &eckerle_checksol,
+  &eckerle_func
+};
+
+static test_fdf_problem eckerleb_problem =
+{
+  "nist-eckerleb",
+  eckerle_x0b,
   eckerle_sigma,
   &eckerle_epsrel,
   eckerle_NTRIES,

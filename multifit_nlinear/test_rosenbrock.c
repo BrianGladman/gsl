@@ -62,6 +62,7 @@ rosenbrock_fvv (const gsl_vector * x, const gsl_vector * v,
   gsl_vector_set(fvv, 0, -20.0 * v1 * v1);
   gsl_vector_set(fvv, 1, 0.0);
 
+  (void)x;      /* avoid unused parameter warning */
   (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;

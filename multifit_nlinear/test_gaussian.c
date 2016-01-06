@@ -108,6 +108,8 @@ gaussian_fvv (const gsl_vector * x, const gsl_vector * v,
                                     v2*(-2*v1*x3 + v3*x1*(-2.0 + 3*x2*x3*x3)))));
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

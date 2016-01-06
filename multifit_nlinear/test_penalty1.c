@@ -79,6 +79,9 @@ penalty1_fvv (const gsl_vector * x, const gsl_vector * v,
   gsl_blas_ddot(v, v, &u);
   gsl_vector_set(fvv, penalty1_N - 1, 2.0 * u);
 
+  (void)x;      /* avoid unused parameter warning */
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

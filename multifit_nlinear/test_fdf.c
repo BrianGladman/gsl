@@ -91,7 +91,6 @@ static test_fdf_problem *test_problems[] = {
    * IMM Department of Mathematical Modeling, Tech. Report
    * IMM-REP-2000-17, 2000.
    */
-#if 1
   &lin1_problem,       /* 1 */
   &lin2_problem,       /* 2 */
   &lin3_problem,       /* 3 */
@@ -112,7 +111,6 @@ static test_fdf_problem *test_problems[] = {
   &meyerscal_problem,  /* 20 */
 
   &powell2_problem,
-#endif
 
   /*
    * These tests are from
@@ -123,7 +121,6 @@ static test_fdf_problem *test_problems[] = {
    *
    * Many of these overlap with the Nielsen tests
    */
-#if 1
   &rosenbrock_problem,   /* 1 */
   &roth_problem,         /* 2 */
   &powell3_problem,      /* 3 */
@@ -150,19 +147,24 @@ static test_fdf_problem *test_problems[] = {
   &lin1_problem,         /* 32 */
   &lin2_problem,         /* 33 */
   &lin3_problem,         /* 34 */
-#endif
 
-#if 0
   /* NIST test cases */
-  &kirby2_problem,
-  &hahn1_problem,
-  &enso_problem,
-  &thurber_problem,
-  &boxbod_problem,
-  &rat42_problem,
-  &eckerle_problem,
-  &rat43_problem,
-#endif
+  &kirby2a_problem,
+  &kirby2b_problem,
+  &hahn1a_problem,
+  &hahn1b_problem,
+  &ensoa_problem,
+  &ensob_problem,
+  &thurbera_problem,
+  &thurberb_problem,
+  /*FIXME: &boxboda_problem, */
+  &boxbodb_problem,
+  &rat42a_problem,
+  &rat42b_problem,
+  &eckerlea_problem,
+  &eckerleb_problem,
+  &rat43a_problem,
+  &rat43b_problem,
 
   NULL
 };
@@ -177,7 +179,6 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
 
   /* test weighted nonlinear least squares */
 
-#if 0
   /* internal weighting in _f and _df functions */
   test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
            wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
@@ -185,7 +186,6 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
   /* weighting through nlinear_winit */
   test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
            wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
-#endif
 
   for (i = 0; test_problems[i] != NULL; ++i)
     {
@@ -204,6 +204,18 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
                1.0e3 * epsrel, 1.0, problem, NULL);
 
       problem->fdf->df = fdf.df;
+
+      if (params->accel == 1 && problem->fdf->fvv != NULL)
+        {
+          /* test finite difference second directional derivative */
+          fdf.fvv = problem->fdf->fvv;
+          problem->fdf->fvv = NULL;
+
+          test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
+                   1.0e2 * epsrel, 1.0, problem, NULL);
+
+          problem->fdf->fvv = fdf.fvv;
+        }
     }
 }
 
@@ -247,10 +259,11 @@ test_fdf(const gsl_multifit_nlinear_type * T,
   char sname[2048];
   int status, info;
 
-  sprintf(sname, "%s/scale_matrix=%d/solver=%s/scale=%g%s",
+  sprintf(sname, "%s/scale_matrix=%d/solver=%s/scale=%g%s%s",
     gsl_multifit_nlinear_name(w),
     params->scale, params->solver->name, x0_scale,
-    problem->fdf->df ? "" : "/fdiff");
+    problem->fdf->df ? "" : "/fdjac",
+    problem->fdf->fvv ? "" : "/fdfvv");
 
   /* scale starting point x0 */
   gsl_vector_memcpy(x0, &x0v.vector);
@@ -269,8 +282,6 @@ test_fdf(const gsl_multifit_nlinear_type * T,
   gsl_test(status, "%s/%s did not converge, status=%s",
            sname, pname, gsl_strerror(status));
 
-  fprintf(stderr, "%s NJEV = %zu\n", pname, fdf->nevaldf);
-
   /* check solution */
   test_fdf_checksol(sname, pname, epsrel, w, problem);
 
@@ -279,10 +290,11 @@ test_fdf(const gsl_multifit_nlinear_type * T,
       /* test again with weighting matrix W = I */
       gsl_vector *wv = gsl_vector_alloc(n);
 
-      sprintf(sname, "%s/scale_matrix=%d/solver=%s/scale=%g%s/weights",
+      sprintf(sname, "%s/scale_matrix=%d/solver=%s/scale=%g%s%s/weights",
         gsl_multifit_nlinear_name(w),
         params->scale, params->solver->name, x0_scale,
-        problem->fdf->df ? "" : "/fdiff");
+        problem->fdf->df ? "" : "/fdjac",
+        problem->fdf->fvv ? "" : "/fdfvv");
 
       gsl_vector_memcpy(x0, &x0v.vector);
       test_scale_x0(x0, x0_scale);

@@ -79,6 +79,8 @@ roth_fvv (const gsl_vector * x, const gsl_vector * v,
   gsl_vector_set(fvv, 0, (10.0 - 6.0*x2) * v2 * v2);
   gsl_vector_set(fvv, 1, (2.0 + 6.0*x2) * v2 * v2);
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

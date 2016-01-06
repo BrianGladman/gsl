@@ -87,6 +87,8 @@ typedef struct
   const gsl_multifit_nlinear_solver *solver;  /* solver method */
   int accel;                                  /* use geodesic acceleration */
   double accel_alpha;                         /* max |a|/|v| */
+  double h_df;                                /* step size for finite difference Jacobian */
+  double h_fvv;                               /* step size for finite difference fvv */
 } gsl_multifit_nlinear_parameters;
 
 typedef struct
@@ -177,11 +179,14 @@ int gsl_multifit_nlinear_eval_df(gsl_multifit_nlinear_fdf *fdf,
                                  gsl_matrix *df);
 
 int
-gsl_multifit_nlinear_eval_fvv(gsl_multifit_nlinear_fdf *fdf,
+gsl_multifit_nlinear_eval_fvv(const double h,
                               const gsl_vector *x,
                               const gsl_vector *v,
+                              const gsl_vector *f,
+                              const gsl_matrix *J,
                               const gsl_vector *swts,
-                              gsl_vector *yvv);
+                              gsl_multifit_nlinear_fdf *fdf,
+                              gsl_vector *yvv, gsl_vector *work);
 
 /* covar.c */
 int
@@ -199,6 +204,14 @@ int
 gsl_multifit_nlinear_df(const gsl_vector *x, const gsl_vector *wts,
                         gsl_multifit_nlinear_fdf *fdf,
                         const gsl_vector *f, gsl_matrix *J);
+
+/* fdfvv.c */
+int
+gsl_multifit_nlinear_fdfvv(const double h, const gsl_vector *x, const gsl_vector *v,
+                           const gsl_vector *f, const gsl_matrix *J,
+                           const gsl_vector *swts,
+                           gsl_multifit_nlinear_fdf *fdf,
+                           gsl_vector *fvv, gsl_vector *work);
 
 /* top-level methods */
 GSL_VAR const gsl_multifit_nlinear_type * gsl_multifit_nlinear_lm;

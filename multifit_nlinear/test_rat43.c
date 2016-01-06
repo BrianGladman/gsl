@@ -3,7 +3,8 @@
 
 #define rat43_NTRIES  1
 
-static double rat43_x0[rat43_P] = { 100.0, 10.0, 1.0, 1.0 };
+static double rat43_x0a[rat43_P] = { 100.0, 10.0, 1.0, 1.0 };
+static double rat43_x0b[rat43_P] = { 700.0, 5.0, 0.75, 1.3 };
 static double rat43_epsrel = 1.0e-6;
 
 static double rat43_sigma[rat43_P] = {
@@ -92,18 +93,11 @@ rat43_df (const gsl_vector * x, void *params, gsl_matrix * df)
   return GSL_SUCCESS;
 }
 
-static int
-rat43_fvv (const gsl_vector * x, const gsl_vector * v,
-           void *params, gsl_vector * fvv)
-{
-  return GSL_SUCCESS;
-}
-
 static gsl_multifit_nlinear_fdf rat43_func =
 {
   rat43_f,
   rat43_df,
-  rat43_fvv,
+  NULL, /* analytic expression too complex */
   rat43_N,
   rat43_P,
   NULL,
@@ -112,10 +106,21 @@ static gsl_multifit_nlinear_fdf rat43_func =
   0
 };
 
-static test_fdf_problem rat43_problem =
+static test_fdf_problem rat43a_problem =
 {
-  "nist-rat43",
-  rat43_x0,
+  "nist-rat43a",
+  rat43_x0a,
+  rat43_sigma,
+  &rat43_epsrel,
+  rat43_NTRIES,
+  &rat43_checksol,
+  &rat43_func
+};
+
+static test_fdf_problem rat43b_problem =
+{
+  "nist-rat43b",
+  rat43_x0b,
   rat43_sigma,
   &rat43_epsrel,
   rat43_NTRIES,

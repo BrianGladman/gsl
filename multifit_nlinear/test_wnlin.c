@@ -111,6 +111,28 @@ static int
 wnlin_fvv (const gsl_vector * x, const gsl_vector * v,
            void *params, gsl_vector * fvv)
 {
+  int *iptr = (int *) params;
+  int doweight = iptr ? *iptr : 0;
+  double A = gsl_vector_get (x, 0);
+  double lambda = gsl_vector_get (x, 1);
+  double v1 = gsl_vector_get(v, 0);
+  double v2 = gsl_vector_get(v, 1);
+  size_t i;
+
+  for (i = 0; i < wnlin_N; i++)
+    {
+      double ti = i;
+      double swi = sqrt(wnlin_W[i]);
+      double fvvi;
+
+      fvvi = exp(-ti*lambda)*ti*v2 * (-2*v1 + ti*v2*A);
+
+      if (doweight)
+        gsl_vector_set(fvv, i, swi * fvvi);
+      else
+        gsl_vector_set(fvv, i, fvvi);
+    }
+
   return GSL_SUCCESS;
 }
 

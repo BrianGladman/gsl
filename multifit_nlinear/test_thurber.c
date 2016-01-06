@@ -3,8 +3,10 @@
 
 #define thurber_NTRIES  1
 
-static double thurber_x0[thurber_P] = { 1000.0, 1000.0, 400.0, 40.0,
-                                        0.7, 0.3, 0.03 };
+static double thurber_x0a[thurber_P] = { 1000.0, 1000.0, 400.0, 40.0,
+                                         0.7, 0.3, 0.03 };
+static double thurber_x0b[thurber_P] = { 1300.0, 1500.0, 500.0, 75.0,
+                                         1.0, 0.4, 0.05 };
 
 static double thurber_epsrel = 1.0e-6;
 
@@ -116,18 +118,11 @@ thurber_df (const gsl_vector * x, void *params, gsl_matrix * df)
   return GSL_SUCCESS;
 }
 
-static int
-thurber_fvv (const gsl_vector * x, const gsl_vector * v,
-             void *params, gsl_vector * fvv)
-{
-  return GSL_SUCCESS;
-}
-
 static gsl_multifit_nlinear_fdf thurber_func =
 {
   thurber_f,
   thurber_df,
-  thurber_fvv,
+  NULL, /* analytic expression too complex */
   thurber_N,
   thurber_P,
   NULL,
@@ -136,10 +131,21 @@ static gsl_multifit_nlinear_fdf thurber_func =
   0
 };
 
-static test_fdf_problem thurber_problem =
+static test_fdf_problem thurbera_problem =
 {
-  "nist-thurber",
-  thurber_x0,
+  "nist-thurbera",
+  thurber_x0a,
+  thurber_sigma,
+  &thurber_epsrel,
+  thurber_NTRIES,
+  &thurber_checksol,
+  &thurber_func
+};
+
+static test_fdf_problem thurberb_problem =
+{
+  "nist-thurberb",
+  thurber_x0b,
   thurber_sigma,
   &thurber_epsrel,
   thurber_NTRIES,

@@ -133,6 +133,9 @@ watson_fvv (const gsl_vector * x, const gsl_vector * v,
   gsl_vector_set(fvv, watson_N - 2, 0.0);
   gsl_vector_set(fvv, watson_N - 1, -2.0*v1*v1);
 
+  (void)x;      /* avoid unused parameter warning */
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

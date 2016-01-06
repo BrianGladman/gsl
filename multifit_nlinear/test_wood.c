@@ -86,6 +86,9 @@ wood_fvv (const gsl_vector * x, const gsl_vector * v,
   gsl_vector_set(fvv, 4, 0.0);
   gsl_vector_set(fvv, 5, 0.0);
 
+  (void)x;      /* avoid unused parameter warning */
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

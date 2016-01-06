@@ -3,8 +3,8 @@
 
 #define enso_NTRIES  1
 
-static double enso_x0[enso_P] = { 10.0, 3.0, 0.5, 44.0, -1.5, 0.5, 26.0, 0.1, 1.5 };
-
+static double enso_x0a[enso_P] = { 11.0, 3.0, 0.5, 40.0, -0.7, -1.3, 25.0, -0.3, 1.4 };
+static double enso_x0b[enso_P] = { 10.0, 3.0, 0.5, 44.0, -1.5, 0.5, 26.0, -0.1, 1.5 };
 
 static double enso_epsrel = 1.0e-3;
 
@@ -139,18 +139,11 @@ enso_df (const gsl_vector * x, void *params, gsl_matrix * df)
   return GSL_SUCCESS;
 }
 
-static int
-enso_fvv (const gsl_vector * x, const gsl_vector * v,
-          void *params, gsl_vector * fvv)
-{
-  return GSL_SUCCESS;
-}
-
 static gsl_multifit_nlinear_fdf enso_func =
 {
   enso_f,
   enso_df,
-  enso_fvv,
+  NULL, /* analytic expression too complex */
   enso_N,
   enso_P,
   NULL,
@@ -159,10 +152,21 @@ static gsl_multifit_nlinear_fdf enso_func =
   0
 };
 
-static test_fdf_problem enso_problem =
+static test_fdf_problem ensoa_problem =
 {
-  "nist-ENSO",
-  enso_x0,
+  "nist-ENSOa",
+  enso_x0a,
+  enso_sigma,
+  &enso_epsrel,
+  enso_NTRIES,
+  &enso_checksol,
+  &enso_func
+};
+
+static test_fdf_problem ensob_problem =
+{
+  "nist-ENSOb",
+  enso_x0b,
   enso_sigma,
   &enso_epsrel,
   enso_NTRIES,

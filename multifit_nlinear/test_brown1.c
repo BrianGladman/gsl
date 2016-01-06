@@ -97,6 +97,9 @@ brown1_fvv (const gsl_vector * x, const gsl_vector * v,
                                      term2 * (2*v2 + term2)));
     }
 
+  (void)x;      /* avoid unused parameter warning */
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

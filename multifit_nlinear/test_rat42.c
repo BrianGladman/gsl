@@ -3,7 +3,8 @@
 
 #define rat42_NTRIES  1
 
-static double rat42_x0[rat42_P] = { 100.0, 1.0, 0.1 };
+static double rat42_x0a[rat42_P] = { 100.0, 1.0, 0.1 };
+static double rat42_x0b[rat42_P] = { 75.0, 2.5, 0.07 };
 static double rat42_epsrel = 1.0e-7;
 
 static double rat42_sigma[rat42_P] = {
@@ -93,6 +94,28 @@ static int
 rat42_fvv (const gsl_vector * x, const gsl_vector * v,
            void *params, gsl_vector * fvv)
 {
+  double x1 = gsl_vector_get(x, 0);
+  double x2 = gsl_vector_get(x, 1);
+  double x3 = gsl_vector_get(x, 2);
+  double v1 = gsl_vector_get(v, 0);
+  double v2 = gsl_vector_get(v, 1);
+  double v3 = gsl_vector_get(v, 2);
+  size_t i;
+
+  for (i = 0; i < rat42_N; i++)
+    {
+      double ti = rat42_X[i];
+      double term1 = exp(x2);
+      double term2 = exp(ti * x3);
+
+      gsl_vector_set(fvv, i,
+        -pow(term1 + term2, -3.0) * term1 * term2 *
+         (v2 - ti*v3) * (term1*(2*v1 - v2*x1 + ti*v3*x1) +
+                         term2*(2*v1 + x1*(v2 - ti*v3))));
+    }
+
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -109,10 +132,21 @@ static gsl_multifit_nlinear_fdf rat42_func =
   0
 };
 
-static test_fdf_problem rat42_problem =
+static test_fdf_problem rat42a_problem =
 {
-  "nist-rat42",
-  rat42_x0,
+  "nist-rat42a",
+  rat42_x0a,
+  rat42_sigma,
+  &rat42_epsrel,
+  rat42_NTRIES,
+  &rat42_checksol,
+  &rat42_func
+};
+
+static test_fdf_problem rat42b_problem =
+{
+  "nist-rat42b",
+  rat42_x0b,
   rat42_sigma,
   &rat42_epsrel,
   rat42_NTRIES,

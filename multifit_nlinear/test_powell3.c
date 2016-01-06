@@ -4,7 +4,7 @@
 #define powell3_NTRIES    1
 
 static double powell3_x0[powell3_P] = { 0.0, 1.0 };
-static double powell3_epsrel = 1.0e-12;
+static double powell3_epsrel = 1.0e-10;
 
 static void
 powell3_checksol(const double x[], const double sumsq,
@@ -68,6 +68,8 @@ powell3_fvv (const gsl_vector * x, const gsl_vector * v,
 
   gsl_vector_set(fvv, 0, 2.0e4 * v1 * v2);
   gsl_vector_set(fvv, 1, v1*v1*exp(-x1) + v2*v2*exp(-x2));
+
+  (void)params; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }

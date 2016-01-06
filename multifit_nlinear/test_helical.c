@@ -87,6 +87,8 @@ helical_fvv (const gsl_vector * x, const gsl_vector * v,
   gsl_vector_set(fvv, 1, 10.0 * (term1 * term1) / pow(term3, 1.5));
   gsl_vector_set(fvv, 2, 0.0);
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

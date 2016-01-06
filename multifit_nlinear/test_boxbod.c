@@ -3,7 +3,8 @@
 
 #define boxbod_NTRIES  1
 
-static double boxbod_x0[boxbod_P] = { 100.0, 0.75 };
+static double boxbod_x0a[boxbod_P] = { 1.0, 1.0 };
+static double boxbod_x0b[boxbod_P] = { 100.0, 0.75 };
 static double boxbod_epsrel = 1.0e-7;
 
 static double boxbod_sigma[boxbod_P] = {
@@ -90,6 +91,22 @@ static int
 boxbod_fvv (const gsl_vector * x, const gsl_vector * v,
             void *params, gsl_vector * fvv)
 {
+  double x1 = gsl_vector_get(x, 0);
+  double x2 = gsl_vector_get(x, 1);
+  double v1 = gsl_vector_get(v, 0);
+  double v2 = gsl_vector_get(v, 1);
+  size_t i;
+
+  for (i = 0; i < boxbod_N; i++)
+    {
+      double ti = boxbod_X[i];
+      double term = exp(-x2 * ti);
+
+      gsl_vector_set(fvv, i, term * ti * v2 * (2*v1 - ti*v2*x1));
+    }
+
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 
@@ -106,10 +123,21 @@ static gsl_multifit_nlinear_fdf boxbod_func =
   0
 };
 
-static test_fdf_problem boxbod_problem =
+static test_fdf_problem boxboda_problem =
 {
-  "nist-boxbod",
-  boxbod_x0,
+  "nist-boxboda",
+  boxbod_x0a,
+  boxbod_sigma,
+  &boxbod_epsrel,
+  boxbod_NTRIES,
+  &boxbod_checksol,
+  &boxbod_func
+};
+
+static test_fdf_problem boxbodb_problem =
+{
+  "nist-boxbodb",
+  boxbod_x0b,
   boxbod_sigma,
   &boxbod_epsrel,
   boxbod_NTRIES,

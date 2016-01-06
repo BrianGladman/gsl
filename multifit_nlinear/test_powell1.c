@@ -91,6 +91,9 @@ powell1_fvv (const gsl_vector * x, const gsl_vector * v,
   gsl_vector_set(fvv, 2, 2.0 * pow(v2 - 2.0*v3, 2.0));
   gsl_vector_set(fvv, 3, 2.0 * sqrt(10.0) * pow(v1 - v4, 2.0));
 
+  (void)x;      /* avoid unused parameter warning */
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

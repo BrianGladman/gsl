@@ -121,6 +121,8 @@ biggs_fvv (const gsl_vector * x, const gsl_vector * v,
                               v5/(term1*term2)*(-2*v6 + ti*v5*x6)));
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

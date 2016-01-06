@@ -69,6 +69,9 @@ brown3_fvv (const gsl_vector * x, const gsl_vector * v,
   gsl_vector_set(fvv, 1, 0.0);
   gsl_vector_set(fvv, 2, 2.0 * v1 * v2);
 
+  (void)x;      /* avoid unused parameter warning */
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

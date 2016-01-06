@@ -104,6 +104,8 @@ meyerscal_fvv (const gsl_vector * x, const gsl_vector * v,
       gsl_vector_set(fvv, i, 20*term2*term3*term4 / pow(term1, 4.0));
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

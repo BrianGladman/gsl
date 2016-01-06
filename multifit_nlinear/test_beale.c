@@ -85,6 +85,8 @@ beale_fvv (const gsl_vector * x, const gsl_vector * v,
                              (i * v2 * x1 + 2.0 * v1 * x2));
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

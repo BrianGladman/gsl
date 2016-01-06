@@ -107,6 +107,8 @@ osborne_fvv (const gsl_vector * x, const gsl_vector * v,
                              (v4 / term2 * term3 + v5 / term1 * term4));
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

@@ -142,6 +142,8 @@ brown2_fvv (const gsl_vector * x, const gsl_vector * v,
 
   gsl_vector_set(fvv, brown2_N - 1, sum);
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

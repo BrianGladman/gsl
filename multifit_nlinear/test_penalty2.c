@@ -151,6 +151,8 @@ penalty2_fvv (const gsl_vector * x, const gsl_vector * v,
       gsl_vector_set(fvv, i, sqrt_alpha / 100.0 * exp(xi / 10.0) * vi * vi);
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

@@ -67,6 +67,8 @@ powell2_fvv (const gsl_vector * x, const gsl_vector * v,
   gsl_vector_set(fvv, 0, 0.0);
   gsl_vector_set(fvv, 1, 4*v1*v1 - (2*v0*v0)/pow(term, 3.0));
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

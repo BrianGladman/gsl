@@ -43,12 +43,6 @@ main (void)
 
   /* loop over all parameter combinations and run testsuite */
 
-#if 0
-  fdf_params.solver = gsl_multifit_nlinear_solver_normal;
-  fdf_params.scale = GSL_MULTIFIT_NLINEAR_SCALE_MORE;
-  fdf_params.accel = 1;
-  test_fdf_main(&fdf_params);
-#else
   for (scale = GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG;
        scale <= GSL_MULTIFIT_NLINEAR_SCALE_MORE; ++scale)
     {
@@ -61,7 +55,6 @@ main (void)
           fdf_params.scale = scale;
           fdf_params.accel = accel;
 
-          fprintf(stderr, "accel = %d\n", accel);
           fdf_params.solver = gsl_multifit_nlinear_solver_normal;
           test_fdf_main(&fdf_params);
 
@@ -69,7 +62,6 @@ main (void)
           test_fdf_main(&fdf_params);
         }
     }
-#endif
 
   exit (gsl_test_summary ());
 }

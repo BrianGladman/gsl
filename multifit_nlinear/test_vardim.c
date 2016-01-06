@@ -91,6 +91,9 @@ vardim_fvv (const gsl_vector * x, const gsl_vector * v,
 
   gsl_vector_set(fvv, vardim_N - 1, 2.0 * sum * sum);
 
+  (void)x;      /* avoid unused parameter warning */
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

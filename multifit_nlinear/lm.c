@@ -27,8 +27,6 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_permutation.h>
 
-#include "oct.h"
-
 /*
  * This module contains an implementation of the Levenberg-Marquardt
  * algorithm for nonlinear optimization problems. This implementation
@@ -65,6 +63,7 @@ typedef struct
 
   int accel;                 /* use geodesic acceleration */
   double accel_alpha;        /* max |a| / |v| */
+  double h_fvv;              /* step size for fvv finite difference */
   int (*init_diag) (const gsl_matrix * J, gsl_vector * diag);
   int (*update_diag) (const gsl_matrix * J, gsl_vector * diag);
 } lm_state_t;
@@ -172,6 +171,7 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
   state->lambda0 = 1.0e-3;
   state->accel = params->accel;
   state->accel_alpha = params->accel_alpha;
+  state->h_fvv = params->h_fvv;
   state->solver = params->solver;
 
   return state;
@@ -337,7 +337,8 @@ lm_iterate(void *vstate, const gsl_vector *swts,
       if (state->accel)
         {
           /* compute geodesic acceleration */
-          status = gsl_multifit_nlinear_eval_fvv(fdf, x, state->vel, swts, state->fvv);
+          status = gsl_multifit_nlinear_eval_fvv(state->h_fvv, x, state->vel, f, J, swts,
+                                                 fdf, state->fvv, state->workp);
           if (status)
             return status;
 

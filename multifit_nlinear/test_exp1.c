@@ -110,6 +110,8 @@ exp1_fvv (const gsl_vector * x, const gsl_vector * v,
       gsl_vector_set(fvv, i, -ti*(v1*term1*term3 + v2*term2*term4));
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

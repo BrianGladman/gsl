@@ -138,6 +138,8 @@ gsl_multifit_nlinear_default_parameters(void)
   params.solver = gsl_multifit_nlinear_solver_qr;
   params.accel = 0;
   params.accel_alpha = 0.75;
+  params.h_df = sqrt(GSL_DBL_EPSILON);
+  params.h_fvv = 0.01;
 
   return params;
 }
@@ -389,16 +391,15 @@ gsl_multifit_nlinear_eval_df(gsl_multifit_nlinear_fdf *fdf,
 
   if (fdf->df)
     {
-      /* call user-defined callback function */
+      /* call user-supplied function */
       status = ((*((fdf)->df)) (x, fdf->params, df));
+      ++(fdf->nevaldf);
     }
   else
     {
       /* use finite difference Jacobian approximation */
       status = gsl_multifit_nlinear_df(x, swts, fdf, f, df);
     }
-
-  ++(fdf->nevaldf);
 
   if (status)
     return status;
@@ -428,28 +429,46 @@ callback function, and apply weighting transform if given:
 
 yvv~ = sqrt(W) yvv
 
-Inputs: fdf  - callback function
-        x    - model parameters
+Inputs: h    - step size for finite difference, if needed
+        x    - model parameters, size p
+        v    - geodesic velocity vector, size p
+        f    - residual vector f(x), size n
+        J    - Jacobian matrix J(x), n-by-p
         swts - weight matrix sqrt(W) = sqrt(diag(w1,w2,...,wn))
                set to NULL for unweighted fit
+        fdf  - callback function
         yvv  - (output) (weighted) second directional derivative vector
                yvv_i = sqrt(w_i) fvv_i where f_i is unweighted
+        work - workspace, size p
 */
 
 int
-gsl_multifit_nlinear_eval_fvv(gsl_multifit_nlinear_fdf *fdf,
+gsl_multifit_nlinear_eval_fvv(const double h,
                               const gsl_vector *x,
                               const gsl_vector *v,
+                              const gsl_vector *f,
+                              const gsl_matrix *J,
                               const gsl_vector *swts,
-                              gsl_vector *yvv)
+                              gsl_multifit_nlinear_fdf *fdf,
+                              gsl_vector *yvv, gsl_vector *work)
 {
-  int s = ((*((fdf)->fvv)) (x, v, fdf->params, yvv));
-
-  ++(fdf->nevalfvv);
+  int status;
+  
+  if (fdf->fvv != NULL)
+    {
+      /* call user-supplied function */
+      status = ((*((fdf)->fvv)) (x, v, fdf->params, yvv));
+      ++(fdf->nevalfvv);
+    }
+  else
+    {
+      /* use finite difference approximation */
+      status = gsl_multifit_nlinear_fdfvv(h, x, v, f, J, swts, fdf, yvv, work);
+    }
 
   /* yvv <- sqrt(W) yvv */
   if (swts)
     gsl_vector_mul(yvv, swts);
 
-  return s;
+  return status;
 }

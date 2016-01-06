@@ -84,6 +84,8 @@ jennrich_fvv (const gsl_vector * x, const gsl_vector * v,
       gsl_vector_set(fvv, i, -ip1*ip1*(v1*v1*term1 + v2*v2*term2));
     }
 
+  (void)params; /* avoid unused parameter warning */
+
   return GSL_SUCCESS;
 }
 

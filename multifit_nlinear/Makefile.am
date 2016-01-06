@@ -4,7 +4,7 @@ pkginclude_HEADERS = gsl_multifit_nlinear.h
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
-libgslmultifit_nlinear_la_SOURCES = convergence.c covar.c fdf.c fdjac.c lm.c
+libgslmultifit_nlinear_la_SOURCES = convergence.c covar.c fdf.c fdfvv.c fdjac.c lm.c
 
 noinst_HEADERS =        \
 lmdiag.c                \
