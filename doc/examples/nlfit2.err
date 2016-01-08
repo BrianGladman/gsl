@@ -1,14 +1,18 @@
 === Solving system without acceleration ===
-NITER        = 53
-NFEV         = 56
-NJEV         = 54
-NAEV         = 0
-initial cost = 2.250225000000e+04
-final cost   = 6.674986031430e-18
+NITER         = 53
+NFEV          = 56
+NJEV          = 54
+NAEV          = 0
+initial cost  = 2.250225000000e+04
+final cost    = 6.674986031430e-18
+final x       = (9.999999974165e-01, 9.999999948328e-01)
+final cond(J) = 5.000079979663e+02
 === Solving system with acceleration ===
-NITER        = 15
-NFEV         = 16
-NJEV         = 16
-NAEV         = 15
-initial cost = 2.250225000000e+04
-final cost   = 1.778587232284e-21
+NITER         = 15
+NFEV          = 16
+NJEV          = 16
+NAEV          = 15
+initial cost  = 2.250225000000e+04
+final cost    = 1.778587232284e-21
+final x       = (9.999999999578e-01, 9.999999999157e-01)
+final cond(J) = 5.000079999976e+02

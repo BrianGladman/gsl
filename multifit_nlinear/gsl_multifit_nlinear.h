@@ -96,14 +96,15 @@ typedef struct
   const char *name;
   void * (*alloc) (const gsl_multifit_nlinear_parameters * params,
                    const size_t n, const size_t p);
-  int (*init) (void *state, const gsl_vector * wts,
+  int (*init) (void * state, const gsl_vector * wts,
                gsl_multifit_nlinear_fdf * fdf, const gsl_vector * x,
                gsl_vector * f, gsl_matrix * J, gsl_vector * g);
-  int (*iterate) (void *state, const gsl_vector * wts,
+  int (*iterate) (void * state, const gsl_vector * wts,
                   gsl_multifit_nlinear_fdf * fdf, gsl_vector * x,
                   gsl_vector * f, gsl_matrix * J, gsl_vector * g,
                   gsl_vector * dx);
-  void (*free) (void *state);
+  int (*rcond) (const gsl_matrix * J, double * rcond, void * state);
+  void (*free) (void * state);
 } gsl_multifit_nlinear_type;
 
 typedef struct
@@ -166,6 +167,9 @@ gsl_multifit_nlinear_residual (const gsl_multifit_nlinear_workspace * w);
 
 size_t
 gsl_multifit_nlinear_niter (const gsl_multifit_nlinear_workspace * w);
+
+int
+gsl_multifit_nlinear_rcond (double *rcond, const gsl_multifit_nlinear_workspace * w);
 
 int gsl_multifit_nlinear_eval_f(gsl_multifit_nlinear_fdf *fdf,
                                 const gsl_vector *x,

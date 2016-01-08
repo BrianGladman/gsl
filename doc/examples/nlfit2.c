@@ -55,7 +55,7 @@ callback(const size_t iter, void *params,
 }
 
 void
-solve_system(gsl_vector *x, gsl_multifit_nlinear_fdf *fdf,
+solve_system(gsl_vector *x0, gsl_multifit_nlinear_fdf *fdf,
              gsl_multifit_nlinear_parameters *params)
 {
   const gsl_multifit_nlinear_type *T = gsl_multifit_nlinear_lm;
@@ -68,11 +68,12 @@ solve_system(gsl_vector *x, gsl_multifit_nlinear_fdf *fdf,
   gsl_multifit_nlinear_workspace *work =
     gsl_multifit_nlinear_alloc(T, params, n, p);
   gsl_vector * f = gsl_multifit_nlinear_residual(work);
+  gsl_vector * x = gsl_multifit_nlinear_position(work);
   int info;
-  double chisq0, chisq;
+  double chisq0, chisq, rcond;
 
   /* initialize solver */
-  gsl_multifit_nlinear_init(fdf, x, work);
+  gsl_multifit_nlinear_init(fdf, x0, work);
 
   /* store initial cost */
   gsl_blas_ddot(f, f, &chisq0);
@@ -84,14 +85,20 @@ solve_system(gsl_vector *x, gsl_multifit_nlinear_fdf *fdf,
   /* store final cost */
   gsl_blas_ddot(f, f, &chisq);
 
+  /* store cond(J(x)) */
+  gsl_multifit_nlinear_rcond(&rcond, work);
+
   /* print summary */
 
-  fprintf(stderr, "NITER        = %zu\n", gsl_multifit_nlinear_niter(work));
-  fprintf(stderr, "NFEV         = %zu\n", fdf->nevalf);
-  fprintf(stderr, "NJEV         = %zu\n", fdf->nevaldf);
-  fprintf(stderr, "NAEV         = %zu\n", fdf->nevalfvv);
-  fprintf(stderr, "initial cost = %.12e\n", chisq0);
-  fprintf(stderr, "final cost   = %.12e\n", chisq);
+  fprintf(stderr, "NITER         = %zu\n", gsl_multifit_nlinear_niter(work));
+  fprintf(stderr, "NFEV          = %zu\n", fdf->nevalf);
+  fprintf(stderr, "NJEV          = %zu\n", fdf->nevaldf);
+  fprintf(stderr, "NAEV          = %zu\n", fdf->nevalfvv);
+  fprintf(stderr, "initial cost  = %.12e\n", chisq0);
+  fprintf(stderr, "final cost    = %.12e\n", chisq);
+  fprintf(stderr, "final x       = (%.12e, %.12e)\n",
+          gsl_vector_get(x, 0), gsl_vector_get(x, 1));
+  fprintf(stderr, "final cond(J) = %.12e\n", 1.0 / rcond);
 
   printf("\n\n");
 
@@ -109,7 +116,7 @@ main (void)
   gsl_multifit_nlinear_parameters fdf_params =
     gsl_multifit_nlinear_default_parameters();
 
-  /* print map of chi^2(x1, x2) */
+  /* print map of Phi(x1, x2) */
   {
     double x1, x2, chisq;
     double *f1 = gsl_vector_ptr(f, 0);

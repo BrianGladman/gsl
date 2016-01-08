@@ -71,12 +71,17 @@ callback(const size_t iter, void *params,
 {
   gsl_vector *f = gsl_multifit_nlinear_residual(w);
   gsl_vector *x = gsl_multifit_nlinear_position(w);
+  double rcond;
 
-  fprintf(stderr, "iter %zu A = %f, lambda = %f, b = %f, |f(x)| = %f\n",
+  /* compute reciprocal condition number of J(x) */
+  gsl_multifit_nlinear_rcond(&rcond, w);
+
+  fprintf(stderr, "iter %zu: A = %.4f, lambda = %.4f, b = %.4f, cond(J) = %.4f, |f(x)| = %.4f\n",
           iter,
           gsl_vector_get(x, 0),
           gsl_vector_get(x, 1),
           gsl_vector_get(x, 2),
+          1.0 / rcond,
           gsl_blas_dnrm2(f));
 }
 
@@ -96,7 +101,7 @@ main (void)
   gsl_matrix *covar = gsl_matrix_alloc (p, p);
   double y[N], weights[N];
   struct data d = { n, y };
-  double x_init[3] = { 1.0, 0.0, 0.0 }; /* starting values */
+  double x_init[3] = { 1.0, 1.0, 0.0 }; /* starting values */
   gsl_vector_view x = gsl_vector_view_array (x_init, p);
   gsl_vector_view wts = gsl_vector_view_array(weights, n);
   gsl_rng * r;
@@ -163,8 +168,8 @@ main (void)
   fprintf(stderr, "Jacobian evaluations: %zu\n", fdf.nevaldf);
   fprintf(stderr, "reason for stopping: %s\n",
           (info == 1) ? "small step size" : "small gradient");
-  fprintf(stderr, "initial |f(x)| = %g\n", sqrt(chisq0));
-  fprintf(stderr, "final   |f(x)| = %g\n", sqrt(chisq));
+  fprintf(stderr, "initial |f(x)| = %f\n", sqrt(chisq0));
+  fprintf(stderr, "final   |f(x)| = %f\n", sqrt(chisq));
 
   { 
     double dof = n - p;

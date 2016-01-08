@@ -254,11 +254,13 @@ gsl_multifit_nlinear_driver (const size_t maxiter,
   int status;
   size_t iter = 0;
 
+  /* call user callback function prior to any iterations
+   * with initial system state */
+  if (callback)
+    callback(iter, NULL, w);
+
   do
     {
-      if (callback)
-        callback(iter, NULL, w);
-
       status = gsl_multifit_nlinear_iterate (w);
 
       /*
@@ -277,16 +279,15 @@ gsl_multifit_nlinear_driver (const size_t maxiter,
           return GSL_EMAXITER;
         }
 
+      ++iter;
+
+      if (callback)
+        callback(iter, NULL, w);
+
       /* test for convergence */
       status = gsl_multifit_nlinear_test(xtol, gtol, ftol, info, w);
-
-      ++iter;
     }
   while (status == GSL_CONTINUE && iter < maxiter);
-
-  /* callback for final iteration */
-  if (callback)
-    callback(iter, NULL, w);
 
   /*
    * the following error codes mean that the solution has converged
@@ -334,6 +335,13 @@ size_t
 gsl_multifit_nlinear_niter (const gsl_multifit_nlinear_workspace * w)
 {
   return w->niter;
+}
+
+int
+gsl_multifit_nlinear_rcond (double *rcond, const gsl_multifit_nlinear_workspace * w)
+{
+  int status = (w->type->rcond) (w->J, rcond, w->state);
+  return status;
 }
 
 /*

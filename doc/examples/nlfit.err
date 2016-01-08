@@ -1,20 +1,27 @@
-iter 0 A = 1.000000, lambda = 0.000000, b = 0.000000, |f(x)| = 31.191943
-iter 1 A = 2.052468, lambda = 0.058946, b = 1.052468, |f(x)| = 14.729134
-iter 2 A = 4.347583, lambda = 0.149738, b = 1.433830, |f(x)| = 11.279395
-iter 3 A = 5.059919, lambda = 0.095886, b = 1.103097, |f(x)| = 8.800162
-iter 4 A = 5.124338, lambda = 0.109554, b = 1.064673, |f(x)| = 5.504953
-iter 5 A = 5.172191, lambda = 0.111001, b = 1.052747, |f(x)| = 5.454184
-iter 6 A = 5.173767, lambda = 0.111041, b = 1.052825, |f(x)| = 5.454180
-iter 7 A = 5.173787, lambda = 0.111042, b = 1.052828, |f(x)| = 5.454180
-iter 8 A = 5.173788, lambda = 0.111042, b = 1.052828, |f(x)| = 5.454180
-iter 9 A = 5.173788, lambda = 0.111042, b = 1.052828, |f(x)| = 5.454180
+iter 0: A = 1.0000, lambda = 1.0000, b = 0.0000, cond(J) = 46.1118, |f(x)| = 62.2029
+iter 1: A = 1.2196, lambda = 0.3663, b = 0.0436, cond(J) = 19.8763, |f(x)| = 59.8062
+iter 2: A = 1.6062, lambda = 0.1506, b = 0.1054, cond(J) = 20.2970, |f(x)| = 53.9039
+iter 3: A = 2.4528, lambda = 0.0583, b = 0.2470, cond(J) = 90.3289, |f(x)| = 28.8039
+iter 4: A = 2.9723, lambda = 0.0494, b = 0.3727, cond(J) = 184.3828, |f(x)| = 15.3252
+iter 5: A = 3.3473, lambda = 0.0477, b = 0.4410, cond(J) = 235.5901, |f(x)| = 10.7511
+iter 6: A = 3.6690, lambda = 0.0508, b = 0.4617, cond(J) = 206.1182, |f(x)| = 9.7373
+iter 7: A = 3.9907, lambda = 0.0580, b = 0.5433, cond(J) = 147.7071, |f(x)| = 8.7661
+iter 8: A = 4.2353, lambda = 0.0731, b = 0.7989, cond(J) = 125.8964, |f(x)| = 7.4299
+iter 9: A = 4.6573, lambda = 0.0958, b = 1.0302, cond(J) = 100.5450, |f(x)| = 6.1893
+iter 10: A = 5.0138, lambda = 0.1060, b = 1.0329, cond(J) = 94.0404, |f(x)| = 5.4961
+iter 11: A = 5.1505, lambda = 0.1103, b = 1.0497, cond(J) = 91.2259, |f(x)| = 5.4552
+iter 12: A = 5.1724, lambda = 0.1110, b = 1.0526, cond(J) = 90.7179, |f(x)| = 5.4542
+iter 13: A = 5.1737, lambda = 0.1110, b = 1.0528, cond(J) = 90.6803, |f(x)| = 5.4542
+iter 14: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) = 90.6791, |f(x)| = 5.4542
+iter 15: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) = 90.6790, |f(x)| = 5.4542
+iter 16: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) = 90.6790, |f(x)| = 5.4542
 summary from method 'lm'
-number of iterations: 9
-function evaluations: 10
-Jacobian evaluations: 10
+number of iterations: 16
+function evaluations: 23
+Jacobian evaluations: 17
 reason for stopping: small step size
-initial |f(x)| = 31.1919
-final   |f(x)| = 5.45418
+initial |f(x)| = 62.202928
+final   |f(x)| = 5.454180
 chisq/dof = 0.804002
 A      = 5.17379 +/- 0.27938
 lambda = 0.11104 +/- 0.00817

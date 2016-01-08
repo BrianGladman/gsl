@@ -26,6 +26,7 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_permutation.h>
+#include <gsl/gsl_eigen.h>
 
 /*
  * This module contains an implementation of the Levenberg-Marquardt
@@ -56,8 +57,10 @@ typedef struct
   double lambda0;            /* initial scale factor for lambda */
 
   const gsl_multifit_nlinear_solver *solver;
-
   void *solver_state;        /* workspace for linear solver */
+
+  gsl_matrix *JTJ;           /* J^T J for rcond calculation */
+  gsl_eigen_symm_workspace *eigen_p;
 
   /* tunable parameters */
 
@@ -85,6 +88,7 @@ static int lm_iterate(void *vstate, const gsl_vector *swts,
                       gsl_multifit_nlinear_fdf *fdf,
                       gsl_vector *x, gsl_vector *f, gsl_matrix *J,
                       gsl_vector *g, gsl_vector *dx);
+static int lm_rcond(const gsl_matrix *J, double *rcond, void *vstate);
 
 static void *
 lm_alloc (const gsl_multifit_nlinear_parameters * params,
@@ -166,6 +170,18 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
       GSL_ERROR_NULL ("failed to allocate space for solver state", GSL_ENOMEM);
     }
 
+  state->JTJ = gsl_matrix_alloc(p, p);
+  if (state->JTJ == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for JTJ", GSL_ENOMEM);
+    }
+
+  state->eigen_p = gsl_eigen_symm_alloc(p);
+  if (state->eigen_p == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for eigen workspace", GSL_ENOMEM);
+    }
+
   state->n = n;
   state->p = p;
   state->lambda0 = 1.0e-3;
@@ -205,6 +221,12 @@ lm_free(void *vstate)
 
   if (state->solver_state)
     (state->solver->free)(state->solver_state);
+
+  if (state->JTJ)
+    gsl_matrix_free(state->JTJ);
+
+  if (state->eigen_p)
+    gsl_eigen_symm_free(state->eigen_p);
 
   free(state);
 }
@@ -434,12 +456,45 @@ lm_iterate(void *vstate, const gsl_vector *swts,
   return GSL_SUCCESS;
 } /* lm_iterate() */
 
+static int
+lm_rcond(const gsl_matrix *J, double *rcond, void *vstate)
+{
+  int status;
+  lm_state_t *state = (lm_state_t *) vstate;
+  gsl_vector *eval = state->workp;
+  double eval_min, eval_max;
+
+  /* compute J^T J */
+  gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, J, 0.0, state->JTJ);
+
+  /* compute eigenvalues of J^T J */
+  status = gsl_eigen_symm(state->JTJ, eval, state->eigen_p);
+  if (status)
+    return status;
+
+  gsl_vector_minmax(eval, &eval_min, &eval_max);
+
+  if (eval_max > 0.0 && eval_min > 0.0)
+    {
+      *rcond = sqrt(eval_min / eval_max);
+    }
+  else
+    {
+      /* compute eigenvalues are not accurate; possibly due
+       * to rounding errors in forming J^T J */
+      *rcond = 0.0;
+    }
+
+  return GSL_SUCCESS;
+}
+
 static const gsl_multifit_nlinear_type lm_type =
 {
   "lm",
   lm_alloc,
   lm_init,
   lm_iterate,
+  lm_rcond,
   lm_free
 };
 

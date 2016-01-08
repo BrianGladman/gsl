@@ -6,7 +6,7 @@ set out "nlfit2.eps"
 
 set xlabel "x_1"
 set ylabel "x_2"
-set cblabel "{/Symbol \143}^2"
+set cblabel "{/Symbol \106}(x_1,x_2)"
 
 set pm3d map interp 20,20
 set xrange [-1.2:1.2]
