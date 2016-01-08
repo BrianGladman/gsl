@@ -159,7 +159,7 @@ lm_check_step(const gsl_vector * v, const gsl_vector * g,
       double ratio = anorm / vnorm;
 
       /* reject step if acceleration is too large compared to velocity */
-      if (ratio > state->accel_alpha)
+      if (ratio > state->avmax)
         return GSL_FAILURE;
     }
 

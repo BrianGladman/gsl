@@ -86,7 +86,7 @@ typedef struct
   gsl_multifit_nlinear_scale_t scale;         /* scaling method */
   const gsl_multifit_nlinear_solver *solver;  /* solver method */
   int accel;                                  /* use geodesic acceleration */
-  double accel_alpha;                         /* max |a|/|v| */
+  double avmax;                               /* max allowed |a|/|v| */
   double h_df;                                /* step size for finite difference Jacobian */
   double h_fvv;                               /* step size for finite difference fvv */
 } gsl_multifit_nlinear_parameters;

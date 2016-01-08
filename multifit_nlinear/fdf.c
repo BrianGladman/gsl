@@ -137,7 +137,7 @@ gsl_multifit_nlinear_default_parameters(void)
   params.scale = GSL_MULTIFIT_NLINEAR_SCALE_MORE;
   params.solver = gsl_multifit_nlinear_solver_qr;
   params.accel = 0;
-  params.accel_alpha = 0.75;
+  params.avmax = 0.75;
   params.h_df = sqrt(GSL_DBL_EPSILON);
   params.h_fvv = 0.01;
 
@@ -234,8 +234,10 @@ Inputs: maxiter  - maximum iterations to allow
                                precision (ftol is too small)
         w        - workspace
 
-Return: GSL_SUCCESS if converged, GSL_MAXITER if maxiter exceeded without
-converging
+Return:
+GSL_SUCCESS if converged
+GSL_MAXITER if maxiter exceeded without converging
+GSL_ENOPROG if no accepted step found on first iteration
 */
 
 int
@@ -277,8 +279,10 @@ gsl_multifit_nlinear_driver (const size_t maxiter,
 
       /* test for convergence */
       status = gsl_multifit_nlinear_test(xtol, gtol, ftol, info, w);
+
+      ++iter;
     }
-  while (status == GSL_CONTINUE && ++iter < maxiter);
+  while (status == GSL_CONTINUE && iter < maxiter);
 
   /* callback for final iteration */
   if (callback)

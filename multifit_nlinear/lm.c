@@ -62,7 +62,7 @@ typedef struct
   /* tunable parameters */
 
   int accel;                 /* use geodesic acceleration */
-  double accel_alpha;        /* max |a| / |v| */
+  double avmax;              /* max |a| / |v| */
   double h_fvv;              /* step size for fvv finite difference */
   int (*init_diag) (const gsl_matrix * J, gsl_vector * diag);
   int (*update_diag) (const gsl_matrix * J, gsl_vector * diag);
@@ -170,7 +170,7 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
   state->p = p;
   state->lambda0 = 1.0e-3;
   state->accel = params->accel;
-  state->accel_alpha = params->accel_alpha;
+  state->avmax = params->avmax;
   state->h_fvv = params->h_fvv;
   state->solver = params->solver;
 

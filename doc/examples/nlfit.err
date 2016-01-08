@@ -1,7 +1,17 @@
-summary from method 'lmsder'
-number of iterations: 8
-function evaluations: 11
-Jacobian evaluations: 9
+iter 0 A = 1.000000, lambda = 0.000000, b = 0.000000, |f(x)| = 31.191943
+iter 1 A = 2.052468, lambda = 0.058946, b = 1.052468, |f(x)| = 14.729134
+iter 2 A = 4.347583, lambda = 0.149738, b = 1.433830, |f(x)| = 11.279395
+iter 3 A = 5.059919, lambda = 0.095886, b = 1.103097, |f(x)| = 8.800162
+iter 4 A = 5.124338, lambda = 0.109554, b = 1.064673, |f(x)| = 5.504953
+iter 5 A = 5.172191, lambda = 0.111001, b = 1.052747, |f(x)| = 5.454184
+iter 6 A = 5.173767, lambda = 0.111041, b = 1.052825, |f(x)| = 5.454180
+iter 7 A = 5.173787, lambda = 0.111042, b = 1.052828, |f(x)| = 5.454180
+iter 8 A = 5.173788, lambda = 0.111042, b = 1.052828, |f(x)| = 5.454180
+iter 9 A = 5.173788, lambda = 0.111042, b = 1.052828, |f(x)| = 5.454180
+summary from method 'lm'
+number of iterations: 9
+function evaluations: 10
+Jacobian evaluations: 10
 reason for stopping: small step size
 initial |f(x)| = 31.1919
 final   |f(x)| = 5.45418

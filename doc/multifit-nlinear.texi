@@ -2,37 +2,33 @@
 @cindex least squares fitting, nonlinear
 
 This chapter describes functions for multidimensional nonlinear
-least-squares fitting.  The library provides low level components for a
-variety of iterative solvers and convergence tests.  These can be
-combined by the user to achieve the desired solution, with full access
-to the intermediate steps of the iteration.  Each class of methods uses
-the same framework, so that you can switch between solvers at runtime
-without needing to recompile your program.  Each instance of a solver
-keeps track of its own state, allowing the solvers to be used in
-multi-threaded programs.
+least-squares fitting.  This library is based on the iterative
+Levenberg-Marquardt algorithm and provides the user with
+full access to intermediate steps of the iteration. The user
+also has the ability to tune a number of parameters which affect
+low-level aspects of the algorithm which can help to accelerate
+convergence for the specific problem at hand.
 
-The header file @file{gsl_multifit_nlin.h} contains prototypes for the
+The header file @file{gsl_multifit_nlinear.h} contains prototypes for the
 multidimensional nonlinear fitting functions and related declarations.
 
 @menu
-* Overview of Nonlinear Least-Squares Fitting::  
-* Overview of Weighted Nonlinear Least-Squares Fitting::  
-* Overview of Regularized Nonlinear Least-Squares Fitting::  
-* Initializing the Nonlinear Least-Squares Solver::  
-* Providing the Function to be Minimized::  
-* Finite Difference Jacobian::  
-* Iteration of the Minimization Algorithm::  
-* Search Stopping Parameters for Minimization Algorithms::  
-* High Level Driver::
-* Minimization Algorithms using Derivatives::  
-* Minimization Algorithms without Derivatives::  
-* Computing the covariance matrix of best fit parameters::  
-* Troubleshooting Nonlinear Least Squares::
-* Example programs for Nonlinear Least-Squares Fitting::  
-* References and Further Reading for Nonlinear Least-Squares Fitting::  
+* Nonlinear Least-Squares Overview::
+* Nonlinear Least-Squares Weighted Overview::
+* Nonlinear Least-Squares Tunable Parameters::
+* Nonlinear Least-Squares Initialization::
+* Nonlinear Least-Squares Function Definition::
+* Nonlinear Least-Squares Iteration::
+* Nonlinear Least-Squares Testing for Convergence::
+* Nonlinear Least-Squares High Level Driver::
+* Nonlinear Least-Squares Minimization Algorithms Using Derivatives::
+* Nonlinear Least-Squares Covariance Matrix::
+* Nonlinear Least-Squares Troubleshooting::
+* Nonlinear Least-Squares Examples::
+* Nonlinear Least-Squares References and Further Reading::
 @end menu
 
-@node Overview of Nonlinear Least-Squares Fitting
+@node Nonlinear Least-Squares Overview
 @section Overview
 @cindex nonlinear least squares fitting, overview
 
@@ -56,18 +52,18 @@ $$
 
 @end ifinfo
 @noindent
-All algorithms proceed from an initial guess using the linearization,
+The Levenberg-Marquardt algorithm proceeds using the linearization,
 @tex
 \beforedisplay
 $$
-\psi(\delta) = || f(x+\delta) || \approx || f(x) + J \delta\, ||
+|| f(x+\delta) || \approx || f(x) + J \delta\, ||
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-\psi(\delta) = || f(x+\delta) || ~=~ || f(x) + J \delta ||
+|| f(x+\delta) || ~=~ || f(x) + J \delta ||
 @end example
 
 @end ifinfo
@@ -82,19 +78,75 @@ step or using a trust region to avoid steps which fall outside the linear
 regime.
 
 @noindent
+On each iteration, in order to calculate the step @math{\delta},
+the following linear least squares problem is solved:
+@tex
+\beforedisplay
+$$
+\left[
+\matrix{
+J \cr
+\sqrt{\lambda} D
+}
+\right]
+\delta =
+-
+\left[
+\matrix{
+f \cr
+0
+}
+\right]
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+[J; sqrt(lambda) D] \delta = - [f; 0]
+@end example
+
+@end ifinfo
+@noindent
+where @math{\lambda} is known as the Levenberg-Marquardt
+parameter, and @math{D} is a diagonal matrix chosen
+to represent the relative scaling of the parameters.
+After @math{\delta} is computed from the above linear
+system, the proposed step @math{x + \delta} is tested
+to see if it improves the solution (for example if it
+results in a reduced cost @math{||f(x+\delta)||^2 < ||f(x)||^2}).
+If the step @math{\delta} is accepted as an improvement
+to the solution, then @math{\lambda} is decreased by
+some factor and the iteration continues. If @math{\delta}
+does not improve the solution, then @math{\lambda} is increased
+by some factor and the process is repeated until an
+acceptable step @math{\delta} is found.
+
+@noindent
+The manner in which @math{\lambda} is updated and also the
+choice of the damping matrix @math{D} can have significant
+effects on the convergence speed of the method, and these
+choices are usually highly problem specific. The library
+provides the user with reasonable default choices, but the
+user may select other choices to improve the convergence
+of their particular problem. See
+@ref{Nonlinear Least-Squares Tunable Parameters}
+for further information.
+
+@noindent
 Note that the model parameters are denoted by @math{x} in this chapter
 since the non-linear least-squares algorithms are described
 geometrically (i.e. finding the minimum of a surface).  The
 independent variable of any data to be fitted is denoted by @math{t}.
 
-@node Overview of Weighted Nonlinear Least-Squares Fitting
+@node Nonlinear Least-Squares Weighted Overview
 @section Weighted Nonlinear Least-Squares
 
 Weighted nonlinear least-squares fitting minimizes the function
 @tex
 \beforedisplay
 $$
-\Phi(x)  = {1 \over 2} f^T W f
+\Phi(x)  = {1 \over 2} || f ||_W^2
          = {1 \over 2} \sum_{i=1}^{n} w_i f_i (x_1, \dots, x_p)^2
 $$
 \afterdisplay
@@ -102,27 +154,28 @@ $$
 @ifinfo
 
 @example
-\Phi(x) = (1/2) || f(x) ||^2
+\Phi(x) = (1/2) || f(x) ||_W^2
         = (1/2) \sum_@{i=1@}^@{n@} f_i(x_1, ..., x_p)^2 
 @end example
 
 @end ifinfo
 where @math{W = diag(w_1,w_2,...,w_n)} is the weighting matrix,
-and the weights @math{w_i} are commonly defined as @math{w_i = 1/\sigma_i^2},
+and @math{||f||_W^2 = f^T W f}.
+The weights @math{w_i} are commonly defined as @math{w_i = 1/\sigma_i^2},
 where @math{\sigma_i} is the error in the @math{i}th measurement.
-A simple change of variables @math{\tilde{f} = \sqrt{W} f} yields
+A simple change of variables @math{\tilde{f} = W^{1 \over 2} f} yields
 @math{\Phi(x) = {1 \over 2} ||\tilde{f}||^2}, which is in the
 same form as the unweighted case. The user can either perform this
 transform directly on their function residuals and Jacobian, or use
-the @code{gsl_multifit_fdfsolver_wset} interface which automatically
+the @code{gsl_multifit_nlinear_winit} interface which automatically
 performs the correct scaling. To manually perform this transformation,
 the residuals and Jacobian should be modified according to
 @tex
 \beforedisplay
 $$
 \eqalign{
-f_i & = \sqrt{w_i} (Y_i - y_i) = {(Y_i - y_i) \over \sigma_i} \cr
-J_{ij} & = \sqrt{w_i} { \partial Y_i \over \partial x_j } = { 1 \over \sigma_i} { \partial Y_i \over \partial x_j }
+\tilde{f}_i & = \sqrt{w_i} f_i = {f_i \over \sigma_i} \cr
+\tilde{J}_{ij} & = \sqrt{w_i} { \partial f_i \over \partial x_j } = { 1 \over \sigma_i} { \partial f_i \over \partial x_j }
 }
 $$
 \afterdisplay
@@ -130,107 +183,97 @@ $$
 @ifinfo
 
 @example
-f_i = (Y(x, t_i) - y_i) / \sigma_i
+f~_i = f_i / \sigma_i
+J~_ij = 1 / \sigma_i df_i/dx_j
 @end example
 
 @end ifinfo
-where @math{Y_i = Y(x,t_i)}.
 
-@node Overview of Regularized Nonlinear Least-Squares Fitting
-@section Regularized Nonlinear Least-Squares
-In cases where the Jacobian @math{J} is rank-deficient or singular,
-standard nonlinear least squares can sometimes produce
-undesirable and unstable solutions. In these cases, it can
-help to regularize the problem using ridge or Tikhonov regularization.
-In this method, we introduce a term in our minimization function
-which is designed to damp the solution vector @math{x}, or give preference
-to solutions with smaller norms.
-@tex
-\beforedisplay
-$$
-\Phi(x)  = {1 \over 2} || f(x) ||^2 + {1 \over 2} || L x ||^2
-$$
-\afterdisplay
-@end tex
-@ifinfo
+@node Nonlinear Least-Squares Tunable Parameters
+@section Tunable Parameters
+
+@noindent
+The user can tune nearly all aspects of the iteration by using the
+@code{gsl_multifit_nlinear_parameters} structure, which is
+defined as follows:
 
 @example
-\Phi(x) = (1/2) || f(x) ||^2 + (1/2) ||Lx||^2
+typedef struct
+@{
+  gsl_multifit_nlinear_scale_t scale;         /* scaling method */
+  const gsl_multifit_nlinear_solver *solver;  /* solver method */
+  int accel;                                  /* use geodesic acceleration */
+  double avmax;                               /* max allowed |a|/|v| */
+  double h_df;                                /* J finite difference step */
+  double h_fvv;                               /* fvv finite difference step */
+@} gsl_multifit_nlinear_parameters;
 @end example
 
-@end ifinfo
-Here, the regularization matrix @math{L} is often set
-as @math{L = \lambda I}, for a positive scalar @math{\lambda}, but can
-also be a general @math{m}-by-@math{p} (where @math{m} is any number
-of rows) matrix depending on the
-structure of the problem to be solved. If we define a new
-@math{(n+m)}-by-1 vector
+@noindent
+Each of these parameters is discussed in further detail below.
+
+@deftypevr {Parameter} {gsl_multifit_nlinear_scale_t} scale
+
+This parameter determines the diagonal scaling matrix @math{D} and
+may be selected from the following choices,
+
+@defvr {Default} GSL_MULTIFIT_NLINEAR_SCALE_MORE
+This damping strategy was suggested by Mor@'e, and
+corresponds to @math{D^T D = } max(diag(@math{J^T J})),
+in other words the maximum elements of
+diag(@math{J^T J}) encountered thus far in the iteration.
+This choice of @math{D} makes the problem scale-invariant,
+so that if the model parameters @math{x_i} are each scaled
+by an arbitrary constant, @math{\tilde{x}_i = a_i x_i}, then
+the sequence of iterates produced by the algorithm would
+be unchanged. This method can work very well in cases
+where the model parameters have widely different scales
+(ie: if some parameters are measured in nanometers, while others
+are measured in degrees Kelvin). This strategy has been proven
+effective on a large class of problems and so it is the library
+default, but it may not be the best choice for all problems.
+@end defvr
+
+@defvr {Option} GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG
+This damping strategy was originally suggested by Levenberg, and
+corresponds to @math{D^T D = I}. This method has also proven
+effective on a large class of problems, but is not scale-invariant.
+However, some authors (e.g. Transtrum and Sethna 2012) argue
+that this choice is better for problems which are susceptible
+to parameter evaporation (ie: parameters go to infinity)
+@end defvr
+
+@defvr {Option} GSL_MULTIFIT_NLINEAR_SCALE_MARQUARDT
+This damping strategy was suggested by Marquardt, and
+corresponds to @math{D^T D = } diag(@math{J^T J}). This
+method is scale-invariant, but it is generally considered
+inferior to both the Levenberg and Mor@'e strategies, though
+may work well on certain classes of problems.
+@end defvr
+
+@end deftypevr
+
+@deftypevr {Parameter} {const gsl_multifit_nlinear_solver} solver
+
+@noindent
+As discussed in @ref{Nonlinear Least-Squares Overview}
+the following linear least squares system is solved on each iteration
+to determine the next step:
 @tex
 \beforedisplay
 $$
-\tilde{f}(x) =
-\left[
-\matrix{
-f(x) \cr
-L x
-}
-\right]
-$$
-\afterdisplay
-@end tex
-@ifinfo
-
-@example
-f~(x) = [ f(x); Lx ]
-@end example
-
-@end ifinfo
-or, in the weighted case,
-@tex
-\beforedisplay
-$$
-\tilde{f}(x) =
-\left[
-\matrix{
-\sqrt{W} f(x) \cr
-L x
-}
-\right]
-$$
-\afterdisplay
-@end tex
-@ifinfo
-
-@example
-f~(x) = [ sqrt(W) f(x); Lx ]
-@end example
-
-@end ifinfo
-then
-@tex
-\beforedisplay
-$$
-\Phi(x)  = {1 \over 2} || \tilde{f}(x) ||^2
-$$
-\afterdisplay
-@end tex
-@ifinfo
-
-@example
-\Phi(x) = (1/2) || f~(x) ||^2
-@end example
-
-@end ifinfo
-which is in the same form as the standard nonlinear least squares
-problem. The corresponding @math{(n+m)}-by-@math{p} Jacobian matrix is
-@tex
-\beforedisplay
-$$
-\tilde{J} =
 \left[
 \matrix{
 J \cr
-L
+\sqrt{\lambda} D
+}
+\right]
+\delta =
+-
+\left[
+\matrix{
+f \cr
+0
 }
 \right]
 $$
@@ -239,19 +282,77 @@ $$
 @ifinfo
 
 @example
-F~(x) = [ J; L ]
+[J; sqrt(lambda) D] \delta = - [f; 0]
 @end example
 
 @end ifinfo
-or for weighted systems
+
+The @var{solver} parameter determines how the system is
+solved and can be selected from the following choices:
+
+@defvr {Default} gsl_multifit_nlinear_qr
+This method solves the system using a rank revealing QR
+decomposition of the Jacobian @math{J}. This method will
+produce reliable solutions in cases where the Jacobian
+is rank deficient or near-singular but does require about
+twice as many operations as the normal equations method discussed
+below.
+@end defvr
+
+@defvr {Option} gsl_multifit_nlinear_normal
+This method solves the alternate normal equations problem
 @tex
 \beforedisplay
 $$
-\tilde{J} =
+\left( J^T J + \lambda D^T D \right) \delta = -J^T f
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+( J^T J + \lambda D^T D ) \delta = -J^T f
+@end example
+
+@end ifinfo
+
+by using a Cholesky decomposition of the matrix
+@math{J^T J + \lambda D^T D}. This method is faster than the
+QR approach, however it is susceptible to numerical instabilities
+if the Jacobian matrix is rank deficient or near-singular. In
+these cases, an attempt is made to reduce the condition number
+of the matrix using Jacobi preconditioning, but for highly
+ill-conditioned problems the QR approach is better. If it is
+known that the Jacobian matrix is well conditioned, this method
+is accurate and will perform faster than the QR approach.
+@end defvr
+
+@end deftypevr
+
+@deftypevr {Parameter} {int} accel
+
+This parameter toggles the use of the so-called geodesic
+acceleration correction to the standard Levenberg-Marquardt
+step @math{\delta} (Transtrum et al...). By interpreting
+@math{\delta} as a first order step along a geodesic in the
+model parameter space (ie: a velocity @math{\delta = v}), the geodesic
+acceleration @math{a} is a second order correction along the
+geodesic which is determined by solving the linear least squares system
+@tex
+\beforedisplay
+$$
 \left[
 \matrix{
-\sqrt{W} J \cr
-L
+J \cr
+\sqrt{\lambda} D
+}
+\right]
+a =
+-
+\left[
+\matrix{
+f_{vv} \cr
+0
 }
 \right]
 $$
@@ -260,49 +361,105 @@ $$
 @ifinfo
 
 @example
-F~(x) = [ sqrt(W) J; L ]
+[J; sqrt(lambda) D] \delta = - [f_vv; 0]
 @end example
 
 @end ifinfo
-While the user could explicitly form the @math{\tilde{f}(x)} vector
-and @math{\tilde{J}} matrix, the @code{fdfridge} interface
-described below allows the user to specify the original data vector
-@math{f(x)}, Jacobian @math{J}, regularization matrix
-@math{L}, and optional weighting matrix @math{W}, and automatically
-forms @math{\tilde{f}(x)} and
-@math{\tilde{J}} to solve the system. This allows switching
-between regularized and non-regularized solutions with minimal
-code changes.
 
-@node Initializing the Nonlinear Least-Squares Solver
-@section Initializing the Solver
+where @math{f_{vv}} is the second directional derivative of
+the residual vector in the velocity direction @math{v},
+@math{f_{vv}(x) = D_v^2 f = \sum_{\alpha\beta} v_{\alpha} v_{\beta} \partial_{\alpha} \partial_{\beta} f(x)},
+where @math{\alpha} and @math{\beta} are summed over the @math{p}
+parameters. The new total step is then @math{\delta' = v + {1 \over 2}a}.
+The second order correction @math{a} can be calculated with a modest additional
+cost, and has been shown to dramatically reduce the number of iterations
+(and expensive Jacobian evaluations) required to reach convergence on a variety
+of different problems. In order to utilize the geodesic acceleration, the user must supply a
+function which provides the second directional derivative vector
+@math{f_{vv}(x)}, or alternatively the library can use a finite
+difference method to estimate this vector with one additional function
+evaluation of @math{f(x + h v)} where @math{h} is a tunable step size
+(see the @code{h_vv} parameter description). The user may enable
+geodesic acceleration by setting @code{accel} to 1. It is disabled
+by default.
 
-@deftypefun {gsl_multifit_fsolver *} gsl_multifit_fsolver_alloc (const gsl_multifit_fsolver_type * @var{T}, size_t @var{n}, size_t @var{p})
-@tindex gsl_multifit_fsolver
-@tindex gsl_multifit_fsolver_type
-This function returns a pointer to a newly allocated instance of a
-solver of type @var{T} for @var{n} observations and @var{p} parameters.
-The number of observations @var{n} must be greater than or equal to
-parameters @var{p}. 
+@end deftypevr
 
-If there is insufficient memory to create the solver then the function
-returns a null pointer and the error handler is invoked with an error
-code of @code{GSL_ENOMEM}.
-@end deftypefun
+@deftypevr {Parameter} {double} avmax
 
-@deftypefun {gsl_multifit_fdfsolver *} gsl_multifit_fdfsolver_alloc (const gsl_multifit_fdfsolver_type * @var{T}, size_t @var{n}, size_t @var{p})
-@tindex gsl_multifit_fdfsolver
-@tindex gsl_multifit_fdfsolver_type
-This function returns a pointer to a newly allocated instance of a
-derivative solver of type @var{T} for @var{n} observations and @var{p}
-parameters.  For example, the following code creates an instance of a
-Levenberg-Marquardt solver for 100 data points and 3 parameters,
+When using geodesic acceleration to solve a nonlinear least squares problem,
+an important parameter to monitor is the ratio of the acceleration term
+to the velocity term,
+@tex
+\beforedisplay
+$$
+{ ||a|| \over ||v|| }
+$$
+\afterdisplay
+@end tex
+@ifinfo
 
 @example
-const gsl_multifit_fdfsolver_type * T 
-    = gsl_multifit_fdfsolver_lmder;
-gsl_multifit_fdfsolver * s 
-    = gsl_multifit_fdfsolver_alloc (T, 100, 3);
+|a| / |v|
+@end example
+
+@end ifinfo
+
+If this ratio is small, it means the acceleration correction
+is contributing very little to the step. This could be because
+the problem is not ``nonlinear'' enough to benefit from
+the acceleration. If the ratio is large (@math{> 1}) it
+means that the acceleration is larger than the velocity,
+which shouldn't happen since the step represents a truncated
+series and so the second order term @math{a} should be smaller than
+the first order term @math{v} to guarantee convergence.
+Therefore any steps with a ratio larger than the parameter
+@var{avmax} are rejected. @var{avmax} is set to 0.75 by default.
+For problems which experience difficulty converging, this threshold
+could be lowered.
+
+@end deftypevr
+
+@deftypevr {Parameter} {double} h_fvv
+
+When using geodesic acceleration, the user must either supply
+a function to calculate @math{f_{vv}(x)} or the library
+can estimate this second directional derivative using a finite
+difference method. When using finite differences, the library
+must calculate @math{f(x + h v)} where @math{h} represents
+a small step in the velocity direction. The parameter
+@var{h_fvv} defines this step size and is set to 0.01 by
+default.
+
+@end deftypevr
+
+@node Nonlinear Least-Squares Initialization
+@section Initializing the Solver
+
+@deftypefun {gsl_multifit_nlinear_workspace *} gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * @var{T}, const gsl_multifit_nlinear_parameters * @var{params}, const size_t @var{n}, const size_t @var{p})
+@tindex gsl_multifit_nlinear_alloc
+@tindex gsl_multifit_nlinear_type
+This function returns a pointer to a newly allocated instance of a
+derivative solver of type @var{T} for @var{n} observations and @var{p}
+parameters. The @var{params} input specifies a tunable set of
+parameters which will affect important details in each iteration
+of the Levenberg-Marquardt algorithm. It is recommended to start
+with the suggested default parameters (see
+@code{gsl_multifit_nlinear_default_parameters}) and then tune
+the parameters once the code is working correctly. See
+@ref{Nonlinear Least-Squares Tunable Parameters}
+for descriptions of the various parameters.
+For example, the following code creates an instance of a
+Levenberg-Marquardt solver for 100 data points and 3 parameters,
+using suggested defaults:
+
+@example
+const gsl_multifit_nlinear_type * T 
+    = gsl_multifit_nlinear_lm;
+gsl_multifit_nlinear_parameters params
+    = gsl_multifit_nlinear_default_parameters();
+gsl_multifit_nlinear_workspace * w 
+    = gsl_multifit_nlinear_alloc (T, &params, 100, 3);
 @end example
 
 @noindent
@@ -314,150 +471,76 @@ returns a null pointer and the error handler is invoked with an error
 code of @code{GSL_ENOMEM}.
 @end deftypefun
 
-@deftypefun {gsl_multifit_fdfridge *} gsl_multifit_fdfridge_alloc (const gsl_multifit_fdfsolver_type * @var{T}, size_t @var{n}, size_t @var{p})
-@tindex gsl_multifit_fdfridge
-This function returns a pointer to a newly allocated instance of a
-derivative solver of type @var{T} for @var{n} observations and @var{p}
-parameters. The solver will automatically form the augmented
-system @math{\tilde{f}(x)} and @math{\tilde{J}} for ridge (Tikhonov)
-regression.
-If there is insufficient memory to create the solver then the function
-returns a null pointer and the error handler is invoked with an error
-code of @code{GSL_ENOMEM}.
-@end deftypefun
-
-@deftypefun int gsl_multifit_fsolver_set (gsl_multifit_fsolver * @var{s}, gsl_multifit_function * @var{f}, const gsl_vector * @var{x})
-This function initializes, or reinitializes, an existing solver @var{s}
-to use the function @var{f} and the initial guess @var{x}.
-@end deftypefun
-
-@deftypefun int gsl_multifit_fdfsolver_set (gsl_multifit_fdfsolver * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x})
-@deftypefunx int gsl_multifit_fdfsolver_wset (gsl_multifit_fdfsolver * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_vector * @var{wts})
-These functions initialize, or reinitialize, an existing solver @var{s}
-to use the function and derivative @var{fdf} and the initial guess
-@var{x}.
+@deftypefun int gsl_multifit_nlinear_init (gsl_multifit_nlinear_fdf * @var{fdf}, const gsl_vector * @var{x}, gsl_multifit_nlinear_workspace * @var{w})
+@deftypefunx int gsl_multifit_nlinear_winit (gsl_multifit_nlinear_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_vector * @var{wts}, gsl_multifit_nlinear_workspace * @var{w})
+These functions initialize, or reinitialize, an existing workspace @var{w}
+to use the system @var{fdf} and the initial guess
+@var{x}. See @ref{Nonlinear Least-Squares Function Definition}
+for a description of the @var{fdf} structure.
 
 Optionally, a weight vector @var{wts} can be given to perform
 a weighted nonlinear regression. Here, the weighting matrix is
-@math{W = diag(w_1,w_2,...,w_n)}. The @var{wts} vector is referenced
-throughout the iteration so it should not be freed by the caller until
-the iteration terminates.
+@math{W = diag(w_1,w_2,...,w_n)}.
 @end deftypefun
 
-@deftypefun int gsl_multifit_fdfridge_set (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const double @var{lambda})
-@deftypefunx int gsl_multifit_fdfridge_wset (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const double @var{lambda}, const gsl_vector * @var{wts})
-This function initializes, or reinitializes, an existing ridge solver
-@var{s} to use the function and derivative @var{fdf} and the initial guess
-@var{x}. Here, the regularization matrix is set to @math{L = \lambda I},
-with @math{\lambda} specified in @var{lambda}.
-
-Optionally, a weight vector @var{wts} can be given to perform
-a weighted nonlinear regression. Here, the weighting matrix is
-@math{W = diag(w_1,w_2,...,w_n)}. The @var{wts} vector is referenced
-throughout the iteration so it should not be freed by the caller until
-the iteration terminates.
+@deftypefun void gsl_multifit_nlinear_free (gsl_multifit_nlinear_workspace * @var{w})
+This function frees all the memory associated with the workspace @var{w}.
 @end deftypefun
 
-@deftypefun int gsl_multifit_fdfridge_set2 (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_vector * @var{lambda})
-@deftypefunx int gsl_multifit_fdfridge_wset2 (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_vector * @var{lambda}, const gsl_vector * @var{wts})
-This function initializes, or reinitializes, an existing ridge solver
-@var{s} to use the function and derivative @var{fdf} and the initial
-guess @var{x}. Here, the regularization matrix is set to
-@math{L = diag(\lambda_1,\lambda_2,...,\lambda_p)}, where
-the @math{\lambda_i} are given in @var{lambda}.
-
-Optionally, a weight vector @var{wts} can be given to perform
-a weighted nonlinear regression. Here, the weighting matrix is
-@math{W = diag(w_1,w_2,...,w_n)}. The @var{wts} vector is referenced
-throughout the iteration so it should not be freed by the caller until
-the iteration terminates.
-@end deftypefun
-
-@deftypefun int gsl_multifit_fdfridge_set3 (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_matrix * @var{L})
-@deftypefunx int gsl_multifit_fdfridge_wset3 (gsl_multifit_fdfridge * @var{s}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_matrix * @var{L}, const gsl_vector * @var{wts})
-This function initializes, or reinitializes, an existing ridge solver
-@var{s} to use the function and derivative @var{fdf} and the initial
-guess @var{x}. Here, the regularization matrix is set to @var{L},
-which must have @math{p} columns but may have any number of rows.
-
-Optionally, a weight vector @var{wts} can be given to perform
-a weighted nonlinear regression. Here, the weighting matrix is
-@math{W = diag(w_1,w_2,...,w_n)}. The @var{wts} vector is referenced
-throughout the iteration so it should not be freed by the caller until
-the iteration terminates.
-@end deftypefun
-
-@deftypefun void gsl_multifit_fsolver_free (gsl_multifit_fsolver * @var{s})
-@deftypefunx void gsl_multifit_fdfsolver_free (gsl_multifit_fdfsolver * @var{s})
-@deftypefunx void gsl_multifit_fdfridge_free (gsl_multifit_fdfridge * @var{s})
-These functions free all the memory associated with the solver @var{s}.
-@end deftypefun
-
-@deftypefun {const char *} gsl_multifit_fsolver_name (const gsl_multifit_fsolver * @var{s})
-@deftypefunx {const char *} gsl_multifit_fdfsolver_name (const gsl_multifit_fdfsolver * @var{s})
-@deftypefunx {const char *} gsl_multifit_fdfridge_name (const gsl_multifit_fdfridge * @var{s})
-These functions return a pointer to the name of the solver.  For example,
+@deftypefun {const char *} gsl_multifit_nlinear_name (const gsl_multifit_nlinear_workspace * @var{w})
+This function returns a pointer to the name of the solver.  For example,
 
 @example
-printf ("s is a '%s' solver\n", 
-        gsl_multifit_fdfsolver_name (s));
+printf ("w is a '%s' solver\n", 
+        gsl_multifit_nlinear_name (w));
 @end example
 
 @noindent
-would print something like @code{s is a 'lmder' solver}.
+would print something like @code{w is a 'lm' solver}.
 @end deftypefun
 
-@node Providing the Function to be Minimized
+@node Nonlinear Least-Squares Function Definition
 @section Providing the Function to be Minimized
 
-You must provide @math{n} functions of @math{p} variables for the
-minimization algorithms to operate on.  In order to allow for
+The user must provide @math{n} functions of @math{p} variables for the
+minimization algorithm to operate on.  In order to allow for
 arbitrary parameters the functions are defined by the following data
 types:
 
-@deftp {Data Type} gsl_multifit_function 
-This data type defines a general system of functions with arbitrary parameters.  
+@deftp {Data Type} gsl_multifit_nlinear_fdf
+This data type defines a general system of functions with arbitrary parameters,
+the corresponding Jacobian matrix of derivatives, and optionally the
+second directional derivative of the functions for geodesic acceleration
 
 @table @code
 @item int (* f) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f})
-this function should store the vector result
-@c{$f(x,\hbox{\it params})$}
-@math{f(x,params)} in @var{f} for argument @var{x} and arbitrary parameters @var{params},
-returning an appropriate error code if the function cannot be computed.
-
-@item size_t n
-the number of functions, i.e. the number of components of the
-vector @var{f}.
-
-@item size_t p
-the number of independent variables, i.e. the number of components of
-the vector @var{x}.
-
-@item void * params
-a pointer to the arbitrary parameters of the function.
-@end table
-@end deftp
-
-@deftp {Data Type} gsl_multifit_function_fdf
-This data type defines a general system of functions with arbitrary parameters and
-the corresponding Jacobian matrix of derivatives,
-
-@table @code
-@item int (* f) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f})
-this function should store the vector result
-@c{$f(x,\hbox{\it params})$}
-@math{f(x,params)} in @var{f} for argument @var{x} and arbitrary parameters @var{params},
+This function should store the @math{n} components of the vector
+@c{$f(x)$}
+@math{f(x)} in @var{f} for argument @var{x} and arbitrary parameters @var{params},
 returning an appropriate error code if the function cannot be computed.
 
 @item int (* df) (const gsl_vector * @var{x}, void * @var{params}, gsl_matrix * @var{J})
-this function should store the @var{n}-by-@var{p} matrix result
-@c{$J_{ij} = \partial f_i(x,\hbox{\it params}) / \partial x_j$}
-@math{J_ij = d f_i(x,params) / d x_j} in @var{J} for argument @var{x} 
+This function should store the @var{n}-by-@var{p} matrix result
+@c{$J_{ij} = \partial f_i(x) / \partial x_j$}
+@math{J_ij = d f_i(x) / d x_j} in @var{J} for argument @var{x} 
 and arbitrary parameters @var{params}, returning an appropriate error code if the
-function cannot be computed. If an analytic Jacobian is unavailable, or too expensive
+matrix cannot be computed. If an analytic Jacobian is unavailable, or too expensive
 to compute, this function pointer may be set to NULL, in which
 case the Jacobian will be internally computed using finite difference approximations
 of the function @var{f}.
+
+@item int (* fvv) (const gsl_vector * @var{x}, const gsl_vector * @var{v}, void * @var{params}, gsl_vector * @var{fvv})
+When geodesic acceleration is enabled, this function should store the
+@math{n} components of the vector
+@math{f_{vv}(x) = \sum_{\alpha\beta} v_{\alpha} v_{\beta} {\partial \over \partial x_{\alpha}} {\partial \over \partial x_{\beta}} f(x)},
+representing second directional derivatives of the function to be minimized,
+into the output @var{fvv}. The parameter vector is provided in @var{x} and
+the velocity vector is provided in @var{v}, both of which have @math{p}
+components. The arbitrary parameters are given in @var{params}. If
+analytic expressions for @math{f_{vv}(x)} are unavailable or too difficult
+to compute, this function pointer may be set to NULL, in which case
+@math{f_{vv}(x)} will be computed internally using a finite difference
+approximation.
 
 @item size_t n
 the number of functions, i.e. the number of components of the
@@ -472,48 +555,25 @@ a pointer to the arbitrary parameters of the function.
 
 @item size_t nevalf
 This does not need to be set by the user. It counts the number of
-function evaluations and is initialized by the @code{_set} function.
+function evaluations and is initialized by the @code{_init} function.
 
 @item size_t nevaldf
 This does not need to be set by the user. It counts the number of
-Jacobian evaluations and is initialized by the @code{_set} function.
+Jacobian evaluations and is initialized by the @code{_init} function.
+
+@item size_t nevalfvv
+This does not need to be set by the user. It counts the number of
+@math{f_{vv}(x)} evaluations and is initialized by the @code{_init} function.
 @end table
 @end deftp
 
+@noindent
 Note that when fitting a non-linear model against experimental data,
 the data is passed to the functions above using the
 @var{params} argument and the trial best-fit parameters through the
 @var{x} argument.
 
-@node Finite Difference Jacobian
-@section Finite Difference Jacobian
-
-For the algorithms which require a Jacobian matrix of derivatives of
-the fit functions, there are times when an analytic Jacobian may be
-unavailable or too expensive to compute. Therefore GSL supports
-approximating the Jacobian numerically using finite differences of the fit
-functions. This is typically done by setting the relevant function pointers
-of the @code{gsl_multifit_function_fdf} data type to NULL, however the
-following functions allow the user to access the approximate Jacobian
-directly if needed.
-
-@deftypefun int gsl_multifit_fdfsolver_dif_df (const gsl_vector * @var{x}, const gsl_vector * @var{wts}, gsl_multifit_function_fdf * @var{fdf}, const gsl_vector * @var{f}, gsl_matrix * @var{J})
-This function takes as input the current position @var{x}, weight
-vector @var{wts} and function values computed at the current position
-@var{f}, along with @var{fdf} which specifies the fit function and
-parameters and approximates the
-@var{n}-by-@var{p} Jacobian @var{J} using forward finite differences:
-@c{$J_{ij} = \sqrt{w_i} \partial f_i(x) / \partial x_j \approx \sqrt{w_i} (f_i(x + h_j e_j) - f_i(x)) / h_j$}
-@math{J_ij = sqrt(w_i) d f_i(x) / d x_j = sqrt(w_i) (f_i(x + h_j e_j) - f_i(x)) / h_j}.
-where @math{h_j = \epsilon |x_j|}, and @math{\epsilon} is the
-square root of the machine precision @code{GSL_DBL_EPSILON}.
-@end deftypefun
-
-@deftypefun int gsl_multifit_fdfsolver_dif_fdf (const gsl_vector * @var{x}, gsl_multifit_function_fdf * @var{fdf}, gsl_vector * @var{f}, gsl_matrix * @var{J})
-This function is deprecated and will be removed in a future release.
-@end deftypefun
-
-@node Iteration of the Minimization Algorithm
+@node Nonlinear Least-Squares Iteration
 @section Iteration
 
 The following functions drive the iteration of each algorithm.  Each
@@ -522,60 +582,64 @@ corresponding type.  The same functions work for all solvers so that
 different methods can be substituted at runtime without modifications to
 the code.
 
-@deftypefun int gsl_multifit_fsolver_iterate (gsl_multifit_fsolver * @var{s})
-@deftypefunx int gsl_multifit_fdfsolver_iterate (gsl_multifit_fdfsolver * @var{s})
-@deftypefunx int gsl_multifit_fdfridge_iterate (gsl_multifit_fdfridge * @var{s})
-These functions perform a single iteration of the solver @var{s}.  If
+@deftypefun int gsl_multifit_nlinear_iterate (gsl_multifit_nlinear_workspace * @var{w})
+This function performs a single iteration of the solver @var{w}.  If
 the iteration encounters an unexpected problem then an error code will
-be returned.  The solver maintains a current estimate of the best-fit
-parameters at all times. 
+be returned.  The solver workspace maintains a current estimate of the
+best-fit parameters at all times. 
 @end deftypefun
 
-The solver struct @var{s} contains the following entries, which can
+@noindent
+The solver workspace @var{w} contains the following entries, which can
 be used to track the progress of the solution:
 
 @table @code
 @item gsl_vector * x
-The current position.
+The current position, length @math{p}.
 
 @item gsl_vector * f
-The function residual vector at the current position @math{f(x)}.
+The function residual vector at the current position @math{f(x)}, length
+@math{n}.
+
+@item gsl_matrix * J
+The Jacobian matrix at the current position @math{J(x)}, size
+@math{n}-by-@math{p}.
 
 @item gsl_vector * dx
 The difference between the current position and the previous position,
-i.e. the last step @math{\delta}, taken as a vector.
+i.e. the last step @math{\delta}, taken as a vector, length @math{p}.
 
 @end table
 
-The best-fit information also can be accessed with the following
-auxiliary functions,
+@noindent
+These quantities can be accessed with the following functions,
 
-@deftypefun {gsl_vector *} gsl_multifit_fsolver_position (const gsl_multifit_fsolver * @var{s})
-@deftypefunx {gsl_vector *} gsl_multifit_fdfsolver_position (const gsl_multifit_fdfsolver * @var{s})
-@deftypefunx {gsl_vector *} gsl_multifit_fdfridge_position (const gsl_multifit_fdfridge * @var{s})
-These functions return the current position @math{x} (i.e. best-fit
-parameters) of the solver @var{s}.
+@deftypefun {gsl_vector *} gsl_multifit_nlinear_position (const gsl_multifit_nlinear_workspace * @var{w})
+This function returns the current position @math{x} (i.e. best-fit
+parameters) of the solver @var{w}.
 @end deftypefun
 
-@deftypefun {gsl_vector *} gsl_multifit_fdfsolver_residual (const gsl_multifit_fdfsolver * @var{s})
-@deftypefunx {gsl_vector *} gsl_multifit_fdfridge_residual (const gsl_multifit_fdfridge * @var{s})
-These functions return the current residual vector @math{f} of the
-solver @var{s}.  For weighted cases, the residual vector includes the
-weighting factor @math{\sqrt{W}}. For ridge regression, the residual
-vector is the augmented vector @math{\tilde{f}}.
+@deftypefun {gsl_vector *} gsl_multifit_nlinear_residual (const gsl_multifit_nlinear_workspace * @var{w})
+This function returns the current residual vector @math{f(x)} of the
+solver @var{w}.  For weighted systems, the residual vector includes the
+weighting factor @math{\sqrt{W}}.
 @end deftypefun
 
-@deftypefun size_t gsl_multifit_fdfsolver_niter (const gsl_multifit_fdfsolver * @var{s})
-@deftypefunx size_t gsl_multifit_fdfridge_niter (const gsl_multifit_fdfridge * @var{s})
-These functions return the number of iterations performed so far.
+@deftypefun {gsl_matrix *} gsl_multifit_nlinear_jac (const gsl_multifit_nlinear_workspace * @var{w})
+This function returns a pointer to the @math{n}-by-@math{p} Jacobian matrix for the
+current iteration of the solver @var{w}.
+@end deftypefun
+
+@deftypefun size_t gsl_multifit_nlinear_niter (const gsl_multifit_nlinear_workspace * @var{w})
+This function returns the number of iterations performed so far.
 The iteration counter is updated on each call to the
 @code{_iterate} functions above, and reset to 0 in the
-@code{_set} functions.
+@code{_init} functions.
 @end deftypefun
 
-@node Search Stopping Parameters for Minimization Algorithms
-@section Search Stopping Parameters
-@cindex nonlinear fitting, stopping parameters
+@node Nonlinear Least-Squares Testing for Convergence
+@section Testing for Convergence
+@cindex nonlinear fitting, stopping parameters, convergence
 
 A minimization procedure should stop when one of the following conditions is
 true:
@@ -596,7 +660,7 @@ The handling of these conditions is under user control.  The functions
 below allow the user to test the current estimate of the best-fit
 parameters in several standard ways.
 
-@deftypefun int gsl_multifit_fdfsolver_test (const gsl_multifit_fdfsolver * @var{s}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, int * @var{info})
+@deftypefun int gsl_multifit_nlinear_test (const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, int * @var{info}, const gsl_multifit_nlinear_workspace * @var{w})
 This function tests for convergence of the minimization method
 using the following criteria:
 
@@ -663,90 +727,32 @@ are required.
 
 @end deftypefun
 
-@deftypefun int gsl_multifit_test_delta (const gsl_vector * @var{dx}, const gsl_vector * @var{x}, double @var{epsabs}, double @var{epsrel})
-
-This function tests for the convergence of the sequence by comparing the
-last step @var{dx} with the absolute error @var{epsabs} and relative
-error @var{epsrel} to the current position @var{x}.  The test returns
-@code{GSL_SUCCESS} if the following condition is achieved,
-@tex
-\beforedisplay
-$$
-|dx_i| < \hbox{\it epsabs} + \hbox{\it epsrel\/}\, |x_i|
-$$
-\afterdisplay
-@end tex
-@ifinfo
-
-@example
-|dx_i| < epsabs + epsrel |x_i|
-@end example
-
-@end ifinfo
-@noindent
-for each component of @var{x} and returns @code{GSL_CONTINUE} otherwise.
-@end deftypefun
-
-@cindex residual, in nonlinear systems of equations
-@deftypefun int gsl_multifit_test_gradient (const gsl_vector * @var{g}, double @var{epsabs})
-This function tests the residual gradient @var{g} against the absolute
-error bound @var{epsabs}.  Mathematically, the gradient should be
-exactly zero at the minimum. The test returns @code{GSL_SUCCESS} if the
-following condition is achieved,
-@tex
-\beforedisplay
-$$
-\sum_i |g_i| < \hbox{\it epsabs}
-$$
-\afterdisplay
-@end tex
-@ifinfo
-
-@example
-\sum_i |g_i| < epsabs
-@end example
-
-@end ifinfo
-@noindent
-and returns @code{GSL_CONTINUE} otherwise.  This criterion is suitable
-for situations where the precise location of the minimum, @math{x},
-is unimportant provided a value can be found where the gradient is small
-enough.
-@end deftypefun
-
-
-@deftypefun int gsl_multifit_gradient (const gsl_matrix * @var{J}, const gsl_vector * @var{f}, gsl_vector * @var{g})
-This function computes the gradient @var{g} of @math{\Phi(x) = (1/2)
-||f(x)||^2} from the Jacobian matrix @math{J} and the function values
-@var{f}, using the formula @math{g = J^T f}.
-@end deftypefun
-
-@node High Level Driver
+@node Nonlinear Least-Squares High Level Driver
 @section High Level Driver
 
-These routines provide a high level wrapper that combine the iteration
+This routine provides a high level wrapper that combines the iteration
 and convergence testing for easy use.
 
-@deftypefun int gsl_multifit_fsolver_driver (gsl_multifit_fsolver * @var{s}, const size_t @var{maxiter}, const double @var{epsabs}, const double @var{epsrel})
-This function iterates the solver @var{s} for a maximum of @var{maxiter}
-iterations. After each iteration, the system is tested for convergence
-using @code{gsl_multifit_test_delta} with the error tolerances @var{epsabs}
-and @var{epsrel}.
-@end deftypefun
-
-@deftypefun int gsl_multifit_fdfsolver_driver (gsl_multifit_fdfsolver * @var{s}, const size_t @var{maxiter}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, int * @var{info})
-@deftypefunx int gsl_multifit_fdfridge_driver (gsl_multifit_fdfridge * @var{s}, const size_t @var{maxiter}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, int * @var{info})
-These functions iterate the solver @var{s} for a maximum of @var{maxiter}
+@deftypefun int gsl_multifit_nlinear_driver (const size_t @var{maxiter}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, void (* @var{callback})(const size_t @var{iter}, void * @var{params}, const gsl_multifit_linear_workspace * @var{w}), int * @var{info}, gsl_multifit_nlinear_workspace * @var{w})
+This function iterates the solver @var{w} for a maximum of @var{maxiter}
 iterations. After each iteration, the system is tested for convergence
 with the error tolerances @var{xtol}, @var{gtol} and @var{ftol}.
-Upon successful convergence,
-the function returns @code{GSL_SUCCESS} and sets @var{info} to
-the reason for convergence (see @code{gsl_multifit_fdfsolver_test}).
-Otherwise, the function returns @code{GSL_EMAXITER} indicating
-the system did not converge after @var{maxiter} iterations.
+Additionally, the user may supply a callback function @var{callback}
+which is called after each iteration, so that the user may save or print
+relevant quantities for each iteration. The parameter @var{callback} may
+be set to NULL to disable this feature.
+Upon successful convergence, the function returns @code{GSL_SUCCESS}
+and sets @var{info} to the reason for convergence (see
+@code{gsl_multifit_nlinear_test}). If the function has not
+converged after @var{maxiter} iterations, @code{GSL_EMAXITER} is
+returned. In rare cases, during an iteration the algorithm may
+be unable to find a new acceptable step @math{\delta} to take. In
+this case, @code{GSL_ENOPROG} is returned indicating no further
+progress can be made. If your problem is having difficulty converging,
+see @ref{Nonlinear Least-Squares Troubleshooting} for further guidance.
 @end deftypefun
 
-@node Minimization Algorithms using Derivatives
+@node Nonlinear Least-Squares Minimization Algorithms Using Derivatives
 @section Minimization Algorithms using Derivatives
 
 The minimization algorithms described in this section make use of both
@@ -758,150 +764,22 @@ initial guess must be sufficiently close to the minimum for it to work.
 @comment ============================================================
 @cindex Levenberg-Marquardt algorithms
 
-@deffn {Derivative Solver} gsl_multifit_fdfsolver_lmsder
-@cindex LMDER algorithm
-@cindex MINPACK, minimization algorithms
+@deffn {Derivative Solver} gsl_multifit_nlinear_lm
+@cindex LM algorithm
+@cindex minimization algorithms
 
-This is a robust and efficient version of the Levenberg-Marquardt
-algorithm as implemented in the scaled @sc{lmder} routine in
-@sc{minpack}.  Minpack was written by Jorge J. Mor@'e, Burton S. Garbow
-and Kenneth E. Hillstrom.
+This specifies the Levenberg-Marquardt algorithm and is currently
+the only nonlinear least squares solver available.
 
-The algorithm uses a generalized trust region to keep each step under
-control.  In order to be accepted a proposed new position @math{x'} must
-satisfy the condition @math{|D (x' - x)| < \Delta}, where @math{D} is a
-diagonal scaling matrix and @math{\Delta} is the size of the trust
-region.  The components of @math{D} are computed internally, using the
-column norms of the Jacobian to estimate the sensitivity of the residual
-to each component of @math{x}.  This improves the behavior of the
-algorithm for badly scaled functions.
-
-On each iteration the algorithm attempts to minimize the linear system
-@math{|f + J \delta|} subject to the constraint @math{|D \delta| < \Delta}.
-The solution to this constrained linear system is found by solving
-the linear least squares system
-@tex
-\beforedisplay
-$$
-\left[
-\matrix{
-J \cr
-\sqrt{\mu} D
-}
-\right]
-\delta =
--
-\left[
-\matrix{
-f \cr
-0
-}
-\right]
-$$
-\afterdisplay
-@end tex
-@ifinfo
-
-@example
-[J; sqrt(mu) D] \delta = - [f; 0]
-@end example
-
-@end ifinfo
-where @math{\mu} is the Levenberg-Marquardt parameter. The above
-system is solved using a QR decomposition of @math{J}.
-
-The proposed step @math{\delta} is now tested by evaluating the
-function at the resulting point, @math{x'}.  If the step reduces the norm of the
-function sufficiently, and follows the predicted behavior of the
-function within the trust region, then it is accepted and the size of the
-trust region is increased.  If the proposed step fails to improve the
-solution, or differs significantly from the expected behavior within
-the trust region, then the size of the trust region is decreased and
-another trial step is computed.
-
-The algorithm also monitors the progress of the solution and returns an
-error if the changes in the solution are smaller than the machine
-precision.  The possible error codes are,
-
-@table @code
-@item GSL_ETOLF
-the decrease in the function falls below machine precision
-
-@item GSL_ETOLX
-the change in the position vector falls below machine precision
-
-@item GSL_ETOLG
-the norm of the gradient, relative to the norm of the function, falls
-below machine precision
-
-@item GSL_ENOPROG
-the routine has made 10 or more attempts to find a suitable trial step
-without success (but subsequent calls can be made to continue the
-search).@footnote{The return code @code{GSL_CONTINUE} was used for
-this case in versions prior to 1.14.}
-@end table
-
-@noindent
-These error codes indicate that further iterations will be unlikely to
-change the solution from its current value.  
 @end deffn
 
-@deffn {Derivative Solver} gsl_multifit_fdfsolver_lmder
-
-This is an unscaled version of the @sc{lmder} algorithm.  The elements of the
-diagonal scaling matrix @math{D} are set to 1.  This algorithm may be
-useful in circumstances where the scaled version of @sc{lmder} converges too
-slowly, or the function is already scaled appropriately.
-@end deffn
-
-@deffn {Derivative Solver} gsl_multifit_fdfsolver_lmniel
-
-This is a Levenberg-Marquardt solver based on a smoother updating
-procedure for the damping parameter @math{\mu} proposed by
-Nielsen, 1999. It does not use a trust region approach and only
-performs rudimentary scaling and is therefore not as robust as
-@code{lmsder}. However, on each iteration it solves the normal
-equation system to compute the next step:
-@tex
-\beforedisplay
-$$
-\left( J^T J + \mu I \right) \delta = - J^T f
-$$
-\afterdisplay
-@end tex
-@ifinfo
-
-@example
-(J^T J + \mu I) \delta = -J^T f
-@end example
-
-@end ifinfo
-which makes it a much more practical method for problems with a
-large number of residuals (@math{n >> p}), since only the
-@math{p}-by-@math{p} matrix @math{J^T J} is decomposed rather than
-the full @math{n}-by-@math{p} Jacobian. This makes a significant
-difference in efficiency when solving systems with large amounts
-of data. While not as robust as @code{lmsder}, this algorithm has
-proven effective on a wide class of problems.
-@end deffn
-
-@node Minimization Algorithms without Derivatives
-@section Minimization Algorithms without Derivatives
-
-There are no algorithms implemented in this section at the moment.
-
-@node Computing the covariance matrix of best fit parameters
-@section Computing the covariance matrix of best fit parameters
+@node Nonlinear Least-Squares Covariance Matrix
+@section Covariance matrix of best fit parameters
 @cindex best-fit parameters, covariance
 @cindex least squares, covariance of best-fit parameters
 @cindex covariance matrix, nonlinear fits
 
-@deftypefun int gsl_multifit_fdfsolver_jac (gsl_multifit_fdfsolver * @var{s}, gsl_matrix * @var{J})
-This function stores the @math{n}-by-@math{p} Jacobian matrix for the
-current iteration of the solver @var{s} into the output @var{J}.
-@end deftypefun
-
-@deftypefun int gsl_multifit_covar (const gsl_matrix * @var{J}, const double @var{epsrel}, gsl_matrix * @var{covar})
+@deftypefun int gsl_multifit_nlinear_covar (const gsl_matrix * @var{J}, const double @var{epsrel}, gsl_matrix * @var{covar})
 This function computes the covariance matrix of best-fit parameters
 using the Jacobian matrix @var{J} and stores it in @var{covar}.
 The parameter @var{epsrel} is used to remove linear-dependent columns
@@ -981,7 +859,7 @@ For more information about covariance matrices see @ref{Fitting Overview}.
 
 @comment ============================================================
 
-@node Troubleshooting Nonlinear Least Squares
+@node Nonlinear Least-Squares Troubleshooting
 @section Troubleshooting
 
 When developing a code to solve a nonlinear least squares problem,
@@ -1022,7 +900,7 @@ to recover the original units of the problem.
 
 @end enumerate
 
-@node Example programs for Nonlinear Least-Squares Fitting
+@node Nonlinear Least-Squares Examples
 @section Examples
 
 The following example programs demonstrate the nonlinear least
@@ -1074,35 +952,51 @@ J_@{ij@} = d f_i / d x_j
 
 @end ifinfo
 @noindent
-where @math{x_0 = A}, @math{x_1 = \lambda} and @math{x_2 = b}. The
-weights are given by @math{w_i = 1/\sigma_i^2}.
+where @math{x_0 = A}, @math{x_1 = \lambda} and @math{x_2 = b}.
+The @math{i}th row of the Jacobian is therefore
+@tex
+\beforedisplay
+$$
+J_{i\cdot} = \left(
+\matrix{
+\exp{-\lambda t_i} & -t_i A \exp{-\lambda t_i} & 1
+}
+\right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
 
 @example
-@verbatiminclude examples/expfit.c
 @end example
+
+@end ifinfo
 
 @noindent
 The main part of the program sets up a Levenberg-Marquardt solver and
 some simulated random data. The data uses the known parameters
 (5.0,0.1,1.0) combined with Gaussian noise (standard deviation = 0.1)
 over a range of 40 timesteps. The initial guess for the parameters is
-chosen as (0.0, 1.0, 0.0).
-
-@example
-@verbatiminclude examples/nlfit.c
-@end example
-
-@noindent
-The iteration terminates when the relative change in x is smaller than
-@math{10^{-8}}, or when the magnitude of the gradient falls below
-@math{10^{-8}}.
-Here are the results of running the program:
+chosen as (1.0, 0.0, 0.0). The iteration terminates when the relative
+change in x is smaller than @math{10^{-8}}, or when the magnitude of
+the gradient falls below @math{10^{-8}}. Here are the results of running
+the program:
 
 @smallexample
-summary from method 'lmsder'
-number of iterations: 8
-function evaluations: 11
-Jacobian evaluations: 9
+iter 0 A = 1.000000, lambda = 0.000000, b = 0.000000, |f(x)| = 31.191943
+iter 1 A = 2.052468, lambda = 0.058946, b = 1.052468, |f(x)| = 14.729134
+iter 2 A = 4.347583, lambda = 0.149738, b = 1.433830, |f(x)| = 11.279395
+iter 3 A = 5.059919, lambda = 0.095886, b = 1.103097, |f(x)| = 8.800162
+iter 4 A = 5.124338, lambda = 0.109554, b = 1.064673, |f(x)| = 5.504953
+iter 5 A = 5.172191, lambda = 0.111001, b = 1.052747, |f(x)| = 5.454184
+iter 6 A = 5.173767, lambda = 0.111041, b = 1.052825, |f(x)| = 5.454180
+iter 7 A = 5.173787, lambda = 0.111042, b = 1.052828, |f(x)| = 5.454180
+iter 8 A = 5.173788, lambda = 0.111042, b = 1.052828, |f(x)| = 5.454180
+iter 9 A = 5.173788, lambda = 0.111042, b = 1.052828, |f(x)| = 5.454180
+summary from method 'lm'
+number of iterations: 9
+function evaluations: 10
+Jacobian evaluations: 10
 reason for stopping: small step size
 initial |f(x)| = 31.1919
 final   |f(x)| = 5.45418
@@ -1126,13 +1020,17 @@ covariance matrix will be too small.  In the example program the error estimates
 are multiplied by @c{$\sqrt{\chi^2/(n-p)}$}
 @math{\sqrt@{\chi^2/dof@}} in this case, a common way of increasing the
 errors for a poor fit.  Note that a poor fit will result from the use
-an inappropriate model, and the scaled error estimates may then
+of an inappropriate model, and the scaled error estimates may then
 be outside the range of validity for Gaussian errors.
 
 @iftex
 @sp 1
 @center @image{fit-exp,3.4in}
 @end iftex
+
+@example
+@verbatiminclude examples/nlfit.c
+@end example
 
 @node Nonlinear Least-Squares Geodesic Acceleration Example
 @subsection Geodesic Acceleration Example
@@ -1147,7 +1045,7 @@ for comparison. The cost function is given by
 \beforedisplay
 $$
 \eqalign{
-\chi^2 &= f_1^2 + f_2^2 \cr
+\Phi(x) &= {1 \over 2} (f_1^2 + f_2^2) \cr
 f_1 &= 100 \left( x_2 - x_1^2 \right) \cr
 f_2 &= 1 - x_1
 }
@@ -1157,7 +1055,7 @@ $$
 @ifinfo
 
 @example
-chi^2 = f1^2 + f2^2
+Phi(x) = 1/2 (f1^2 + f2^2)
 f1 = 100 ( x2 - x1^2 )
 f2 = 1 - x1
 @end example
@@ -1237,7 +1135,7 @@ x^{*} &= \left(
 1
 }
 \right) \cr
-\chi^2(x^{*}) &= 0
+\Phi(x^{*}) &= 0
 }
 $$
 \afterdisplay
@@ -1246,6 +1144,7 @@ $$
 
 @example
 x* = [ 1 ; 1 ]
+Phi(x*) = 0
 @end example
 
 @end ifinfo
@@ -1274,7 +1173,7 @@ We can see that enabling geodesic acceleration requires less
 than a third of the number of Jacobian evaluations in order to locate
 the minimum. The path taken by both methods is shown in the
 figure below. The color map shows the cost function
-@math{\chi^2(x_1,x_2)}. We see that both methods quickly
+@math{\Phi(x_1,x_2)}. We see that both methods quickly
 find the canyon bottom, but the geodesic acceleration method
 navigates along the bottom to the solution with significantly
 fewer iterations.
@@ -1291,7 +1190,7 @@ The program is given below.
 @verbatiminclude examples/nlfit2.c
 @end example
 
-@node References and Further Reading for Nonlinear Least-Squares Fitting
+@node Nonlinear Least-Squares References and Further Reading
 @section References and Further Reading
 
 The @sc{minpack} algorithm is described in the following article,
