@@ -79,11 +79,11 @@ gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
       GSL_ERROR_VAL ("failed to allocate space for Jacobian", GSL_ENOMEM, 0);
     }
 
-  w->sqrt_wts = gsl_vector_calloc (n);
-  if (w->sqrt_wts == 0)
+  w->sqrt_wts_work = gsl_vector_calloc (n);
+  if (w->sqrt_wts_work == 0)
     {
       gsl_multifit_nlinear_free (w);
-      GSL_ERROR_VAL ("failed to allocate space for sqrt_wts", GSL_ENOMEM, 0);
+      GSL_ERROR_VAL ("failed to allocate space for weights", GSL_ENOMEM, 0);
     }
 
   w->state = (T->alloc)(params, n, p);
@@ -117,8 +117,8 @@ gsl_multifit_nlinear_free (gsl_multifit_nlinear_workspace * w)
   if (w->f)
     gsl_vector_free (w->f);
 
-  if (w->sqrt_wts)
-    gsl_vector_free (w->sqrt_wts);
+  if (w->sqrt_wts_work)
+    gsl_vector_free (w->sqrt_wts_work);
 
   if (w->g)
     gsl_vector_free (w->g);
@@ -187,6 +187,8 @@ gsl_multifit_nlinear_winit (gsl_multifit_nlinear_fdf * fdf,
 
       if (wts)
         {
+          w->sqrt_wts = w->sqrt_wts_work;
+
           for (i = 0; i < n; ++i)
             {
               double wi = gsl_vector_get(wts, i);
@@ -194,7 +196,9 @@ gsl_multifit_nlinear_winit (gsl_multifit_nlinear_fdf * fdf,
             }
         }
       else
-        gsl_vector_set_all(w->sqrt_wts, 1.0);
+        {
+          w->sqrt_wts = NULL;
+        }
   
       return (w->type->init) (w->state, w->sqrt_wts, w->fdf,
                               w->x, w->f, w->J, w->g);

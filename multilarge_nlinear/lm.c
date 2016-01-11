@@ -73,7 +73,7 @@ static int lm_iterate(gsl_multilarge_nlinear_fdf * fdf,
                       gsl_vector * x, gsl_vector * f,
                       gsl_matrix * JTJ, gsl_vector * g,
                       gsl_vector * dx, void * vstate);
-static int lm_rcond(double *rcond, void * vstate);
+static int lm_rcond(const gsl_matrix * JTJ, double * rcond, void * vstate);
 static int lm_solve(const double mu, const gsl_matrix * A,
                     const gsl_vector * b, const gsl_vector * DTD,
                     gsl_vector * x, lm_state_t * state);
@@ -374,9 +374,8 @@ lm_iterate(gsl_multilarge_nlinear_fdf * fdf,
 }
 
 static int
-lm_rcond(double *rcond, void * vstate)
+lm_rcond(const gsl_matrix * JTJ, double * rcond, void * vstate)
 {
-#if 0
   lm_state_t *state = (lm_state_t *) vstate;
   int status;
   double eval_min, eval_max;
@@ -394,15 +393,6 @@ lm_rcond(double *rcond, void * vstate)
 
   gsl_vector_minmax(eval, &eval_min, &eval_max);
 
-#if 0
-  /*XXX*/
-  {
-    gsl_vector_scale(eval, 1.0 / eval_max);
-    gsl_sort_vector(eval);
-    printv_octave(eval, "eval");
-  }
-#endif
-
   if (eval_max > 0.0 && eval_min > 0.0)
     {
       *rcond = sqrt(eval_min / eval_max);
@@ -415,7 +405,6 @@ lm_rcond(double *rcond, void * vstate)
        */
       *rcond = 0.0;
     }
-#endif
 
   return GSL_SUCCESS;
 }

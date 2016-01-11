@@ -1115,7 +1115,7 @@ J = [ -200*x1 100 ; -1 0 ]
 In order to use geodesic acceleration, the user must provide
 the second directional derivative of each residual in the
 velocity direction,
-@math{D_v^2 f_i = \sum_{\alpha\beta} v_{\alpha} v_{\beta} \partial_{\alpha} \partial_{\beta} f_i}.
+@math{f_{vv} = D_v^2 f_i = \sum_{\alpha\beta} v_{\alpha} v_{\beta} \partial_{\alpha} \partial_{\beta} f_i}.
 The velocity vector @math{v} is provided by the solver. For this example,
 these derivatives are given by
 @tex

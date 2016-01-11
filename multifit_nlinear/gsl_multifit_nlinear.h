@@ -112,13 +112,14 @@ typedef struct
 {
   const gsl_multifit_nlinear_type * type;
   gsl_multifit_nlinear_fdf * fdf ;
-  gsl_vector * x;        /* parameter values x */
-  gsl_vector * f;        /* residual vector f(x) */
-  gsl_vector * dx;       /* step dx */
-  gsl_vector * g;        /* gradient J^T f */
-  gsl_matrix * J;        /* Jacobian J(x) */
-  gsl_vector * sqrt_wts; /* sqrt(W) */
-  size_t niter;          /* number of iterations performed */
+  gsl_vector * x;             /* parameter values x */
+  gsl_vector * f;             /* residual vector f(x) */
+  gsl_vector * dx;            /* step dx */
+  gsl_vector * g;             /* gradient J^T f */
+  gsl_matrix * J;             /* Jacobian J(x) */
+  gsl_vector * sqrt_wts_work; /* sqrt(W) */
+  gsl_vector * sqrt_wts;      /* ptr to sqrt_wts_work, or NULL if not using weights */
+  size_t niter;               /* number of iterations performed */
   void *state;
 } gsl_multifit_nlinear_workspace;
 

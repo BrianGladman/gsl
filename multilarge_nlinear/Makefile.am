@@ -7,6 +7,7 @@ libgslmultilarge_nlinear_la_SOURCES = convergence.c lm.c nlinear.c
 AM_CPPFLAGS = -I$(top_srcdir)
 
 noinst_HEADERS =     \
+lmdiag.c             \
 test_bard.c          \
 test_beale.c         \
 test_biggs.c         \

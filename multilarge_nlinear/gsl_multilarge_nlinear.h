@@ -80,7 +80,7 @@ typedef struct
                   gsl_vector * x, gsl_vector * f,
                   gsl_matrix * JTJ, gsl_vector * g,
                   gsl_vector * dx, void * vstate);
-  int (*rcond) (double * rcond, void *vstate);
+  int (*rcond) (const gsl_matrix * JTJ, double * rcond, void *vstate);
   void (*free) (void * vstate);
 } gsl_multilarge_nlinear_type;
 
@@ -101,7 +101,6 @@ typedef struct
 
 /* available solvers */
 GSL_VAR const gsl_multilarge_nlinear_type * gsl_multilarge_nlinear_lm;
-GSL_VAR const gsl_multilarge_nlinear_type * gsl_multilarge_nlinear_lms;
 
 gsl_multilarge_nlinear_workspace *
 gsl_multilarge_nlinear_alloc (const gsl_multilarge_nlinear_type * T,

@@ -202,7 +202,7 @@ gsl_multilarge_nlinear_residual (const gsl_multilarge_nlinear_workspace * w)
 int
 gsl_multilarge_nlinear_rcond (double * rcond, const gsl_multilarge_nlinear_workspace * w)
 {
-  return (w->type->rcond) (rcond, w->state);
+  return (w->type->rcond) (w->JTJ, rcond, w->state);
 }
 
 /*
