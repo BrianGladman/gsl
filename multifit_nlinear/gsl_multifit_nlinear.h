@@ -40,14 +40,6 @@
 
 __BEGIN_DECLS
 
-/* scaling matrix specification */
-typedef enum
-{
-  GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG, /* D^T D = I */
-  GSL_MULTIFIT_NLINEAR_SCALE_MARQUARDT, /* D^T D = diag(J^T J) */
-  GSL_MULTIFIT_NLINEAR_SCALE_MORE       /* D^T D = max(diag(J^T J)) */
-} gsl_multifit_nlinear_scale_t;
-
 /* Definition of vector-valued functions and gradient with parameters
    based on gsl_vector */
 
@@ -65,6 +57,14 @@ typedef struct
   size_t nevalfvv; /* number of fvv evaluations */
 } gsl_multifit_nlinear_fdf;
 
+/* scaling matrix specification */
+typedef struct
+{
+  const char *name;
+  int (*init) (const gsl_matrix * J, gsl_vector * diag);
+  int (*update) (const gsl_matrix * J, gsl_vector * diag);
+} gsl_multifit_nlinear_scale;
+
 /* linear least squares solvers */
 typedef struct
 {
@@ -72,8 +72,8 @@ typedef struct
   void * (*alloc) (const size_t n, const size_t p);
   int (*init) (const gsl_vector * f, const gsl_matrix * J,
                const gsl_vector * g, void * vstate);
-  int (*init_lambda) (const double lambda, const gsl_vector * diag,
-                      void * vstate);
+  int (*init_mu) (const double mu, const gsl_vector * diag,
+                  void * vstate);
   int (*solve_vel) (gsl_vector * v, void * vstate);
   int (*solve_acc) (const gsl_matrix * J, const gsl_vector * fvv,
                     gsl_vector * a, void * vstate);
@@ -83,7 +83,7 @@ typedef struct
 /* tunable parameters for Levenberg-Marquardt method */
 typedef struct
 {
-  gsl_multifit_nlinear_scale_t scale;         /* scaling method */
+  const gsl_multifit_nlinear_scale *scale;    /* scaling method */
   const gsl_multifit_nlinear_solver *solver;  /* solver method */
   int accel;                                  /* use geodesic acceleration */
   double avmax;                               /* max allowed |a|/|v| */
@@ -104,6 +104,7 @@ typedef struct
                   gsl_vector * f, gsl_matrix * J, gsl_vector * g,
                   gsl_vector * dx);
   int (*rcond) (const gsl_matrix * J, double * rcond, void * state);
+  double (*avratio) (void * state);
   void (*free) (void * state);
 } gsl_multifit_nlinear_type;
 
@@ -143,15 +144,19 @@ int gsl_multifit_nlinear_winit (gsl_multifit_nlinear_fdf * f,
 int
 gsl_multifit_nlinear_iterate (gsl_multifit_nlinear_workspace * w);
 
-int gsl_multifit_nlinear_driver (const size_t maxiter,
-                                 const double xtol,
-                                 const double gtol,
-                                 const double ftol,
-                                 void (*callback)(const size_t iter,
-                                                  void *params,
-                                                  const gsl_multifit_nlinear_workspace *w),
-                                 int *info,
-                                 gsl_multifit_nlinear_workspace * w);
+double
+gsl_multifit_nlinear_avratio (const gsl_multifit_nlinear_workspace * w);
+
+int
+gsl_multifit_nlinear_driver (const size_t maxiter,
+                             const double xtol,
+                             const double gtol,
+                             const double ftol,
+                             void (*callback)(const size_t iter, void *params,
+                                              const gsl_multifit_nlinear_workspace *w),
+                             void *callback_params,
+                             int *info,
+                             gsl_multifit_nlinear_workspace * w);
 
 gsl_matrix *
 gsl_multifit_nlinear_jac (const gsl_multifit_nlinear_workspace * w);
@@ -219,6 +224,11 @@ gsl_multifit_nlinear_fdfvv(const double h, const gsl_vector *x, const gsl_vector
 
 /* top-level methods */
 GSL_VAR const gsl_multifit_nlinear_type * gsl_multifit_nlinear_lm;
+
+/* scaling matrix strategies */
+GSL_VAR const gsl_multifit_nlinear_scale * gsl_multifit_nlinear_scale_levenberg;
+GSL_VAR const gsl_multifit_nlinear_scale * gsl_multifit_nlinear_scale_marquardt;
+GSL_VAR const gsl_multifit_nlinear_scale * gsl_multifit_nlinear_scale_more;
 
 /* linear solvers */
 GSL_VAR const gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_normal;

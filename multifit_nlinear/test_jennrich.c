@@ -1,8 +1,6 @@
 #define jennrich_N         10
 #define jennrich_P         2
 
-#define jennrich_NTRIES    1
-
 static double jennrich_x0[jennrich_P] = { 0.3, 0.4 };
 static double jennrich_epsrel = 1.0e-8;
 
@@ -108,7 +106,6 @@ static test_fdf_problem jennrich_problem =
   jennrich_x0,
   NULL,
   &jennrich_epsrel,
-  jennrich_NTRIES,
   &jennrich_checksol,
   &jennrich_func
 };

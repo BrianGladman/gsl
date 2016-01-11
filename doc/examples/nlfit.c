@@ -148,7 +148,8 @@ main (void)
   gsl_blas_ddot(f, f, &chisq0);
 
   /* solve the system with a maximum of 20 iterations */
-  status = gsl_multifit_nlinear_driver(20, xtol, gtol, ftol, callback, &info, w);
+  status = gsl_multifit_nlinear_driver(20, xtol, gtol, ftol,
+                                       callback, NULL, &info, w);
 
   /* compute covariance of best fit parameters */
   J = gsl_multifit_nlinear_jac(w);

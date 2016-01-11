@@ -1,11 +1,8 @@
 #define bard_N         15
 #define bard_P         3
 
-#define bard_NTRIES    3
-
 static double bard_x0[bard_P] = { 1.0, 1.0, 1.0 };
-
-static double bard_epsrel = 1.0e-8;
+static double bard_epsrel = 1.0e-7;
 
 static double bard_Y[bard_N] = {
 0.14, 0.18, 0.22, 0.25, 0.29, 0.32, 0.35, 0.39, 0.37,
@@ -147,7 +144,6 @@ static test_fdf_problem bard_problem =
   bard_x0,
   NULL,
   &bard_epsrel,
-  bard_NTRIES,
   &bard_checksol,
   &bard_func
 };

@@ -1,8 +1,6 @@
 #define wnlin_N         40
 #define wnlin_P         3
 
-#define wnlin_NTRIES    1
-
 static double wnlin_x0[wnlin_P] = { 1.0, 0.0, 0.0 };
 static double wnlin_epsrel = 1.0e-8;
 
@@ -168,7 +166,6 @@ static test_fdf_problem wnlin_problem1 =
   wnlin_x0,
   NULL,
   &wnlin_epsrel,
-  wnlin_NTRIES,
   &wnlin_checksol,
   &wnlin_func1
 };
@@ -179,7 +176,6 @@ static test_fdf_problem wnlin_problem2 =
   wnlin_x0,
   NULL,
   &wnlin_epsrel,
-  wnlin_NTRIES,
   &wnlin_checksol,
   &wnlin_func2
 };

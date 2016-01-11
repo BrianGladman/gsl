@@ -1,10 +1,7 @@
 #define gaussian_N         15
 #define gaussian_P         3
 
-#define gaussian_NTRIES    2
-
 static double gaussian_x0[gaussian_P] = { 0.4, 1.0, 0.0 };
-
 static double gaussian_epsrel = 1.0e-10;
 
 static double gaussian_Y[gaussian_N] = {
@@ -132,7 +129,6 @@ static test_fdf_problem gaussian_problem =
   gaussian_x0,
   NULL,
   &gaussian_epsrel,
-  gaussian_NTRIES,
   &gaussian_checksol,
   &gaussian_func
 };

@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-static int lm_init_lambda(const gsl_matrix * J, lm_state_t * state);
-static double lm_calc_rho(const double lambda, const gsl_vector * v,
+static int lm_init_mu(const gsl_matrix * J, lm_state_t * state);
+static double lm_calc_rho(const double mu, const gsl_vector * v,
                           const gsl_vector * g,
                           const gsl_vector * f,
                           const gsl_vector * f_trial,
@@ -29,16 +29,16 @@ static int lm_check_step(const gsl_vector * v, const gsl_vector * g,
 static double lm_scaled_norm(const gsl_vector *a, const gsl_vector *b,
                              gsl_vector *work);
 
-/* initialize damping parameter lambda; state->diag must first be
+/* initialize damping parameter mu; state->diag must first be
  * initialized */
 static int
-lm_init_lambda(const gsl_matrix * J, lm_state_t * state)
+lm_init_mu(const gsl_matrix * J, lm_state_t * state)
 {
-  state->lambda = state->lambda0;
+  state->mu = state->mu0;
 
-  if (state->init_diag == init_diag_levenberg)
+  if (state->scale == gsl_multifit_nlinear_scale_levenberg)
     {
-      /* when D = I, set lambda = lambda0 * max(diag(J^T J)) */
+      /* when D = I, set mu = mu0 * max(diag(J^T J)) */
 
       const size_t p = J->size2;
       size_t j;
@@ -51,7 +51,7 @@ lm_init_lambda(const gsl_matrix * J, lm_state_t * state)
           max = GSL_MAX(max, norm);
         }
 
-      state->lambda *= max * max;
+      state->mu *= max * max;
     }
 
   return GSL_SUCCESS;
@@ -77,7 +77,7 @@ lm_calc_rho()
   Calculate ratio of actual reduction to predicted
 reduction, given by Eq 4.4 of More, 1978.
 
-Inputs: lambda  - LM parameter
+Inputs: mu      - LM parameter
         v       - velocity vector (p in Eq 4.4)
         g       - gradient J^T f
         f       - f(x)
@@ -86,7 +86,7 @@ Inputs: lambda  - LM parameter
 */
 
 static double
-lm_calc_rho(const double lambda, const gsl_vector * v,
+lm_calc_rho(const double mu, const gsl_vector * v,
             const gsl_vector * g, const gsl_vector * f,
             const gsl_vector * f_trial, lm_state_t * state)
 {
@@ -113,11 +113,11 @@ lm_calc_rho(const double lambda, const gsl_vector * v,
    * compute denominator of rho; instead of computing J*v,
    * we note that:
    *
-   * ||Jv||^2 + 2*lambda*||Dv||^2 = lambda*||Dv||^2 - v^T g
+   * ||Jv||^2 + 2*mu*||Dv||^2 = mu*||Dv||^2 - v^T g
    * and g = J^T f
    */
   u = norm_Dp / normf;
-  pred_reduction = lambda * u * u;
+  pred_reduction = mu * u * u;
 
   gsl_blas_ddot(v, g, &u);
   pred_reduction -= u / (normf * normf);
@@ -144,6 +144,10 @@ Inputs: v       - proposed step velocity
 
 Return: GSL_SUCCESS to accept
         GSL_FAILURE to reject
+
+Notes:
+1) If using geodesic acceleration, state->avratio
+   is updated with |a| / |v|
 */
 
 static int
@@ -156,14 +160,16 @@ lm_check_step(const gsl_vector * v, const gsl_vector * g,
     {
       double anorm = lm_scaled_norm(state->diag, state->acc, state->workp);
       double vnorm = lm_scaled_norm(state->diag, state->vel, state->workp);
-      double ratio = anorm / vnorm;
+
+      /* store |a| / |v| */
+      state->avratio = anorm / vnorm;
 
       /* reject step if acceleration is too large compared to velocity */
-      if (ratio > state->avmax)
+      if (state->avratio > state->avmax)
         return GSL_FAILURE;
     }
 
-  *rho = lm_calc_rho(state->lambda, v, g, f, f_trial, state);
+  *rho = lm_calc_rho(state->mu, v, g, f, f_trial, state);
 
   /* if rho <= 0, the step does not reduce the cost function, reject */
   if (*rho <= 0.0)

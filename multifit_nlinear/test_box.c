@@ -1,8 +1,6 @@
 #define box_N         10 /* can be >= p */
 #define box_P         3
 
-#define box_NTRIES    1
-
 static double box_x0[box_P] = { 0.0, 10.0, 20.0 };
 static double box_epsrel = 1.0e-12;
 
@@ -112,7 +110,6 @@ static test_fdf_problem box_problem =
   box_x0,
   NULL,
   &box_epsrel,
-  box_NTRIES,
   &box_checksol,
   &box_func
 };

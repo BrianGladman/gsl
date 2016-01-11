@@ -1,8 +1,6 @@
 #define brown3_N         3
 #define brown3_P         2
 
-#define brown3_NTRIES    3
-
 static double brown3_x0[brown3_P] = { 1.0, 1.0 };
 static double brown3_epsrel = 1.0e-12;
 
@@ -94,7 +92,6 @@ static test_fdf_problem brown3_problem =
   brown3_x0,
   NULL,
   &brown3_epsrel,
-  brown3_NTRIES,
   &brown3_checksol,
   &brown3_func
 };

@@ -1,10 +1,8 @@
 #define roth_N         2
 #define roth_P         2
 
-#define roth_NTRIES    3
-
 static double roth_x0[roth_P] = { 0.5, -2.0 };
-static double roth_epsrel = 1.0e-8;
+static double roth_epsrel = 1.0e-7;
 
 static void
 roth_checksol(const double x[], const double sumsq,
@@ -103,7 +101,6 @@ static test_fdf_problem roth_problem =
   roth_x0,
   NULL,
   &roth_epsrel,
-  roth_NTRIES,
   &roth_checksol,
   &roth_func
 };

@@ -1,8 +1,6 @@
 #define boxbod_N       6
 #define boxbod_P       2
 
-#define boxbod_NTRIES  1
-
 static double boxbod_x0a[boxbod_P] = { 1.0, 1.0 };
 static double boxbod_x0b[boxbod_P] = { 100.0, 0.75 };
 static double boxbod_epsrel = 1.0e-7;
@@ -129,7 +127,6 @@ static test_fdf_problem boxboda_problem =
   boxbod_x0a,
   boxbod_sigma,
   &boxbod_epsrel,
-  boxbod_NTRIES,
   &boxbod_checksol,
   &boxbod_func
 };
@@ -140,7 +137,6 @@ static test_fdf_problem boxbodb_problem =
   boxbod_x0b,
   boxbod_sigma,
   &boxbod_epsrel,
-  boxbod_NTRIES,
   &boxbod_checksol,
   &boxbod_func
 };

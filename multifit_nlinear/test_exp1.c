@@ -1,8 +1,6 @@
 #define exp1_N         45
 #define exp1_P         4
 
-#define exp1_NTRIES    3
-
 static double exp1_x0[exp1_P] = { -1.0, -2.0, 1.0, -1.0 };
 static double exp1_epsrel = 1.0e-4;
 
@@ -134,7 +132,6 @@ static test_fdf_problem exp1_problem =
   exp1_x0,
   NULL,
   &exp1_epsrel,
-  exp1_NTRIES,
   &exp1_checksol,
   &exp1_func
 };

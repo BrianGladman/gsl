@@ -1,11 +1,8 @@
 #define rosenbrocke_N         8 /* = p */
 #define rosenbrocke_P         8 /* must be even */
 
-#define rosenbrocke_NTRIES    4
-
 static double rosenbrocke_x0[rosenbrocke_P] = { -1.2, 1.0, -1.2, 1.0,
                                                 -1.2, 1.0, -1.2, 1.0 };
-
 static double rosenbrocke_epsrel = 1.0e-12;
 
 static void
@@ -107,7 +104,6 @@ static test_fdf_problem rosenbrocke_problem =
   rosenbrocke_x0,
   NULL,
   &rosenbrocke_epsrel,
-  rosenbrocke_NTRIES,
   &rosenbrocke_checksol,
   &rosenbrocke_func
 };

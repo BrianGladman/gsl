@@ -76,12 +76,14 @@ gsl_multifit_nlinear_test (const double xtol, const double gtol,
       return GSL_SUCCESS;
     }
 
-#if 0
+#if 0 /* XXX */
   if (dfnorm <= ftol * GSL_MAX(fnorm, 1.0))
     {
       *info = 3;
       return GSL_SUCCESS;
     }
+#else
+  (void)ftol;
 #endif
 
   return GSL_CONTINUE;

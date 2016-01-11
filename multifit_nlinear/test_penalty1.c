@@ -1,11 +1,8 @@
 #define penalty1_N         11 /* p + 1 */
 #define penalty1_P         10
 
-#define penalty1_NTRIES    4
-
 static double penalty1_x0[penalty1_P] = { 1.0, 2.0, 3.0, 4.0, 5.0,
                                           6.0, 7.0, 8.0, 9.0, 10.0 };
-
 static double penalty1_epsrel = 1.0e-12;
 
 static void
@@ -104,7 +101,6 @@ static test_fdf_problem penalty1_problem =
   penalty1_x0,
   NULL,
   &penalty1_epsrel,
-  penalty1_NTRIES,
   &penalty1_checksol,
   &penalty1_func
 };

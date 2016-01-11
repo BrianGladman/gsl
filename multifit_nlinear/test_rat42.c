@@ -1,8 +1,6 @@
 #define rat42_N       9
 #define rat42_P       3
 
-#define rat42_NTRIES  1
-
 static double rat42_x0a[rat42_P] = { 100.0, 1.0, 0.1 };
 static double rat42_x0b[rat42_P] = { 75.0, 2.5, 0.07 };
 static double rat42_epsrel = 1.0e-7;
@@ -138,7 +136,6 @@ static test_fdf_problem rat42a_problem =
   rat42_x0a,
   rat42_sigma,
   &rat42_epsrel,
-  rat42_NTRIES,
   &rat42_checksol,
   &rat42_func
 };
@@ -149,7 +146,6 @@ static test_fdf_problem rat42b_problem =
   rat42_x0b,
   rat42_sigma,
   &rat42_epsrel,
-  rat42_NTRIES,
   &rat42_checksol,
   &rat42_func
 };

@@ -1,8 +1,6 @@
 #define wood_N         6
 #define wood_P         4
 
-#define wood_NTRIES    3
-
 static double wood_x0[wood_P] = { -3.0, -1.0, -3.0, -1.0 };
 static double wood_epsrel = 1.0e-12;
 
@@ -111,7 +109,6 @@ static test_fdf_problem wood_problem =
   wood_x0,
   NULL,
   &wood_epsrel,
-  wood_NTRIES,
   &wood_checksol,
   &wood_func
 };

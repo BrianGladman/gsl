@@ -1,8 +1,6 @@
 #define osborne_N         33
 #define osborne_P         5
 
-#define osborne_NTRIES    3
-
 static double osborne_x0[osborne_P] = { 0.5, 1.5, -1.0, 0.01, 0.02 };
 static double osborne_epsrel = 1.0e-8;
 
@@ -131,7 +129,6 @@ static test_fdf_problem osborne_problem =
   osborne_x0,
   NULL,
   &osborne_epsrel,
-  osborne_NTRIES,
   &osborne_checksol,
   &osborne_func
 };

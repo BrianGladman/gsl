@@ -1,8 +1,6 @@
 #define helical_N         3
 #define helical_P         3
 
-#define helical_NTRIES    4
-
 static double helical_x0[helical_P] = { -1.0, 0.0, 0.0 };
 static double helical_x[helical_P] = { 1.0, 0.0, 0.0 };
 
@@ -111,7 +109,6 @@ static test_fdf_problem helical_problem =
   helical_x0,
   NULL,
   &helical_epsrel,
-  helical_NTRIES,
   &helical_checksol,
   &helical_func
 };

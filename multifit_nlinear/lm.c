@@ -53,22 +53,23 @@ typedef struct
   gsl_vector *vel;           /* geodesic velocity (standard LM step), size p */
   gsl_vector *acc;           /* geodesic acceleration, size p */
   long nu;                   /* nu */
-  double lambda;             /* LM parameter lambda */
-  double lambda0;            /* initial scale factor for lambda */
+  double mu;                 /* LM parameter mu */
+  double mu0;                /* initial scale factor for mu */
 
+  const gsl_multifit_nlinear_scale *scale;
   const gsl_multifit_nlinear_solver *solver;
   void *solver_state;        /* workspace for linear solver */
 
   gsl_matrix *JTJ;           /* J^T J for rcond calculation */
   gsl_eigen_symm_workspace *eigen_p;
 
+  double avratio;            /* current |a| / |v| */
+
   /* tunable parameters */
 
   int accel;                 /* use geodesic acceleration */
   double avmax;              /* max |a| / |v| */
   double h_fvv;              /* step size for fvv finite difference */
-  int (*init_diag) (const gsl_matrix * J, gsl_vector * diag);
-  int (*update_diag) (const gsl_matrix * J, gsl_vector * diag);
 } lm_state_t;
 
 #include "lmdiag.c"
@@ -89,6 +90,7 @@ static int lm_iterate(void *vstate, const gsl_vector *swts,
                       gsl_vector *x, gsl_vector *f, gsl_matrix *J,
                       gsl_vector *g, gsl_vector *dx);
 static int lm_rcond(const gsl_matrix *J, double *rcond, void *vstate);
+static double lm_avratio(void *vstate);
 
 static void *
 lm_alloc (const gsl_multifit_nlinear_parameters * params,
@@ -144,26 +146,6 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
       GSL_ERROR_NULL ("failed to allocate space for f_trial", GSL_ENOMEM);
     }
 
-  if (params->scale == GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG)
-    {
-      state->init_diag = init_diag_levenberg;
-      state->update_diag = update_diag_levenberg;
-    }
-  else if (params->scale == GSL_MULTIFIT_NLINEAR_SCALE_MARQUARDT)
-    {
-      state->init_diag = init_diag_marquardt;
-      state->update_diag = update_diag_marquardt;
-    }
-  else if (params->scale == GSL_MULTIFIT_NLINEAR_SCALE_MORE)
-    {
-      state->init_diag = init_diag_more;
-      state->update_diag = update_diag_more;
-    }
-  else
-    {
-      GSL_ERROR_NULL ("invalid scale parameter", GSL_EINVAL);
-    }
-
   state->solver_state = (params->solver->alloc)(n, p);
   if (state->solver_state == NULL)
     {
@@ -184,10 +166,11 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
 
   state->n = n;
   state->p = p;
-  state->lambda0 = 1.0e-3;
+  state->mu0 = 1.0e-3;
   state->accel = params->accel;
   state->avmax = params->avmax;
   state->h_fvv = params->h_fvv;
+  state->scale = params->scale;
   state->solver = params->solver;
 
   return state;
@@ -267,16 +250,17 @@ lm_init(void *vstate, const gsl_vector *swts,
   gsl_blas_dgemv(CblasTrans, 1.0, J, f, 0.0, g);
 
   /* initialize diagonal scaling matrix D */
-  (state->init_diag)(J, state->diag);
+  (state->scale->init)(J, state->diag);
 
-  /* initialize LM parameter lambda */
-  lm_init_lambda(J, state);
+  /* initialize LM parameter mu */
+  lm_init_mu(J, state);
 
   gsl_vector_set_zero(state->vel);
   gsl_vector_set_zero(state->acc);
 
   /* set default parameters */
   state->nu = 2;
+  state->avratio = 0.0;
 
   return GSL_SUCCESS;
 }
@@ -311,10 +295,10 @@ find a good step without success
 
 Notes:
 1) On input, the following must be initialized in state:
-nu, lambda
+nu, mu
 
 2) On output, the following are updated with the current iterates:
-nu, lambda
+nu, mu
 */
 
 static int
@@ -342,15 +326,15 @@ lm_iterate(void *vstate, const gsl_vector *swts,
   /* loop until we find an acceptable step dx */
   while (!foundstep)
     {
-      /* further solver initialization with current lambda */
-      status = (state->solver->init_lambda)(state->lambda, state->diag,
-                                            state->solver_state);
+      /* further solver initialization with current mu */
+      status = (state->solver->init_mu)(state->mu, state->diag,
+                                        state->solver_state);
       if (status)
         return status;
 
       /*
-       * solve: [       J        ] v = - [ f ]
-       *        [ sqrt(lambda)*D ]       [ 0 ]
+       * solve: [     J      ] v = - [ f ]
+       *        [ sqrt(mu)*D ]       [ 0 ]
        */
       status = (state->solver->solve_vel)(state->vel, state->solver_state);
       if (status)
@@ -365,8 +349,8 @@ lm_iterate(void *vstate, const gsl_vector *swts,
             return status;
 
           /*
-           * solve: [       J        ] a = - [ fvv ]
-           *        [ sqrt(lambda)*D ]       [  0  ]
+           * solve: [     J      ] a = - [ fvv ]
+           *        [ sqrt(mu)*D ]       [  0  ]
            */
           status = (state->solver->solve_acc)(J, state->fvv, state->acc, state->solver_state);
           if (status)
@@ -401,7 +385,7 @@ lm_iterate(void *vstate, const gsl_vector *swts,
           /* update LM parameter */
           b = 2.0 * rho - 1.0;
           b = 1.0 - b*b*b;
-          state->lambda *= GSL_MAX(LM_ONE_THIRD, b);
+          state->mu *= GSL_MAX(LM_ONE_THIRD, b);
           state->nu = 2;
 
           /* compute J <- J(x + dx) */
@@ -420,7 +404,7 @@ lm_iterate(void *vstate, const gsl_vector *swts,
           gsl_blas_dgemv(CblasTrans, 1.0, J, f, 0.0, g);
 
           /* update scaling matrix D */
-          (state->update_diag)(J, diag);
+          (state->scale->update)(J, diag);
 
           foundstep = 1;
           bad_steps = 0;
@@ -435,16 +419,16 @@ lm_iterate(void *vstate, const gsl_vector *swts,
           if (++bad_steps > 15)
             return GSL_ENOPROG;
 
-          state->lambda *= (double) state->nu;
+          state->mu *= (double) state->nu;
           nu2 = state->nu << 1; /* 2*nu */
           if (nu2 <= state->nu)
             {
               /*
-               * nu has wrapped around / overflown, reset lambda and nu
+               * nu has wrapped around / overflown, reset mu and nu
                * to original values and break to force another iteration
                */
               state->nu = 2;
-              lm_init_lambda(J, state);
+              lm_init_mu(J, state);
 
               break;
             }
@@ -488,6 +472,13 @@ lm_rcond(const gsl_matrix *J, double *rcond, void *vstate)
   return GSL_SUCCESS;
 }
 
+static double
+lm_avratio(void *vstate)
+{
+  lm_state_t *state = (lm_state_t *) vstate;
+  return state->avratio;
+}
+
 static const gsl_multifit_nlinear_type lm_type =
 {
   "lm",
@@ -495,6 +486,7 @@ static const gsl_multifit_nlinear_type lm_type =
   lm_init,
   lm_iterate,
   lm_rcond,
+  lm_avratio,
   lm_free
 };
 

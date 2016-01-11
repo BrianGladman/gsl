@@ -1,8 +1,6 @@
 #define eckerle_N       35
 #define eckerle_P       3
 
-#define eckerle_NTRIES  1
-
 static double eckerle_x0a[eckerle_P] = { 1.0, 10.0, 500.0 };
 static double eckerle_x0b[eckerle_P] = { 1.5, 5.0, 450.0 };
 static double eckerle_epsrel = 1.0e-7;
@@ -124,7 +122,6 @@ static test_fdf_problem eckerlea_problem =
   eckerle_x0a,
   eckerle_sigma,
   &eckerle_epsrel,
-  eckerle_NTRIES,
   &eckerle_checksol,
   &eckerle_func
 };
@@ -135,7 +132,6 @@ static test_fdf_problem eckerleb_problem =
   eckerle_x0b,
   eckerle_sigma,
   &eckerle_epsrel,
-  eckerle_NTRIES,
   &eckerle_checksol,
   &eckerle_func
 };

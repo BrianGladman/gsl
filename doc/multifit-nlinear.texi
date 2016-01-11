@@ -86,7 +86,7 @@ $$
 \left[
 \matrix{
 J \cr
-\sqrt{\lambda} D
+\sqrt{\mu} D
 }
 \right]
 \delta =
@@ -103,12 +103,12 @@ $$
 @ifinfo
 
 @example
-[J; sqrt(lambda) D] \delta = - [f; 0]
+[J; sqrt(mu) D] \delta = - [f; 0]
 @end example
 
 @end ifinfo
 @noindent
-where @math{\lambda} is known as the Levenberg-Marquardt
+where @math{\mu} is known as the Levenberg-Marquardt
 parameter, and @math{D} is a diagonal matrix chosen
 to represent the relative scaling of the parameters.
 After @math{\delta} is computed from the above linear
@@ -116,14 +116,14 @@ system, the proposed step @math{x + \delta} is tested
 to see if it improves the solution (for example if it
 results in a reduced cost @math{||f(x+\delta)||^2 < ||f(x)||^2}).
 If the step @math{\delta} is accepted as an improvement
-to the solution, then @math{\lambda} is decreased by
+to the solution, then @math{\mu} is decreased by
 some factor and the iteration continues. If @math{\delta}
-does not improve the solution, then @math{\lambda} is increased
+does not improve the solution, then @math{\mu} is increased
 by some factor and the process is repeated until an
 acceptable step @math{\delta} is found.
 
 @noindent
-The manner in which @math{\lambda} is updated and also the
+The manner in which @math{\mu} is updated and also the
 choice of the damping matrix @math{D} can have significant
 effects on the convergence speed of the method, and these
 choices are usually highly problem specific. The library
@@ -200,7 +200,7 @@ defined as follows:
 @example
 typedef struct
 @{
-  gsl_multifit_nlinear_scale_t scale;         /* scaling method */
+  const gsl_multifit_nlinear_scale *scale;    /* scaling method */
   const gsl_multifit_nlinear_solver *solver;  /* solver method */
   int accel;                                  /* use geodesic acceleration */
   double avmax;                               /* max allowed |a|/|v| */
@@ -212,12 +212,12 @@ typedef struct
 @noindent
 Each of these parameters is discussed in further detail below.
 
-@deftypevr {Parameter} {gsl_multifit_nlinear_scale_t} scale
+@deftypevr {Parameter} {gsl_multifit_nlinear_scale *} scale
 
 This parameter determines the diagonal scaling matrix @math{D} and
 may be selected from the following choices,
 
-@defvr {Default} GSL_MULTIFIT_NLINEAR_SCALE_MORE
+@defvr {Default} gsl_multifit_nlinear_scale_more
 This damping strategy was suggested by Mor@'e, and
 corresponds to @math{D^T D = } max(diag(@math{J^T J})),
 in other words the maximum elements of
@@ -234,7 +234,7 @@ effective on a large class of problems and so it is the library
 default, but it may not be the best choice for all problems.
 @end defvr
 
-@defvr {Option} GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG
+@defvr {Option} gsl_multifit_nlinear_scale_levenberg
 This damping strategy was originally suggested by Levenberg, and
 corresponds to @math{D^T D = I}. This method has also proven
 effective on a large class of problems, but is not scale-invariant.
@@ -243,7 +243,7 @@ that this choice is better for problems which are susceptible
 to parameter evaporation (ie: parameters go to infinity)
 @end defvr
 
-@defvr {Option} GSL_MULTIFIT_NLINEAR_SCALE_MARQUARDT
+@defvr {Option} gsl_multifit_nlinear_scale_marquardt
 This damping strategy was suggested by Marquardt, and
 corresponds to @math{D^T D = } diag(@math{J^T J}). This
 method is scale-invariant, but it is generally considered
@@ -253,7 +253,7 @@ may work well on certain classes of problems.
 
 @end deftypevr
 
-@deftypevr {Parameter} {const gsl_multifit_nlinear_solver} solver
+@deftypevr {Parameter} {const gsl_multifit_nlinear_solver *} solver
 
 @noindent
 As discussed in @ref{Nonlinear Least-Squares Overview}
@@ -265,7 +265,7 @@ $$
 \left[
 \matrix{
 J \cr
-\sqrt{\lambda} D
+\sqrt{\mu} D
 }
 \right]
 \delta =
@@ -282,7 +282,7 @@ $$
 @ifinfo
 
 @example
-[J; sqrt(lambda) D] \delta = - [f; 0]
+[J; sqrt(mu) D] \delta = - [f; 0]
 @end example
 
 @end ifinfo
@@ -304,20 +304,20 @@ This method solves the alternate normal equations problem
 @tex
 \beforedisplay
 $$
-\left( J^T J + \lambda D^T D \right) \delta = -J^T f
+\left( J^T J + \mu D^T D \right) \delta = -J^T f
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-( J^T J + \lambda D^T D ) \delta = -J^T f
+( J^T J + \mu D^T D ) \delta = -J^T f
 @end example
 
 @end ifinfo
 
 by using a Cholesky decomposition of the matrix
-@math{J^T J + \lambda D^T D}. This method is faster than the
+@math{J^T J + \mu D^T D}. This method is faster than the
 QR approach, however it is susceptible to numerical instabilities
 if the Jacobian matrix is rank deficient or near-singular. In
 these cases, an attempt is made to reduce the condition number
@@ -344,7 +344,7 @@ $$
 \left[
 \matrix{
 J \cr
-\sqrt{\lambda} D
+\sqrt{\mu} D
 }
 \right]
 a =
@@ -361,7 +361,7 @@ $$
 @ifinfo
 
 @example
-[J; sqrt(lambda) D] \delta = - [f_vv; 0]
+[J; sqrt(mu) D] \delta = - [f_vv; 0]
 @end example
 
 @end ifinfo
@@ -742,14 +742,15 @@ are required.
 This routine provides a high level wrapper that combines the iteration
 and convergence testing for easy use.
 
-@deftypefun int gsl_multifit_nlinear_driver (const size_t @var{maxiter}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, void (* @var{callback})(const size_t @var{iter}, void * @var{params}, const gsl_multifit_linear_workspace * @var{w}), int * @var{info}, gsl_multifit_nlinear_workspace * @var{w})
-This function iterates the solver @var{w} for a maximum of @var{maxiter}
-iterations. After each iteration, the system is tested for convergence
-with the error tolerances @var{xtol}, @var{gtol} and @var{ftol}.
+@deftypefun int gsl_multifit_nlinear_driver (const size_t @var{maxiter}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, void (* @var{callback})(const size_t @var{iter}, void * @var{params}, const gsl_multifit_linear_workspace * @var{w}), void * @var{callback_params}, int * @var{info}, gsl_multifit_nlinear_workspace * @var{w})
+This function iterates the nonlinear least squares solver @var{w} for a
+maximum of @var{maxiter} iterations. After each iteration, the system is
+tested for convergence with the error tolerances @var{xtol}, @var{gtol} and @var{ftol}.
 Additionally, the user may supply a callback function @var{callback}
 which is called after each iteration, so that the user may save or print
-relevant quantities for each iteration. The parameter @var{callback} may
-be set to NULL to disable this feature.
+relevant quantities for each iteration. The parameter @var{callback_params}
+is passed to the @var{callback} function. The parameters @var{callback}
+and @var{callback_params} may be set to NULL to disable this feature.
 Upon successful convergence, the function returns @code{GSL_SUCCESS}
 and sets @var{info} to the reason for convergence (see
 @code{gsl_multifit_nlinear_test}). If the function has not

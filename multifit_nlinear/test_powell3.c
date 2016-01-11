@@ -1,8 +1,6 @@
 #define powell3_N         2
 #define powell3_P         2
 
-#define powell3_NTRIES    1
-
 static double powell3_x0[powell3_P] = { 0.0, 1.0 };
 static double powell3_epsrel = 1.0e-10;
 
@@ -93,7 +91,6 @@ static test_fdf_problem powell3_problem =
   powell3_x0,
   NULL,
   &powell3_epsrel,
-  powell3_NTRIES,
   &powell3_checksol,
   &powell3_func
 };

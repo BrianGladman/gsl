@@ -134,7 +134,7 @@ gsl_multifit_nlinear_default_parameters(void)
 {
   gsl_multifit_nlinear_parameters params;
 
-  params.scale = GSL_MULTIFIT_NLINEAR_SCALE_MORE;
+  params.scale = gsl_multifit_nlinear_scale_more;
   params.solver = gsl_multifit_nlinear_solver_qr;
   params.accel = 0;
   params.avmax = 0.75;
@@ -213,6 +213,12 @@ gsl_multifit_nlinear_iterate (gsl_multifit_nlinear_workspace * w)
   return status;
 }
 
+double
+gsl_multifit_nlinear_avratio (const gsl_multifit_nlinear_workspace * w)
+{
+  return (w->type->avratio) (w->state);
+}
+
 /*
 gsl_multifit_nlinear_driver()
   Iterate the nonlinear least squares solver until completion
@@ -222,6 +228,7 @@ Inputs: maxiter  - maximum iterations to allow
         gtol     - tolerance in gradient
         ftol     - tolerance in ||f||
         callback - callback function to call each iteration
+        callback_params - parameters to pass to callback function
         info     - (output) info flag on why iteration terminated
                    1 = stopped due to small step size ||dx|
                    2 = stopped due to small gradient
@@ -245,9 +252,9 @@ gsl_multifit_nlinear_driver (const size_t maxiter,
                              const double xtol,
                              const double gtol,
                              const double ftol,
-                             void (*callback)(const size_t iter,
-                                              void *params,
+                             void (*callback)(const size_t iter, void *params,
                                               const gsl_multifit_nlinear_workspace *w),
+                             void *callback_params,
                              int *info,
                              gsl_multifit_nlinear_workspace * w)
 {
@@ -257,7 +264,7 @@ gsl_multifit_nlinear_driver (const size_t maxiter,
   /* call user callback function prior to any iterations
    * with initial system state */
   if (callback)
-    callback(iter, NULL, w);
+    callback(iter, callback_params, w);
 
   do
     {
@@ -271,7 +278,7 @@ gsl_multifit_nlinear_driver (const size_t maxiter,
        * If we get a no progress flag on subsequent iterations,
        * it means we did find a good step in a previous iteration,
        * so continue iterating since the solver has now reset
-       * lambda to its initial value.
+       * mu to its initial value.
        */
       if (status == GSL_ENOPROG && iter == 0)
         {
@@ -282,7 +289,7 @@ gsl_multifit_nlinear_driver (const size_t maxiter,
       ++iter;
 
       if (callback)
-        callback(iter, NULL, w);
+        callback(iter, callback_params, w);
 
       /* test for convergence */
       status = gsl_multifit_nlinear_test(xtol, gtol, ftol, info, w);

@@ -1,8 +1,6 @@
 #define beale_N         3
 #define beale_P         2
 
-#define beale_NTRIES    1
-
 static double beale_x0[beale_P] = { 1.0, 1.0 };
 static double beale_epsrel = 1.0e-12;
 
@@ -109,7 +107,6 @@ static test_fdf_problem beale_problem =
   beale_x0,
   NULL,
   &beale_epsrel,
-  beale_NTRIES,
   &beale_checksol,
   &beale_func
 };

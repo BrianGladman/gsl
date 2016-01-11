@@ -1,8 +1,6 @@
 #define rosenbrock_N         2
 #define rosenbrock_P         2
 
-#define rosenbrock_NTRIES    4
-
 static double rosenbrock_x0[rosenbrock_P] = { -1.2, 1.0 };
 static double rosenbrock_epsrel = 1.0e-12;
 
@@ -87,7 +85,6 @@ static test_fdf_problem rosenbrock_problem =
   rosenbrock_x0,
   NULL,
   &rosenbrock_epsrel,
-  rosenbrock_NTRIES,
   &rosenbrock_checksol,
   &rosenbrock_func
 };

@@ -21,19 +21,19 @@
  * This module handles the solution of the linear least squares
  * system:
  *
- * [    J     ] v = - [ f ]
- * [ lambda*D ]       [ 0 ]
+ * [     J      ] v = - [ f ]
+ * [ sqrt(mu)*D ]       [ 0 ]
  *
  * using a QR approach. The solver is organized into 4 sequential steps:
  *
- * 1. init: initialize solver for a given f(x) and J(x), independent of lambda
- * 2. init_lambda: further solver initialization once lambda is selected
+ * 1. init: initialize solver for a given f(x) and J(x), independent of mu
+ * 2. init_mu: further solver initialization once mu is selected
  * 3. solve_vel: solve above linear system for geodesic velocity (this is the
  *               standard LM step)
  * 4. solve_acc: solve a similar linear system for the geodesic acceleration:
  *
- * [    J     ] a = - [ fvv ]
- * [ lambda*D ]       [  0  ]
+ * [     J      ] a = - [ fvv ]
+ * [ sqrt(mu)*D ]       [  0  ]
  *
  * only the right hand side is different in this case (instead of f(x) we
  * use the second directional derivative in the velocity direction).
@@ -52,13 +52,13 @@ typedef struct
   gsl_vector *diag;          /* scaling matrix D */
   gsl_vector *workn;         /* workspace, length n */
   gsl_vector *workp;         /* workspace, length p */
-  double lambda;             /* LM parameter */
+  double mu;                 /* LM parameter */
 } qr_state_t;
 
 static int qr_init(const gsl_vector * f, const gsl_matrix * J,
                    const gsl_vector * g, void * vstate);
-static int qr_init_lambda(const double lambda, const gsl_vector * diag,
-                          void * vstate);
+static int qr_init_mu(const double mu, const gsl_vector * diag,
+                      void * vstate);
 static int qr_solve_vel(gsl_vector *v, void *vstate);
 static int qr_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
                         gsl_vector *a, void *vstate);
@@ -137,7 +137,7 @@ qr_alloc (const size_t n, const size_t p)
                       GSL_ENOMEM);
     }
 
-  state->lambda = 0.0;
+  state->mu = 0.0;
 
   return state;
 }
@@ -201,12 +201,12 @@ qr_init(const gsl_vector * f, const gsl_matrix * J,
 }
 
 static int
-qr_init_lambda(const double lambda, const gsl_vector * diag,
-               void * vstate)
+qr_init_mu(const double mu, const gsl_vector * diag,
+           void * vstate)
 {
   qr_state_t *state = (qr_state_t *) vstate;
 
-  state->lambda = lambda;
+  state->mu = mu;
   gsl_vector_memcpy(state->diag, diag);
 
   return GSL_SUCCESS;
@@ -216,7 +216,7 @@ static int
 qr_solve_vel(gsl_vector *v, void *vstate)
 {
   qr_state_t *state = (qr_state_t *) vstate;
-  const double sqrt_lambda = sqrt(state->lambda);
+  const double sqrt_mu = sqrt(state->mu);
   int status;
 
   /*
@@ -227,7 +227,7 @@ qr_solve_vel(gsl_vector *v, void *vstate)
    *
    * using QRPT factorization of J
    */
-  status = qrsolv(state->R, state->perm, sqrt_lambda, state->diag,
+  status = qrsolv(state->R, state->perm, sqrt_mu, state->diag,
                   state->qtf, v, state->workp, state->workn);
 
   /* reverse step to go downhill */
@@ -241,7 +241,7 @@ qr_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
              gsl_vector *a, void *vstate)
 {
   qr_state_t *state = (qr_state_t *) vstate;
-  const double sqrt_lambda = sqrt(state->lambda);
+  const double sqrt_mu = sqrt(state->mu);
   int status;
 
   /* compute qtfvv = Q^T fvv */
@@ -257,7 +257,7 @@ qr_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
    * using QRPT factorization of J
    */
 
-  status = qrsolv(state->R, state->perm, sqrt_lambda, state->diag,
+  status = qrsolv(state->R, state->perm, sqrt_mu, state->diag,
                   state->qtfvv, a, state->workp, state->workn);
 
   /* reverse step to go downhill */
@@ -273,7 +273,7 @@ static const gsl_multifit_nlinear_solver qr_type =
   "qr",
   qr_alloc,
   qr_init,
-  qr_init_lambda,
+  qr_init_mu,
   qr_solve_vel,
   qr_solve_acc,
   qr_free

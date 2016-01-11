@@ -31,36 +31,44 @@
 
 #include "test_fdf.c"
 
-int
-main (void)
+static void
+test_proc(const gsl_multifit_nlinear_scale *scale,
+          const gsl_multifit_nlinear_solver *solver,
+          const int accel)
 {
-  gsl_multifit_nlinear_scale_t scale;
-  int accel;
   gsl_multifit_nlinear_parameters fdf_params =
     gsl_multifit_nlinear_default_parameters();
 
+  fdf_params.scale = scale;
+  fdf_params.solver = solver;
+  fdf_params.accel = accel;
+
+  test_fdf_main(&fdf_params);
+}
+
+int
+main (void)
+{
+  int accel;
+
   gsl_ieee_env_setup();
 
-  /* loop over all parameter combinations and run testsuite */
+  /* run testsuite over all parameter combinations;
+   * but skip Marquardt scaling since it won't pass */
 
-  for (scale = GSL_MULTIFIT_NLINEAR_SCALE_LEVENBERG;
-       scale <= GSL_MULTIFIT_NLINEAR_SCALE_MORE; ++scale)
+  for (accel = 0; accel <= 1; ++accel)
     {
-      /* Marquardt scaling does not pass testsuite */
-      if (scale == GSL_MULTIFIT_NLINEAR_SCALE_MARQUARDT)
-        continue;
+      test_proc(gsl_multifit_nlinear_scale_levenberg,
+                gsl_multifit_nlinear_solver_normal, accel);
 
-      for (accel = 0; accel <= 1; ++accel)
-        {
-          fdf_params.scale = scale;
-          fdf_params.accel = accel;
+      test_proc(gsl_multifit_nlinear_scale_more,
+                gsl_multifit_nlinear_solver_normal, accel);
 
-          fdf_params.solver = gsl_multifit_nlinear_solver_normal;
-          test_fdf_main(&fdf_params);
+      test_proc(gsl_multifit_nlinear_scale_levenberg,
+                gsl_multifit_nlinear_solver_qr, accel);
 
-          fdf_params.solver = gsl_multifit_nlinear_solver_qr;
-          test_fdf_main(&fdf_params);
-        }
+      test_proc(gsl_multifit_nlinear_scale_more,
+                gsl_multifit_nlinear_solver_qr, accel);
     }
 
   exit (gsl_test_summary ());

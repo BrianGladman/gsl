@@ -21,8 +21,8 @@
  * This module handles the updating of the scaling matrix D
  * in the solution step:
  *
- * [    J     ] dx = - [ f ]
- * [ lambda*D ]        [ 0 ]
+ * [     J      ] dx = - [ f ]
+ * [ sqrt(mu)*D ]        [ 0 ]
  *
  * according to several different strategies.
  */
@@ -30,9 +30,11 @@
 static int init_diag_levenberg(const gsl_matrix * J, gsl_vector * diag);
 static int update_diag_levenberg(const gsl_matrix * J,
                                  gsl_vector * diag);
+
 static int init_diag_marquardt(const gsl_matrix * J, gsl_vector * diag);
 static int update_diag_marquardt (const gsl_matrix * J,
                                   gsl_vector * diag);
+
 static int init_diag_more(const gsl_matrix * J, gsl_vector * diag);
 static int update_diag_more(const gsl_matrix * J, gsl_vector * diag);
 
@@ -118,3 +120,28 @@ update_diag_more (const gsl_matrix * J, gsl_vector * diag)
 
   return GSL_SUCCESS;
 }
+
+static const gsl_multifit_nlinear_scale levenberg_type =
+{
+  "levenberg",
+  init_diag_levenberg,
+  update_diag_levenberg
+};
+
+static const gsl_multifit_nlinear_scale marquardt_type =
+{
+  "marquardt",
+  init_diag_marquardt,
+  update_diag_marquardt
+};
+
+static const gsl_multifit_nlinear_scale more_type =
+{
+  "more",
+  init_diag_more,
+  update_diag_more
+};
+
+const gsl_multifit_nlinear_scale *gsl_multifit_nlinear_scale_levenberg = &levenberg_type;
+const gsl_multifit_nlinear_scale *gsl_multifit_nlinear_scale_marquardt = &marquardt_type;
+const gsl_multifit_nlinear_scale *gsl_multifit_nlinear_scale_more = &more_type;

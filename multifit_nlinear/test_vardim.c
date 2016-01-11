@@ -1,10 +1,7 @@
 #define vardim_N         7 /* p + 2 */
 #define vardim_P         5
 
-#define vardim_NTRIES    4
-
 static double vardim_x0[vardim_P] = { 0.8, 0.6, 0.4, 0.2, 0.0 };
-
 static double vardim_epsrel = 1.0e-12;
 
 static void
@@ -116,7 +113,6 @@ static test_fdf_problem vardim_problem =
   vardim_x0,
   NULL,
   &vardim_epsrel,
-  vardim_NTRIES,
   &vardim_checksol,
   &vardim_func
 };

@@ -1,10 +1,7 @@
 #define kowalik_N         11
 #define kowalik_P         4
 
-#define kowalik_NTRIES    4
-
 static double kowalik_x0[kowalik_P] = { 0.25, 0.39, 0.415, 0.39 };
-
 static double kowalik_epsrel = 1.0e-7;
 
 static double kowalik_Y[kowalik_N] = {
@@ -160,7 +157,6 @@ static test_fdf_problem kowalik_problem =
   kowalik_x0,
   NULL,
   &kowalik_epsrel,
-  kowalik_NTRIES,
   &kowalik_checksol,
   &kowalik_func
 };

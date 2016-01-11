@@ -1,8 +1,6 @@
 #define kirby2_N       151
 #define kirby2_P       5
 
-#define kirby2_NTRIES  1
-
 static double kirby2_x0a[kirby2_P] = { 2.0, -0.1, 0.003, -0.001, 0.00001 };
 static double kirby2_x0b[kirby2_P] = { 1.5, -0.15, 0.0025, -0.0015, 0.00002 }; 
 static double kirby2_x[kirby2_P] = { 1.6745063063E+00, -1.3927397867E-01, 2.5961181191E-03,
@@ -206,7 +204,6 @@ static test_fdf_problem kirby2a_problem =
   kirby2_x0a,
   kirby2_sigma,
   &kirby2_epsrel,
-  kirby2_NTRIES,
   &kirby2_checksol,
   &kirby2_func
 };
@@ -217,7 +214,6 @@ static test_fdf_problem kirby2b_problem =
   kirby2_x0b,
   kirby2_sigma,
   &kirby2_epsrel,
-  kirby2_NTRIES,
   &kirby2_checksol,
   &kirby2_func
 };

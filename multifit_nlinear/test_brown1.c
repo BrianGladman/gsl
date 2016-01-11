@@ -1,10 +1,8 @@
 #define brown1_N         20
 #define brown1_P         4
 
-#define brown1_NTRIES    3
-
 static double brown1_x0[brown1_P] = { 25, 5, -5, -1 };
-static double brown1_epsrel = 1.0e-6;
+static double brown1_epsrel = 1.0e-5;
 
 static void
 brown1_checksol(const double x[], const double sumsq,
@@ -122,7 +120,6 @@ static test_fdf_problem brown1_problem =
   brown1_x0,
   NULL,
   &brown1_epsrel,
-  brown1_NTRIES,
   &brown1_checksol,
   &brown1_func
 };

@@ -1,8 +1,6 @@
 #define hahn1_N      236
 #define hahn1_P      7
 
-#define hahn1_NTRIES 1
-
 static double hahn1_x0a[hahn1_P] = { 10, -1, 0.05, -0.00001, -0.05, 0.001, -0.000001 };
 static double hahn1_x0b[hahn1_P] = { 1, -0.1, 0.005, -0.000001, -0.005, 0.0001, -0.0000001}; 
 
@@ -211,7 +209,6 @@ static test_fdf_problem hahn1a_problem =
   hahn1_x0a,
   hahn1_sigma,
   &hahn1_epsrel,
-  hahn1_NTRIES,
   &hahn1_checksol,
   &hahn1_func
 };
@@ -222,7 +219,6 @@ static test_fdf_problem hahn1b_problem =
   hahn1_x0b,
   hahn1_sigma,
   &hahn1_epsrel,
-  hahn1_NTRIES,
   &hahn1_checksol,
   &hahn1_func
 };

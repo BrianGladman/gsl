@@ -1,8 +1,6 @@
 #define watson_N         31
 #define watson_P         6
 
-#define watson_NTRIES    4
-
 static double watson_x0[watson_P] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 static double watson_epsrel = 1.0e-6;
 
@@ -158,7 +156,6 @@ static test_fdf_problem watson_problem =
   watson_x0,
   NULL,
   &watson_epsrel,
-  watson_NTRIES,
   &watson_checksol,
   &watson_func
 };

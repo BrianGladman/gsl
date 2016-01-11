@@ -1,8 +1,6 @@
 #define enso_N       168
 #define enso_P       9
 
-#define enso_NTRIES  1
-
 static double enso_x0a[enso_P] = { 11.0, 3.0, 0.5, 40.0, -0.7, -1.3, 25.0, -0.3, 1.4 };
 static double enso_x0b[enso_P] = { 10.0, 3.0, 0.5, 44.0, -1.5, 0.5, 26.0, -0.1, 1.5 };
 
@@ -158,7 +156,6 @@ static test_fdf_problem ensoa_problem =
   enso_x0a,
   enso_sigma,
   &enso_epsrel,
-  enso_NTRIES,
   &enso_checksol,
   &enso_func
 };
@@ -169,7 +166,6 @@ static test_fdf_problem ensob_problem =
   enso_x0b,
   enso_sigma,
   &enso_epsrel,
-  enso_NTRIES,
   &enso_checksol,
   &enso_func
 };

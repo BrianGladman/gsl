@@ -21,11 +21,11 @@
  * This module calculates the solution of the linear least squares
  * system:
  *
- * [ J^T J + lambda D^T D ] v = -J^T f, for geodesic velocity
+ * [ J^T J + mu D^T D ] v = -J^T f, for geodesic velocity
  *
  * and
  *
- * [ J^T J + lambda D^T D ] a = -J^T fvv, for geodesic acceleration
+ * [ J^T J + mu D^T D ] a = -J^T fvv, for geodesic acceleration
  */
 
 typedef struct
@@ -41,12 +41,12 @@ typedef struct
 static void *normal_alloc (const size_t n, const size_t p);
 static int normal_init(const gsl_vector * f, const gsl_matrix * J,
                        const gsl_vector * g, void * vstate);
-static int normal_init_lambda(const double lambda, const gsl_vector * diag, void * vstate);
+static int normal_init_mu(const double mu, const gsl_vector * diag, void * vstate);
 static int normal_solve_vel(gsl_vector *v, void *vstate);
 static int normal_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
                             gsl_vector *a, void *vstate);
 static int normal_solve(const gsl_vector * b, gsl_vector *x, normal_state_t *state);
-static int normal_regularize(const double lambda,
+static int normal_regularize(const double mu,
                              const gsl_vector * diag, gsl_matrix * A);
 static int normal_solve_QR(gsl_matrix * A, const gsl_vector * b,
                            gsl_vector * x, normal_state_t *state);
@@ -141,22 +141,22 @@ normal_init(const gsl_vector * f, const gsl_matrix * J,
 }
 
 /*
-normal_init_lambda()
-  Compute the Cholesky decomposition of J^T J + lambda * D^T D
+normal_init_mu()
+  Compute the Cholesky decomposition of J^T J + mu * D^T D
 
-Inputs: lambda - LM parameter
+Inputs: mu     - LM parameter
         vstate - workspace
 
 Notes:
 1) On output, state->work_JTJ contains the Cholesky decomposition of
-J^T J + lambda D^T D
+J^T J + mu D^T D
 
 2) On output, state->workp contains scale factors needed for a
 solution of the Cholesky system
 */
 
 static int
-normal_init_lambda(const double lambda, const gsl_vector * diag, void * vstate)
+normal_init_mu(const double mu, const gsl_vector * diag, void * vstate)
 {
   normal_state_t *state = (normal_state_t *) vstate;
   gsl_matrix *JTJ = state->work_JTJ;
@@ -166,8 +166,8 @@ normal_init_lambda(const double lambda, const gsl_vector * diag, void * vstate)
   /* copy lower triangle of A to workspace */
   gsl_matrix_tricpy('L', 1, JTJ, state->A);
 
-  /* augment normal equations with LM term: A -> A + lambda D^T D */
-  status = normal_regularize(lambda, diag, JTJ);
+  /* augment normal equations with LM term: A -> A + mu D^T D */
+  status = normal_regularize(mu, diag, JTJ);
   if (status)
     return status;
 
@@ -191,7 +191,7 @@ normal_init_lambda(const double lambda, const gsl_vector * diag, void * vstate)
   return GSL_SUCCESS;
 }
 
-/* compute velocity by solving (J^T J + lambda D^T D) v = -J^T f */
+/* compute velocity by solving (J^T J + mu D^T D) v = -J^T f */
 static int
 normal_solve_vel(gsl_vector *v, void *vstate)
 {
@@ -203,7 +203,7 @@ normal_solve_vel(gsl_vector *v, void *vstate)
   return status;
 }
 
-/* compute acceleration by solving (J^T J + lambda D^T D) a = -J^T fvv */
+/* compute acceleration by solving (J^T J + mu D^T D) a = -J^T fvv */
 static int
 normal_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
                  gsl_vector *a, void *vstate)
@@ -219,7 +219,7 @@ normal_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
   return status;
 }
 
-/* solve: (J^T J + lambda D^T D) x = b */
+/* solve: (J^T J + mu D^T D) x = b */
 static int
 normal_solve(const gsl_vector * b, gsl_vector *x, normal_state_t *state)
 {
@@ -228,7 +228,7 @@ normal_solve(const gsl_vector * b, gsl_vector *x, normal_state_t *state)
 
   if (state->chol == 1)
     {
-      /* we have a Cholesky factorization of J^T J + lambda D^T D */
+      /* we have a Cholesky factorization of J^T J + mu D^T D */
       status = gsl_linalg_cholesky_solve2(JTJ, state->workp, b, x);
       if (status)
         return status;
@@ -242,7 +242,7 @@ normal_solve(const gsl_vector * b, gsl_vector *x, normal_state_t *state)
     {
       /* Cholesky failed, restore matrix and use QR */
       gsl_matrix_tricpy('L', 1, JTJ, state->A);
-      normal_regularize(lambda, state->diag, JTJ);
+      normal_regularize(mu, state->diag, JTJ);
 
       status = normal_solve_QR(JTJ, g, dx, state);
       if (status)
@@ -256,9 +256,9 @@ normal_solve(const gsl_vector * b, gsl_vector *x, normal_state_t *state)
   return GSL_SUCCESS;
 }
 
-/* A <- A + lambda D^T D */
+/* A <- A + mu D^T D */
 static int
-normal_regularize(const double lambda, const gsl_vector * diag,
+normal_regularize(const double mu, const gsl_vector * diag,
                   gsl_matrix * A)
 {
   const size_t p = diag->size;
@@ -269,7 +269,7 @@ normal_regularize(const double lambda, const gsl_vector * diag,
       double di = gsl_vector_get(diag, i);
       double *Aii = gsl_matrix_ptr(A, i, i);
 
-      *Aii += lambda * di * di;
+      *Aii += mu * di * di;
     }
 
   return GSL_SUCCESS;
@@ -317,7 +317,7 @@ static const gsl_multifit_nlinear_solver normal_type =
   "normal",
   normal_alloc,
   normal_init,
-  normal_init_lambda,
+  normal_init_mu,
   normal_solve_vel,
   normal_solve_acc,
   normal_free

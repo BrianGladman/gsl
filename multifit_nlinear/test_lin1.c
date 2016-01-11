@@ -1,8 +1,6 @@
 #define lin1_N         11  /* can be anything >= p */
 #define lin1_P         5
 
-#define lin1_NTRIES    3
-
 static double lin1_x0[lin1_P] = { 1.0, 1.0, 1.0, 1.0, 1.0 };
 static double lin1_epsrel = 1.0e-10;
 
@@ -103,7 +101,6 @@ static test_fdf_problem lin1_problem =
   lin1_x0,
   NULL,
   &lin1_epsrel,
-  lin1_NTRIES,
   &lin1_checksol,
   &lin1_func
 };

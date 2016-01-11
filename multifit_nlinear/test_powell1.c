@@ -1,10 +1,8 @@
 #define powell1_N        4
 #define powell1_P        4
 
-#define powell1_NTRIES   4
-
 static double powell1_x0[powell1_P] = { 3.0, -1.0, 0.0, 1.0 };
-static double powell1_epsrel = 1.0e-5;
+static double powell1_epsrel = 1.0e-4;
 
 static void
 powell1_checksol(const double x[], const double sumsq,
@@ -116,7 +114,6 @@ static test_fdf_problem powell1_problem =
   powell1_x0,
   NULL,
   &powell1_epsrel,
-  powell1_NTRIES,
   &powell1_checksol,
   &powell1_func
 };

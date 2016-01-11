@@ -1,10 +1,8 @@
 #define lin3_N         50  /* can be anything >= p */
 #define lin3_P         10  /* >= 3 */
 
-#define lin3_NTRIES    3
-
 static double lin3_x0[lin3_P] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
-static double lin3_epsrel = 1.0e-10;
+static double lin3_epsrel = 1.0e-9;
 
 static void
 lin3_checksol(const double x[], const double sumsq,
@@ -109,7 +107,6 @@ static test_fdf_problem lin3_problem =
   lin3_x0,
   NULL,
   &lin3_epsrel,
-  lin3_NTRIES,
   &lin3_checksol,
   &lin3_func
 };

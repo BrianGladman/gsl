@@ -1,8 +1,6 @@
 #define biggs_N         6  /* >= p */
 #define biggs_P         6
 
-#define biggs_NTRIES    2
-
 static double biggs_x0[biggs_P] = { 1.0, 2.0, 1.0, 1.0, 1.0, 1.0 };
 static double biggs_epsrel = 1.0e-9;
 
@@ -145,7 +143,6 @@ static test_fdf_problem biggs_problem =
   biggs_x0,
   NULL,
   &biggs_epsrel,
-  biggs_NTRIES,
   &biggs_checksol,
   &biggs_func
 };

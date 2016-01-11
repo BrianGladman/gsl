@@ -1,8 +1,6 @@
 #define meyer_N         16
 #define meyer_P         3
 
-#define meyer_NTRIES    1
-
 static double meyer_x0[meyer_P] = { 0.02, 4000.0, 250.0 };
 static double meyer_epsrel = 1.0e-8;
 
@@ -127,7 +125,6 @@ static test_fdf_problem meyer_problem =
   meyer_x0,
   NULL,
   &meyer_epsrel,
-  meyer_NTRIES,
   &meyer_checksol,
   &meyer_func
 };

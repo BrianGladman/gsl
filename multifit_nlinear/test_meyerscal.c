@@ -1,10 +1,8 @@
 #define meyerscal_N         16
 #define meyerscal_P         3
 
-#define meyerscal_NTRIES    1
-
 static double meyerscal_x0[meyerscal_P] = { 8.85, 4.0, 2.5 };
-static double meyerscal_epsrel = 1.0e-8;
+static double meyerscal_epsrel = 1.0e-7;
 
 static double meyerscal_Y[meyerscal_N] = {
 34780., 28610., 23650., 19630., 16370., 13720., 11540.,
@@ -128,7 +126,6 @@ static test_fdf_problem meyerscal_problem =
   meyerscal_x0,
   NULL,
   &meyerscal_epsrel,
-  meyerscal_NTRIES,
   &meyerscal_checksol,
   &meyerscal_func
 };

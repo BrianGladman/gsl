@@ -80,7 +80,7 @@ solve_system(gsl_vector *x0, gsl_multifit_nlinear_fdf *fdf,
 
   /* iterate until convergence */
   gsl_multifit_nlinear_driver(max_iter, xtol, gtol, ftol,
-                              callback, &info, work);
+                              callback, NULL, &info, work);
 
   /* store final cost */
   gsl_blas_ddot(f, f, &chisq);

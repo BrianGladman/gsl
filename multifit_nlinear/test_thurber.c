@@ -1,13 +1,10 @@
 #define thurber_N       37
 #define thurber_P       7
 
-#define thurber_NTRIES  1
-
 static double thurber_x0a[thurber_P] = { 1000.0, 1000.0, 400.0, 40.0,
                                          0.7, 0.3, 0.03 };
 static double thurber_x0b[thurber_P] = { 1300.0, 1500.0, 500.0, 75.0,
                                          1.0, 0.4, 0.05 };
-
 static double thurber_epsrel = 1.0e-6;
 
 static double thurber_sigma[thurber_P] = {
@@ -137,7 +134,6 @@ static test_fdf_problem thurbera_problem =
   thurber_x0a,
   thurber_sigma,
   &thurber_epsrel,
-  thurber_NTRIES,
   &thurber_checksol,
   &thurber_func
 };
@@ -148,7 +144,6 @@ static test_fdf_problem thurberb_problem =
   thurber_x0b,
   thurber_sigma,
   &thurber_epsrel,
-  thurber_NTRIES,
   &thurber_checksol,
   &thurber_func
 };

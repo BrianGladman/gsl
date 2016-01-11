@@ -23,7 +23,6 @@ typedef struct
   double *x0;       /* initial parameters (size p) */
   double *sigma;
   double *epsrel;   /* relative tolerance for solution checking */
-  size_t ntries;
   void (*checksol) (const double x[], const double sumsq,
                     const double epsrel, const char *sname,
                     const char *pname);
@@ -177,16 +176,6 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
   const double ftol = 0.0;
   size_t i;
 
-  /* test weighted nonlinear least squares */
-
-  /* internal weighting in _f and _df functions */
-  test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
-           wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
-
-  /* weighting through nlinear_winit */
-  test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
-           wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
-
   for (i = 0; test_problems[i] != NULL; ++i)
     {
       test_fdf_problem *problem = test_problems[i];
@@ -194,7 +183,7 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
       gsl_multifit_nlinear_fdf fdf;
 
       test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
-               10.0 * epsrel, 1.0, problem, NULL);
+               epsrel, 1.0, problem, NULL);
 
       /* test finite difference Jacobian */
       fdf.df = problem->fdf->df;
@@ -217,6 +206,16 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
           problem->fdf->fvv = fdf.fvv;
         }
     }
+
+  /* test weighted nonlinear least squares */
+
+  /* internal weighting in _f and _df functions */
+  test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
+           wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
+
+  /* weighting through nlinear_winit */
+  test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
+           wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
 }
 
 /*
@@ -259,9 +258,9 @@ test_fdf(const gsl_multifit_nlinear_type * T,
   char sname[2048];
   int status, info;
 
-  sprintf(sname, "%s/scale_matrix=%d/solver=%s/scale=%g%s%s",
+  sprintf(sname, "%s/scale=%s/solver=%s/scale=%g%s%s",
     gsl_multifit_nlinear_name(w),
-    params->scale, params->solver->name, x0_scale,
+    params->scale->name, params->solver->name, x0_scale,
     problem->fdf->df ? "" : "/fdjac",
     problem->fdf->fvv ? "" : "/fdfvv");
 
@@ -278,7 +277,7 @@ test_fdf(const gsl_multifit_nlinear_type * T,
     gsl_multifit_nlinear_init(fdf, x0, w);
 
   status = gsl_multifit_nlinear_driver(max_iter, xtol, gtol, ftol,
-                                       NULL, &info, w);
+                                       NULL, NULL, &info, w);
   gsl_test(status, "%s/%s did not converge, status=%s",
            sname, pname, gsl_strerror(status));
 
@@ -290,9 +289,9 @@ test_fdf(const gsl_multifit_nlinear_type * T,
       /* test again with weighting matrix W = I */
       gsl_vector *wv = gsl_vector_alloc(n);
 
-      sprintf(sname, "%s/scale_matrix=%d/solver=%s/scale=%g%s%s/weights",
+      sprintf(sname, "%s/scale=%s/solver=%s/scale=%g%s%s/weights",
         gsl_multifit_nlinear_name(w),
-        params->scale, params->solver->name, x0_scale,
+        params->scale->name, params->solver->name, x0_scale,
         problem->fdf->df ? "" : "/fdjac",
         problem->fdf->fvv ? "" : "/fdfvv");
 
@@ -303,7 +302,7 @@ test_fdf(const gsl_multifit_nlinear_type * T,
       gsl_multifit_nlinear_winit(fdf, x0, wv, w);
   
       status = gsl_multifit_nlinear_driver(max_iter, xtol, gtol, ftol,
-                                           NULL, &info, w);
+                                           NULL, NULL, &info, w);
       gsl_test(status, "%s/%s did not converge, status=%s",
                sname, pname, gsl_strerror(status));
 

@@ -1,8 +1,6 @@
 #define brown2_N        5
 #define brown2_P        5
 
-#define brown2_NTRIES   3
-
 static double brown2_x0[brown2_P] = { 0.5, 0.5, 0.5, 0.5, 0.5 };
 static double brown2_epsrel = 1.0e-12;
 
@@ -166,7 +164,6 @@ static test_fdf_problem brown2_problem =
   brown2_x0,
   NULL,
   &brown2_epsrel,
-  brown2_NTRIES,
   &brown2_checksol,
   &brown2_func
 };
