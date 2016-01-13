@@ -199,6 +199,13 @@ gsl_multilarge_nlinear_residual (const gsl_multilarge_nlinear_workspace * w)
   return w->f;
 }
 
+gsl_matrix *
+gsl_multilarge_nlinear_JTJ (const gsl_multilarge_nlinear_workspace * w)
+{
+  return w->JTJ;
+}
+
+
 int
 gsl_multilarge_nlinear_rcond (double * rcond, const gsl_multilarge_nlinear_workspace * w)
 {

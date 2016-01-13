@@ -127,6 +127,8 @@ gsl_vector *gsl_multilarge_nlinear_position (const gsl_multilarge_nlinear_worksp
 
 gsl_vector *gsl_multilarge_nlinear_residual (const gsl_multilarge_nlinear_workspace * w);
 
+gsl_matrix *gsl_multilarge_nlinear_JTJ (const gsl_multilarge_nlinear_workspace * w);
+
 int
 gsl_multilarge_nlinear_driver (const size_t maxiter,
                                const double xtol,
