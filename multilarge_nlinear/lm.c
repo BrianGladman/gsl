@@ -27,8 +27,6 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
 
-#include "lmdiag.c"
-
 #define DEBUG   0
 
 /*
@@ -45,21 +43,37 @@ typedef struct
 {
   size_t n;                  /* number of residuals */
   size_t p;                  /* number of model parameters */
-  gsl_matrix *work_A;        /* temporary J^T J matrix, size p-by-p */
-  gsl_vector *vel;           /* geodesic velocity (standard LM step), size p */
+  gsl_matrix *A;             /* contains Cholesky decomposition of (J^T J + mu D^T D) */
   gsl_vector *x_trial;       /* trial parameter vector x + dx, size p */
   gsl_vector *f_trial;       /* trial residual vector f(x + dx), size n */
+  gsl_vector *fvv;           /* D_v^2 f(x), size n */
+  gsl_vector *JTfvv;         /* J^T fvv, size p */
+  gsl_vector *vel;           /* geodesic velocity (standard LM step), size p */
+  gsl_vector *acc;           /* geodesic acceleration, size p */
   gsl_vector *DTD;           /* diagonal elements of D^T D matrix added to normal equations, size p */
-  gsl_vector *tau_qr;        /* Householder scalars for QR decomposition, size p */
+  gsl_vector *chol_D;        /* Cholesky scale factors, size p */
+  gsl_vector *tau;           /* Householder scalars for QR decomposition, size p */
   gsl_vector *workp;         /* temporary workspace, size p */
   long nu;                   /* nu */
   double mu;                 /* LM damping parameter */
   double mu0;                /* initial scale factor for mu */
+  int chol;                  /* 1 if Cholesky succeeds, 0 if not */
 
   const gsl_multilarge_nlinear_scale *scale;
 
   gsl_eigen_symm_workspace *eigen_p;
+
+  double avratio;            /* current |a| / |v| */
+
+  /* tunable parameters */
+
+  int accel;                 /* use geodesic acceleration */
+  double avmax;              /* max |a| / |v| */
+  double h_fvv;              /* step size for finite difference fvv */
 } lm_state_t;
+
+#include "lmdiag.c"
+#include "lmsolve.c"
 
 #define GSL_LM_ONE_THIRD         (0.333333333333333)
 
@@ -74,21 +88,15 @@ static int lm_iterate(gsl_multilarge_nlinear_fdf * fdf,
                       gsl_matrix * JTJ, gsl_vector * g,
                       gsl_vector * dx, void * vstate);
 static int lm_rcond(const gsl_matrix * JTJ, double * rcond, void * vstate);
-static int lm_solve(const double mu, const gsl_matrix * A,
-                    const gsl_vector * b, const gsl_vector * DTD,
-                    gsl_vector * x, lm_state_t * state);
-static int lm_solve_regularize(const double mu, const gsl_vector * DTD,
-                               const gsl_matrix * A, lm_state_t * state);
-static int lm_solve_cholesky(gsl_matrix * A, const gsl_vector * b, gsl_vector * x,
-                             lm_state_t * state);
-static int lm_solve_QR(gsl_matrix * A, const gsl_vector * b,
-                       gsl_vector * x, lm_state_t *state);
 static int lm_init_mu(const gsl_matrix * JTJ, lm_state_t *state);
 static void lm_trial_step(const gsl_vector * x, const gsl_vector * dx,
                           gsl_vector * x_trial);
 static double lm_calc_rho(const double mu, const gsl_vector * v,
                           const gsl_vector * g, const gsl_vector * f,
                           const gsl_vector * f_trial, lm_state_t * state);
+static int lm_check_step(const gsl_vector * v, const gsl_vector * g,
+                         const gsl_vector * f, const gsl_vector * f_trial,
+                         double * rho, lm_state_t * state);
 static double lm_scaled_norm(const gsl_vector *DTD, const gsl_vector *a,
                              gsl_vector *work);
 
@@ -110,8 +118,8 @@ lm_alloc (const gsl_multilarge_nlinear_parameters *params,
       GSL_ERROR_NULL ("failed to allocate lm state", GSL_ENOMEM);
     }
 
-  state->work_A = gsl_matrix_alloc(p, p);
-  if (state->work_A == NULL)
+  state->A = gsl_matrix_alloc(p, p);
+  if (state->A == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for temporary A workspace", GSL_ENOMEM);
     }
@@ -120,6 +128,12 @@ lm_alloc (const gsl_multilarge_nlinear_parameters *params,
   if (state->vel == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for vel", GSL_ENOMEM);
+    }
+
+  state->acc = gsl_vector_alloc(p);
+  if (state->acc == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for acc", GSL_ENOMEM);
     }
 
   state->x_trial = gsl_vector_alloc(p);
@@ -134,14 +148,32 @@ lm_alloc (const gsl_multilarge_nlinear_parameters *params,
       GSL_ERROR_NULL ("failed to allocate space for f_trial", GSL_ENOMEM);
     }
 
+  state->fvv = gsl_vector_alloc(n);
+  if (state->fvv == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for fvv", GSL_ENOMEM);
+    }
+
+  state->JTfvv = gsl_vector_alloc(p);
+  if (state->JTfvv == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for JTfvv", GSL_ENOMEM);
+    }
+
   state->DTD = gsl_vector_alloc(p);
   if (state->DTD == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for DTD", GSL_ENOMEM);
     }
 
-  state->tau_qr = gsl_vector_alloc(p);
-  if (state->tau_qr == NULL)
+  state->chol_D = gsl_vector_alloc(p);
+  if (state->chol_D == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for Cholesky scale factors", GSL_ENOMEM);
+    }
+
+  state->tau = gsl_vector_alloc(p);
+  if (state->tau == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for Householder vector", GSL_ENOMEM);
     }
@@ -164,6 +196,9 @@ lm_alloc (const gsl_multilarge_nlinear_parameters *params,
   state->mu = 0.0;
   state->nu = 2;
   state->scale = params->scale;
+  state->accel = params->accel;
+  state->avmax = params->avmax;
+  state->h_fvv = params->h_fvv;
 
   return state;
 }
@@ -173,11 +208,14 @@ lm_free(void *vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
 
-  if (state->work_A)
-    gsl_matrix_free(state->work_A);
+  if (state->A)
+    gsl_matrix_free(state->A);
 
   if (state->vel)
     gsl_vector_free(state->vel);
+
+  if (state->acc)
+    gsl_vector_free(state->acc);
 
   if (state->x_trial)
     gsl_vector_free(state->x_trial);
@@ -185,11 +223,20 @@ lm_free(void *vstate)
   if (state->f_trial)
     gsl_vector_free(state->f_trial);
 
+  if (state->fvv)
+    gsl_vector_free(state->fvv);
+
+  if (state->JTfvv)
+    gsl_vector_free(state->JTfvv);
+
   if (state->DTD)
     gsl_vector_free(state->DTD);
 
-  if (state->tau_qr)
-    gsl_vector_free(state->tau_qr);
+  if (state->chol_D)
+    gsl_vector_free(state->chol_D);
+
+  if (state->tau)
+    gsl_vector_free(state->tau);
 
   if (state->workp)
     gsl_vector_free(state->workp);
@@ -236,6 +283,11 @@ lm_init(gsl_multilarge_nlinear_fdf * fdf,
   /* initialize LM parameter mu */
   lm_init_mu(JTJ, state);
 
+  gsl_vector_set_zero(state->vel);
+  gsl_vector_set_zero(state->acc);
+
+  state->avratio = 0.0;
+
   return GSL_SUCCESS;
 }
 
@@ -277,36 +329,49 @@ lm_iterate(gsl_multilarge_nlinear_fdf * fdf,
   /* loop until we find an acceptable step dx */
   while (!foundstep)
     {
-      /* solve: (J^T J + mu*D) dx = - J^T f */
-      status = lm_solve(state->mu, JTJ, g, state->DTD, state->vel, state);
+      /* compute Cholesky decomposition of (J^T J + mu D^T D) */
+      status = lm_solve_decomp(state->mu, JTJ, state->DTD, state->A, state);
       if (status)
         return status;
+
+      /* solve: (J^T J + mu D^T D) v = - J^T f */
+      status = lm_solve(state->A, g, state->vel, state);
+      if (status)
+        return status;
+
+      if (state->accel)
+        {
+          /* compute second directional derivative in velocity direction f_vv(x) and J^T f_vv(x) */
+          status = gsl_multilarge_nlinear_eval_fvv(state->h_fvv, x, state->vel, g, JTJ,
+                                                   fdf, state->fvv, state->JTfvv, state->workp);
+          if (status)
+            return status;
+
+          /* solve: (J^T J + mu D^T D) a = - J^T fvv */
+          status = lm_solve(state->A, state->JTfvv, state->acc, state);
+          if (status)
+            return status;
+        }
 
       /* compute dx = v + 1/2 a */
       for (i = 0; i < p; ++i)
         {
           double vi = gsl_vector_get(state->vel, i);
-          gsl_vector_set(dx, i, vi);
+          double ai = gsl_vector_get(state->acc, i);
+          gsl_vector_set(dx, i, vi + 0.5 * ai);
         }
 
       /* compute x_trial = x + dx */
-      lm_trial_step(x, state->vel, x_trial);
+      lm_trial_step(x, dx, x_trial);
 
       /* compute f(x+dx) */
       status = gsl_multilarge_nlinear_eval_f(fdf, x_trial, f_trial);
       if (status)
         return status;
 
-      rho = lm_calc_rho(state->mu, state->vel, g, f, f_trial, state);
+      status = lm_check_step(state->vel, g, f, f_trial, &rho, state);
 
-#if DEBUG
-      /*XXX*/
-      fprintf(stderr, "rho = %.12e, ||dx|| = %.12e, ||x|| = %.12e, ||x+dx|| = %.12e, mu = %.12e\n",
-               rho, gsl_blas_dnrm2(state->vel), gsl_blas_dnrm2(x), gsl_blas_dnrm2(x_trial), state->mu);
-#endif
-
-      /* check that rho > 0 */
-      if (rho > 0.0)
+      if (status == GSL_SUCCESS)
         {
           /* reduction in error, step acceptable */
 
@@ -384,10 +449,10 @@ lm_rcond(const gsl_matrix * JTJ, double * rcond, void * vstate)
   /* compute eigenvalues of A = J^T J */
 
   /* copy lower triangle of A to temporary workspace */
-  gsl_matrix_tricpy('L', 1, state->work_A, JTJ);
+  gsl_matrix_tricpy('L', 1, state->A, JTJ);
 
   /* compute eigenvalues of A */
-  status = gsl_eigen_symm(state->work_A, eval, state->eigen_p);
+  status = gsl_eigen_symm(state->A, eval, state->eigen_p);
   if (status)
     return status;
 
@@ -405,117 +470,6 @@ lm_rcond(const gsl_matrix * JTJ, double * rcond, void * vstate)
        */
       *rcond = 0.0;
     }
-
-  return GSL_SUCCESS;
-}
-
-/* solve (A + mu*D^T D) x = -b */
-static int
-lm_solve(const double mu, const gsl_matrix * A,
-         const gsl_vector * b, const gsl_vector * DTD,
-         gsl_vector * x, lm_state_t * state)
-{
-  int status;
-  gsl_error_handler_t *err_handler;
-
-  /* compute: work_A = A + mu D^T D */
-  status = lm_solve_regularize(mu, DTD, A, state);
-  if (status)
-    return status;
-
-  /* turn off error handler in case Cholesky fails */
-  err_handler = gsl_set_error_handler_off();
-
-  /* solve: (A + mu*D) x = b using Cholesky decomposition */
-  status = lm_solve_cholesky(state->work_A, b, x, state);
-
-  /* restore error handler */
-  gsl_set_error_handler(err_handler);
-
-  if (status)
-    {
-      /* Cholesky failed, restore matrix and use QR */
-      lm_solve_regularize(mu, DTD, A, state);
-
-      status = lm_solve_QR(state->work_A, b, x, state);
-      if (status)
-        return status;
-    }
-
-  /* reverse step for downhill direction */
-  gsl_vector_scale(x, -1.0);
-
-  return GSL_SUCCESS;
-}
-
-static int
-lm_solve_regularize(const double mu, const gsl_vector * DTD,
-                    const gsl_matrix * A, lm_state_t * state)
-{
-  size_t i;
-
-  /* copy lower triangle of A to work_A */
-  gsl_matrix_tricpy('L', 1, state->work_A, A);
-
-  for (i = 0; i < state->p; ++i)
-    {
-      double Di = gsl_vector_get(DTD, i);
-      double *Aii = gsl_matrix_ptr(state->work_A, i, i);
-      *Aii += mu * Di;
-    }
-
-  return GSL_SUCCESS;
-}
-
-static int
-lm_solve_cholesky(gsl_matrix * A, const gsl_vector * b, gsl_vector * x,
-                  lm_state_t * state)
-{
-  int status;
-
-  /* compute Cholesky decomposition of A^T A with scaling */
-  status = gsl_linalg_cholesky_decomp2(A, state->workp);
-  if (status)
-    return status;
-
-  status = gsl_linalg_cholesky_solve2(A, state->workp, b, x);
-  if (status)
-    return status;
-
-  return GSL_SUCCESS;
-}
-
-static int
-lm_solve_QR(gsl_matrix * A, const gsl_vector * b,
-            gsl_vector * x, lm_state_t *state)
-{
-  int status;
-  gsl_vector *D = state->workp;
-  gsl_vector *tau = state->tau_qr;
-
-  /* scale: A <- diag(D) A diag(D) to try to reduce cond(A) */
-  status = gsl_linalg_cholesky_scale(A, D);
-  if (status)
-    return status;
-
-  /* copy lower triangle of A to upper */
-  gsl_matrix_transpose_tricpy('L', 0, A, A);
-
-  status = gsl_linalg_QR_decomp(A, tau);
-  if (status)
-    return status;
-
-  /* scale rhs vector: b <- diag(D) b */
-  gsl_vector_memcpy(x, b);
-  gsl_vector_mul(x, D);
-
-  /* solve system */
-  status = gsl_linalg_QR_svx(A, tau, x);
-  if (status)
-    return status;
-
-  /* undo scaling */
-  gsl_vector_mul(x, D);
 
   return GSL_SUCCESS;
 }
@@ -609,6 +563,54 @@ lm_calc_rho(const double mu, const gsl_vector * v,
     rho = -1.0;
 
   return rho;
+}
+
+/*
+lm_check_step()
+  Check if a proposed step should be accepted or
+rejected
+
+Inputs: v       - proposed step velocity
+        g       - gradient J^T f
+        f       - f(x)
+        f_trial - f(x + dx)
+        rho     - (output) ratio of actual to predicted reduction
+        state   - workspace
+
+Return: GSL_SUCCESS to accept
+        GSL_FAILURE to reject
+
+Notes:
+1) If using geodesic acceleration, state->avratio
+   is updated with |a| / |v|
+*/
+
+static int
+lm_check_step(const gsl_vector * v, const gsl_vector * g,
+              const gsl_vector * f, const gsl_vector * f_trial,
+              double * rho, lm_state_t * state)
+{
+  /* if using geodesic acceleration, check that |a|/|v| < alpha */
+  if (state->accel)
+    {
+      double anorm = lm_scaled_norm(state->DTD, state->acc, state->workp);
+      double vnorm = lm_scaled_norm(state->DTD, state->vel, state->workp);
+
+      /* store |a| / |v| */
+      state->avratio = anorm / vnorm;
+
+      /* reject step if acceleration is too large compared to velocity */
+      if (state->avratio > state->avmax)
+        return GSL_FAILURE;
+    }
+
+  *rho = lm_calc_rho(state->mu, v, g, f, f_trial, state);
+
+  /* if rho <= 0, the step does not reduce the cost function, reject */
+  if (*rho <= 0.0)
+    return GSL_FAILURE;
+
+  return GSL_SUCCESS;
 }
 
 /* compute || diag(D) a || */

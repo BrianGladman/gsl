@@ -2,12 +2,13 @@ noinst_LTLIBRARIES = libgslmultilarge_nlinear.la
 
 pkginclude_HEADERS = gsl_multilarge_nlinear.h
 
-libgslmultilarge_nlinear_la_SOURCES = convergence.c lm.c nlinear.c
+libgslmultilarge_nlinear_la_SOURCES = convergence.c fdfvv.c lm.c nlinear.c
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
 noinst_HEADERS =     \
 lmdiag.c             \
+lmsolve.c            \
 test_bard.c          \
 test_beale.c         \
 test_biggs.c         \

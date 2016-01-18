@@ -66,6 +66,9 @@ typedef struct
 typedef struct
 {
   const gsl_multilarge_nlinear_scale *scale;  /* scaling method */
+  int accel;                                  /* use geodesic acceleration */
+  double avmax;                               /* maximum |a| / |v| */
+  double h_fvv;                               /* step size for finite difference fvv */
 } gsl_multilarge_nlinear_parameters;
 
 typedef struct
@@ -151,9 +154,22 @@ gsl_multilarge_nlinear_eval_df(gsl_multilarge_nlinear_fdf *fdf,
                                const gsl_vector *x, const gsl_vector *f,
                                gsl_vector *JTf, gsl_matrix *JTJ);
 
+int
+gsl_multilarge_nlinear_eval_fvv(const double h, const gsl_vector *x, const gsl_vector *v,
+                                const gsl_vector *g, const gsl_matrix *JTJ,
+                                gsl_multilarge_nlinear_fdf *fdf,
+                                gsl_vector *fvv, gsl_vector *JTfvv, gsl_vector *workp);
+
 int gsl_multilarge_nlinear_test (const double xtol, const double gtol,
                                  const double ftol, int *info,
                                  const gsl_multilarge_nlinear_workspace * w);
+
+/* fdfvv.c */
+int
+gsl_multilarge_nlinear_fdJTfvv(const double h, const gsl_vector *x, const gsl_vector *v,
+                               const gsl_vector *g, const gsl_matrix *JTJ,
+                               gsl_multilarge_nlinear_fdf *fdf,
+                               gsl_vector *JTfvv, gsl_vector *workn, gsl_vector *workp);
 
 /* scaling matrix strategies */
 GSL_VAR const gsl_multilarge_nlinear_scale * gsl_multilarge_nlinear_scale_levenberg;

@@ -204,9 +204,10 @@ test_fdf(const gsl_multilarge_nlinear_type * T,
   char sname[2048];
   int status, info;
 
-  sprintf(sname, "%s/scale=%s",
+  sprintf(sname, "%s/scale=%s/accel=%d%s",
           gsl_multilarge_nlinear_name(w),
-          params->scale->name);
+          params->scale->name, params->accel,
+          problem->fdf->fvv ? "" : "/fdfvv");
 
   /* copy starting point x0 */
   gsl_vector_memcpy(x0, &x0v.vector);
@@ -291,12 +292,6 @@ test_suite(const gsl_multilarge_nlinear_parameters *params)
   const double ftol = 0.0;
   size_t i;
 
-  /* test weighted nonlinear least squares */
-
-  test_fdf(gsl_multilarge_nlinear_lm, params, xtol, gtol, ftol,
-           wnlin_epsrel, &wnlin_problem1);
-
-  /* Nielsen tests */
   for (i = 0; test_problems[i] != NULL; ++i)
     {
       test_fdf_problem *problem = test_problems[i];
@@ -305,16 +300,34 @@ test_suite(const gsl_multilarge_nlinear_parameters *params)
       test_fdf(gsl_multilarge_nlinear_lm, params, xtol, gtol, ftol,
                epsrel, problem);
 
+      if (params->accel == 1 && problem->fdf->fvv != NULL)
+        {
+          /* test finite difference second directional derivative */
+          gsl_multilarge_nlinear_fdf fdf;
+
+          fdf.fvv = problem->fdf->fvv;
+          problem->fdf->fvv = NULL;
+
+          test_fdf(gsl_multilarge_nlinear_lm, params, xtol, gtol, ftol,
+                   epsrel / params->h_fvv, problem);
+
+          problem->fdf->fvv = fdf.fvv;
+        }
     }
+
+  /* test weighted nonlinear least squares */
+  test_fdf(gsl_multilarge_nlinear_lm, params, xtol, gtol, ftol,
+           wnlin_epsrel, &wnlin_problem1);
 }
 
 void
-test_all(const gsl_multilarge_nlinear_scale *scale)
+test_all(const gsl_multilarge_nlinear_scale *scale, const int accel)
 {
   gsl_multilarge_nlinear_parameters fdf_params =
     gsl_multilarge_nlinear_default_parameters();
 
   fdf_params.scale = scale;
+  fdf_params.accel = accel;
 
   test_suite(&fdf_params);
 }
@@ -322,8 +335,13 @@ test_all(const gsl_multilarge_nlinear_scale *scale)
 int
 main(void)
 {
-  test_all(gsl_multilarge_nlinear_scale_levenberg);
-  test_all(gsl_multilarge_nlinear_scale_more);
+  int accel;
+
+  for (accel = 0; accel <= 1; ++accel)
+    {
+      test_all(gsl_multilarge_nlinear_scale_levenberg, accel);
+      test_all(gsl_multilarge_nlinear_scale_more, accel);
+    }
 
   exit (gsl_test_summary());
 }

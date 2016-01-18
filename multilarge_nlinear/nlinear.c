@@ -121,6 +121,9 @@ gsl_multilarge_nlinear_default_parameters(void)
   gsl_multilarge_nlinear_parameters params;
 
   params.scale = gsl_multilarge_nlinear_scale_more;
+  params.accel = 0;
+  params.avmax = 0.75;
+  params.h_fvv = 0.01;
 
   return params;
 }
@@ -420,4 +423,52 @@ gsl_multilarge_nlinear_eval_df(gsl_multilarge_nlinear_fdf *fdf,
     ++(fdf->nevaldff);
 
   return status;
+}
+
+/*
+gsl_multilarge_nlinear_eval_fvv()
+  Compute second directional derivative fvv with user
+callback function if given
+
+Inputs: h     - step size for finite difference, if needed
+        x     - model parameters, size p
+        v     - velocity vector, size p
+        g     - gradient J^T f, size p
+        JTJ   - J^T J, p-by-p
+        fdf   - callback function
+        fvv   - (output) second directional derivative vector f_vv(x), size n
+        JTfvv - (output) J^T fvv
+        workp - workspace, size p
+*/
+
+int
+gsl_multilarge_nlinear_eval_fvv(const double h, const gsl_vector *x, const gsl_vector *v,
+                                const gsl_vector *g, const gsl_matrix *JTJ,
+                                gsl_multilarge_nlinear_fdf *fdf,
+                                gsl_vector *fvv, gsl_vector *JTfvv, gsl_vector *workp)
+{
+  int status;
+  
+  if (fdf->fvv != NULL)
+    {
+      /* analytic callback available, compute f_vv(x) */
+      status = ((*((fdf)->fvv)) (x, v, fdf->params, fvv));
+      if (status)
+        return status;
+
+      ++(fdf->nevalfvv);
+
+      /* compute J^T fvv */
+      status = gsl_multilarge_nlinear_eval_df(fdf, x, fvv, JTfvv, NULL);
+      if (status)
+        return status;
+    }
+  else
+    {
+      status = gsl_multilarge_nlinear_fdJTfvv(h, x, v, g, JTJ, fdf, JTfvv, fvv, workp);
+      if (status)
+        return status;
+    }
+
+  return GSL_SUCCESS;
 }

@@ -201,7 +201,7 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
           problem->fdf->fvv = NULL;
 
           test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
-                   1.0e2 * epsrel, 1.0, problem, NULL);
+                   epsrel / params->h_fvv, 1.0, problem, NULL);
 
           problem->fdf->fvv = fdf.fvv;
         }
