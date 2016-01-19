@@ -1,5 +1,13 @@
 * What is new in gsl-2.2:
 
+** completely rewritten nonlinear least squares module,
+   including support for large problems; the user may
+   now control the linear solver used, the damping parameter
+   updating strategy, and the scaling method. In addition,
+   support has been added for the geodesic acceleration
+   step (Transtrum 2011) which can speed up convergence
+   on a wide class of problems.
+
 ** added gsl_rstat_rms() for root mean square
 
 ** optimized lmniel nonlinear least squares solver
