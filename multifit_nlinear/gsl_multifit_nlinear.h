@@ -133,13 +133,13 @@ void gsl_multifit_nlinear_free (gsl_multifit_nlinear_workspace * w);
 gsl_multifit_nlinear_parameters gsl_multifit_nlinear_default_parameters(void);
 
 int
-gsl_multifit_nlinear_init (gsl_multifit_nlinear_fdf * fdf,
-                           const gsl_vector * x,
+gsl_multifit_nlinear_init (const gsl_vector * x,
+                           gsl_multifit_nlinear_fdf * fdf,
                            gsl_multifit_nlinear_workspace * w);
 
-int gsl_multifit_nlinear_winit (gsl_multifit_nlinear_fdf * f, 
-                                const gsl_vector * x,
+int gsl_multifit_nlinear_winit (const gsl_vector * x,
                                 const gsl_vector * wts,
+                                gsl_multifit_nlinear_fdf * fdf,
                                 gsl_multifit_nlinear_workspace * w);
 
 int

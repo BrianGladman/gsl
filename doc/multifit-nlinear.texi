@@ -481,8 +481,8 @@ particular problem, see
 @ref{Nonlinear Least-Squares Tunable Parameters}.
 @end deftypefun
 
-@deftypefun int gsl_multifit_nlinear_init (gsl_multifit_nlinear_fdf * @var{fdf}, const gsl_vector * @var{x}, gsl_multifit_nlinear_workspace * @var{w})
-@deftypefunx int gsl_multifit_nlinear_winit (gsl_multifit_nlinear_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_vector * @var{wts}, gsl_multifit_nlinear_workspace * @var{w})
+@deftypefun int gsl_multifit_nlinear_init (const gsl_vector * @var{x}, gsl_multifit_nlinear_fdf * @var{fdf}, gsl_multifit_nlinear_workspace * @var{w})
+@deftypefunx int gsl_multifit_nlinear_winit (const gsl_vector * @var{x}, const gsl_vector * @var{wts}, gsl_multifit_nlinear_fdf * @var{fdf}, gsl_multifit_nlinear_workspace * @var{w})
 These functions initialize, or reinitialize, an existing workspace @var{w}
 to use the system @var{fdf} and the initial guess
 @var{x}. See @ref{Nonlinear Least-Squares Function Definition}
@@ -1029,8 +1029,7 @@ particular problem, see
 @ref{Nonlinear Least-Squares Large Systems Tunable Parameters}.
 @end deftypefun
 
-@deftypefun int gsl_multilarge_nlinear_init (gsl_multilarge_nlinear_fdf * @var{fdf}, const gsl_vector * @var{x}, gsl_multilarge_nlinear_workspace * @var{w})
-@deftypefunx int gsl_multilarge_nlinear_winit (gsl_multilarge_nlinear_fdf * @var{fdf}, const gsl_vector * @var{x}, const gsl_vector * @var{wts}, gsl_multilarge_nlinear_workspace * @var{w})
+@deftypefun int gsl_multilarge_nlinear_init (const gsl_vector * @var{x}, gsl_multilarge_nlinear_fdf * @var{fdf}, gsl_multilarge_nlinear_workspace * @var{w})
 These functions initialize, or reinitialize, an existing workspace @var{w}
 to use the system @var{fdf} and the initial guess
 @var{x}. See @ref{Nonlinear Least-Squares Large Systems Function Definition}

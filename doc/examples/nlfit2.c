@@ -73,7 +73,7 @@ solve_system(gsl_vector *x0, gsl_multifit_nlinear_fdf *fdf,
   double chisq0, chisq, rcond;
 
   /* initialize solver */
-  gsl_multifit_nlinear_init(fdf, x0, work);
+  gsl_multifit_nlinear_init(x0, fdf, work);
 
   /* store initial cost */
   gsl_blas_ddot(f, f, &chisq0);

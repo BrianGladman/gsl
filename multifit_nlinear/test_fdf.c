@@ -271,10 +271,10 @@ test_fdf(const gsl_multifit_nlinear_type * T,
   if (wts)
     {
       gsl_vector_const_view wv = gsl_vector_const_view_array(wts, n);
-      gsl_multifit_nlinear_winit(fdf, x0, &wv.vector, w);
+      gsl_multifit_nlinear_winit(x0, &wv.vector, fdf, w);
     }
   else
-    gsl_multifit_nlinear_init(fdf, x0, w);
+    gsl_multifit_nlinear_init(x0, fdf, w);
 
   status = gsl_multifit_nlinear_driver(max_iter, xtol, gtol, ftol,
                                        NULL, NULL, &info, w);
@@ -299,7 +299,7 @@ test_fdf(const gsl_multifit_nlinear_type * T,
       test_scale_x0(x0, x0_scale);
 
       gsl_vector_set_all(wv, 1.0);
-      gsl_multifit_nlinear_winit(fdf, x0, wv, w);
+      gsl_multifit_nlinear_winit(x0, wv, fdf, w);
   
       status = gsl_multifit_nlinear_driver(max_iter, xtol, gtol, ftol,
                                            NULL, NULL, &info, w);

@@ -145,17 +145,17 @@ gsl_multifit_nlinear_default_parameters(void)
 }
 
 int
-gsl_multifit_nlinear_init (gsl_multifit_nlinear_fdf * fdf,
-                           const gsl_vector * x,
+gsl_multifit_nlinear_init (const gsl_vector * x,
+                           gsl_multifit_nlinear_fdf * fdf,
                            gsl_multifit_nlinear_workspace * w)
 {
-  return gsl_multifit_nlinear_winit(fdf, x, NULL, w);
+  return gsl_multifit_nlinear_winit(x, NULL, fdf, w);
 }
 
 int
-gsl_multifit_nlinear_winit (gsl_multifit_nlinear_fdf * fdf, 
-                            const gsl_vector * x,
+gsl_multifit_nlinear_winit (const gsl_vector * x,
                             const gsl_vector * wts,
+                            gsl_multifit_nlinear_fdf * fdf, 
                             gsl_multifit_nlinear_workspace * w)
 {
   const size_t n = w->f->size;

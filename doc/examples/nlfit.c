@@ -141,7 +141,7 @@ main (void)
   w = gsl_multifit_nlinear_alloc (T, &fdf_params, n, p);
 
   /* initialize solver with starting point and weights */
-  gsl_multifit_nlinear_winit (&fdf, &x.vector, &wts.vector, w);
+  gsl_multifit_nlinear_winit (&x.vector, &wts.vector, &fdf, w);
 
   /* compute initial cost function */
   f = gsl_multifit_nlinear_residual(w);
