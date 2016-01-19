@@ -877,7 +877,7 @@ best-fit parameters from the scatter of the underlying data.
 For more information about covariance matrices see @ref{Fitting Overview}.
 @end deftypefun
 
-@node Nonlinear Least-Squares Large Systems::
+@node Nonlinear Least-Squares Large Systems
 @section Large Nonlinear Least-Squares Systems
 
 This section describes functions available for solving
@@ -912,7 +912,7 @@ multidimensional large nonlinear fitting functions and related declarations.
 * Nonlinear Least-Squares Large Systems Minimization Algorithms Using Derivatives::
 @end menu
 
-@node Nonlinear Least-Squares Large Systems Overview::
+@node Nonlinear Least-Squares Large Systems Overview
 @subsection Overview
 
 @noindent
