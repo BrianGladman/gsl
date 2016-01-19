@@ -86,7 +86,7 @@ static int lm_init(gsl_multilarge_nlinear_fdf * fdf,
 static int lm_iterate(gsl_multilarge_nlinear_fdf * fdf,
                       gsl_vector * x, gsl_vector * f,
                       gsl_matrix * JTJ, gsl_vector * g,
-                      gsl_vector * dx, void * vstate);
+                      gsl_vector * dx, double * avratio, void * vstate);
 static int lm_rcond(const gsl_matrix * JTJ, double * rcond, void * vstate);
 static int lm_init_mu(const gsl_matrix * JTJ, lm_state_t *state);
 static void lm_trial_step(const gsl_vector * x, const gsl_vector * dx,
@@ -307,6 +307,7 @@ Inputs: fdf      - user-supplied function
         g        - on input, J^T f at x
                    on output, J^T f at x + dx
         dx       - (output) new step size dx, size p
+        avratio  - (output) |a| / |v|
         vstate   - workspace
 */
 
@@ -314,7 +315,8 @@ static int
 lm_iterate(gsl_multilarge_nlinear_fdf * fdf,
            gsl_vector * x, gsl_vector * f,
            gsl_matrix * JTJ, gsl_vector * g,
-           gsl_vector * dx, void * vstate)
+           gsl_vector * dx, double * avratio,
+           void * vstate)
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
@@ -434,6 +436,8 @@ lm_iterate(gsl_multilarge_nlinear_fdf * fdf,
           state->nu = nu2;
         }
     }
+
+  *avratio = state->avratio;
 
   return GSL_SUCCESS;
 }

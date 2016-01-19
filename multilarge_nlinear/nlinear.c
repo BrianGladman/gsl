@@ -88,6 +88,8 @@ gsl_multilarge_nlinear_alloc (const gsl_multilarge_nlinear_type * T,
                       GSL_ENOMEM);
     }
 
+  w->avratio = 0.0;
+
   return w;
 }
 
@@ -169,6 +171,7 @@ gsl_multilarge_nlinear_init (const gsl_vector * x, gsl_multilarge_nlinear_fdf * 
       w->fdf = fdf;
       gsl_vector_memcpy(w->x, x);
       w->niter = 0;
+      w->avratio = 0.0;
 
       status = (w->type->init)(w->fdf, w->x, w->f,
                                w->g, w->JTJ, w->state);
@@ -184,7 +187,8 @@ gsl_multilarge_nlinear_iterate (gsl_multilarge_nlinear_workspace * w)
 {
   int status;
 
-  status = (w->type->iterate) (w->fdf, w->x, w->f, w->JTJ, w->g, w->dx, w->state);
+  status = (w->type->iterate) (w->fdf, w->x, w->f, w->JTJ, w->g, w->dx,
+                               &(w->avratio), w->state);
   w->niter++;
 
   return status;
@@ -213,6 +217,12 @@ int
 gsl_multilarge_nlinear_rcond (double * rcond, const gsl_multilarge_nlinear_workspace * w)
 {
   return (w->type->rcond) (w->JTJ, rcond, w->state);
+}
+
+double
+gsl_multilarge_nlinear_avratio (const gsl_multilarge_nlinear_workspace * w)
+{
+  return w->avratio;
 }
 
 /*

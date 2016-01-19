@@ -82,7 +82,7 @@ typedef struct
   int (*iterate) (gsl_multilarge_nlinear_fdf * fdf,
                   gsl_vector * x, gsl_vector * f,
                   gsl_matrix * JTJ, gsl_vector * g,
-                  gsl_vector * dx, void * vstate);
+                  gsl_vector * dx, double * avratio, void * vstate);
   int (*rcond) (const gsl_matrix * JTJ, double * rcond, void *vstate);
   void (*free) (void * vstate);
 } gsl_multilarge_nlinear_type;
@@ -96,6 +96,7 @@ typedef struct
   gsl_vector * f;        /* residual vector f(x) */
   gsl_vector * g;        /* gradient vector J^T f */
   gsl_matrix * JTJ;      /* J^T J */
+  double avratio;        /* |a| / |v| */
   size_t n;              /* number of residuals */
   size_t p;              /* number of model parameters */
   size_t niter;          /* number of iterations performed */
@@ -131,6 +132,8 @@ gsl_vector *gsl_multilarge_nlinear_position (const gsl_multilarge_nlinear_worksp
 gsl_vector *gsl_multilarge_nlinear_residual (const gsl_multilarge_nlinear_workspace * w);
 
 gsl_matrix *gsl_multilarge_nlinear_JTJ (const gsl_multilarge_nlinear_workspace * w);
+
+double gsl_multilarge_nlinear_avratio (const gsl_multilarge_nlinear_workspace * w);
 
 int
 gsl_multilarge_nlinear_driver (const size_t maxiter,
