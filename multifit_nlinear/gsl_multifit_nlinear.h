@@ -40,6 +40,12 @@
 
 __BEGIN_DECLS
 
+typedef enum
+{
+  GSL_MULTIFIT_NLINEAR_FWDIFF,
+  GSL_MULTIFIT_NLINEAR_CTRDIFF
+} gsl_multifit_nlinear_fdtype;
+
 /* Definition of vector-valued functions and gradient with parameters
    based on gsl_vector */
 
@@ -85,6 +91,7 @@ typedef struct
 {
   const gsl_multifit_nlinear_scale *scale;    /* scaling method */
   const gsl_multifit_nlinear_solver *solver;  /* solver method */
+  gsl_multifit_nlinear_fdtype fdtype;         /* finite difference method */
   int accel;                                  /* use geodesic acceleration */
   double avmax;                               /* max allowed |a|/|v| */
   double h_df;                                /* step size for finite difference Jacobian */
@@ -182,11 +189,13 @@ int gsl_multifit_nlinear_eval_f(gsl_multifit_nlinear_fdf *fdf,
                                 const gsl_vector *swts,
                                 gsl_vector *y);
 
-int gsl_multifit_nlinear_eval_df(gsl_multifit_nlinear_fdf *fdf,
-                                 const gsl_vector *x,
+int gsl_multifit_nlinear_eval_df(const gsl_vector *x,
                                  const gsl_vector *f,
                                  const gsl_vector *swts,
-                                 gsl_matrix *df);
+                                 const double h,
+                                 const gsl_multifit_nlinear_fdtype fdtype,
+                                 gsl_multifit_nlinear_fdf *fdf,
+                                 gsl_matrix *df, gsl_vector *work);
 
 int
 gsl_multifit_nlinear_eval_fvv(const double h,
@@ -211,9 +220,10 @@ gsl_multifit_nlinear_test (const double xtol, const double gtol,
 
 /* fdjac.c */
 int
-gsl_multifit_nlinear_df(const gsl_vector *x, const gsl_vector *wts,
+gsl_multifit_nlinear_df(const double h, const gsl_multifit_nlinear_fdtype fdtype,
+                        const gsl_vector *x, const gsl_vector *wts,
                         gsl_multifit_nlinear_fdf *fdf,
-                        const gsl_vector *f, gsl_matrix *J);
+                        const gsl_vector *f, gsl_matrix *J, gsl_vector *work);
 
 /* fdfvv.c */
 int

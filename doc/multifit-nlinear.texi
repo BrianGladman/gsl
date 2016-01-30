@@ -204,6 +204,7 @@ typedef struct
 @{
   const gsl_multifit_nlinear_scale *scale;    /* scaling method */
   const gsl_multifit_nlinear_solver *solver;  /* solver method */
+  gsl_multifit_nlinear_fdtype fdtype;         /* finite difference method */
   int accel;                                  /* use geodesic acceleration */
   double avmax;                               /* max allowed |a|/|v| */
   double h_df;                                /* J finite difference step */
@@ -331,6 +332,65 @@ is accurate and will perform faster than the QR approach.
 
 @end deftypevr
 
+@deftypevr {Parameter} {gsl_multifit_nlinear_fdtype} fdtype
+
+This parameter specifies whether to use forward or centered
+differences when approximating the Jacobian. This is only
+used when an analytic Jacobian is not provided to the solver.
+This parameter may be set to one of the following choices.
+
+@defvr {Default} GSL_MULTIFIT_NLINEAR_FWDIFF
+This specifies a forward finite difference to approximate
+the Jacobian matrix. The Jacobian matrix will be calculated as
+@tex
+\beforedisplay
+$$
+J_{ij} = {1 \over \Delta_j} \left( f_i(x + \Delta_j e_j) - f_i(x) \right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+J_ij = 1 / \Delta_j} ( f_i(x + \Delta_j e_j) - f_i(x) )
+@end example
+
+@end ifinfo
+where @math{\Delta_j = h |x_j|} and @math{e_j} is the standard
+@math{j}th Cartesian unit basis vector so that
+@math{x + \Delta_j e_j} represents a small (forward) perturbation of
+the @math{j}th parameter by an amount @math{\Delta_j}. The perturbation
+@math{\Delta_j} is proportional to the current value @math{|x_j|} which
+helps to calculate an accurate Jacobian when the various parameters have
+different scale sizes. The value of @math{h} is specified by the @code{h_df}
+parameter. The accuracy of this method is @math{O(h)}, and evaluating this
+matrix requires an additional @math{p} function evaluations.
+@end defvr
+
+@defvr {Option} GSL_MULTIFIT_NLINEAR_CTRDIFF
+This specifies a centered finite difference to approximate
+the Jacobian matrix. The Jacobian matrix will be calculated as
+@tex
+\beforedisplay
+$$
+J_{ij} = {1 \over \Delta_j} \left( f_i(x + {1 \over 2} \Delta_j e_j) - f_i(x - {1 \over 2} \Delta_j e_j) \right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+J_ij = 1 / \Delta_j} ( f_i(x + 1/2 \Delta_j e_j) - f_i(x - 1/2 \Delta_j e_j) )
+@end example
+
+@end ifinfo
+See above for a description of @math{\Delta_j}. The accuracy of this
+method is @math{O(h^2)}, but evaluating this
+matrix requires an additional @math{2p} function evaluations.
+@end defvr
+
+@end deftypevr
+
 @deftypevr {Parameter} {int} accel
 
 This parameter toggles the use of the so-called geodesic
@@ -419,6 +479,15 @@ Therefore any steps with a ratio larger than the parameter
 @var{avmax} are rejected. @var{avmax} is set to 0.75 by default.
 For problems which experience difficulty converging, this threshold
 could be lowered.
+
+@end deftypevr
+
+@deftypevr {Parameter} {double} h_df
+
+This parameter specifies the step size for approximating the
+Jacobian matrix with finite differences. It is set to
+@math{\sqrt{\epsilon}} by default, where @math{\epsilon}
+is @code{GSL_DBL_EPSILON}.
 
 @end deftypevr
 

@@ -155,8 +155,10 @@ lm_check_step(const gsl_vector * v, const gsl_vector * g,
               const gsl_vector * f, const gsl_vector * f_trial,
               double * rho, lm_state_t * state)
 {
+  const gsl_multifit_nlinear_parameters *params = &(state->params);
+
   /* if using geodesic acceleration, check that |a|/|v| < alpha */
-  if (state->accel)
+  if (params->accel)
     {
       double anorm = lm_scaled_norm(state->diag, state->acc, state->workp);
       double vnorm = lm_scaled_norm(state->diag, state->vel, state->workp);
@@ -165,7 +167,7 @@ lm_check_step(const gsl_vector * v, const gsl_vector * g,
       state->avratio = anorm / vnorm;
 
       /* reject step if acceleration is too large compared to velocity */
-      if (state->avratio > state->avmax)
+      if (state->avratio > params->avmax)
         return GSL_FAILURE;
     }
 

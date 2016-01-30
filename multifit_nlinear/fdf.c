@@ -136,9 +136,10 @@ gsl_multifit_nlinear_default_parameters(void)
 
   params.scale = gsl_multifit_nlinear_scale_more;
   params.solver = gsl_multifit_nlinear_solver_qr;
+  params.fdtype = GSL_MULTIFIT_NLINEAR_FWDIFF;
   params.accel = 0;
   params.avmax = 0.75;
-  params.h_df = sqrt(GSL_DBL_EPSILON);
+  params.h_df = GSL_SQRT_DBL_EPSILON;
   params.h_fvv = 0.01;
 
   return params;
@@ -394,21 +395,27 @@ weighting transform if given:
 
 J~ = sqrt(W) J
 
-Inputs: fdf  - callback function
-        x    - model parameters
-        f    - residual vector f(x)
-        swts - weight matrix W = diag(w1,w2,...,wn)
-               set to NULL for unweighted fit
-        df   - (output) (weighted) Jacobian matrix
-               df = sqrt(W) df where df is unweighted Jacobian
+Inputs: x      - model parameters
+        f      - residual vector f(x)
+        swts   - weight matrix W = diag(w1,w2,...,wn)
+                 set to NULL for unweighted fit
+        h      - finite difference step size
+        fdtype - finite difference method
+        fdf    - callback function
+        df     - (output) (weighted) Jacobian matrix
+                 df = sqrt(W) df where df is unweighted Jacobian
+        work   - workspace for finite difference, size n
 */
 
 int
-gsl_multifit_nlinear_eval_df(gsl_multifit_nlinear_fdf *fdf,
-                             const gsl_vector *x,
+gsl_multifit_nlinear_eval_df(const gsl_vector *x,
                              const gsl_vector *f,
                              const gsl_vector *swts,
-                             gsl_matrix *df)
+                             const double h,
+                             const gsl_multifit_nlinear_fdtype fdtype,
+                             gsl_multifit_nlinear_fdf *fdf,
+                             gsl_matrix *df,
+                             gsl_vector *work)
 {
   int status;
 
@@ -421,7 +428,7 @@ gsl_multifit_nlinear_eval_df(gsl_multifit_nlinear_fdf *fdf,
   else
     {
       /* use finite difference Jacobian approximation */
-      status = gsl_multifit_nlinear_df(x, swts, fdf, f, df);
+      status = gsl_multifit_nlinear_df(h, fdtype, x, swts, fdf, f, df, work);
     }
 
   if (status)

@@ -1,6 +1,6 @@
 /* multifit_nlinear/lmnormal.c
  * 
- * Copyright (C) 2015 Patrick Alken
+ * Copyright (C) 2015, 2016 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ typedef struct
   gsl_matrix *work_JTJ;      /* copy of J^T J */
   gsl_vector *rhs_vel;       /* -J^T f */
   gsl_vector *rhs_acc;       /* -J^T fvv */
+  gsl_vector *tau;           /* Householder scalars for QR, size p */
   gsl_vector *workp;         /* workspace, size p */
   int chol;                  /* Cholesky factorization successful */
 } normal_state_t;
@@ -48,8 +49,6 @@ static int normal_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
 static int normal_solve(const gsl_vector * b, gsl_vector *x, normal_state_t *state);
 static int normal_regularize(const double mu,
                              const gsl_vector * diag, gsl_matrix * A);
-static int normal_solve_QR(gsl_matrix * A, const gsl_vector * b,
-                           gsl_vector * x, normal_state_t *state);
 
 static void *
 normal_alloc (const size_t n, const size_t p)
@@ -89,6 +88,12 @@ normal_alloc (const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for rhs_acc", GSL_ENOMEM);
     }
 
+  state->tau = gsl_vector_alloc(p);
+  if (state->tau == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for tau", GSL_ENOMEM);
+    }
+
   state->workp = gsl_vector_alloc(p);
   if (state->workp == NULL)
     {
@@ -114,6 +119,9 @@ normal_free(void *vstate)
 
   if (state->rhs_acc)
     gsl_vector_free(state->rhs_acc);
+
+  if (state->tau)
+    gsl_vector_free(state->tau);
 
   if (state->workp)
     gsl_vector_free(state->workp);
@@ -152,7 +160,10 @@ Notes:
 J^T J + mu D^T D
 
 2) On output, state->workp contains scale factors needed for a
-solution of the Cholesky system
+solution
+
+3) If Cholesky fails, QR decompsition is used and on output, state->tau
+contains Householder scalars
 */
 
 static int
@@ -160,6 +171,7 @@ normal_init_mu(const double mu, const gsl_vector * diag, void * vstate)
 {
   normal_state_t *state = (normal_state_t *) vstate;
   gsl_matrix *JTJ = state->work_JTJ;
+  gsl_vector *chol_D = state->workp;
   gsl_error_handler_t *err_handler;
   int status;
 
@@ -174,7 +186,7 @@ normal_init_mu(const double mu, const gsl_vector * diag, void * vstate)
   /* turn off error handler in case Cholesky fails */
   err_handler = gsl_set_error_handler_off();
 
-  status = gsl_linalg_cholesky_decomp2(JTJ, state->workp);
+  status = gsl_linalg_cholesky_decomp2(JTJ, chol_D);
 
   /* restore error handler */
   gsl_set_error_handler(err_handler);
@@ -186,6 +198,22 @@ normal_init_mu(const double mu, const gsl_vector * diag, void * vstate)
   else
     {
       state->chol = 0;
+
+      /* Cholesky failed, restore matrix and use QR decomposition */
+      gsl_matrix_tricpy('L', 1, JTJ, state->A);
+      normal_regularize(mu, diag, JTJ);
+
+      /* scale: JTJ <- diag(D) JTJ diag(D) to try to reduce cond(JTJ) */
+      status = gsl_linalg_cholesky_scale(JTJ, chol_D);
+      if (status)
+        return status;
+
+      /* copy lower triangle of A to upper */
+      gsl_matrix_transpose_tricpy('L', 0, JTJ, JTJ);
+
+      status = gsl_linalg_QR_decomp(JTJ, state->tau);
+      if (status)
+        return status;
     }
 
   return GSL_SUCCESS;
@@ -225,33 +253,29 @@ normal_solve(const gsl_vector * b, gsl_vector *x, normal_state_t *state)
 {
   int status;
   gsl_matrix *JTJ = state->work_JTJ;
+  gsl_vector *chol_D = state->workp;
 
   if (state->chol == 1)
     {
       /* we have a Cholesky factorization of J^T J + mu D^T D */
-      status = gsl_linalg_cholesky_solve2(JTJ, state->workp, b, x);
+      status = gsl_linalg_cholesky_solve2(JTJ, chol_D, b, x);
       if (status)
         return status;
     }
   else
     {
-    }
+      /* scale rhs vector: b <- diag(D) b */
+      gsl_vector_memcpy(x, b);
+      gsl_vector_mul(x, chol_D);
 
-#if 0
-  if (status)
-    {
-      /* Cholesky failed, restore matrix and use QR */
-      gsl_matrix_tricpy('L', 1, JTJ, state->A);
-      normal_regularize(mu, state->diag, JTJ);
-
-      status = normal_solve_QR(JTJ, g, dx, state);
+      /* solve system */
+      status = gsl_linalg_QR_svx(JTJ, state->tau, x);
       if (status)
         return status;
-    }
 
-  /* reverse step to go downhill */
-  gsl_vector_scale(dx, -1.0);
-#endif
+      /* undo scaling */
+      gsl_vector_mul(x, chol_D);
+    }
 
   return GSL_SUCCESS;
 }
@@ -274,43 +298,6 @@ normal_regularize(const double mu, const gsl_vector * diag,
 
   return GSL_SUCCESS;
 }
-
-#if 0
-static int
-normal_solve_QR(gsl_matrix * A, const gsl_vector * b,
-                gsl_vector * x, normal_state_t *state)
-{
-  int status;
-  gsl_vector *D = state->workp;
-  gsl_vector *tau = state->tau;
-
-  /* scale: A <- diag(D) A diag(D) to try to reduce cond(A) */
-  status = gsl_linalg_cholesky_scale(A, D);
-  if (status)
-    return status;
-
-  /* copy lower triangle of A to upper */
-  gsl_matrix_transpose_tricpy('L', 0, A, A);
-
-  status = gsl_linalg_QR_decomp(A, tau);
-  if (status)
-    return status;
-
-  /* scale rhs vector: b <- diag(D) b */
-  gsl_vector_memcpy(x, b);
-  gsl_vector_mul(x, D);
-
-  /* solve system */
-  status = gsl_linalg_QR_svx(A, tau, x);
-  if (status)
-    return status;
-
-  /* undo scaling */
-  gsl_vector_mul(x, D);
-
-  return GSL_SUCCESS;
-}
-#endif
 
 static const gsl_multifit_nlinear_solver normal_type =
 {

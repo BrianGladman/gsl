@@ -48,10 +48,11 @@ typedef struct
   gsl_vector *diag;          /* D = diag(J^T J) */
   gsl_vector *x_trial;       /* trial parameter vector */
   gsl_vector *f_trial;       /* trial function vector */
-  gsl_vector *workp;         /* workspace, length p */
   gsl_vector *fvv;           /* D_v^2 f(x), size n */
   gsl_vector *vel;           /* geodesic velocity (standard LM step), size p */
   gsl_vector *acc;           /* geodesic acceleration, size p */
+  gsl_vector *workp;         /* workspace, length p */
+  gsl_vector *workn;         /* workspace, length n */
   long nu;                   /* nu */
   double mu;                 /* LM parameter mu */
   double mu0;                /* initial scale factor for mu */
@@ -66,10 +67,7 @@ typedef struct
   double avratio;            /* current |a| / |v| */
 
   /* tunable parameters */
-
-  int accel;                 /* use geodesic acceleration */
-  double avmax;              /* max |a| / |v| */
-  double h_fvv;              /* step size for fvv finite difference */
+  gsl_multifit_nlinear_parameters params;
 } lm_state_t;
 
 #include "lmdiag.c"
@@ -114,6 +112,12 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
   if (state->workp == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for workp", GSL_ENOMEM);
+    }
+
+  state->workn = gsl_vector_alloc(n);
+  if (state->workn == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for workn", GSL_ENOMEM);
     }
 
   state->fvv = gsl_vector_alloc(n);
@@ -167,11 +171,9 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
   state->n = n;
   state->p = p;
   state->mu0 = 1.0e-3;
-  state->accel = params->accel;
-  state->avmax = params->avmax;
-  state->h_fvv = params->h_fvv;
   state->scale = params->scale;
   state->solver = params->solver;
+  state->params = *params;
 
   return state;
 }
@@ -186,6 +188,9 @@ lm_free(void *vstate)
 
   if (state->workp)
     gsl_vector_free(state->workp);
+
+  if (state->workn)
+    gsl_vector_free(state->workn);
 
   if (state->fvv)
     gsl_vector_free(state->fvv);
@@ -236,13 +241,15 @@ lm_init(void *vstate, const gsl_vector *swts,
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
+  const gsl_multifit_nlinear_parameters *params = &(state->params);
 
   /* evaluate function and Jacobian at x and apply weight transform */
   status = gsl_multifit_nlinear_eval_f(fdf, x, swts, f);
   if (status)
    return status;
 
-  status = gsl_multifit_nlinear_eval_df(fdf, x, f, swts, J);
+  status = gsl_multifit_nlinear_eval_df(x, f, swts, params->h_df,
+                                        params->fdtype, fdf, J, state->workn);
   if (status)
     return status;
 
@@ -310,6 +317,7 @@ lm_iterate(void *vstate, const gsl_vector *swts,
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
   const size_t p = state->p;
+  const gsl_multifit_nlinear_parameters *params = &(state->params);
   gsl_vector *x_trial = state->x_trial;       /* trial x + dx */
   gsl_vector *f_trial = state->f_trial;       /* trial f(x + dx) */
   gsl_vector *diag = state->diag;             /* diag(D) */
@@ -340,10 +348,10 @@ lm_iterate(void *vstate, const gsl_vector *swts,
       if (status)
         return status;
 
-      if (state->accel)
+      if (params->accel)
         {
           /* compute geodesic acceleration */
-          status = gsl_multifit_nlinear_eval_fvv(state->h_fvv, x, state->vel, f, J, swts,
+          status = gsl_multifit_nlinear_eval_fvv(params->h_fvv, x, state->vel, f, J, swts,
                                                  fdf, state->fvv, state->workp);
           if (status)
             return status;
@@ -389,8 +397,9 @@ lm_iterate(void *vstate, const gsl_vector *swts,
           state->nu = 2;
 
           /* compute J <- J(x + dx) */
-          status = gsl_multifit_nlinear_eval_df(fdf, x_trial, f_trial,
-                                                swts, J);
+          status = gsl_multifit_nlinear_eval_df(x_trial, f_trial, swts,
+                                                params->h_df, params->fdtype,
+                                                fdf, J, state->workn);
           if (status)
             return status;
 
