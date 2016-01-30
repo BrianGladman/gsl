@@ -1171,6 +1171,10 @@ This function returns the current position @math{x} (i.e. best-fit
 parameters) of the solver @var{w}.
 @end deftypefun
 
+@deftypefun {gsl_vector *} gsl_multilarge_nlinear_step (const gsl_multilarge_nlinear_workspace * @var{w})
+This function returns the last step taken @math{\delta}.
+@end deftypefun
+
 @deftypefun {gsl_vector *} gsl_multilarge_nlinear_residual (const gsl_multilarge_nlinear_workspace * @var{w})
 This function returns the current residual vector @math{f(x)} of the
 solver @var{w}.  For weighted systems, the residual vector includes the
@@ -1642,7 +1646,7 @@ final cond(J) = 5.000079999976e+02
 We can see that enabling geodesic acceleration requires less
 than a third of the number of Jacobian evaluations in order to locate
 the minimum. The path taken by both methods is shown in the
-figure below. The color map shows the cost function
+figure below. The contours show the cost function
 @math{\Phi(x_1,x_2)}. We see that both methods quickly
 find the canyon bottom, but the geodesic acceleration method
 navigates along the bottom to the solution with significantly

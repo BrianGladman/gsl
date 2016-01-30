@@ -6,14 +6,20 @@ set out "nlfit2.eps"
 
 set xlabel "x_1"
 set ylabel "x_2"
-set cblabel "{/Symbol \106}(x_1,x_2)"
 
-set pm3d map interp 20,20
-set xrange [-1.2:1.2]
+unset surface
+set contour
+set cntrparam levels 20
+
+set table 'cntrs.dat'
+splot 'nlfit2.txt' index 0 us 1:2:3 w li
+unset table
 
 load 'lines2.cfg'
-load 'moreland18.pal'
+set view map
+set key tc variable font "Arial-Bold"
+set xrange [-1.2:1.2]
 
-splot 'nlfit2.txt' index 0 us 1:2:3, \
-      'nlfit2.txt' index 1 us 1:2:(0) w lp ps 1.5 pt 7 lt 1 ti "Without geodesic acceleration", \
-      'nlfit2.txt' index 2 us 1:2:(0) w lp ps 1.5 pt 9 lt 2 ti "With geodesic acceleration"
+plot 'cntrs.dat' us 1:2 w li lc rgb "black" ti "", \
+     'nlfit2.txt' index 1 us 1:2 w lp lw 4 ps 1.5 pt 7 lt 1 ti "Without geodesic acceleration", \
+     'nlfit2.txt' index 2 us 1:2 w lp lw 4 ps 1.5 pt 9 lt 2 ti "With geodesic acceleration"

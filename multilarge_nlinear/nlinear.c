@@ -66,7 +66,7 @@ gsl_multilarge_nlinear_alloc (const gsl_multilarge_nlinear_type * T,
       GSL_ERROR_NULL ("failed to allocate space for g", GSL_ENOMEM);
     }
 
-  w->dx = gsl_vector_alloc (p);
+  w->dx = gsl_vector_calloc (p);
   if (w->dx == 0) 
     {
       gsl_multilarge_nlinear_free (w);
@@ -204,6 +204,12 @@ gsl_vector *
 gsl_multilarge_nlinear_residual (const gsl_multilarge_nlinear_workspace * w)
 {
   return w->f;
+}
+
+gsl_vector *
+gsl_multilarge_nlinear_step (const gsl_multilarge_nlinear_workspace * w)
+{
+  return w->dx;
 }
 
 gsl_matrix *
@@ -414,22 +420,22 @@ weighting transform if given:
 
 Inputs: fdf  - callback function
         x    - model parameters
-        f    - residual vector f(x)
-        JTf  - (output) J^T f
-        JTJ  - (output) J^T J
+        y    - vector, length n
+        JTy  - (output) J^T y, length p
+        JTJ  - (output) J^T J, p-by-p
 */
 
 int
 gsl_multilarge_nlinear_eval_df(gsl_multilarge_nlinear_fdf *fdf,
-                               const gsl_vector *x, const gsl_vector *f,
-                               gsl_vector *JTf, gsl_matrix *JTJ)
+                               const gsl_vector *x, const gsl_vector *y,
+                               gsl_vector *JTy, gsl_matrix *JTJ)
 {
-  int status = ((*((fdf)->df)) (x, f, fdf->params, JTf, JTJ));
+  int status = ((*((fdf)->df)) (x, y, fdf->params, JTy, JTJ));
 
   if (JTJ)
     ++(fdf->nevaldf);
 
-  if (JTf)
+  if (JTy)
     ++(fdf->nevaldff);
 
   return status;

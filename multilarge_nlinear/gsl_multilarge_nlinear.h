@@ -131,6 +131,8 @@ gsl_vector *gsl_multilarge_nlinear_position (const gsl_multilarge_nlinear_worksp
 
 gsl_vector *gsl_multilarge_nlinear_residual (const gsl_multilarge_nlinear_workspace * w);
 
+gsl_vector *gsl_multilarge_nlinear_step (const gsl_multilarge_nlinear_workspace * w);
+
 gsl_matrix *gsl_multilarge_nlinear_JTJ (const gsl_multilarge_nlinear_workspace * w);
 
 double gsl_multilarge_nlinear_avratio (const gsl_multilarge_nlinear_workspace * w);
@@ -154,8 +156,8 @@ gsl_multilarge_nlinear_eval_f(gsl_multilarge_nlinear_fdf *fdf,
 
 int
 gsl_multilarge_nlinear_eval_df(gsl_multilarge_nlinear_fdf *fdf,
-                               const gsl_vector *x, const gsl_vector *f,
-                               gsl_vector *JTf, gsl_matrix *JTJ);
+                               const gsl_vector *x, const gsl_vector *y,
+                               gsl_vector *JTy, gsl_matrix *JTJ);
 
 int
 gsl_multilarge_nlinear_eval_fvv(const double h, const gsl_vector *x, const gsl_vector *v,
@@ -178,6 +180,60 @@ gsl_multilarge_nlinear_fdJTfvv(const double h, const gsl_vector *x, const gsl_ve
 GSL_VAR const gsl_multilarge_nlinear_scale * gsl_multilarge_nlinear_scale_levenberg;
 GSL_VAR const gsl_multilarge_nlinear_scale * gsl_multilarge_nlinear_scale_marquardt;
 GSL_VAR const gsl_multilarge_nlinear_scale * gsl_multilarge_nlinear_scale_more;
+
+/* regularized nonlinear least squares */
+
+typedef struct
+{
+  size_t n;                          /* number of residuals of original problem */
+  size_t p;                          /* number of model parameters */
+  size_t m;                          /* number of rows in regularization matrix L */
+  double lambda;                     /* regularization parameter */
+  gsl_vector * diag;                 /* diagonal regularization matrix */
+
+  gsl_multilarge_nlinear_fdf * fdf;  /* user defined fdf */
+  gsl_multilarge_nlinear_fdf fdftik; /* Tikhonov modified fdf */
+
+  gsl_multilarge_nlinear_workspace * multilarge_nlinear_p;
+} gsl_multilarge_regnlinear_workspace;
+
+gsl_multilarge_regnlinear_workspace *
+gsl_multilarge_regnlinear_alloc (const gsl_multilarge_nlinear_type * T,
+                                 const gsl_multilarge_nlinear_parameters * params,
+                                 const size_t n, const size_t p, const size_t m);
+
+void gsl_multilarge_regnlinear_free(gsl_multilarge_regnlinear_workspace *w);
+
+const char * gsl_multilarge_regnlinear_name(const gsl_multilarge_regnlinear_workspace * w);
+
+gsl_vector * gsl_multilarge_regnlinear_position (const gsl_multilarge_regnlinear_workspace * w);
+
+gsl_vector * gsl_multilarge_regnlinear_residual (const gsl_multilarge_regnlinear_workspace * w);
+
+gsl_matrix * gsl_multilarge_regnlinear_JTJ (const gsl_multilarge_regnlinear_workspace * w);
+
+size_t gsl_multilarge_regnlinear_niter (const gsl_multilarge_regnlinear_workspace * w);
+
+int
+gsl_multilarge_regnlinear_init2 (const double lambda,
+                                 const gsl_vector * L,
+                                 const gsl_vector * x,
+                                 gsl_multilarge_nlinear_fdf * f,
+                                 gsl_multilarge_regnlinear_workspace * w);
+
+int
+gsl_multilarge_regnlinear_iterate (gsl_multilarge_regnlinear_workspace * w);
+
+int
+gsl_multilarge_regnlinear_driver (const size_t maxiter,
+                                  const double xtol,
+                                  const double gtol,
+                                  const double ftol,
+                                  void (*callback)(const size_t iter, void *params,
+                                                   const gsl_multilarge_nlinear_workspace *w),
+                                  void *callback_params,
+                                  int *info,
+                                  gsl_multilarge_regnlinear_workspace * w);
 
 __END_DECLS
 
