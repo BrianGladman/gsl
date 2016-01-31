@@ -352,7 +352,7 @@ $$
 @ifinfo
 
 @example
-J_ij = 1 / \Delta_j} ( f_i(x + \Delta_j e_j) - f_i(x) )
+J_ij = 1 / \Delta_j ( f_i(x + \Delta_j e_j) - f_i(x) )
 @end example
 
 @end ifinfo
@@ -380,7 +380,7 @@ $$
 @ifinfo
 
 @example
-J_ij = 1 / \Delta_j} ( f_i(x + 1/2 \Delta_j e_j) - f_i(x - 1/2 \Delta_j e_j) )
+J_ij = 1 / \Delta_j ( f_i(x + 1/2 \Delta_j e_j) - f_i(x - 1/2 \Delta_j e_j) )
 @end example
 
 @end ifinfo
