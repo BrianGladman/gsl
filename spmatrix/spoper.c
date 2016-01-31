@@ -100,7 +100,7 @@ gsl_spmatrix_add(gsl_spmatrix *c, const gsl_spmatrix *a,
     {
       GSL_ERROR("triplet format not yet supported", GSL_EINVAL);
     }
-  else
+  else if (GSL_SPMATRIX_ISCCS(a))
     {
       int status = GSL_SUCCESS;
       size_t *w = (size_t *) a->work;
@@ -144,6 +144,10 @@ gsl_spmatrix_add(gsl_spmatrix *c, const gsl_spmatrix *a,
       c->nz = nz;
 
       return status;
+    }
+  else
+    {
+      GSL_ERROR("unknown sparse matrix type", GSL_EINVAL);
     }
 } /* gsl_spmatrix_add() */
 

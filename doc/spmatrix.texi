@@ -37,16 +37,20 @@ sparse matrix functions and related declarations.
 These routines provide support for constructing and manipulating
 sparse matrices in GSL, using an API similar to @code{gsl_matrix}.
 The basic structure is called @code{gsl_spmatrix}. There are
-two supported storage formats for sparse matrices: the triplet and
-compressed column storage (CCS) formats. The triplet format stores
-triplets @math{(i,j,x)} for each non-zero element of the matrix. This
-notation means that the @math{(i,j)} element of the matrix @math{A}
+three supported storage formats for sparse matrices: the triplet,
+compressed column storage (CCS) and compressed row storage (CRS)
+formats. The triplet format stores triplets @math{(i,j,x)} for each
+non-zero element of the matrix. This notation means that the
+@math{(i,j)} element of the matrix @math{A}
 is @math{A_{ij} = x}. Compressed column storage stores each column of
 non-zero values in the sparse matrix in a continuous memory block, keeping
 pointers to the beginning of each column in that memory block, and storing
-the row indices of each non-zero element. The triplet format is ideal
+the row indices of each non-zero element. Compressed row storage stores
+each row of non-zero values in a continuous memory block, keeping pointers
+to the beginning of each row in the block and storing the column indices
+of each non-zero element. The triplet format is ideal
 for adding elements to the sparse matrix structure while it is being
-constructed, while the compressed column storage is better suited for
+constructed, while the compressed storage formats are better suited for
 matrix-matrix multiplication or linear solvers.
 
 @tindex gsl_spmatrix
@@ -75,6 +79,8 @@ elements currently in the matrix is given by @var{nz}. For the triplet
 representation, @var{i}, @var{p}, and @var{data} are arrays of size @var{nz}
 which contain the row indices, column indices, and element value, respectively.
 So if @math{data[k] = A(i,j)}, then @math{i = i[k]} and @math{j = p[k]}.
+
+@noindent
 For compressed column storage, @var{i} and @var{data} are arrays of size
 @var{nz} containing the row indices and element values, identical to the triplet
 case. @var{p} is an array of size @math{size2 + 1} where @math{p[j]} points
@@ -82,19 +88,26 @@ to the index in @var{data} of the start of column @var{j}. Thus, if
 @math{data[k] = A(i,j)}, then @math{i = i[k]} and @math{p[j] <= k < p[j+1]}.
 
 @noindent
+For compressed row storage, @var{i} and @var{data} are arrays of size
+@var{nz} containing the column indices and element values, identical to the triplet
+case. @var{p} is an array of size @math{size1 + 1} where @math{p[i]} points
+to the index in @var{data} of the start of row @var{i}. Thus, if
+@math{data[k] = A(i,j)}, then @math{j = i[k]} and @math{p[i] <= k < p[i+1]}.
+
+@noindent
 The parameter @var{tree_data} is a binary tree structure used in the triplet
 representation, specifically a balanced AVL tree. This speeds up element
 searches and duplicate detection during the matrix assembly process.
 The parameter @var{work} is additional workspace needed for various operations like
-converting from triplet to compressed column storage. @var{sptype} indicates
-the type of storage format being used (triplet or compressed column).
+converting from triplet to compressed storage. @var{sptype} indicates
+the type of storage format being used (triplet, CCS or CRS).
 
 @noindent
 The compressed storage format defined above makes it very simple
 to interface with sophisticated external linear solver libraries
-which accept compressed column storage input. The user can simply
-pass the arrays @var{i}, @var{p}, and @var{data} as the compressed
-column inputs to external libraries.
+which accept compressed storage input. The user can simply
+pass the arrays @var{i}, @var{p}, and @var{data} as the
+inputs to external libraries.
 
 @node Sparse matrix allocation
 @section Sparse matrix allocation
@@ -136,6 +149,9 @@ This flag specifies triplet storage.
 
 @item GSL_SPMATRIX_CCS
 This flag specifies compressed column storage.
+
+@item GSL_SPMATRIX_CRS
+This flag specifies compressed row storage.
 @end table
 The allocated @code{gsl_spmatrix} structure is of size @math{O(nzmax)}.
 @end deftypefun
@@ -200,7 +216,7 @@ format.
 
 @deftypefun int gsl_spmatrix_add (gsl_spmatrix * @var{c}, const gsl_spmatrix * @var{a}, const gsl_spmatrix * @var{b})
 This function computes the sum @math{c = a + b}. The three matrices must
-have the same dimensions and be stored in compressed column format.
+have the same dimensions and be stored in a compressed format.
 @end deftypefun
 
 @deftypefun int gsl_spmatrix_scale (gsl_spmatrix * @var{m}, const double @var{x})
@@ -218,8 +234,8 @@ This function returns the number of non-zero elements in @var{m}.
 
 @deftypefun int gsl_spmatrix_equal (const gsl_spmatrix * @var{a}, const gsl_spmatrix * @var{b})
 This function returns 1 if the matrices @var{a} and @var{b} are equal (by comparison of
-element values) and 0 otherwise. The matrices @var{a} and @var{b} must be either
-both triplet format or both compressed format for comparison.
+element values) and 0 otherwise. The matrices @var{a} and @var{b} must be in the same
+sparse storage format for comparison.
 @end deftypefun
 
 @node Finding maximum and minimum elements of sparse matrices
@@ -236,11 +252,18 @@ only the non-zero values.
 @section Sparse matrix compressed format
 @cindex sparse matrices, compression
 
-GSL supports the compressed column format, in which the non-zero elements in each
-column are stored contiguously in memory.
+GSL supports compressed column storage (CCS) and compressed row storage (CRS)
+formats.
 
-@deftypefun {gsl_spmatrix *} gsl_spmatrix_compcol (const gsl_spmatrix * @var{T})
+@deftypefun {gsl_spmatrix *} gsl_spmatrix_ccs (const gsl_spmatrix * @var{T})
 This function creates a sparse matrix in compressed column format
+from the input sparse matrix @var{T} which must be in triplet format.
+A pointer to a newly allocated matrix is returned. The calling function
+should free the newly allocated matrix when it is no longer needed.
+@end deftypefun
+
+@deftypefun {gsl_spmatrix *} gsl_spmatrix_crs (const gsl_spmatrix * @var{T})
+This function creates a sparse matrix in compressed row format
 from the input sparse matrix @var{T} which must be in triplet format.
 A pointer to a newly allocated matrix is returned. The calling function
 should free the newly allocated matrix when it is no longer needed.
@@ -268,8 +291,8 @@ stores the result in @var{A}. @var{S} must be in triplet format.
 @cindex sparse matrices, examples
 
 The following example program builds a 5-by-4 sparse matrix
-and prints it in triplet and compressed column format. The
-matrix which is constructed is
+and prints it in triplet, compressed column, and compressed
+row format. The matrix which is constructed is
 @tex
 \beforedisplay
 $$
@@ -314,13 +337,21 @@ matrix in compressed column format:
 i = [ 1, 3, 4, 3, 0, 1, 0, 3, ]
 p = [ 0, 3, 4, 6, 8, ]
 d = [ 1, 2.1, 4.1, 2.9, 3.1, 7.2, 4.6, 8.5, ]
+matrix in compressed row format:
+i = [ 2, 3, 0, 2, 0, 1, 3, 0, ]
+p = [ 0, 2, 4, 4, 7, 8, ]
+d = [ 3.1, 4.6, 1, 7.2, 2.1, 2.9, 8.5, 4.1, ]
 @end example
 @noindent
 We see in the compressed column output, the data array stores
 each column contiguously, the array @math{i} stores
 the row index of the corresponding data element, and the
 array @math{p} stores the index of the start of each column in the
-data array.
+data array. Similarly, for the compressed row output, the
+data array stores each row contiguously, the array @math{i}
+stores the column index of the corresponding data element, and
+the @math{p} array stores the index of the start of each row
+in the data array.
 
 @example
 @verbatiminclude examples/spmatrix.c

@@ -36,50 +36,57 @@ Return: pointer to new matrix (should be freed when finished with it)
 gsl_spmatrix *
 gsl_spmatrix_ccs(const gsl_spmatrix *T)
 {
-  const size_t *Tj; /* column indices of triplet matrix */
-  size_t *Cp;       /* column pointers of compressed column matrix */
-  size_t *w;        /* copy of column pointers */
-  gsl_spmatrix *m;
-  size_t n;
-
-  m = gsl_spmatrix_alloc_nzmax(T->size1, T->size2, T->nz,
-                               GSL_SPMATRIX_CCS);
-  if (!m)
-    return NULL;
-
-  Tj = T->p;
-  Cp = m->p;
-
-  /* initialize column pointers to 0 */
-  for (n = 0; n < m->size2 + 1; ++n)
-    Cp[n] = 0;
-
-  /*
-   * compute the number of elements in each column:
-   * Cp[j] = # non-zero elements in column j
-   */
-  for (n = 0; n < T->nz; ++n)
-    Cp[Tj[n]]++;
-
-  /* compute column pointers: p[j] = p[j-1] + nnz[j-1] */
-  gsl_spmatrix_cumsum(m->size2, Cp);
-
-  /* make a copy of the column pointers */
-  w = (size_t *) m->work;
-  for (n = 0; n < m->size2; ++n)
-    w[n] = Cp[n];
-
-  /* transfer data from triplet format to CCS */
-  for (n = 0; n < T->nz; ++n)
+  if (!GSL_SPMATRIX_ISTRIPLET(T))
     {
-      size_t k = w[Tj[n]]++;
-      m->i[k] = T->i[n];
-      m->data[k] = T->data[n];
+      GSL_ERROR_NULL("matrix must be in triplet format", GSL_EINVAL);
     }
+  else
+    {
+      const size_t *Tj; /* column indices of triplet matrix */
+      size_t *Cp;       /* column pointers of compressed column matrix */
+      size_t *w;        /* copy of column pointers */
+      gsl_spmatrix *m;
+      size_t n;
 
-  m->nz = T->nz;
+      m = gsl_spmatrix_alloc_nzmax(T->size1, T->size2, T->nz,
+                                   GSL_SPMATRIX_CCS);
+      if (!m)
+        return NULL;
 
-  return m;
+      Tj = T->p;
+      Cp = m->p;
+
+      /* initialize column pointers to 0 */
+      for (n = 0; n < m->size2 + 1; ++n)
+        Cp[n] = 0;
+
+      /*
+       * compute the number of elements in each column:
+       * Cp[j] = # non-zero elements in column j
+       */
+      for (n = 0; n < T->nz; ++n)
+        Cp[Tj[n]]++;
+
+      /* compute column pointers: p[j] = p[j-1] + nnz[j-1] */
+      gsl_spmatrix_cumsum(m->size2, Cp);
+
+      /* make a copy of the column pointers */
+      w = (size_t *) m->work;
+      for (n = 0; n < m->size2; ++n)
+        w[n] = Cp[n];
+
+      /* transfer data from triplet format to CCS */
+      for (n = 0; n < T->nz; ++n)
+        {
+          size_t k = w[Tj[n]]++;
+          m->i[k] = T->i[n];
+          m->data[k] = T->data[n];
+        }
+
+      m->nz = T->nz;
+
+      return m;
+    }
 }
 
 gsl_spmatrix *
@@ -100,50 +107,57 @@ Return: pointer to new matrix (should be freed when finished with it)
 gsl_spmatrix *
 gsl_spmatrix_crs(const gsl_spmatrix *T)
 {
-  const size_t *Ti; /* row indices of triplet matrix */
-  size_t *Cp;       /* row pointers of compressed row matrix */
-  size_t *w;        /* copy of column pointers */
-  gsl_spmatrix *m;
-  size_t n;
-
-  m = gsl_spmatrix_alloc_nzmax(T->size1, T->size2, T->nz,
-                               GSL_SPMATRIX_CRS);
-  if (!m)
-    return NULL;
-
-  Ti = T->i;
-  Cp = m->p;
-
-  /* initialize row pointers to 0 */
-  for (n = 0; n < m->size1 + 1; ++n)
-    Cp[n] = 0;
-
-  /*
-   * compute the number of elements in each row:
-   * Cp[i] = # non-zero elements in row i
-   */
-  for (n = 0; n < T->nz; ++n)
-    Cp[Ti[n]]++;
-
-  /* compute row pointers: p[i] = p[i-1] + nnz[i-1] */
-  gsl_spmatrix_cumsum(m->size1, Cp);
-
-  /* make a copy of the row pointers */
-  w = (size_t *) m->work;
-  for (n = 0; n < m->size1; ++n)
-    w[n] = Cp[n];
-
-  /* transfer data from triplet format to CRS */
-  for (n = 0; n < T->nz; ++n)
+  if (!GSL_SPMATRIX_ISTRIPLET(T))
     {
-      size_t k = w[Ti[n]]++;
-      m->i[k] = T->p[n];
-      m->data[k] = T->data[n];
+      GSL_ERROR_NULL("matrix must be in triplet format", GSL_EINVAL);
     }
+  else
+    {
+      const size_t *Ti; /* row indices of triplet matrix */
+      size_t *Cp;       /* row pointers of compressed row matrix */
+      size_t *w;        /* copy of column pointers */
+      gsl_spmatrix *m;
+      size_t n;
 
-  m->nz = T->nz;
+      m = gsl_spmatrix_alloc_nzmax(T->size1, T->size2, T->nz,
+                                   GSL_SPMATRIX_CRS);
+      if (!m)
+        return NULL;
 
-  return m;
+      Ti = T->i;
+      Cp = m->p;
+
+      /* initialize row pointers to 0 */
+      for (n = 0; n < m->size1 + 1; ++n)
+        Cp[n] = 0;
+
+      /*
+       * compute the number of elements in each row:
+       * Cp[i] = # non-zero elements in row i
+       */
+      for (n = 0; n < T->nz; ++n)
+        Cp[Ti[n]]++;
+
+      /* compute row pointers: p[i] = p[i-1] + nnz[i-1] */
+      gsl_spmatrix_cumsum(m->size1, Cp);
+
+      /* make a copy of the row pointers */
+      w = (size_t *) m->work;
+      for (n = 0; n < m->size1; ++n)
+        w[n] = Cp[n];
+
+      /* transfer data from triplet format to CRS */
+      for (n = 0; n < T->nz; ++n)
+        {
+          size_t k = w[Ti[n]]++;
+          m->i[k] = T->p[n];
+          m->data[k] = T->data[n];
+        }
+
+      m->nz = T->nz;
+
+      return m;
+    }
 }
 
 /*

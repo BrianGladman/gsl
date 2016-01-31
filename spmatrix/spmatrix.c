@@ -81,20 +81,20 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
 
   if (n1 == 0)
     {
-      GSL_ERROR_VAL ("matrix dimension n1 must be positive integer",
-                     GSL_EINVAL, 0);
+      GSL_ERROR_NULL ("matrix dimension n1 must be positive integer",
+                      GSL_EINVAL);
     }
   else if (n2 == 0)
     {
-      GSL_ERROR_VAL ("matrix dimension n2 must be positive integer",
-                     GSL_EINVAL, 0);
+      GSL_ERROR_NULL ("matrix dimension n2 must be positive integer",
+                      GSL_EINVAL);
     }
 
   m = calloc(1, sizeof(gsl_spmatrix));
   if (!m)
     {
-      GSL_ERROR_VAL("failed to allocate space for spmatrix struct",
-                    GSL_ENOMEM, 0);
+      GSL_ERROR_NULL("failed to allocate space for spmatrix struct",
+                     GSL_ENOMEM);
     }
 
   m->size1 = n1;
@@ -107,8 +107,8 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
   if (!m->i)
     {
       gsl_spmatrix_free(m);
-      GSL_ERROR_VAL("failed to allocate space for row indices",
-                    GSL_ENOMEM, 0);
+      GSL_ERROR_NULL("failed to allocate space for row indices",
+                     GSL_ENOMEM);
     }
 
   if (sptype == GSL_SPMATRIX_TRIPLET)
@@ -117,8 +117,8 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
       if (!m->tree_data)
         {
           gsl_spmatrix_free(m);
-          GSL_ERROR_VAL("failed to allocate space for AVL tree struct",
-                        GSL_ENOMEM, 0);
+          GSL_ERROR_NULL("failed to allocate space for AVL tree struct",
+                         GSL_ENOMEM);
         }
 
       m->tree_data->n = 0;
@@ -129,8 +129,8 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
       if (!m->tree_data->tree)
         {
           gsl_spmatrix_free(m);
-          GSL_ERROR_VAL("failed to allocate space for AVL tree",
-                        GSL_ENOMEM, 0);
+          GSL_ERROR_NULL("failed to allocate space for AVL tree",
+                         GSL_ENOMEM);
         }
 
       /* preallocate nzmax tree nodes */
@@ -138,16 +138,16 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
       if (!m->tree_data->node_array)
         {
           gsl_spmatrix_free(m);
-          GSL_ERROR_VAL("failed to allocate space for AVL tree nodes",
-                        GSL_ENOMEM, 0);
+          GSL_ERROR_NULL("failed to allocate space for AVL tree nodes",
+                         GSL_ENOMEM);
         }
 
       m->p = malloc(m->nzmax * sizeof(size_t));
       if (!m->p)
         {
           gsl_spmatrix_free(m);
-          GSL_ERROR_VAL("failed to allocate space for column indices",
-                        GSL_ENOMEM, 0);
+          GSL_ERROR_NULL("failed to allocate space for column indices",
+                         GSL_ENOMEM);
         }
     }
   else if (sptype == GSL_SPMATRIX_CCS)
@@ -158,8 +158,8 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
       if (!m->p || !m->work)
         {
           gsl_spmatrix_free(m);
-          GSL_ERROR_VAL("failed to allocate space for column pointers",
-                        GSL_ENOMEM, 0);
+          GSL_ERROR_NULL("failed to allocate space for column pointers",
+                         GSL_ENOMEM);
         }
     }
   else if (sptype == GSL_SPMATRIX_CRS)
@@ -170,8 +170,8 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
       if (!m->p || !m->work)
         {
           gsl_spmatrix_free(m);
-          GSL_ERROR_VAL("failed to allocate space for row pointers",
-                        GSL_ENOMEM, 0);
+          GSL_ERROR_NULL("failed to allocate space for row pointers",
+                         GSL_ENOMEM);
         }
     }
 
@@ -179,8 +179,8 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
   if (!m->data)
     {
       gsl_spmatrix_free(m);
-      GSL_ERROR_VAL("failed to allocate space for data",
-                    GSL_ENOMEM, 0);
+      GSL_ERROR_NULL("failed to allocate space for data",
+                     GSL_ENOMEM);
     }
 
   return m;
