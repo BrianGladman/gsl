@@ -67,7 +67,7 @@ gsl_spmatrix_alloc_nzmax()
 Inputs: n1     - number of rows
         n2     - number of columns
         nzmax  - maximum number of matrix elements
-        sptype - type of matrix (triplet, compressed column)
+        sptype - type of matrix (triplet, CCS, CRS)
 
 Notes: if (n1,n2) are not known at allocation time, they can each be
 set to 1, and they will be expanded as elements are added to the matrix
@@ -159,6 +159,18 @@ gsl_spmatrix_alloc_nzmax(const size_t n1, const size_t n2,
         {
           gsl_spmatrix_free(m);
           GSL_ERROR_VAL("failed to allocate space for column pointers",
+                        GSL_ENOMEM, 0);
+        }
+    }
+  else if (sptype == GSL_SPMATRIX_CRS)
+    {
+      m->p = malloc((n1 + 1) * sizeof(size_t));
+      m->work = malloc(GSL_MAX(n1, n2) *
+                       GSL_MAX(sizeof(size_t), sizeof(double)));
+      if (!m->p || !m->work)
+        {
+          gsl_spmatrix_free(m);
+          GSL_ERROR_VAL("failed to allocate space for row pointers",
                         GSL_ENOMEM, 0);
         }
     }

@@ -63,6 +63,19 @@ gsl_spmatrix_get(const gsl_spmatrix *m, const size_t i, const size_t j)
                 return m->data[p];
             }
         }
+      else if (GSL_SPMATRIX_ISCRS(m))
+        {
+          const size_t *mj = m->i;
+          const size_t *mp = m->p;
+          size_t p;
+
+          /* loop over row i and search for column index j */
+          for (p = mp[i]; p < mp[i + 1]; ++p)
+            {
+              if (mj[p] == j)
+                return m->data[p];
+            }
+        }
       else
         {
           GSL_ERROR_VAL("unknown sparse matrix type", GSL_EINVAL, 0.0);

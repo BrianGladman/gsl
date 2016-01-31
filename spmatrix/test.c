@@ -166,10 +166,10 @@ test_getset(const size_t M, const size_t N, const gsl_rng *r)
     gsl_spmatrix_free(m);
   }
 
-  /* test compressed version of gsl_spmatrix_get() */
+  /* test CCS version of gsl_spmatrix_get() */
   {
     gsl_spmatrix *T = create_random_sparse(M, N, 0.3, r);
-    gsl_spmatrix *C = gsl_spmatrix_compcol(T);
+    gsl_spmatrix *C = gsl_spmatrix_ccs(T);
 
     status = 0;
     for (i = 0; i < M; ++i)
@@ -184,7 +184,31 @@ test_getset(const size_t M, const size_t N, const gsl_rng *r)
           }
       }
 
-    gsl_test(status, "test_getset: M=%zu N=%zu compressed _get", M, N);
+    gsl_test(status, "test_getset: M=%zu N=%zu CCS _get", M, N);
+
+    gsl_spmatrix_free(T);
+    gsl_spmatrix_free(C);
+  }
+
+  /* test CRS version of gsl_spmatrix_get() */
+  {
+    gsl_spmatrix *T = create_random_sparse(M, N, 0.3, r);
+    gsl_spmatrix *C = gsl_spmatrix_crs(T);
+
+    status = 0;
+    for (i = 0; i < M; ++i)
+      {
+        for (j = 0; j < N; ++j)
+          {
+            double Tij = gsl_spmatrix_get(T, i, j);
+            double Cij = gsl_spmatrix_get(C, i, j);
+
+            if (Tij != Cij)
+              status = 1;
+          }
+      }
+
+    gsl_test(status, "test_getset: M=%zu N=%zu CRS _get", M, N);
 
     gsl_spmatrix_free(T);
     gsl_spmatrix_free(C);
@@ -197,38 +221,50 @@ test_memcpy(const size_t M, const size_t N, const gsl_rng *r)
   int status;
 
   {
-    gsl_spmatrix *at = create_random_sparse(M, N, 0.2, r);
-    gsl_spmatrix *ac = gsl_spmatrix_compcol(at);
-    gsl_spmatrix *bt, *bc;
+    gsl_spmatrix *A = create_random_sparse(M, N, 0.2, r);
+    gsl_spmatrix *A_ccs = gsl_spmatrix_ccs(A);
+    gsl_spmatrix *A_crs = gsl_spmatrix_crs(A);
+    gsl_spmatrix *B_t, *B_ccs, *B_crs;
   
-    bt = gsl_spmatrix_alloc(M, N);
-    gsl_spmatrix_memcpy(bt, at);
+    B_t = gsl_spmatrix_alloc(M, N);
+    gsl_spmatrix_memcpy(B_t, A);
 
-    status = gsl_spmatrix_equal(at, bt) != 1;
+    status = gsl_spmatrix_equal(A, B_t) != 1;
     gsl_test(status, "test_memcpy: _memcpy M=%zu N=%zu triplet format", M, N);
 
-    bc = gsl_spmatrix_alloc_nzmax(M, N, ac->nzmax, GSL_SPMATRIX_CCS);
-    gsl_spmatrix_memcpy(bc, ac);
+    B_ccs = gsl_spmatrix_alloc_nzmax(M, N, A_ccs->nzmax, GSL_SPMATRIX_CCS);
+    B_crs = gsl_spmatrix_alloc_nzmax(M, N, A_ccs->nzmax, GSL_SPMATRIX_CRS);
 
-    status = gsl_spmatrix_equal(ac, bc) != 1;
-    gsl_test(status, "test_memcpy: _memcpy M=%zu N=%zu compressed column format", M, N);
+    gsl_spmatrix_memcpy(B_ccs, A_ccs);
+    gsl_spmatrix_memcpy(B_crs, A_crs);
 
-    gsl_spmatrix_free(at);
-    gsl_spmatrix_free(ac);
-    gsl_spmatrix_free(bt);
-    gsl_spmatrix_free(bc);
+    status = gsl_spmatrix_equal(A_ccs, B_ccs) != 1;
+    gsl_test(status, "test_memcpy: _memcpy M=%zu N=%zu CCS", M, N);
+
+    status = gsl_spmatrix_equal(A_crs, B_crs) != 1;
+    gsl_test(status, "test_memcpy: _memcpy M=%zu N=%zu CRS", M, N);
+
+    gsl_spmatrix_free(A);
+    gsl_spmatrix_free(A_ccs);
+    gsl_spmatrix_free(A_crs);
+    gsl_spmatrix_free(B_t);
+    gsl_spmatrix_free(B_ccs);
+    gsl_spmatrix_free(B_crs);
   }
 
   /* test transpose_memcpy */
   {
     gsl_spmatrix *A = create_random_sparse(M, N, 0.3, r);
-    gsl_spmatrix *B = gsl_spmatrix_compcol(A);
     gsl_spmatrix *AT = gsl_spmatrix_alloc(N, M);
+    gsl_spmatrix *B = gsl_spmatrix_ccs(A);
     gsl_spmatrix *BT = gsl_spmatrix_alloc_nzmax(N, M, 1, GSL_SPMATRIX_CCS);
+    gsl_spmatrix *C = gsl_spmatrix_crs(A);
+    gsl_spmatrix *CT = gsl_spmatrix_alloc_nzmax(N, M, 1, GSL_SPMATRIX_CRS);
     size_t i, j;
 
     gsl_spmatrix_transpose_memcpy(AT, A);
     gsl_spmatrix_transpose_memcpy(BT, B);
+    gsl_spmatrix_transpose_memcpy(CT, C);
 
     status = 0;
     for (i = 0; i < M; ++i)
@@ -237,20 +273,52 @@ test_memcpy(const size_t M, const size_t N, const gsl_rng *r)
           {
             double Aij = gsl_spmatrix_get(A, i, j);
             double ATji = gsl_spmatrix_get(AT, j, i);
-            double Bij = gsl_spmatrix_get(B, i, j);
-            double BTji = gsl_spmatrix_get(BT, j, i);
 
-            if ((Aij != ATji) || (Bij != BTji) || (Aij != Bij))
+            if (Aij != ATji)
               status = 1;
           }
       }
 
     gsl_test(status, "test_memcpy: _transpose_memcpy M=%zu N=%zu triplet format", M, N);
 
+    status = 0;
+    for (i = 0; i < M; ++i)
+      {
+        for (j = 0; j < N; ++j)
+          {
+            double Aij = gsl_spmatrix_get(A, i, j);
+            double Bij = gsl_spmatrix_get(B, i, j);
+            double BTji = gsl_spmatrix_get(BT, j, i);
+
+            if ((Bij != BTji) || (Aij != Bij))
+              status = 1;
+          }
+      }
+
+    gsl_test(status, "test_memcpy: _transpose_memcpy M=%zu N=%zu CCS format", M, N);
+
+    status = 0;
+    for (i = 0; i < M; ++i)
+      {
+        for (j = 0; j < N; ++j)
+          {
+            double Aij = gsl_spmatrix_get(A, i, j);
+            double Cij = gsl_spmatrix_get(C, i, j);
+            double CTji = gsl_spmatrix_get(CT, j, i);
+
+            if ((Cij != CTji) || (Aij != Cij))
+              status = 1;
+          }
+      }
+
+    gsl_test(status, "test_memcpy: _transpose_memcpy M=%zu N=%zu CRS format", M, N);
+
     gsl_spmatrix_free(A);
     gsl_spmatrix_free(AT);
     gsl_spmatrix_free(B);
     gsl_spmatrix_free(BT);
+    gsl_spmatrix_free(C);
+    gsl_spmatrix_free(CT);
   }
 } /* test_memcpy() */
 
@@ -262,35 +330,35 @@ test_ops(const size_t M, const size_t N, const gsl_rng *r)
 
   /* test gsl_spmatrix_add */
   {
-    gsl_spmatrix *Ta = create_random_sparse(M, N, 0.2, r);
-    gsl_spmatrix *Tb = create_random_sparse(M, N, 0.2, r);
-    gsl_spmatrix *a = gsl_spmatrix_compcol(Ta);
-    gsl_spmatrix *b = gsl_spmatrix_compcol(Tb);
-    gsl_spmatrix *c = gsl_spmatrix_alloc_nzmax(M, N, 1, GSL_SPMATRIX_CCS);
+    gsl_spmatrix *A = create_random_sparse(M, N, 0.2, r);
+    gsl_spmatrix *B = create_random_sparse(M, N, 0.2, r);
+    gsl_spmatrix *A_ccs = gsl_spmatrix_ccs(A);
+    gsl_spmatrix *B_ccs = gsl_spmatrix_ccs(B);
+    gsl_spmatrix *C_ccs = gsl_spmatrix_alloc_nzmax(M, N, 1, GSL_SPMATRIX_CCS);
     
-    gsl_spmatrix_add(c, a, b);
+    gsl_spmatrix_add(C_ccs, A_ccs, B_ccs);
 
     status = 0;
     for (i = 0; i < M; ++i)
       {
         for (j = 0; j < N; ++j)
           {
-            double aij = gsl_spmatrix_get(a, i, j);
-            double bij = gsl_spmatrix_get(b, i, j);
-            double cij = gsl_spmatrix_get(c, i, j);
+            double aij = gsl_spmatrix_get(A_ccs, i, j);
+            double bij = gsl_spmatrix_get(B_ccs, i, j);
+            double cij = gsl_spmatrix_get(C_ccs, i, j);
 
             if (aij + bij != cij)
               status = 1;
           }
       }
 
-    gsl_test(status, "test_ops: _add M=%zu N=%zu compressed format", M, N);
+    gsl_test(status, "test_ops: _add M=%zu N=%zu CCS", M, N);
 
-    gsl_spmatrix_free(Ta);
-    gsl_spmatrix_free(Tb);
-    gsl_spmatrix_free(a);
-    gsl_spmatrix_free(b);
-    gsl_spmatrix_free(c);
+    gsl_spmatrix_free(A);
+    gsl_spmatrix_free(B);
+    gsl_spmatrix_free(A_ccs);
+    gsl_spmatrix_free(B_ccs);
+    gsl_spmatrix_free(C_ccs);
   }
 } /* test_ops() */
 

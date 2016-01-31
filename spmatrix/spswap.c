@@ -111,6 +111,42 @@ gsl_spmatrix_transpose_memcpy(gsl_spmatrix *dest, const gsl_spmatrix *src)
                 }
             }
         }
+      else if (GSL_SPMATRIX_ISCRS(src))
+        {
+          size_t *Aj = src->i;
+          size_t *Ap = src->p;
+          double *Ad = src->data;
+          size_t *ATj = dest->i;
+          size_t *ATp = dest->p;
+          double *ATd = dest->data;
+          size_t *w = (size_t *) dest->work;
+          size_t p, i;
+
+          /* initialize to 0 */
+          for (p = 0; p < N + 1; ++p)
+            ATp[p] = 0;
+
+          /* compute column counts of A (= row counts for A^T) */
+          for (p = 0; p < nz; ++p)
+            ATp[Aj[p]]++;
+
+          /* compute column pointers for A (= row pointers for A^T) */
+          gsl_spmatrix_cumsum(N, ATp);
+
+          /* make copy of column pointers */
+          for (i = 0; i < N; ++i)
+            w[i] = ATp[i];
+
+          for (i = 0; i < M; ++i)
+            {
+              for (p = Ap[i]; p < Ap[i + 1]; ++p)
+                {
+                  size_t k = w[Aj[p]]++;
+                  ATj[k] = i;
+                  ATd[k] = Ad[p];
+                }
+            }
+        }
       else
         {
           GSL_ERROR("unknown sparse matrix type", GSL_EINVAL);

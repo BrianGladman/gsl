@@ -57,13 +57,21 @@ typedef struct
  *   i = A->i[n]
  *   j = A->p[n]
  *
- * Compressed column format:
+ * Compressed column format (CCS):
  *
  * If data[n] = A_{ij}, then:
  *   i = A->i[n]
  *   A->p[j] <= n < A->p[j+1]
  * so that column j is stored in
  * [ data[p[j]], data[p[j] + 1], ..., data[p[j+1] - 1] ]
+ *
+ * Compressed row format (CRS):
+ *
+ * If data[n] = A_{ij}, then:
+ *   j = A->i[n]
+ *   A->p[i] <= n < A->p[i+1]
+ * so that row i is stored in
+ * [ data[p[i]], data[p[i] + 1], ..., data[p[i+1] - 1] ]
  */
 
 typedef struct
@@ -71,15 +79,21 @@ typedef struct
   size_t size1;  /* number of rows */
   size_t size2;  /* number of columns */
 
-  size_t *i;     /* row indices of size nzmax */
+  /* i (size nzmax) contains:
+   *
+   * Triplet/CCS: row indices
+   * CRS: column indices
+   */
+  size_t *i;
+
   double *data;  /* matrix elements of size nzmax */
 
   /*
    * p contains the column indices (triplet) or column pointers (compcol)
    *
-   * triplet:   p[n] = column number of element data[n]
-   * comp. col: p[j] = index in data of first non-zero element in column j
-   * comp. row: p[i] = index in data of first non-zero element in row i
+   * triplet: p[n] = column number of element data[n]
+   * CCS:     p[j] = index in data of first non-zero element in column j
+   * CRS:     p[i] = index in data of first non-zero element in row i
    */
   size_t *p;
 
@@ -99,9 +113,11 @@ typedef struct
 
 #define GSL_SPMATRIX_TRIPLET      (0)
 #define GSL_SPMATRIX_CCS          (1)
+#define GSL_SPMATRIX_CRS          (2)
 
 #define GSL_SPMATRIX_ISTRIPLET(m) ((m)->sptype == GSL_SPMATRIX_TRIPLET)
 #define GSL_SPMATRIX_ISCCS(m)     ((m)->sptype == GSL_SPMATRIX_CCS)
+#define GSL_SPMATRIX_ISCRS(m)     ((m)->sptype == GSL_SPMATRIX_CRS)
 
 /*
  * Prototypes
@@ -128,6 +144,8 @@ int gsl_spmatrix_set(gsl_spmatrix *m, const size_t i, const size_t j,
 
 /* spcompress.c */
 gsl_spmatrix *gsl_spmatrix_compcol(const gsl_spmatrix *T);
+gsl_spmatrix *gsl_spmatrix_ccs(const gsl_spmatrix *T);
+gsl_spmatrix *gsl_spmatrix_crs(const gsl_spmatrix *T);
 void gsl_spmatrix_cumsum(const size_t n, size_t *c);
 
 /* spoper.c */
