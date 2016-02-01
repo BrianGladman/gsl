@@ -210,6 +210,11 @@ matrix @var{src}. Also, both matrices must use the same sparse storage
 format.
 @end deftypefun
 
+@deftypefun int gsl_spmatrix_transpose (gsl_spmatrix * @var{m})
+This function replaces the matrix @var{m} by its transpose. The
+matrix @var{m} may be in any storage format.
+@end deftypefun
+
 @node Sparse matrix operations
 @section Sparse matrix operations
 @cindex sparse matrices, operations

@@ -161,6 +161,7 @@ int gsl_spmatrix_sp2d(gsl_matrix *A, const gsl_spmatrix *S);
 int gsl_spmatrix_equal(const gsl_spmatrix *a, const gsl_spmatrix *b);
 
 /* spswap.c */
+int gsl_spmatrix_transpose(gsl_spmatrix * m);
 int gsl_spmatrix_transpose_memcpy(gsl_spmatrix *dest, const gsl_spmatrix *src);
 
 __END_DECLS

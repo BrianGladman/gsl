@@ -73,7 +73,8 @@ create_random_sparse(const size_t M, const size_t N, const double density,
 } /* create_random_sparse() */
 
 static void
-test_getset(const size_t M, const size_t N, const gsl_rng *r)
+test_getset(const size_t M, const size_t N,
+            const double density, const gsl_rng *r)
 {
   int status;
   size_t i, j;
@@ -168,7 +169,7 @@ test_getset(const size_t M, const size_t N, const gsl_rng *r)
 
   /* test CCS version of gsl_spmatrix_get() */
   {
-    gsl_spmatrix *T = create_random_sparse(M, N, 0.3, r);
+    gsl_spmatrix *T = create_random_sparse(M, N, density, r);
     gsl_spmatrix *C = gsl_spmatrix_ccs(T);
 
     status = 0;
@@ -192,7 +193,7 @@ test_getset(const size_t M, const size_t N, const gsl_rng *r)
 
   /* test CRS version of gsl_spmatrix_get() */
   {
-    gsl_spmatrix *T = create_random_sparse(M, N, 0.3, r);
+    gsl_spmatrix *T = create_random_sparse(M, N, density, r);
     gsl_spmatrix *C = gsl_spmatrix_crs(T);
 
     status = 0;
@@ -216,12 +217,13 @@ test_getset(const size_t M, const size_t N, const gsl_rng *r)
 } /* test_getset() */
 
 static void
-test_memcpy(const size_t M, const size_t N, const gsl_rng *r)
+test_memcpy(const size_t M, const size_t N,
+            const double density, const gsl_rng *r)
 {
   int status;
 
   {
-    gsl_spmatrix *A = create_random_sparse(M, N, 0.2, r);
+    gsl_spmatrix *A = create_random_sparse(M, N, density, r);
     gsl_spmatrix *A_ccs = gsl_spmatrix_ccs(A);
     gsl_spmatrix *A_crs = gsl_spmatrix_crs(A);
     gsl_spmatrix *B_t, *B_ccs, *B_crs;
@@ -254,7 +256,7 @@ test_memcpy(const size_t M, const size_t N, const gsl_rng *r)
 
   /* test transpose_memcpy */
   {
-    gsl_spmatrix *A = create_random_sparse(M, N, 0.3, r);
+    gsl_spmatrix *A = create_random_sparse(M, N, density, r);
     gsl_spmatrix *AT = gsl_spmatrix_alloc(N, M);
     gsl_spmatrix *B = gsl_spmatrix_ccs(A);
     gsl_spmatrix *BT = gsl_spmatrix_alloc_nzmax(N, M, 1, GSL_SPMATRIX_CCS);
@@ -323,15 +325,95 @@ test_memcpy(const size_t M, const size_t N, const gsl_rng *r)
 } /* test_memcpy() */
 
 static void
-test_ops(const size_t M, const size_t N, const gsl_rng *r)
+test_transpose(const size_t M, const size_t N,
+               const double density, const gsl_rng *r)
+{
+  int status;
+  gsl_spmatrix *A = create_random_sparse(M, N, density, r);
+  gsl_spmatrix *AT = gsl_spmatrix_alloc_nzmax(M, N, A->nz, A->sptype);
+  gsl_spmatrix *AT_ccs, *AT_crs;
+  size_t i, j;
+
+  /* test triplet transpose */
+
+  gsl_spmatrix_memcpy(AT, A);
+  gsl_spmatrix_transpose(AT);
+
+  status = 0;
+  for (i = 0; i < M; ++i)
+    {
+      for (j = 0; j < N; ++j)
+        {
+          double Aij = gsl_spmatrix_get(A, i, j);
+          double ATji = gsl_spmatrix_get(AT, j, i);
+
+          if (Aij != ATji)
+            status = 1;
+        }
+    }
+
+  gsl_test(status, "test_transpose: _transpose M=%zu N=%zu triplet format",
+           M, N);
+
+  /* test CCS transpose */
+
+  AT_ccs = gsl_spmatrix_ccs(A);
+  gsl_spmatrix_transpose(AT_ccs);
+
+  status = 0;
+  for (i = 0; i < M; ++i)
+    {
+      for (j = 0; j < N; ++j)
+        {
+          double Aij = gsl_spmatrix_get(A, i, j);
+          double ATji = gsl_spmatrix_get(AT_ccs, j, i);
+
+          if (Aij != ATji)
+            status = 1;
+        }
+    }
+
+  gsl_test(status, "test_transpose: _transpose M=%zu N=%zu CCS format",
+           M, N);
+
+  /* test CRS transpose */
+
+  AT_crs = gsl_spmatrix_crs(A);
+  gsl_spmatrix_transpose(AT_crs);
+
+  status = 0;
+  for (i = 0; i < M; ++i)
+    {
+      for (j = 0; j < N; ++j)
+        {
+          double Aij = gsl_spmatrix_get(A, i, j);
+          double ATji = gsl_spmatrix_get(AT_crs, j, i);
+
+          if (Aij != ATji)
+            status = 1;
+        }
+    }
+
+  gsl_test(status, "test_transpose: _transpose M=%zu N=%zu CRS format",
+           M, N);
+
+  gsl_spmatrix_free(A);
+  gsl_spmatrix_free(AT);
+  gsl_spmatrix_free(AT_ccs);
+  gsl_spmatrix_free(AT_crs);
+}
+
+static void
+test_ops(const size_t M, const size_t N,
+         const double density, const gsl_rng *r)
 {
   size_t i, j;
   int status;
 
   /* test gsl_spmatrix_add */
   {
-    gsl_spmatrix *A = create_random_sparse(M, N, 0.2, r);
-    gsl_spmatrix *B = create_random_sparse(M, N, 0.2, r);
+    gsl_spmatrix *A = create_random_sparse(M, N, density, r);
+    gsl_spmatrix *B = create_random_sparse(M, N, density, r);
     gsl_spmatrix *A_ccs = gsl_spmatrix_ccs(A);
     gsl_spmatrix *B_ccs = gsl_spmatrix_ccs(B);
     gsl_spmatrix *C_ccs = gsl_spmatrix_alloc_nzmax(M, N, 1, GSL_SPMATRIX_CCS);
@@ -367,20 +449,25 @@ main()
 {
   gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
 
-  test_memcpy(10, 10, r);
-  test_memcpy(10, 15, r);
-  test_memcpy(53, 213, r);
-  test_memcpy(920, 2, r);
-  test_memcpy(2, 920, r);
+  test_memcpy(10, 10, 0.2, r);
+  test_memcpy(10, 15, 0.3, r);
+  test_memcpy(53, 213, 0.4, r);
+  test_memcpy(920, 2, 0.2, r);
+  test_memcpy(2, 920, 0.3, r);
 
-  test_getset(20, 20, r);
-  test_getset(30, 20, r);
-  test_getset(15, 210, r);
+  test_getset(20, 20, 0.3, r);
+  test_getset(30, 20, 0.3, r);
+  test_getset(15, 210, 0.3, r);
 
-  test_ops(20, 20, r);
-  test_ops(50, 20, r);
-  test_ops(20, 50, r);
-  test_ops(76, 43, r);
+  test_transpose(50, 50, 0.5, r);
+  test_transpose(10, 40, 0.3, r);
+  test_transpose(40, 10, 0.3, r);
+  test_transpose(57, 13, 0.2, r);
+
+  test_ops(20, 20, 0.2, r);
+  test_ops(50, 20, 0.3, r);
+  test_ops(20, 50, 0.3, r);
+  test_ops(76, 43, 0.4, r);
 
   gsl_rng_free(r);
 
