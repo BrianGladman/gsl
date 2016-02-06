@@ -1,6 +1,6 @@
 /* test.c
  * 
- * Copyright (C) 2012-2014 Patrick Alken
+ * Copyright (C) 2012-2014, 2016 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #include <config.h>
 #include <stdlib.h>
 #include <math.h>
+#include <unistd.h>
 
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
@@ -71,6 +72,31 @@ create_random_sparse(const size_t M, const size_t N, const double density,
 
   return m;
 } /* create_random_sparse() */
+
+static gsl_spmatrix *
+create_random_sparse_int(const size_t M, const size_t N, const double density,
+                         const gsl_rng *r)
+{
+  const double lower = 1.0;
+  const double upper = 10.0;
+  size_t nnzwanted = (size_t) floor(M * N * GSL_MIN(density, 1.0));
+  gsl_spmatrix *m = gsl_spmatrix_alloc_nzmax(M, N,
+                                             nnzwanted,
+                                             GSL_SPMATRIX_TRIPLET);
+
+  while (gsl_spmatrix_nnz(m) < nnzwanted)
+    {
+      /* generate a random row and column */
+      size_t i = gsl_rng_uniform(r) * M;
+      size_t j = gsl_rng_uniform(r) * N;
+
+      /* generate random m_{ij} and add it */
+      int x = (int) (gsl_rng_uniform(r) * (upper - lower) + lower);
+      gsl_spmatrix_set(m, i, j, (double) x);
+    }
+
+  return m;
+}
 
 static void
 test_getset(const size_t M, const size_t N,
@@ -444,6 +470,48 @@ test_ops(const size_t M, const size_t N,
   }
 } /* test_ops() */
 
+static void
+test_io(const size_t M, const size_t N,
+        const double density, const gsl_rng *r)
+{
+  int status;
+  gsl_spmatrix *A = create_random_sparse_int(M, N, density, r);
+
+  char filename[] = "test.XXXXXX";
+#if !defined( _WIN32 )
+  int fd = mkstemp(filename);
+#else
+  char * fd = _mktemp(filename);
+# define fdopen fopen
+#endif
+
+  /* test triplet I/O */
+  {
+    FILE *f = fdopen(fd, "w");
+
+    gsl_spmatrix_fprintf(f, A, "%lg");
+
+    fclose(f);
+  }
+
+  {
+    FILE *f = fopen(filename, "r");
+    gsl_spmatrix *B = gsl_spmatrix_alloc_nzmax(M, N, A->nz, A->sptype);
+
+    gsl_spmatrix_fscanf(f, B);
+
+    status = gsl_spmatrix_equal(A, B) != 1;
+    gsl_test(status, "test_io: fprintf/fscanf M=%zu N=%zu triplet format", M, N);
+
+    fclose(f);
+    gsl_spmatrix_free(B);
+  }
+
+  unlink(filename);
+
+  gsl_spmatrix_free(A);
+}
+
 int
 main()
 {
@@ -468,6 +536,11 @@ main()
   test_ops(50, 20, 0.3, r);
   test_ops(20, 50, 0.3, r);
   test_ops(76, 43, 0.4, r);
+
+  test_io(30, 30, 0.3, r);
+  test_io(20, 10, 0.2, r);
+  test_io(10, 20, 0.2, r);
+  test_io(34, 78, 0.3, r);
 
   gsl_rng_free(r);
 

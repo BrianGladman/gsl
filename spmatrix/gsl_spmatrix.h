@@ -148,6 +148,11 @@ gsl_spmatrix *gsl_spmatrix_ccs(const gsl_spmatrix *T);
 gsl_spmatrix *gsl_spmatrix_crs(const gsl_spmatrix *T);
 void gsl_spmatrix_cumsum(const size_t n, size_t *c);
 
+/* spio.c */
+int gsl_spmatrix_fprintf(FILE *stream, const gsl_spmatrix *m,
+                         const char *format);
+int gsl_spmatrix_fscanf(FILE *stream, gsl_spmatrix *m);
+
 /* spoper.c */
 int gsl_spmatrix_scale(gsl_spmatrix *m, const double x);
 int gsl_spmatrix_minmax(const gsl_spmatrix *m, double *min_out,

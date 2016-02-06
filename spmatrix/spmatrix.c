@@ -323,15 +323,6 @@ gsl_spmatrix_nnz(const gsl_spmatrix *m)
   return m->nz;
 } /* gsl_spmatrix_nnz() */
 
-int
-gsl_spmatrix_fprintf(FILE *stream, const gsl_spmatrix *m,
-                     const char *format)
-{
-  int s = 0;
-
-  return s;
-} /* gsl_spmatrix_fprintf() */
-
 /*
 gsl_spmatrix_compare_idx()
   Comparison function for searching binary tree in triplet
