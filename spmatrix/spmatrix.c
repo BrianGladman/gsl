@@ -451,6 +451,8 @@ avl_spmalloc (size_t size, void *param)
 static void
 avl_spfree (void *block, void *param)
 {
+  (void)block;
+  (void)param;
   /*
    * do nothing - instead of allocating/freeing individual nodes,
    * we malloc and free nzmax nodes at a time
