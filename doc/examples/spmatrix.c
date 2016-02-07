@@ -28,8 +28,7 @@ main()
 
   /* print out elements in triplet format */
   printf("matrix in triplet format (i,j,Aij):\n");
-  for (i = 0; i < A->nz; ++i)
-    printf("(%zu, %zu, %.1f)\n", A->i[i], A->p[i], A->data[i]);
+  gsl_spmatrix_fprintf(stdout, A, "%.1f");
 
   /* convert to compressed column format */
   B = gsl_spmatrix_ccs(A);

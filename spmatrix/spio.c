@@ -33,7 +33,7 @@ gsl_spmatrix_fprintf(FILE *stream, const gsl_spmatrix *m,
   int status;
 
   /* print header */
-  status = fprintf(stream, "%zu %zu %zu\n",
+  status = fprintf(stream, "%zu\t%zu\t%zu\n",
                    m->size1, m->size2, m->nz);
   if (status < 0)
     {
@@ -46,7 +46,7 @@ gsl_spmatrix_fprintf(FILE *stream, const gsl_spmatrix *m,
 
       for (n = 0; n < m->nz; ++n)
         {
-          status = fprintf(stream, "%zu %zu ", m->i[n], m->p[n]);
+          status = fprintf(stream, "%zu\t%zu\t", m->i[n], m->p[n]);
           if (status < 0)
             {
               GSL_ERROR("fprintf failed", GSL_EFAILED);
@@ -116,6 +116,161 @@ gsl_spmatrix_fscanf(FILE *stream, gsl_spmatrix *m)
   else
     {
       GSL_ERROR("unknown sparse matrix type", GSL_EINVAL);
+    }
+
+  return GSL_SUCCESS;
+}
+
+int
+gsl_spmatrix_fwrite(FILE *stream, const gsl_spmatrix *m)
+{
+  size_t items;
+
+  /* write header: size1, size2, nz */
+
+  items = fwrite(&(m->size1), sizeof(size_t), 1, stream);
+  if (items != 1)
+    {
+      GSL_ERROR("fwrite failed on size1", GSL_EFAILED);
+    }
+
+  items = fwrite(&(m->size2), sizeof(size_t), 1, stream);
+  if (items != 1)
+    {
+      GSL_ERROR("fwrite failed on size2", GSL_EFAILED);
+    }
+
+  items = fwrite(&(m->nz), sizeof(size_t), 1, stream);
+  if (items != 1)
+    {
+      GSL_ERROR("fwrite failed on nz", GSL_EFAILED);
+    }
+
+  /* write m->i and m->data which are size nz in all storage formats */
+
+  items = fwrite(m->i, sizeof(size_t), m->nz, stream);
+  if (items != m->nz)
+    {
+      GSL_ERROR("fwrite failed on row indices", GSL_EFAILED);
+    }
+
+  items = fwrite(m->data, sizeof(double), m->nz, stream);
+  if (items != m->nz)
+    {
+      GSL_ERROR("fwrite failed on data", GSL_EFAILED);
+    }
+
+  if (GSL_SPMATRIX_ISTRIPLET(m))
+    {
+      items = fwrite(m->p, sizeof(size_t), m->nz, stream);
+      if (items != m->nz)
+        {
+          GSL_ERROR("fwrite failed on column indices", GSL_EFAILED);
+        }
+    }
+  else if (GSL_SPMATRIX_ISCCS(m))
+    {
+      items = fwrite(m->p, sizeof(size_t), m->size2 + 1, stream);
+      if (items != m->size2 + 1)
+        {
+          GSL_ERROR("fwrite failed on column indices", GSL_EFAILED);
+        }
+    }
+  else if (GSL_SPMATRIX_ISCRS(m))
+    {
+      items = fwrite(m->p, sizeof(size_t), m->size1 + 1, stream);
+      if (items != m->size1 + 1)
+        {
+          GSL_ERROR("fwrite failed on column indices", GSL_EFAILED);
+        }
+    }
+
+  return GSL_SUCCESS;
+}
+
+int
+gsl_spmatrix_fread(FILE *stream, gsl_spmatrix *m)
+{
+  size_t size1, size2, nz;
+  size_t items;
+
+  /* read header: size1, size2, nz */
+
+  items = fread(&size1, sizeof(size_t), 1, stream);
+  if (items != 1)
+    {
+      GSL_ERROR("fread failed on size1", GSL_EFAILED);
+    }
+
+  items = fread(&size2, sizeof(size_t), 1, stream);
+  if (items != 1)
+    {
+      GSL_ERROR("fread failed on size2", GSL_EFAILED);
+    }
+
+  items = fread(&nz, sizeof(size_t), 1, stream);
+  if (items != 1)
+    {
+      GSL_ERROR("fread failed on nz", GSL_EFAILED);
+    }
+
+  if (m->size1 != size1)
+    {
+      GSL_ERROR("matrix has wrong size1", GSL_EBADLEN);
+    }
+  else if (m->size2 != size2)
+    {
+      GSL_ERROR("matrix has wrong size2", GSL_EBADLEN);
+    }
+  else if (nz > m->nzmax)
+    {
+      GSL_ERROR("matrix nzmax is too small", GSL_EBADLEN);
+    }
+  else
+    {
+      /* read m->i and m->data arrays, which are size nz for all formats */
+
+      items = fread(m->i, sizeof(size_t), nz, stream);
+      if (items != nz)
+        {
+          GSL_ERROR("fread failed on row indices", GSL_EFAILED);
+        }
+
+      items = fread(m->data, sizeof(double), nz, stream);
+      if (items != nz)
+        {
+          GSL_ERROR("fread failed on data", GSL_EFAILED);
+        }
+
+      m->nz = nz;
+
+      if (GSL_SPMATRIX_ISTRIPLET(m))
+        {
+          items = fread(m->p, sizeof(size_t), nz, stream);
+          if (items != nz)
+            {
+              GSL_ERROR("fread failed on column indices", GSL_EFAILED);
+            }
+
+          /* build binary search tree for m */
+          gsl_spmatrix_tree_rebuild(m);
+        }
+      else if (GSL_SPMATRIX_ISCCS(m))
+        {
+          items = fread(m->p, sizeof(size_t), size2 + 1, stream);
+          if (items != size2 + 1)
+            {
+              GSL_ERROR("fread failed on row pointers", GSL_EFAILED);
+            }
+        }
+      else if (GSL_SPMATRIX_ISCRS(m))
+        {
+          items = fread(m->p, sizeof(size_t), size1 + 1, stream);
+          if (items != size1 + 1)
+            {
+              GSL_ERROR("fread failed on column pointers", GSL_EFAILED);
+            }
+        }
     }
 
   return GSL_SUCCESS;

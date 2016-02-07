@@ -369,6 +369,44 @@ gsl_spmatrix_compare_idx(const size_t ia, const size_t ja,
 }
 
 /*
+gsl_spmatrix_tree_rebuild()
+  When reading a triplet matrix from disk, or when
+copying a triplet matrix, it is necessary to rebuild the
+binary tree for element searches.
+
+Inputs: m - triplet matrix
+*/
+
+int
+gsl_spmatrix_tree_rebuild(gsl_spmatrix * m)
+{
+  if (!GSL_SPMATRIX_ISTRIPLET(m))
+    {
+      GSL_ERROR("m must be in triplet format", GSL_EINVAL);
+    }
+  else
+    {
+      size_t n;
+
+      /* reset tree to empty state, but don't free root tree ptr */
+      avl_empty(m->tree_data->tree, NULL);
+      m->tree_data->n = 0;
+
+      /* insert all tree elements */
+      for (n = 0; n < m->nz; ++n)
+        {
+          void *ptr = avl_insert(m->tree_data->tree, &m->data[n]);
+          if (ptr != NULL)
+            {
+              GSL_ERROR("detected duplicate entry", GSL_EINVAL);
+            }
+        }
+
+      return GSL_SUCCESS;
+    }
+}
+
+/*
 compare_triplet()
   Comparison function for searching binary tree in triplet
 representation.

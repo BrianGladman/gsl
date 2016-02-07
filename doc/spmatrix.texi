@@ -16,21 +16,23 @@ The header file @file{gsl_spmatrix.h} contains the prototypes for the
 sparse matrix functions and related declarations.
 
 @menu
-* Overview of Sparse Matrices::
-* Sparse matrix allocation::
-* Accessing sparse matrix elements::
-* Initializing sparse matrix elements::
-* Copying sparse matrices::
-* Sparse matrix operations::
-* Sparse matrix properties::
-* Finding maximum and minimum elements of sparse matrices::
-* Sparse matrix compressed format::
-* Conversion between sparse and dense matrices::
-* Sparse Matrix Examples::
-* Sparse Matrix References and Further Reading::
+* Sparse Matrices Overview::
+* Sparse Matrices Allocation::
+* Sparse Matrices Accessing Elements::
+* Sparse Matrices Initializing Elements::
+* Sparse Matrices Reading and Writing::
+* Sparse Matrices Copying::
+* Sparse Matrices Exchanging Rows and Columns::
+* Sparse Matrices Operations::
+* Sparse Matrices Properties::
+* Sparse Matrices Finding Maximum and Minimum Elements::
+* Sparse Matrices Compressed Format::
+* Sparse Matrices Conversion Between Sparse and Dense::
+* Sparse Matrices Examples::
+* Sparse Matrices References and Further Reading::
 @end menu
 
-@node Overview of Sparse Matrices
+@node Sparse Matrices Overview
 @section Overview
 @cindex sparse matrices, overview
 
@@ -109,8 +111,8 @@ which accept compressed storage input. The user can simply
 pass the arrays @var{i}, @var{p}, and @var{data} as the
 inputs to external libraries.
 
-@node Sparse matrix allocation
-@section Sparse matrix allocation
+@node Sparse Matrices Allocation
+@section Allocation
 @cindex sparse matrices, allocation
 
 The functions for allocating memory for a sparse matrix follow the style of
@@ -167,8 +169,8 @@ sparse matrix than the previously specified @var{nzmax}.
 This function frees the memory associated with the sparse matrix @var{m}.
 @end deftypefun
 
-@node Accessing sparse matrix elements
-@section Accessing sparse matrix elements
+@node Sparse Matrices Accessing Elements
+@section Accessing Matrix Elements
 @cindex sparse matrices, accessing elements
 
 @deftypefun double gsl_spmatrix_get (const gsl_spmatrix * @var{m}, const size_t @var{i}, const size_t @var{j})
@@ -187,8 +189,8 @@ If the (@var{i},@var{j}) element is not explicitly stored in the matrix,
 a null pointer is returned.
 @end deftypefun
 
-@node Initializing sparse matrix elements
-@section Initializing sparse matrix elements
+@node Sparse Matrices Initializing Elements
+@section Initializing Matrix Elements
 @cindex sparse matrices, initializing elements
 
 Since the sparse matrix format only stores the non-zero elements, it is automatically
@@ -199,8 +201,51 @@ be used to re-initialize a matrix to zero after elements have been added to it.
 This function sets (or resets) all the elements of the matrix @var{m} to zero.
 @end deftypefun
 
-@node Copying sparse matrices
-@section Copying sparse matrices
+@node Sparse Matrices Reading and Writing
+@section Reading and Writing Matrices
+@cindex sparse matrices, reading
+@cindex sparse matrices, writing
+
+@deftypefun int gsl_spmatrix_fwrite (FILE * @var{stream}, const gsl_spmatrix * @var{m})
+This function writes the elements of the matrix @var{m} to the stream
+@var{stream} in binary format.  The return value is 0 for success and
+@code{GSL_EFAILED} if there was a problem writing to the file.  Since the
+data is written in the native binary format it may not be portable
+between different architectures.
+@end deftypefun
+
+@deftypefun int gsl_spmatrix_fread (FILE * @var{stream}, gsl_spmatrix * @var{m})
+This function reads into the matrix @var{m} from the open stream
+@var{stream} in binary format.  The matrix @var{m} must be preallocated
+with the correct storage format, dimensions and have a sufficiently large @code{nzmax}
+in order to read in all matrix elements, otherwise @code{GSL_EBADLEN}
+is returned. The return value is 0 for success and
+@code{GSL_EFAILED} if there was a problem reading from the file.  The
+data is assumed to have been written in the native binary format on the
+same architecture.
+@end deftypefun
+
+@deftypefun int gsl_spmatrix_fprintf (FILE * @var{stream}, const gsl_spmatrix * @var{m}, const char * @var{format})
+This function writes the elements of the matrix @var{m} line-by-line to
+the stream @var{stream} using the format specifier @var{format}, which
+should be one of the @code{%g}, @code{%e} or @code{%f} formats for
+floating point numbers.  The function returns 0 for success and
+@code{GSL_EFAILED} if there was a problem writing to the file. The
+first line of output is a tab-separated header of @code{size1, size2, nz}.
+@end deftypefun
+
+@deftypefun int gsl_spmatrix_fscanf (FILE * @var{stream}, gsl_spmatrix * @var{m})
+This function reads formatted data from the stream @var{stream} into the
+matrix @var{m}. The matrix @var{m} must be preallocated with the correct
+storage format and dimensions. The first line of input must be
+a whitespace separated header of @code{size1, size2, nz} which is
+used to determine how many numbers to read.
+The function returns 0 for success and
+@code{GSL_EFAILED} if there was a problem reading from the file.
+@end deftypefun
+
+@node Sparse Matrices Copying
+@section Copying Matrices
 @cindex sparse matrices, copying
 
 @deftypefun int gsl_spmatrix_memcpy (gsl_spmatrix * @var{dest}, const gsl_spmatrix * @var{src})
@@ -208,6 +253,10 @@ This function copies the elements of the sparse matrix @var{src} into
 @var{dest}. The two matrices must have the same dimensions and be in the
 same storage format.
 @end deftypefun
+
+@node Sparse Matrices Exchanging Rows and Columns
+@section Exchanging Rows and Columns
+@cindex sparse matrices, exchanging rows and columns
 
 @deftypefun int gsl_spmatrix_transpose_memcpy (gsl_spmatrix * @var{dest}, const gsl_spmatrix * @var{src})
 This function copies the transpose of the sparse matrix @var{src} into
@@ -217,12 +266,25 @@ format.
 @end deftypefun
 
 @deftypefun int gsl_spmatrix_transpose (gsl_spmatrix * @var{m})
-This function replaces the matrix @var{m} by its transpose. The
-matrix @var{m} may be in any storage format.
+This function replaces the matrix @var{m} by its transpose,
+preserving the storage format of the input matrix. Currently,
+only triplet matrix inputs are supported.
 @end deftypefun
 
-@node Sparse matrix operations
-@section Sparse matrix operations
+@deftypefun int gsl_spmatrix_transpose2 (gsl_spmatrix * @var{m})
+This function replaces the matrix @var{m} by its transpose, but
+changes the storage format for compressed matrix inputs. Since
+compressed column storage is the transpose of compressed row storage,
+this function simply converts a CCS matrix to CRS and vice versa.
+This is the most efficient way to transpose a compressed storage
+matrix, but the user should note that the storage format of their
+compressed matrix will change on output. For triplet matrices,
+the output matrix is also in triplet storage.
+@end deftypefun
+
+
+@node Sparse Matrices Operations
+@section Matrix Operations
 @cindex sparse matrices, operations
 
 @deftypefun int gsl_spmatrix_add (gsl_spmatrix * @var{c}, const gsl_spmatrix * @var{a}, const gsl_spmatrix * @var{b})
@@ -235,8 +297,8 @@ This function scales all elements of the matrix @var{m} by the constant
 factor @var{x}. The result @math{m(i,j) \leftarrow x m(i,j)} is stored in @var{m}.
 @end deftypefun
 
-@node Sparse matrix properties
-@section Sparse matrix properties
+@node Sparse Matrices Properties
+@section Matrix Properties
 @cindex sparse matrices, properties
 
 @deftypefun size_t gsl_spmatrix_nnz (const gsl_spmatrix * @var{m})
@@ -249,8 +311,8 @@ element values) and 0 otherwise. The matrices @var{a} and @var{b} must be in the
 sparse storage format for comparison.
 @end deftypefun
 
-@node Finding maximum and minimum elements of sparse matrices
-@section Finding maximum and minimum elements of sparse matrices
+@node Sparse Matrices Finding Maximum and Minimum Elements
+@section Finding Maximum and Minimum Elements
 @cindex sparse matrices, min/max elements
 
 @deftypefun int gsl_spmatrix_minmax (const gsl_spmatrix * @var{m}, double * @var{min_out}, double * @var{max_out})
@@ -259,8 +321,8 @@ This function returns the minimum and maximum elements of the matrix
 only the non-zero values.
 @end deftypefun
 
-@node Sparse matrix compressed format
-@section Sparse matrix compressed format
+@node Sparse Matrices Compressed Format
+@section Compressed Format
 @cindex sparse matrices, compression
 
 GSL supports compressed column storage (CCS) and compressed row storage (CRS)
@@ -280,8 +342,8 @@ A pointer to a newly allocated matrix is returned. The calling function
 should free the newly allocated matrix when it is no longer needed.
 @end deftypefun
 
-@node Conversion between sparse and dense matrices
-@section Conversion between sparse and dense matrices
+@node Sparse Matrices Conversion Between Sparse and Dense
+@section Conversion Between Sparse and Dense Matrices
 @cindex sparse matrices, conversion
 
 The @code{gsl_spmatrix} structure can be converted into the dense @code{gsl_matrix}
@@ -297,7 +359,7 @@ This function converts the sparse matrix @var{S} into a dense matrix and
 stores the result in @var{A}. @var{S} must be in triplet format.
 @end deftypefun
 
-@node Sparse Matrix Examples
+@node Sparse Matrices Examples
 @section Examples
 @cindex sparse matrices, examples
 
@@ -368,7 +430,7 @@ in the data array.
 @verbatiminclude examples/spmatrix.c
 @end example
 
-@node Sparse Matrix References and Further Reading
+@node Sparse Matrices References and Further Reading
 @section References and Further Reading
 @cindex sparse matrices, references
 

@@ -31,9 +31,8 @@
 
 /*
 gsl_spmatrix_transpose()
-  Replace the sparse matrix src by its transpose either by
-  swapping its row and column indices if it is in triplet storage,
-  or by switching its major if it is in compressed storage.
+  Replace the sparse matrix src by its transpose,
+keeping the matrix in the same storage format
 
 Inputs: A - (input/output) sparse matrix to transpose.
 */
@@ -55,20 +54,39 @@ gsl_spmatrix_transpose(gsl_spmatrix * m)
 
       /* need to rebuild AVL tree, or element searches won't
        * work correctly with transposed indices */
+      gsl_spmatrix_tree_rebuild(m);
+    }
+  else
+    {
+      GSL_ERROR("unknown sparse matrix type", GSL_EINVAL);
+    }
+  
+  /* swap dimensions */
+  if (m->size1 != m->size2)
+    {
+      size_t tmp = m->size1;
+      m->size1 = m->size2;
+      m->size2 = tmp;
+    }
+  
+  return GSL_SUCCESS;
+}
 
-      /* reset tree to empty state, but don't free root tree ptr */
-      avl_empty(m->tree_data->tree, NULL);
-      m->tree_data->n = 0;
+/*
+gsl_spmatrix_transpose2()
+  Replace the sparse matrix src by its transpose either by
+  swapping its row and column indices if it is in triplet storage,
+  or by switching its major if it is in compressed storage.
 
-      /* reinsert all tree elements with new indices */
-      for (n = 0; n < m->nz; ++n)
-        {
-          void *ptr = avl_insert(m->tree_data->tree, &m->data[n]);
-          if (ptr != NULL)
-            {
-              GSL_ERROR("detected duplicate entry", GSL_EINVAL);
-            }
-        }
+Inputs: A - (input/output) sparse matrix to transpose.
+*/
+
+int
+gsl_spmatrix_transpose2(gsl_spmatrix * m)
+{
+  if (GSL_SPMATRIX_ISTRIPLET(m))
+    {
+      return gsl_spmatrix_transpose(m);
     }
   else if (GSL_SPMATRIX_ISCCS(m))
     {

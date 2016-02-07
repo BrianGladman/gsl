@@ -397,13 +397,17 @@ test_transpose(const size_t M, const size_t N,
   int status;
   gsl_spmatrix *A = create_random_sparse(M, N, density, r);
   gsl_spmatrix *AT = gsl_spmatrix_alloc_nzmax(M, N, A->nz, A->sptype);
-  gsl_spmatrix *AT_ccs, *AT_crs;
+  gsl_spmatrix *AT2 = gsl_spmatrix_alloc_nzmax(M, N, A->nz, A->sptype);
+  gsl_spmatrix *AT2_ccs, *AT2_crs;
   size_t i, j;
 
   /* test triplet transpose */
 
   gsl_spmatrix_memcpy(AT, A);
+  gsl_spmatrix_memcpy(AT2, A);
+
   gsl_spmatrix_transpose(AT);
+  gsl_spmatrix_transpose2(AT2);
 
   status = 0;
   for (i = 0; i < M; ++i)
@@ -412,19 +416,25 @@ test_transpose(const size_t M, const size_t N,
         {
           double Aij = gsl_spmatrix_get(A, i, j);
           double ATji = gsl_spmatrix_get(AT, j, i);
+          double AT2ji = gsl_spmatrix_get(AT2, j, i);
 
           if (Aij != ATji)
             status = 1;
+
+          if (Aij != AT2ji)
+            status = 2;
         }
     }
 
-  gsl_test(status, "test_transpose: _transpose M=%zu N=%zu triplet format",
+  gsl_test(status == 1, "test_transpose: transpose M=%zu N=%zu triplet format",
+           M, N);
+  gsl_test(status == 2, "test_transpose: transpose2 M=%zu N=%zu triplet format",
            M, N);
 
   /* test CCS transpose */
 
-  AT_ccs = gsl_spmatrix_ccs(A);
-  gsl_spmatrix_transpose(AT_ccs);
+  AT2_ccs = gsl_spmatrix_ccs(A);
+  gsl_spmatrix_transpose2(AT2_ccs);
 
   status = 0;
   for (i = 0; i < M; ++i)
@@ -432,20 +442,20 @@ test_transpose(const size_t M, const size_t N,
       for (j = 0; j < N; ++j)
         {
           double Aij = gsl_spmatrix_get(A, i, j);
-          double ATji = gsl_spmatrix_get(AT_ccs, j, i);
+          double AT2ji = gsl_spmatrix_get(AT2_ccs, j, i);
 
-          if (Aij != ATji)
-            status = 1;
+          if (Aij != AT2ji)
+            status = 2;
         }
     }
 
-  gsl_test(status, "test_transpose: _transpose M=%zu N=%zu CCS format",
+  gsl_test(status == 2, "test_transpose: transpose2 M=%zu N=%zu CCS format",
            M, N);
 
   /* test CRS transpose */
 
-  AT_crs = gsl_spmatrix_crs(A);
-  gsl_spmatrix_transpose(AT_crs);
+  AT2_crs = gsl_spmatrix_crs(A);
+  gsl_spmatrix_transpose2(AT2_crs);
 
   status = 0;
   for (i = 0; i < M; ++i)
@@ -453,20 +463,21 @@ test_transpose(const size_t M, const size_t N,
       for (j = 0; j < N; ++j)
         {
           double Aij = gsl_spmatrix_get(A, i, j);
-          double ATji = gsl_spmatrix_get(AT_crs, j, i);
+          double AT2ji = gsl_spmatrix_get(AT2_crs, j, i);
 
-          if (Aij != ATji)
-            status = 1;
+          if (Aij != AT2ji)
+            status = 2;
         }
     }
 
-  gsl_test(status, "test_transpose: _transpose M=%zu N=%zu CRS format",
+  gsl_test(status == 2, "test_transpose: transpose2 M=%zu N=%zu CRS format",
            M, N);
 
   gsl_spmatrix_free(A);
   gsl_spmatrix_free(AT);
-  gsl_spmatrix_free(AT_ccs);
-  gsl_spmatrix_free(AT_crs);
+  gsl_spmatrix_free(AT2);
+  gsl_spmatrix_free(AT2_ccs);
+  gsl_spmatrix_free(AT2_crs);
 }
 
 static void
@@ -511,8 +522,8 @@ test_ops(const size_t M, const size_t N,
 } /* test_ops() */
 
 static void
-test_io(const size_t M, const size_t N,
-        const double density, const gsl_rng *r)
+test_io_ascii(const size_t M, const size_t N,
+              const double density, const gsl_rng *r)
 {
   int status;
   gsl_spmatrix *A = create_random_sparse_int(M, N, density, r);
@@ -541,7 +552,7 @@ test_io(const size_t M, const size_t N,
     gsl_spmatrix_fscanf(f, B);
 
     status = gsl_spmatrix_equal(A, B) != 1;
-    gsl_test(status, "test_io: fprintf/fscanf M=%zu N=%zu triplet format", M, N);
+    gsl_test(status, "test_io_ascii: fprintf/fscanf M=%zu N=%zu triplet format", M, N);
 
     fclose(f);
     gsl_spmatrix_free(B);
@@ -550,6 +561,99 @@ test_io(const size_t M, const size_t N,
   unlink(filename);
 
   gsl_spmatrix_free(A);
+}
+
+static void
+test_io_binary(const size_t M, const size_t N,
+               const double density, const gsl_rng *r)
+{
+  int status;
+  gsl_spmatrix *A = create_random_sparse(M, N, density, r);
+  gsl_spmatrix *A_ccs, *A_crs;
+
+  char filename[] = "test.XXXXXX";
+#if !defined( _WIN32 )
+  int fd = mkstemp(filename);
+#else
+  char * fd = _mktemp(filename);
+# define fdopen fopen
+#endif
+
+  /* test triplet I/O */
+  {
+    FILE *f = fdopen(fd, "w");
+
+    gsl_spmatrix_fwrite(f, A);
+
+    fclose(f);
+  }
+
+  {
+    FILE *f = fopen(filename, "r");
+    gsl_spmatrix *B = gsl_spmatrix_alloc_nzmax(M, N, A->nz, A->sptype);
+
+    gsl_spmatrix_fread(f, B);
+
+    status = gsl_spmatrix_equal(A, B) != 1;
+    gsl_test(status, "test_io_binary: fwrite/fread M=%zu N=%zu triplet format", M, N);
+
+    fclose(f);
+    gsl_spmatrix_free(B);
+  }
+
+  /* test CCS I/O */
+  A_ccs = gsl_spmatrix_ccs(A);
+
+  {
+    FILE *f = fopen(filename, "w");
+
+    gsl_spmatrix_fwrite(f, A_ccs);
+
+    fclose(f);
+  }
+
+  {
+    FILE *f = fopen(filename, "r");
+    gsl_spmatrix *B = gsl_spmatrix_alloc_nzmax(M, N, A->nz, GSL_SPMATRIX_CCS);
+
+    gsl_spmatrix_fread(f, B);
+
+    status = gsl_spmatrix_equal(A_ccs, B) != 1;
+    gsl_test(status, "test_io_binary: fwrite/fread M=%zu N=%zu CCS format", M, N);
+
+    fclose(f);
+    gsl_spmatrix_free(B);
+  }
+
+  /* test CRS I/O */
+  A_crs = gsl_spmatrix_crs(A);
+
+  {
+    FILE *f = fopen(filename, "w");
+
+    gsl_spmatrix_fwrite(f, A_crs);
+
+    fclose(f);
+  }
+
+  {
+    FILE *f = fopen(filename, "r");
+    gsl_spmatrix *B = gsl_spmatrix_alloc_nzmax(M, N, A->nz, GSL_SPMATRIX_CRS);
+
+    gsl_spmatrix_fread(f, B);
+
+    status = gsl_spmatrix_equal(A_crs, B) != 1;
+    gsl_test(status, "test_io_binary: fwrite/fread M=%zu N=%zu CRS format", M, N);
+
+    fclose(f);
+    gsl_spmatrix_free(B);
+  }
+
+  unlink(filename);
+
+  gsl_spmatrix_free(A);
+  gsl_spmatrix_free(A_ccs);
+  gsl_spmatrix_free(A_crs);
 }
 
 int
@@ -577,10 +681,15 @@ main()
   test_ops(20, 50, 0.3, r);
   test_ops(76, 43, 0.4, r);
 
-  test_io(30, 30, 0.3, r);
-  test_io(20, 10, 0.2, r);
-  test_io(10, 20, 0.2, r);
-  test_io(34, 78, 0.3, r);
+  test_io_ascii(30, 30, 0.3, r);
+  test_io_ascii(20, 10, 0.2, r);
+  test_io_ascii(10, 20, 0.2, r);
+  test_io_ascii(34, 78, 0.3, r);
+
+  test_io_binary(50, 50, 0.3, r);
+  test_io_binary(25, 10, 0.2, r);
+  test_io_binary(10, 25, 0.2, r);
+  test_io_binary(101, 253, 0.3, r);
 
   gsl_rng_free(r);
 

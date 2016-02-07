@@ -132,6 +132,7 @@ int gsl_spmatrix_set_zero(gsl_spmatrix *m);
 size_t gsl_spmatrix_nnz(const gsl_spmatrix *m);
 int gsl_spmatrix_compare_idx(const size_t ia, const size_t ja,
                              const size_t ib, const size_t jb);
+int gsl_spmatrix_tree_rebuild(gsl_spmatrix * m);
 
 /* spcopy.c */
 int gsl_spmatrix_memcpy(gsl_spmatrix *dest, const gsl_spmatrix *src);
@@ -153,6 +154,8 @@ void gsl_spmatrix_cumsum(const size_t n, size_t *c);
 int gsl_spmatrix_fprintf(FILE *stream, const gsl_spmatrix *m,
                          const char *format);
 int gsl_spmatrix_fscanf(FILE *stream, gsl_spmatrix *m);
+int gsl_spmatrix_fwrite(FILE *stream, const gsl_spmatrix *m);
+int gsl_spmatrix_fread(FILE *stream, gsl_spmatrix *m);
 
 /* spoper.c */
 int gsl_spmatrix_scale(gsl_spmatrix *m, const double x);
@@ -168,6 +171,7 @@ int gsl_spmatrix_equal(const gsl_spmatrix *a, const gsl_spmatrix *b);
 
 /* spswap.c */
 int gsl_spmatrix_transpose(gsl_spmatrix * m);
+int gsl_spmatrix_transpose2(gsl_spmatrix * m);
 int gsl_spmatrix_transpose_memcpy(gsl_spmatrix *dest, const gsl_spmatrix *src);
 
 __END_DECLS
