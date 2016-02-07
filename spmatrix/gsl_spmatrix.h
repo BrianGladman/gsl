@@ -141,6 +141,7 @@ double gsl_spmatrix_get(const gsl_spmatrix *m, const size_t i,
                         const size_t j);
 int gsl_spmatrix_set(gsl_spmatrix *m, const size_t i, const size_t j,
                      const double x);
+double *gsl_spmatrix_ptr(gsl_spmatrix *m, const size_t i, const size_t j);
 
 /* spcompress.c */
 gsl_spmatrix *gsl_spmatrix_compcol(const gsl_spmatrix *T);

@@ -181,6 +181,12 @@ This function sets element (@var{i},@var{j}) of the matrix @var{m} to
 the value @var{x}. The matrix must be in triplet representation.
 @end deftypefun
 
+@deftypefun {double *} gsl_spmatrix_ptr (gsl_spmatrix * @var{m}, const size_t @var{i}, const size_t @var{j})
+This function returns a pointer to the (@var{i},@var{j}) element of the matrix @var{m}.
+If the (@var{i},@var{j}) element is not explicitly stored in the matrix,
+a null pointer is returned.
+@end deftypefun
+
 @node Initializing sparse matrix elements
 @section Initializing sparse matrix elements
 @cindex sparse matrices, initializing elements

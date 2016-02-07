@@ -107,6 +107,7 @@ test_getset(const size_t M, const size_t N,
 
   /* test triplet versions of _get and _set */
   {
+    const double val = 0.75;
     size_t k = 0;
     gsl_spmatrix *m = gsl_spmatrix_alloc(M, N);
 
@@ -157,6 +158,23 @@ test_getset(const size_t M, const size_t N,
     gsl_test(status, "test_getset: M=%zu N=%zu set_zero nz = %zu",
              M, N, gsl_spmatrix_nnz(m));
 
+    /* test gsl_spmatrix_ptr() */
+    status = 0;
+    for (i = 0; i < M; ++i)
+      {
+        for (j = 0; j < N; ++j)
+          {
+            double mij = gsl_spmatrix_get(m, i, j);
+            double *ptr = gsl_spmatrix_ptr(m, i, j);
+
+            *ptr += val;
+            if (gsl_spmatrix_get(m, i, j) != mij + val)
+              status = 2;
+          }
+      }
+
+    gsl_test(status == 2, "test_getset: M=%zu N=%zu triplet ptr", M, N);
+
     gsl_spmatrix_free(m);
   }
 
@@ -195,6 +213,7 @@ test_getset(const size_t M, const size_t N,
 
   /* test CCS version of gsl_spmatrix_get() */
   {
+    const double val = 0.75;
     gsl_spmatrix *T = create_random_sparse(M, N, density, r);
     gsl_spmatrix *C = gsl_spmatrix_ccs(T);
 
@@ -205,13 +224,23 @@ test_getset(const size_t M, const size_t N,
           {
             double Tij = gsl_spmatrix_get(T, i, j);
             double Cij = gsl_spmatrix_get(C, i, j);
+            double *ptr = gsl_spmatrix_ptr(C, i, j);
 
             if (Tij != Cij)
               status = 1;
+
+            if (ptr)
+              {
+                *ptr += val;
+                Cij = gsl_spmatrix_get(C, i, j);
+                if (Tij + val != Cij)
+                  status = 2;
+              }
           }
       }
 
-    gsl_test(status, "test_getset: M=%zu N=%zu CCS _get", M, N);
+    gsl_test(status == 1, "test_getset: M=%zu N=%zu CCS get", M, N);
+    gsl_test(status == 2, "test_getset: M=%zu N=%zu CCS ptr", M, N);
 
     gsl_spmatrix_free(T);
     gsl_spmatrix_free(C);
@@ -219,6 +248,7 @@ test_getset(const size_t M, const size_t N,
 
   /* test CRS version of gsl_spmatrix_get() */
   {
+    const double val = 0.75;
     gsl_spmatrix *T = create_random_sparse(M, N, density, r);
     gsl_spmatrix *C = gsl_spmatrix_crs(T);
 
@@ -229,13 +259,23 @@ test_getset(const size_t M, const size_t N,
           {
             double Tij = gsl_spmatrix_get(T, i, j);
             double Cij = gsl_spmatrix_get(C, i, j);
+            double *ptr = gsl_spmatrix_ptr(C, i, j);
 
             if (Tij != Cij)
               status = 1;
+
+            if (ptr)
+              {
+                *ptr += val;
+                Cij = gsl_spmatrix_get(C, i, j);
+                if (Tij + val != Cij)
+                  status = 2;
+              }
           }
       }
 
-    gsl_test(status, "test_getset: M=%zu N=%zu CRS _get", M, N);
+    gsl_test(status == 1, "test_getset: M=%zu N=%zu CRS get", M, N);
+    gsl_test(status == 2, "test_getset: M=%zu N=%zu CRS ptr", M, N);
 
     gsl_spmatrix_free(T);
     gsl_spmatrix_free(C);
