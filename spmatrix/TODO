@@ -1,1 +1,3 @@
-extend fprintf/fscanf to CCS/CRS
+1. extend fprintf/fscanf to CCS/CRS
+2. extend transpose to CCS/CRS (in-place)
+3. extend spblas_dgemm to CRS

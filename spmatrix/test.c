@@ -491,33 +491,50 @@ test_ops(const size_t M, const size_t N,
   {
     gsl_spmatrix *A = create_random_sparse(M, N, density, r);
     gsl_spmatrix *B = create_random_sparse(M, N, density, r);
+
     gsl_spmatrix *A_ccs = gsl_spmatrix_ccs(A);
     gsl_spmatrix *B_ccs = gsl_spmatrix_ccs(B);
     gsl_spmatrix *C_ccs = gsl_spmatrix_alloc_nzmax(M, N, 1, GSL_SPMATRIX_CCS);
+
+    gsl_spmatrix *A_crs = gsl_spmatrix_crs(A);
+    gsl_spmatrix *B_crs = gsl_spmatrix_crs(B);
+    gsl_spmatrix *C_crs = gsl_spmatrix_alloc_nzmax(M, N, 1, GSL_SPMATRIX_CRS);
     
     gsl_spmatrix_add(C_ccs, A_ccs, B_ccs);
+    gsl_spmatrix_add(C_crs, A_crs, B_crs);
 
     status = 0;
     for (i = 0; i < M; ++i)
       {
         for (j = 0; j < N; ++j)
           {
-            double aij = gsl_spmatrix_get(A_ccs, i, j);
-            double bij = gsl_spmatrix_get(B_ccs, i, j);
-            double cij = gsl_spmatrix_get(C_ccs, i, j);
+            double aij, bij, cij;
 
+            aij = gsl_spmatrix_get(A_ccs, i, j);
+            bij = gsl_spmatrix_get(B_ccs, i, j);
+            cij = gsl_spmatrix_get(C_ccs, i, j);
             if (aij + bij != cij)
               status = 1;
+
+            aij = gsl_spmatrix_get(A_crs, i, j);
+            bij = gsl_spmatrix_get(B_crs, i, j);
+            cij = gsl_spmatrix_get(C_crs, i, j);
+            if (aij + bij != cij)
+              status = 2;
           }
       }
 
-    gsl_test(status, "test_ops: _add M=%zu N=%zu CCS", M, N);
+    gsl_test(status == 1, "test_ops: add M=%zu N=%zu CCS", M, N);
+    gsl_test(status == 2, "test_ops: add M=%zu N=%zu CRS", M, N);
 
     gsl_spmatrix_free(A);
     gsl_spmatrix_free(B);
     gsl_spmatrix_free(A_ccs);
     gsl_spmatrix_free(B_ccs);
     gsl_spmatrix_free(C_ccs);
+    gsl_spmatrix_free(A_crs);
+    gsl_spmatrix_free(B_crs);
+    gsl_spmatrix_free(C_crs);
   }
 } /* test_ops() */
 
