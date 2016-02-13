@@ -564,12 +564,54 @@ test_io_ascii(const size_t M, const size_t N,
 
   {
     FILE *f = fopen(filename, "r");
-    gsl_spmatrix *B = gsl_spmatrix_alloc_nzmax(M, N, A->nz, A->sptype);
-
-    gsl_spmatrix_fscanf(f, B);
+    gsl_spmatrix *B = gsl_spmatrix_fscanf(f);
 
     status = gsl_spmatrix_equal(A, B) != 1;
     gsl_test(status, "test_io_ascii: fprintf/fscanf M=%zu N=%zu triplet format", M, N);
+
+    fclose(f);
+    gsl_spmatrix_free(B);
+  }
+
+  /* test CCS I/O */
+  {
+    FILE *f = fopen(filename, "w");
+    gsl_spmatrix *A_ccs = gsl_spmatrix_ccs(A);
+
+    gsl_spmatrix_fprintf(f, A_ccs, "%lg");
+
+    fclose(f);
+    gsl_spmatrix_free(A_ccs);
+  }
+
+  {
+    FILE *f = fopen(filename, "r");
+    gsl_spmatrix *B = gsl_spmatrix_fscanf(f);
+
+    status = gsl_spmatrix_equal(A, B) != 1;
+    gsl_test(status, "test_io_ascii: fprintf/fscanf M=%zu N=%zu CCS format", M, N);
+
+    fclose(f);
+    gsl_spmatrix_free(B);
+  }
+
+  /* test CRS I/O */
+  {
+    FILE *f = fopen(filename, "w");
+    gsl_spmatrix *A_crs = gsl_spmatrix_crs(A);
+
+    gsl_spmatrix_fprintf(f, A_crs, "%lg");
+
+    fclose(f);
+    gsl_spmatrix_free(A_crs);
+  }
+
+  {
+    FILE *f = fopen(filename, "r");
+    gsl_spmatrix *B = gsl_spmatrix_fscanf(f);
+
+    status = gsl_spmatrix_equal(A, B) != 1;
+    gsl_test(status, "test_io_ascii: fprintf/fscanf M=%zu N=%zu CRS format", M, N);
 
     fclose(f);
     gsl_spmatrix_free(B);

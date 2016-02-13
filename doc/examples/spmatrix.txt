@@ -20,6 +20,7 @@ A(4,1) = 0
 A(4,2) = 0
 A(4,3) = 0
 matrix in triplet format (i,j,Aij):
+%%MatrixMarket matrix coordinate real general
 5	4	8
 0	2	3.1
 0	3	4.6

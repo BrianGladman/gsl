@@ -33,11 +33,18 @@ gsl_spmatrix_fprintf(FILE *stream, const gsl_spmatrix *m,
   int status;
 
   /* print header */
+  status = fprintf(stream, "%%%%MatrixMarket matrix coordinate real general\n");
+  if (status < 0)
+    {
+      GSL_ERROR("fprintf failed for header", GSL_EFAILED);
+    }
+
+  /* print rows,columns,nnz */
   status = fprintf(stream, "%zu\t%zu\t%zu\n",
                    m->size1, m->size2, m->nz);
   if (status < 0)
     {
-      GSL_ERROR("fprintf failed for header", GSL_EFAILED);
+      GSL_ERROR("fprintf failed for dimension header", GSL_EFAILED);
     }
 
   if (GSL_SPMATRIX_ISTRIPLET(m))
@@ -65,52 +72,60 @@ gsl_spmatrix_fprintf(FILE *stream, const gsl_spmatrix *m,
             }
         }
     }
-  else
+  else if (GSL_SPMATRIX_ISCCS(m))
     {
-      GSL_ERROR("unknown sparse matrix type", GSL_EINVAL);
-    }
+      size_t j, p;
 
-  return GSL_SUCCESS;
-}
-
-int
-gsl_spmatrix_fscanf(FILE *stream, gsl_spmatrix *m)
-{
-  int status;
-  size_t size1, size2, nz;
-
-  /* read header */
-  status = fscanf (stream, "%zu %zu %zu",
-                   &size1, &size2, &nz);
-  if (status < 3)
-    {
-      GSL_ERROR ("fscanf failed reading header", GSL_EFAILED);
-    }
-  else if (nz > m->nzmax)
-    {
-      GSL_ERROR ("nzmax not large enough", GSL_EBADLEN);
-    }
-  else if (size1 != m->size1)
-    {
-      GSL_ERROR ("matrix has wrong size1", GSL_EBADLEN);
-    }
-  else if (size2 != m->size2)
-    {
-      GSL_ERROR ("matrix has wrong size2", GSL_EBADLEN);
-    }
-  else if (GSL_SPMATRIX_ISTRIPLET(m))
-    {
-      size_t i, j;
-      double val;
-
-      while ((status = fscanf (stream, "%zu %zu %lg", &i, &j, &val)) != EOF)
+      for (j = 0; j < m->size2; ++j)
         {
-          if (status < 3)
+          for (p = m->p[j]; p < m->p[j + 1]; ++p)
             {
-              GSL_ERROR ("fscanf failed", GSL_EFAILED);
-            }
+              status = fprintf(stream, "%zu\t%zu\t", m->i[p], j);
+              if (status < 0)
+                {
+                  GSL_ERROR("fprintf failed", GSL_EFAILED);
+                }
 
-          gsl_spmatrix_set(m, i, j, val);
+              status = fprintf(stream, format, m->data[p]);
+              if (status < 0)
+                {
+                  GSL_ERROR("fprintf failed", GSL_EFAILED);
+                }
+
+              status = putc('\n', stream);
+              if (status == EOF)
+                {
+                  GSL_ERROR("putc failed", GSL_EFAILED);
+                }
+            }
+        }
+    }
+  else if (GSL_SPMATRIX_ISCRS(m))
+    {
+      size_t i, p;
+
+      for (i = 0; i < m->size1; ++i)
+        {
+          for (p = m->p[i]; p < m->p[i + 1]; ++p)
+            {
+              status = fprintf(stream, "%zu\t%zu\t", i, m->i[p]);
+              if (status < 0)
+                {
+                  GSL_ERROR("fprintf failed", GSL_EFAILED);
+                }
+
+              status = fprintf(stream, format, m->data[p]);
+              if (status < 0)
+                {
+                  GSL_ERROR("fprintf failed", GSL_EFAILED);
+                }
+
+              status = putc('\n', stream);
+              if (status == EOF)
+                {
+                  GSL_ERROR("putc failed", GSL_EFAILED);
+                }
+            }
         }
     }
   else
@@ -119,6 +134,62 @@ gsl_spmatrix_fscanf(FILE *stream, gsl_spmatrix *m)
     }
 
   return GSL_SUCCESS;
+}
+
+gsl_spmatrix *
+gsl_spmatrix_fscanf(FILE *stream)
+{
+  gsl_spmatrix *m;
+  size_t size1, size2, nz;
+  char buf[1024];
+  int found_header = 0;
+
+  /* read file until we find rows,cols,nz header */
+  while (fgets(buf, 1024, stream) != NULL)
+    {
+      int c;
+
+      /* skip comments */
+      if (*buf == '%')
+        continue;
+
+      c = sscanf(buf, "%zu %zu %zu",
+                 &size1, &size2, &nz);
+      if (c == 3)
+        {
+          found_header = 1;
+          break;
+        }
+    }
+
+  if (!found_header)
+    {
+      GSL_ERROR_NULL ("fscanf failed reading header", GSL_EFAILED);
+    }
+
+  m = gsl_spmatrix_alloc_nzmax(size1, size2, nz, GSL_SPMATRIX_TRIPLET);
+  if (!m)
+    {
+      GSL_ERROR_NULL ("error allocating m", GSL_ENOMEM);
+    }
+
+  {
+    size_t i, j;
+    double val;
+
+    while (fgets(buf, 1024, stream) != NULL)
+      {
+        int c = sscanf(buf, "%zu %zu %lg", &i, &j, &val);
+        if (c < 3)
+          {
+            GSL_ERROR_NULL ("error in input file format", GSL_EFAILED);
+          }
+
+        gsl_spmatrix_set(m, i, j, val);
+      }
+  }
+
+  return m;
 }
 
 int

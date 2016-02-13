@@ -231,17 +231,16 @@ the stream @var{stream} using the format specifier @var{format}, which
 should be one of the @code{%g}, @code{%e} or @code{%f} formats for
 floating point numbers.  The function returns 0 for success and
 @code{GSL_EFAILED} if there was a problem writing to the file. The
-first line of output is a tab-separated header of @code{size1, size2, nz}.
+input matrix @var{m} may be in any storage format, and the output file
+will be written in MatrixMarket format.
 @end deftypefun
 
-@deftypefun int gsl_spmatrix_fscanf (FILE * @var{stream}, gsl_spmatrix * @var{m})
-This function reads formatted data from the stream @var{stream} into the
-matrix @var{m}. The matrix @var{m} must be preallocated with the correct
-storage format and dimensions. The first line of input must be
-a whitespace separated header of @code{size1, size2, nz} which is
-used to determine how many numbers to read.
-The function returns 0 for success and
-@code{GSL_EFAILED} if there was a problem reading from the file.
+@deftypefun {gsl_spmatrix *} gsl_spmatrix_fscanf (FILE * @var{stream})
+This function reads sparse matrix data in the MatrixMarket format
+from the stream @var{stream} and stores it in a newly allocated matrix
+which is returned in triplet format.  The function returns 0 for success and
+@code{GSL_EFAILED} if there was a problem reading from the file. The
+user should free the returned matrix when it is no longer needed.
 @end deftypefun
 
 @node Sparse Matrices Copying

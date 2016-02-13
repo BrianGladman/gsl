@@ -153,7 +153,7 @@ void gsl_spmatrix_cumsum(const size_t n, size_t *c);
 /* spio.c */
 int gsl_spmatrix_fprintf(FILE *stream, const gsl_spmatrix *m,
                          const char *format);
-int gsl_spmatrix_fscanf(FILE *stream, gsl_spmatrix *m);
+gsl_spmatrix * gsl_spmatrix_fscanf(FILE *stream);
 int gsl_spmatrix_fwrite(FILE *stream, const gsl_spmatrix *m);
 int gsl_spmatrix_fread(FILE *stream, gsl_spmatrix *m);
 
