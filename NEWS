@@ -1,5 +1,8 @@
 * What is new in gsl-2.2:
 
+** added support for compressed row storage sparse
+   matrices (Alexis Tantet)
+
 ** bug fix in convergence check of hypergeometric 2F1
    function (bug #45926)
 
