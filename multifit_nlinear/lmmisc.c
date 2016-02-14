@@ -17,7 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-static int lm_init_mu(const gsl_matrix * J, lm_state_t * state);
 static double lm_calc_rho(const double mu, const gsl_vector * v,
                           const gsl_vector * g,
                           const gsl_vector * f,
@@ -28,34 +27,6 @@ static int lm_check_step(const gsl_vector * v, const gsl_vector * g,
                          double * rho, lm_state_t * state);
 static double lm_scaled_norm(const gsl_vector *a, const gsl_vector *b,
                              gsl_vector *work);
-
-/* initialize damping parameter mu; state->diag must first be
- * initialized */
-static int
-lm_init_mu(const gsl_matrix * J, lm_state_t * state)
-{
-  state->mu = state->mu0;
-
-  if (state->scale == gsl_multifit_nlinear_scale_levenberg)
-    {
-      /* when D = I, set mu = mu0 * max(diag(J^T J)) */
-
-      const size_t p = J->size2;
-      size_t j;
-      double max = -1.0;
-
-      for (j = 0; j < p; ++j)
-        {
-          gsl_vector_const_view v = gsl_matrix_const_column(J, j);
-          double norm = gsl_blas_dnrm2(&v.vector);
-          max = GSL_MAX(max, norm);
-        }
-
-      state->mu *= max * max;
-    }
-
-  return GSL_SUCCESS;
-}
 
 /* compute x_trial = x + dx */
 static void

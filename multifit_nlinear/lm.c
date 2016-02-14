@@ -53,12 +53,9 @@ typedef struct
   gsl_vector *acc;           /* geodesic acceleration, size p */
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
-  long nu;                   /* nu */
   double mu;                 /* LM parameter mu */
-  double mu0;                /* initial scale factor for mu */
 
-  const gsl_multifit_nlinear_scale *scale;
-  const gsl_multifit_nlinear_solver *solver;
+  void *update_state;        /* workspace for parameter update method */
   void *solver_state;        /* workspace for linear solver */
 
   gsl_matrix *JTJ;           /* J^T J for rcond calculation */
@@ -73,6 +70,7 @@ typedef struct
 #include "lmdiag.c"
 #include "lmmisc.c"
 #include "lmnormal.c"
+#include "lmparam.c"
 #include "lmqr.c"
 
 #define LM_ONE_THIRD         (0.333333333333333)
@@ -150,6 +148,12 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
       GSL_ERROR_NULL ("failed to allocate space for f_trial", GSL_ENOMEM);
     }
 
+  state->update_state = (params->update->alloc)();
+  if (state->update_state == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for update state", GSL_ENOMEM);
+    }
+
   state->solver_state = (params->solver->alloc)(n, p);
   if (state->solver_state == NULL)
     {
@@ -170,9 +174,6 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
 
   state->n = n;
   state->p = p;
-  state->mu0 = 1.0e-3;
-  state->scale = params->scale;
-  state->solver = params->solver;
   state->params = *params;
 
   return state;
@@ -182,6 +183,7 @@ static void
 lm_free(void *vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
+  const gsl_multifit_nlinear_parameters *params = &(state->params);
 
   if (state->diag)
     gsl_vector_free(state->diag);
@@ -207,8 +209,11 @@ lm_free(void *vstate)
   if (state->f_trial)
     gsl_vector_free(state->f_trial);
 
+  if (state->update_state)
+    (params->update->free)(state->update_state);
+
   if (state->solver_state)
-    (state->solver->free)(state->solver_state);
+    (params->solver->free)(state->solver_state);
 
   if (state->JTJ)
     gsl_matrix_free(state->JTJ);
@@ -257,16 +262,19 @@ lm_init(void *vstate, const gsl_vector *swts,
   gsl_blas_dgemv(CblasTrans, 1.0, J, f, 0.0, g);
 
   /* initialize diagonal scaling matrix D */
-  (state->scale->init)(J, state->diag);
+  (params->scale->init)(J, state->diag);
 
   /* initialize LM parameter mu */
-  lm_init_mu(J, state);
+  status = (params->update->init)(J,
+                                  state->params.scale != gsl_multifit_nlinear_scale_levenberg,
+                                  &(state->mu), state->update_state);
+  if (status)
+    return status;
 
   gsl_vector_set_zero(state->vel);
   gsl_vector_set_zero(state->acc);
 
   /* set default parameters */
-  state->nu = 2;
   state->avratio = 0.0;
 
   return GSL_SUCCESS;
@@ -327,7 +335,7 @@ lm_iterate(void *vstate, const gsl_vector *swts,
   size_t i;
 
   /* initialize linear least squares solver */
-  status = (state->solver->init)(f, J, g, state->solver_state);
+  status = (params->solver->init)(f, J, g, state->solver_state);
   if (status)
     return status;
 
@@ -335,8 +343,8 @@ lm_iterate(void *vstate, const gsl_vector *swts,
   while (!foundstep)
     {
       /* further solver initialization with current mu */
-      status = (state->solver->init_mu)(state->mu, state->diag,
-                                        state->solver_state);
+      status = (params->solver->init_mu)(state->mu, state->diag,
+                                         state->solver_state);
       if (status)
         return status;
 
@@ -344,7 +352,7 @@ lm_iterate(void *vstate, const gsl_vector *swts,
        * solve: [     J      ] v = - [ f ]
        *        [ sqrt(mu)*D ]       [ 0 ]
        */
-      status = (state->solver->solve_vel)(state->vel, state->solver_state);
+      status = (params->solver->solve_vel)(state->vel, state->solver_state);
       if (status)
         return status;
 
@@ -360,7 +368,7 @@ lm_iterate(void *vstate, const gsl_vector *swts,
            * solve: [     J      ] a = - [ fvv ]
            *        [ sqrt(mu)*D ]       [  0  ]
            */
-          status = (state->solver->solve_acc)(J, state->fvv, state->acc, state->solver_state);
+          status = (params->solver->solve_acc)(J, state->fvv, state->acc, state->solver_state);
           if (status)
             return status;
         }
@@ -388,13 +396,10 @@ lm_iterate(void *vstate, const gsl_vector *swts,
         {
           /* reduction in cost function, step acceptable */
 
-          double b;
-
           /* update LM parameter */
-          b = 2.0 * rho - 1.0;
-          b = 1.0 - b*b*b;
-          state->mu *= GSL_MAX(LM_ONE_THIRD, b);
-          state->nu = 2;
+          status = (params->update->accept)(rho, &(state->mu), state->update_state);
+          if (status)
+            return status;
 
           /* compute J <- J(x + dx) */
           status = gsl_multifit_nlinear_eval_df(x_trial, f_trial, swts,
@@ -413,36 +418,22 @@ lm_iterate(void *vstate, const gsl_vector *swts,
           gsl_blas_dgemv(CblasTrans, 1.0, J, f, 0.0, g);
 
           /* update scaling matrix D */
-          (state->scale->update)(J, diag);
+          (params->scale->update)(J, diag);
 
           foundstep = 1;
           bad_steps = 0;
         }
       else
         {
-          long nu2;
-
           /* step did not reduce error, reject step */
 
-          /* if more than 15 consecutive rejected steps, report no progres */
+          /* if more than 15 consecutive rejected steps, report no progress */
           if (++bad_steps > 15)
             return GSL_ENOPROG;
 
-          state->mu *= (double) state->nu;
-          nu2 = state->nu << 1; /* 2*nu */
-          if (nu2 <= state->nu)
-            {
-              /*
-               * nu has wrapped around / overflown, reset mu and nu
-               * to original values and break to force another iteration
-               */
-              state->nu = 2;
-              lm_init_mu(J, state);
-
-              break;
-            }
-
-          state->nu = nu2;
+          status = (params->update->reject)(&(state->mu), state->update_state);
+          if (status)
+            return status;
         }
     } /* while (!foundstep) */
 
