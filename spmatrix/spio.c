@@ -26,6 +26,17 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_spmatrix.h>
 
+/*
+gsl_spmatrix_fprintf()
+  Print sparse matrix to file in MatrixMarket format:
+
+M  N  NNZ
+I1 J1 A(I1,J1)
+...
+
+Note that indices start at 1 and not 0
+*/
+
 int
 gsl_spmatrix_fprintf(FILE *stream, const gsl_spmatrix *m,
                      const char *format)
@@ -53,7 +64,7 @@ gsl_spmatrix_fprintf(FILE *stream, const gsl_spmatrix *m,
 
       for (n = 0; n < m->nz; ++n)
         {
-          status = fprintf(stream, "%zu\t%zu\t", m->i[n], m->p[n]);
+          status = fprintf(stream, "%zu\t%zu\t", m->i[n] + 1, m->p[n] + 1);
           if (status < 0)
             {
               GSL_ERROR("fprintf failed", GSL_EFAILED);
@@ -80,7 +91,7 @@ gsl_spmatrix_fprintf(FILE *stream, const gsl_spmatrix *m,
         {
           for (p = m->p[j]; p < m->p[j + 1]; ++p)
             {
-              status = fprintf(stream, "%zu\t%zu\t", m->i[p], j);
+              status = fprintf(stream, "%zu\t%zu\t", m->i[p] + 1, j + 1);
               if (status < 0)
                 {
                   GSL_ERROR("fprintf failed", GSL_EFAILED);
@@ -108,7 +119,7 @@ gsl_spmatrix_fprintf(FILE *stream, const gsl_spmatrix *m,
         {
           for (p = m->p[i]; p < m->p[i + 1]; ++p)
             {
-              status = fprintf(stream, "%zu\t%zu\t", i, m->i[p]);
+              status = fprintf(stream, "%zu\t%zu\t", i + 1, m->i[p] + 1);
               if (status < 0)
                 {
                   GSL_ERROR("fprintf failed", GSL_EFAILED);
@@ -180,12 +191,19 @@ gsl_spmatrix_fscanf(FILE *stream)
     while (fgets(buf, 1024, stream) != NULL)
       {
         int c = sscanf(buf, "%zu %zu %lg", &i, &j, &val);
-        if (c < 3)
+        if (c < 3 || (i == 0) || (j == 0))
           {
             GSL_ERROR_NULL ("error in input file format", GSL_EFAILED);
           }
-
-        gsl_spmatrix_set(m, i, j, val);
+        else if ((i > size1) || (j > size2))
+          {
+            GSL_ERROR_NULL ("element exceeds matrix dimensions", GSL_EBADLEN);
+          }
+        else
+          {
+            /* subtract 1 from (i,j) since indexing starts at 1 */
+            gsl_spmatrix_set(m, i - 1, j - 1, val);
+          }
       }
   }
 
