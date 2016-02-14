@@ -25,8 +25,7 @@ static double lm_calc_rho(const double mu, const gsl_vector * v,
 static int lm_check_step(const gsl_vector * v, const gsl_vector * g,
                          const gsl_vector * f, const gsl_vector * f_trial,
                          double * rho, lm_state_t * state);
-static double lm_scaled_norm(const gsl_vector *a, const gsl_vector *b,
-                             gsl_vector *work);
+static double lm_scaled_norm(const gsl_vector *a, const gsl_vector *b);
 
 /* compute x_trial = x + dx */
 static void
@@ -78,7 +77,7 @@ lm_calc_rho(const double mu, const gsl_vector * v,
   actual_reduction = 1.0 - u*u;
 
   /* compute || D p || */
-  norm_Dp = lm_scaled_norm(state->diag, v, state->workp);
+  norm_Dp = lm_scaled_norm(state->diag, v);
 
   /*
    * compute denominator of rho; instead of computing J*v,
@@ -131,8 +130,8 @@ lm_check_step(const gsl_vector * v, const gsl_vector * g,
   /* if using geodesic acceleration, check that |a|/|v| < alpha */
   if (params->accel)
     {
-      double anorm = lm_scaled_norm(state->diag, state->acc, state->workp);
-      double vnorm = lm_scaled_norm(state->diag, state->vel, state->workp);
+      double anorm = lm_scaled_norm(state->diag, state->acc);
+      double vnorm = lm_scaled_norm(state->diag, state->vel);
 
       /* store |a| / |v| */
       state->avratio = anorm / vnorm;
@@ -153,19 +152,20 @@ lm_check_step(const gsl_vector * v, const gsl_vector * g,
 
 /* compute || diag(D) a || */
 static double
-lm_scaled_norm(const gsl_vector *D, const gsl_vector *a,
-               gsl_vector *work)
+lm_scaled_norm(const gsl_vector *D, const gsl_vector *a)
 {
   const size_t n = a->size;
+  double e2 = 0.0;
   size_t i;
 
   for (i = 0; i < n; ++i)
     {
       double Di = gsl_vector_get(D, i);
       double ai = gsl_vector_get(a, i);
+      double u = Di * ai;
 
-      gsl_vector_set(work, i, Di * ai);
+      e2 += u * u;
     }
 
-  return gsl_blas_dnrm2(work);
+  return sqrt (e2);
 }

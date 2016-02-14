@@ -1,4 +1,4 @@
-/* multifit_nlinear/lmparam.c
+/* multifit_nlinear/lmnielsen.c
  * 
  * Copyright (C) 2016 Patrick Alken
  * 
@@ -19,24 +19,19 @@
 
 /*
  * This module contains routines for updating the Levenberg-Marquardt
- * damping parameter on each iteration. Each update method needs 5
- * routines:
+ * damping parameter on each iteration using Nielsen's method:
+ *
+ * [1] H. B. Nielsen, K. Madsen, Introduction to Optimization and
+ *     Data Fitting, Informatics and Mathematical Modeling,
+ *     Technical University of Denmark (DTU), 2010.
+ *
+ * 5 routines are needed to implement the update procedure:
  *
  * 1. alloc  - allocate workspace state
  * 2. init   - initialize parameter prior to iteration
  * 3. accept - update parameter after a step has been accepted
  * 4. reject - update parameter after a step has been rejected
  * 5. free   - free workspace state
- *
- * There are currently two methods implemented, following the
- * publications:
- *
- * [1] H. B. Nielsen, K. Madsen, Introduction to Optimization and
- *     Data Fitting, Informatics and Mathematical Modeling,
- *     Technical University of Denmark (DTU), 2010.
- *
- * [2] J. J. More, The Levenberg-Marquardt Algorithm: Implementation
- *     and Theory, Lecture Notes in Mathematics, v630, 1978.
  */
 
 #define LM_ONE_THIRD         (0.333333333333333)
@@ -49,8 +44,8 @@ typedef struct
 
 static void *nielsen_alloc(void);
 static void nielsen_free(void *vstate);
-static int nielsen_init(const gsl_matrix * J, const int diag,
-                        double * mu, void * vstate);
+static int nielsen_init(const gsl_matrix * J, const gsl_vector * diag,
+                        const gsl_vector * x, double * mu, void * vstate);
 static int nielsen_accept(const double rho, double * mu, void * vstate);
 static int nielsen_reject(double * mu, void * vstate);
 
@@ -78,15 +73,19 @@ nielsen_free(void *vstate)
 }
 
 static int
-nielsen_init(const gsl_matrix * J, const int diag,
-             double * mu, void * vstate)
+nielsen_init(const gsl_matrix * J, const gsl_vector * diag,
+             const gsl_vector * x, double * mu, void * vstate)
 {
   nielsen_state_t *state = (nielsen_state_t *) vstate;
+  double min, max;
+
+  (void)x;
 
   state->nu = 2;
   *mu = state->mu0;
 
-  if (!diag)
+  gsl_vector_minmax(diag, &min, &max);
+  if (min == 1.0 && max == 1.0)
     {
       /* when D = I, set mu = mu0 * max(diag(J^T J)) */
 

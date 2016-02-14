@@ -68,8 +68,8 @@ typedef struct
 {
   const char *name;
   void * (*alloc) (void);
-  int (*init) (const gsl_matrix * J, const int diag,
-               double * mu, void * vstate);
+  int (*init) (const gsl_matrix * J, const gsl_vector * diag,
+               const gsl_vector * x, double * mu, void * vstate);
   int (*accept) (const double rho, double * mu, void * vstate);
   int (*reject) (double * mu, void * vstate);
   void (*free) (void * vstate);
@@ -250,6 +250,7 @@ gsl_multifit_nlinear_fdfvv(const double h, const gsl_vector *x, const gsl_vector
 GSL_VAR const gsl_multifit_nlinear_type * gsl_multifit_nlinear_lm;
 
 /* parameter update methods */
+GSL_VAR const gsl_multifit_nlinear_update * gsl_multifit_nlinear_update_trust;
 GSL_VAR const gsl_multifit_nlinear_update * gsl_multifit_nlinear_update_nielsen;
 
 /* scaling matrix strategies */

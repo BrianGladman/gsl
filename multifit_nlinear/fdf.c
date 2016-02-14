@@ -134,7 +134,7 @@ gsl_multifit_nlinear_default_parameters(void)
 {
   gsl_multifit_nlinear_parameters params;
 
-  params.update = gsl_multifit_nlinear_update_nielsen;
+  params.update = gsl_multifit_nlinear_update_trust;
   params.scale = gsl_multifit_nlinear_scale_more;
   params.solver = gsl_multifit_nlinear_solver_qr;
   params.fdtype = GSL_MULTIFIT_NLINEAR_FWDIFF;

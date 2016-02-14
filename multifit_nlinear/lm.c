@@ -69,9 +69,10 @@ typedef struct
 
 #include "lmdiag.c"
 #include "lmmisc.c"
+#include "lmnielsen.c"
 #include "lmnormal.c"
-#include "lmparam.c"
 #include "lmqr.c"
+#include "lmtrust.c"
 
 #define LM_ONE_THIRD         (0.333333333333333)
 
@@ -265,9 +266,9 @@ lm_init(void *vstate, const gsl_vector *swts,
   (params->scale->init)(J, state->diag);
 
   /* initialize LM parameter mu */
-  status = (params->update->init)(J,
-                                  state->params.scale != gsl_multifit_nlinear_scale_levenberg,
-                                  &(state->mu), state->update_state);
+  status = (params->update->init)(J, state->diag, x,
+                                  &(state->mu),
+                                  state->update_state);
   if (status)
     return status;
 
