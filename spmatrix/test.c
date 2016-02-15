@@ -640,7 +640,7 @@ test_io_binary(const size_t M, const size_t N,
 
   /* test triplet I/O */
   {
-    FILE *f = fdopen(fd, "w");
+    FILE *f = fdopen(fd, "wb");
 
     gsl_spmatrix_fwrite(f, A);
 
@@ -648,7 +648,7 @@ test_io_binary(const size_t M, const size_t N,
   }
 
   {
-    FILE *f = fopen(filename, "r");
+    FILE *f = fopen(filename, "rb");
     gsl_spmatrix *B = gsl_spmatrix_alloc_nzmax(M, N, A->nz, A->sptype);
 
     gsl_spmatrix_fread(f, B);
@@ -664,7 +664,7 @@ test_io_binary(const size_t M, const size_t N,
   A_ccs = gsl_spmatrix_ccs(A);
 
   {
-    FILE *f = fopen(filename, "w");
+    FILE *f = fopen(filename, "wb");
 
     gsl_spmatrix_fwrite(f, A_ccs);
 
@@ -672,7 +672,7 @@ test_io_binary(const size_t M, const size_t N,
   }
 
   {
-    FILE *f = fopen(filename, "r");
+    FILE *f = fopen(filename, "rb");
     gsl_spmatrix *B = gsl_spmatrix_alloc_nzmax(M, N, A->nz, GSL_SPMATRIX_CCS);
 
     gsl_spmatrix_fread(f, B);
@@ -688,7 +688,7 @@ test_io_binary(const size_t M, const size_t N,
   A_crs = gsl_spmatrix_crs(A);
 
   {
-    FILE *f = fopen(filename, "w");
+    FILE *f = fopen(filename, "wb");
 
     gsl_spmatrix_fwrite(f, A_crs);
 
@@ -696,7 +696,7 @@ test_io_binary(const size_t M, const size_t N,
   }
 
   {
-    FILE *f = fopen(filename, "r");
+    FILE *f = fopen(filename, "rb");
     gsl_spmatrix *B = gsl_spmatrix_alloc_nzmax(M, N, A->nz, GSL_SPMATRIX_CRS);
 
     gsl_spmatrix_fread(f, B);
