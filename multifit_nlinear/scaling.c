@@ -1,6 +1,6 @@
-/* multifit_nlinear/lmdiag.c
+/* multifit_nlinear/scaling.c
  * 
- * Copyright (C) 2015 Patrick Alken
+ * Copyright (C) 2015, 2016 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +18,25 @@
  */
 
 /*
- * This module handles the updating of the scaling matrix D
- * in the solution step:
+ * This module handles the updating of the scaling matrix D_k in the
+ * trust region subproblem:
  *
- * [     J      ] dx = - [ f ]
- * [ sqrt(mu)*D ]        [ 0 ]
+ * min m_k (dx), || D_k dx || <= Delta_k
  *
- * according to several different strategies.
+ * where m_k(dx) is a model which approximates the cost function
+ * F(x_k + dx) near the current iteration point x_k
+ *
+ * D_k can be updated according to several different strategies.
  */
+
+#include <config.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_multifit_nlinear.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_blas.h>
 
 static int init_diag_levenberg(const gsl_matrix * J, gsl_vector * diag);
 static int update_diag_levenberg(const gsl_matrix * J,

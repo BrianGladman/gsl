@@ -1,6 +1,6 @@
-/* multifit_nlinear/lmmisc.c
+/* multifit_nlinear/common.c
  * 
- * Copyright (C) 2014, 2015 Patrick Alken
+ * Copyright (C) 2014, 2015, 2016 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,20 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-static double lm_calc_rho(const double mu, const gsl_vector * v,
-                          const gsl_vector * g,
-                          const gsl_vector * f,
-                          const gsl_vector * f_trial,
-                          lm_state_t * state);
-static int lm_check_step(const gsl_vector * v, const gsl_vector * g,
-                         const gsl_vector * f, const gsl_vector * f_trial,
-                         double * rho, lm_state_t * state);
-static double lm_scaled_norm(const gsl_vector *a, const gsl_vector *b);
+static void trial_step(const gsl_vector * x, const gsl_vector * dx,
+                       gsl_vector * x_trial);
+static double scaled_norm(const gsl_vector *a, const gsl_vector *b);
 
 /* compute x_trial = x + dx */
 static void
-lm_trial_step(const gsl_vector * x, const gsl_vector * dx,
-                  gsl_vector * x_trial)
+trial_step(const gsl_vector * x, const gsl_vector * dx,
+           gsl_vector * x_trial)
 {
   size_t i, N = x->size;
 
@@ -40,8 +34,9 @@ lm_trial_step(const gsl_vector * x, const gsl_vector * dx,
       double xi = gsl_vector_get (x, i);
       gsl_vector_set (x_trial, i, xi + dxi);
     }
-} /* lm_trial_step() */
+}
 
+#if 0
 /*
 lm_calc_rho()
   Calculate ratio of actual reduction to predicted
@@ -99,6 +94,7 @@ lm_calc_rho(const double mu, const gsl_vector * v,
 
   return rho;
 }
+#endif
 
 /*
 lm_check_step()
@@ -120,6 +116,7 @@ Notes:
    is updated with |a| / |v|
 */
 
+#if 0
 static int
 lm_check_step(const gsl_vector * v, const gsl_vector * g,
               const gsl_vector * f, const gsl_vector * f_trial,
@@ -149,10 +146,11 @@ lm_check_step(const gsl_vector * v, const gsl_vector * g,
 
   return GSL_SUCCESS;
 }
+#endif
 
 /* compute || diag(D) a || */
 static double
-lm_scaled_norm(const gsl_vector *D, const gsl_vector *a)
+scaled_norm(const gsl_vector *D, const gsl_vector *a)
 {
   const size_t n = a->size;
   double e2 = 0.0;

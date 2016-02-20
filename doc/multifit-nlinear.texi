@@ -1486,7 +1486,7 @@ The @math{i}th row of the Jacobian is therefore
 $$
 J_{i\cdot} = \left(
 \matrix{
-\exp{-\lambda t_i} & -t_i A \exp{-\lambda t_i} & 1
+\exp(-\lambda t_i) & -t_i A \exp(-\lambda t_i) & 1
 }
 \right)
 $$

@@ -1,4 +1,4 @@
-/* multifit_nlinear/lmnormal.c
+/* multifit_nlinear/normal.c
  * 
  * Copyright (C) 2015, 2016 Patrick Alken
  * 
@@ -28,6 +28,15 @@
  * [ J^T J + mu D^T D ] a = -J^T fvv, for geodesic acceleration
  */
 
+#include <config.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_multifit_nlinear.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_blas.h>
+
 typedef struct
 {
   gsl_matrix *A;             /* J^T J */
@@ -40,13 +49,9 @@ typedef struct
 } normal_state_t;
 
 static void *normal_alloc (const size_t n, const size_t p);
-static int normal_init(const gsl_vector * f, const gsl_matrix * J,
-                       const gsl_vector * g, void * vstate);
-static int normal_init_mu(const double mu, const gsl_vector * diag, void * vstate);
-static int normal_solve_vel(gsl_vector *v, void *vstate);
-static int normal_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
-                            gsl_vector *a, void *vstate);
-static int normal_solve(const gsl_vector * b, gsl_vector *x, normal_state_t *state);
+static int normal_init(const gsl_matrix * J, void * vstate);
+static int normal_presolve(const double mu, const gsl_vector * diag, void * vstate);
+static int normal_solve_rhs(const gsl_vector * b, gsl_vector *x, normal_state_t *state);
 static int normal_regularize(const double mu,
                              const gsl_vector * diag, gsl_matrix * A);
 
@@ -131,16 +136,9 @@ normal_free(void *vstate)
 
 /* compute A = J^T J */
 static int
-normal_init(const gsl_vector * f, const gsl_matrix * J,
-            const gsl_vector * g, void * vstate)
+normal_init(const gsl_matrix * J, void * vstate)
 {
   normal_state_t *state = (normal_state_t *) vstate;
-
-  (void)f; /* avoid unused parameter warning */
-
-  /* prepare rhs vector = -g = -J^T f */
-  gsl_vector_memcpy(state->rhs_vel, g);
-  gsl_vector_scale(state->rhs_vel, -1.0);
 
   /* compute A = J^T J */
   gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, J, 0.0, state->A);
@@ -149,10 +147,11 @@ normal_init(const gsl_vector * f, const gsl_matrix * J,
 }
 
 /*
-normal_init_mu()
+normal_presolve()
   Compute the Cholesky decomposition of J^T J + mu * D^T D
 
 Inputs: mu     - LM parameter
+        diag   - diag(D)
         vstate - workspace
 
 Notes:
@@ -167,7 +166,7 @@ contains Householder scalars
 */
 
 static int
-normal_init_mu(const double mu, const gsl_vector * diag, void * vstate)
+normal_presolve(const double mu, const gsl_vector * diag, void * vstate)
 {
   normal_state_t *state = (normal_state_t *) vstate;
   gsl_matrix *JTJ = state->work_JTJ;
@@ -219,37 +218,49 @@ normal_init_mu(const double mu, const gsl_vector * diag, void * vstate)
   return GSL_SUCCESS;
 }
 
-/* compute velocity by solving (J^T J + mu D^T D) v = -J^T f */
+/*
+normal_solve()
+  Compute (J^T J + mu D^T D) x = -J^T f
+
+Inputs: f      - right hand side vector f
+        g      - J^T f (can be NULL)
+        x      - (output) solution vector
+        vstate - normal workspace
+*/
 static int
-normal_solve_vel(gsl_vector *v, void *vstate)
+normal_solve(const gsl_vector * f, const gsl_vector * g,
+             gsl_vector *x, void *vstate)
 {
   normal_state_t *state = (normal_state_t *) vstate;
   int status;
 
-  status = normal_solve(state->rhs_vel, v, state);
+  if (g != NULL)
+    {
+      status = normal_solve_rhs(g, x, state);
+      if (status)
+        return status;
 
-  return status;
-}
+      /* reverse step to go downhill */
+      gsl_vector_scale(x, -1.0);
+    }
+  else
+    {
+#if 0
+      /* compute rhs = -J^T f */
+      gsl_blas_dgemv(CblasTrans, -1.0, J, f, 0.0, state->rhs_acc);
 
-/* compute acceleration by solving (J^T J + mu D^T D) a = -J^T fvv */
-static int
-normal_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
-                 gsl_vector *a, void *vstate)
-{
-  normal_state_t *state = (normal_state_t *) vstate;
-  int status;
+      status = normal_solve(state->rhs_acc, x, state);
+      if (status)
+        return status;
+#endif
+    }
 
-  /* compute rhs = -J^T fvv */
-  gsl_blas_dgemv(CblasTrans, -1.0, J, fvv, 0.0, state->rhs_acc);
-
-  status = normal_solve(state->rhs_acc, a, state);
-
-  return status;
+  return GSL_SUCCESS;
 }
 
 /* solve: (J^T J + mu D^T D) x = b */
 static int
-normal_solve(const gsl_vector * b, gsl_vector *x, normal_state_t *state)
+normal_solve_rhs(const gsl_vector * b, gsl_vector *x, normal_state_t *state)
 {
   int status;
   gsl_matrix *JTJ = state->work_JTJ;
@@ -304,9 +315,8 @@ static const gsl_multifit_nlinear_solver normal_type =
   "normal",
   normal_alloc,
   normal_init,
-  normal_init_mu,
-  normal_solve_vel,
-  normal_solve_acc,
+  normal_presolve,
+  normal_solve,
   normal_free
 };
 

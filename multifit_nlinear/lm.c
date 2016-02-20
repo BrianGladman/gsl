@@ -45,9 +45,6 @@ typedef struct
 {
   size_t n;                  /* number of observations */
   size_t p;                  /* number of parameters */
-  gsl_vector *diag;          /* D = diag(J^T J) */
-  gsl_vector *x_trial;       /* trial parameter vector */
-  gsl_vector *f_trial;       /* trial function vector */
   gsl_vector *fvv;           /* D_v^2 f(x), size n */
   gsl_vector *vel;           /* geodesic velocity (standard LM step), size p */
   gsl_vector *acc;           /* geodesic acceleration, size p */
@@ -67,21 +64,25 @@ typedef struct
   gsl_multifit_nlinear_parameters params;
 } lm_state_t;
 
-#include "lmdiag.c"
-#include "lmmisc.c"
-#include "lmnielsen.c"
-#include "lmnormal.c"
-#include "lmqr.c"
+#include "common.c"
 #include "lmtrust.c"
 
 #define LM_ONE_THIRD         (0.333333333333333)
 
-static void * lm_alloc (const gsl_multifit_nlinear_parameters * params,
-                        const size_t n, const size_t p);
+static void * lm_alloc (const void * params, const size_t n, const size_t p);
 static void lm_free(void *vstate);
-static int lm_init(void *vstate, const gsl_vector * swts,
-                   gsl_multifit_nlinear_fdf *fdf, const gsl_vector *x,
-                   gsl_vector *f, gsl_matrix *J, gsl_vector *g);
+static int lm_init(const gsl_vector *x, const gsl_matrix *J,
+                   const gsl_vector *diag, void *vstate);
+static int lm_init_J(const gsl_matrix * J, void * vstate);
+static int lm_step(const gsl_vector * f, const gsl_vector * g,
+                   const gsl_vector * diag, gsl_vector * dx, void * vstate);
+static int lm_check_step(const gsl_vector * g, const gsl_vector * f,
+                         const gsl_vector * f_trial, const gsl_vector * diag,
+                         double * rho, void * vstate);
+static double lm_calc_rho(const double mu, const gsl_vector * v,
+                          const gsl_vector * g, const gsl_vector * f,
+                          const gsl_vector * f_trial, const gsl_vector * diag,
+                          lm_state_t * state);
 static int lm_iterate(void *vstate, const gsl_vector *swts,
                       gsl_multifit_nlinear_fdf *fdf,
                       gsl_vector *x, gsl_vector *f, gsl_matrix *J,
@@ -90,21 +91,15 @@ static int lm_rcond(const gsl_matrix *J, double *rcond, void *vstate);
 static double lm_avratio(void *vstate);
 
 static void *
-lm_alloc (const gsl_multifit_nlinear_parameters * params,
-          const size_t n, const size_t p)
+lm_alloc (const void * params, const size_t n, const size_t p)
 {
+  const gsl_multifit_nlinear_parameters *mparams = (const gsl_multifit_nlinear_parameters *) params;
   lm_state_t *state;
   
   state = calloc(1, sizeof(lm_state_t));
   if (state == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate lm state", GSL_ENOMEM);
-    }
-
-  state->diag = gsl_vector_alloc(p);
-  if (state->diag == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for diag", GSL_ENOMEM);
     }
 
   state->workp = gsl_vector_alloc(p);
@@ -137,25 +132,13 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
       GSL_ERROR_NULL ("failed to allocate space for acc", GSL_ENOMEM);
     }
 
-  state->x_trial = gsl_vector_alloc(p);
-  if (state->x_trial == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for x_trial", GSL_ENOMEM);
-    }
-
-  state->f_trial = gsl_vector_alloc(n);
-  if (state->f_trial == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for f_trial", GSL_ENOMEM);
-    }
-
-  state->update_state = (params->update->alloc)();
+  state->update_state = (mparams->update->alloc)();
   if (state->update_state == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for update state", GSL_ENOMEM);
     }
 
-  state->solver_state = (params->solver->alloc)(n, p);
+  state->solver_state = (mparams->solver->alloc)(n, p);
   if (state->solver_state == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for solver state", GSL_ENOMEM);
@@ -175,7 +158,7 @@ lm_alloc (const gsl_multifit_nlinear_parameters * params,
 
   state->n = n;
   state->p = p;
-  state->params = *params;
+  state->params = *mparams;
 
   return state;
 }
@@ -185,9 +168,6 @@ lm_free(void *vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
   const gsl_multifit_nlinear_parameters *params = &(state->params);
-
-  if (state->diag)
-    gsl_vector_free(state->diag);
 
   if (state->workp)
     gsl_vector_free(state->workp);
@@ -203,12 +183,6 @@ lm_free(void *vstate)
 
   if (state->acc)
     gsl_vector_free(state->acc);
-
-  if (state->x_trial)
-    gsl_vector_free(state->x_trial);
-
-  if (state->f_trial)
-    gsl_vector_free(state->f_trial);
 
   if (state->update_state)
     (params->update->free)(state->update_state);
@@ -229,44 +203,24 @@ lm_free(void *vstate)
 lm_init()
   Initialize LM solver
 
-Inputs: vstate - workspace
-        swts   - sqrt(W) vector
-        fdf    - user callback functions
-        x      - initial parameter values
-        f      - (output) f(x) vector
-        J      - (output) J(x) matrix
-        g      - (output) J(x)' f(x) vector
+Inputs: x      - initial parameter values
+        J      - J(x) matrix
+        diag   - D matrix
+        vstate - workspace
 
 Return: success/error
 */
 
 static int
-lm_init(void *vstate, const gsl_vector *swts,
-        gsl_multifit_nlinear_fdf *fdf, const gsl_vector *x,
-        gsl_vector *f, gsl_matrix *J, gsl_vector *g)
+lm_init(const gsl_vector *x, const gsl_matrix *J,
+        const gsl_vector *diag, void *vstate)
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
   const gsl_multifit_nlinear_parameters *params = &(state->params);
 
-  /* evaluate function and Jacobian at x and apply weight transform */
-  status = gsl_multifit_nlinear_eval_f(fdf, x, swts, f);
-  if (status)
-   return status;
-
-  status = gsl_multifit_nlinear_eval_df(x, f, swts, params->h_df,
-                                        params->fdtype, fdf, J, state->workn);
-  if (status)
-    return status;
-
-  /* compute g = J^T f */
-  gsl_blas_dgemv(CblasTrans, 1.0, J, f, 0.0, g);
-
-  /* initialize diagonal scaling matrix D */
-  (params->scale->init)(J, state->diag);
-
   /* initialize LM parameter mu */
-  status = (params->update->init)(J, state->diag, x,
+  status = (params->update->init)(J, diag, x,
                                   &(state->mu),
                                   state->update_state);
   if (status)
@@ -279,6 +233,198 @@ lm_init(void *vstate, const gsl_vector *swts,
   state->avratio = 0.0;
 
   return GSL_SUCCESS;
+}
+
+/*
+lm_init_J()
+  Initialize LM method for new Jacobian matrix
+*/
+
+static int
+lm_init_J(const gsl_matrix * J, void * vstate)
+{
+  int status;
+  lm_state_t *state = (lm_state_t *) vstate;
+  const gsl_multifit_nlinear_parameters *params = &(state->params);
+
+  /* initialize linear least squares solver */
+  status = (params->solver->init)(J, state->solver_state);
+  if (status)
+    return status;
+
+  return GSL_SUCCESS;
+}
+
+/*
+lm_step()
+  Calculate a new step vector by solving the linear
+least squares system:
+
+[      J     ] v = - [ f ]
+[ sqrt(mu) D ]       [ 0 ]
+*/
+
+static int
+lm_step(const gsl_vector * f, const gsl_vector * g,
+        const gsl_vector * diag, gsl_vector * dx, void * vstate)
+{
+  int status;
+  lm_state_t *state = (lm_state_t *) vstate;
+  const gsl_multifit_nlinear_parameters *params = &(state->params);
+  const size_t p = state->p;
+  size_t i;
+
+  /* prepare the linear solver with current LM parameter mu */
+  status = (params->solver->presolve)(state->mu, diag, state->solver_state);
+  if (status)
+    return status;
+
+  /* solve linear least squares problem */
+  status = (params->solver->solve)(f, g, state->vel, state->solver_state);
+  if (status)
+    return status;
+
+  /* compute step dx = v + 1/2 a */
+  for (i = 0; i < p; ++i)
+    {
+      double vi = gsl_vector_get(state->vel, i);
+      double ai = gsl_vector_get(state->acc, i);
+      gsl_vector_set(dx, i, vi + 0.5 * ai);
+    }
+
+  return GSL_SUCCESS;
+}
+
+/*
+lm_check_step()
+  Test whether a new step should be accepted, and
+update mu parameter accordingly
+
+Inputs: f       - current residual vector f(x)
+        f_trial - proposed residual vector f(x + dx)
+        g       - gradient vector J' f
+        diag    - scaling matrix D
+        rho     - (output)
+        vstate  - workspace
+
+Return:
+GSL_SUCCESS to accept step
+GSL_FAILURE to reject step
+
+Notes:
+1) state->mu is updated according to whether step
+is accepted or rejected
+*/
+
+static int
+lm_check_step(const gsl_vector * f, const gsl_vector * f_trial,
+              const gsl_vector * g, const gsl_vector * diag,
+              double * rho, void * vstate)
+{
+  int status = GSL_SUCCESS;
+  lm_state_t *state = (lm_state_t *) vstate;
+  const gsl_multifit_nlinear_parameters *params = &(state->params);
+
+  /* if using geodesic acceleration, check that |a|/|v| < alpha */
+  if (params->accel)
+    {
+      double anorm = scaled_norm(diag, state->acc);
+      double vnorm = scaled_norm(diag, state->vel);
+
+      /* store |a| / |v| */
+      state->avratio = anorm / vnorm;
+
+      /* reject step if acceleration is too large compared to velocity */
+      if (state->avratio > params->avmax)
+        status = GSL_FAILURE;
+    }
+
+  if (status == GSL_SUCCESS)
+    {
+      *rho = lm_calc_rho(state->mu, state->vel, g, f, f_trial, diag, state);
+
+      /* if rho <= 0, the step does not reduce the cost function, reject */
+      if (*rho <= 0.0)
+        status = GSL_FAILURE;
+    }
+
+  /* update state->mu */
+  if (status == GSL_SUCCESS)
+    {
+      /* step accepted, decrease mu */
+      int s = (params->update->accept)(*rho, &(state->mu), state->update_state);
+      if (s)
+        return s;
+    }
+  else
+    {
+      /* step rejected, increase mu */
+      int s = (params->update->reject)(&(state->mu), state->update_state);
+      if (s)
+        return s;
+    }
+
+  return status;
+}
+
+/*
+lm_calc_rho()
+  Calculate ratio of actual reduction to predicted
+reduction, given by Eq 4.4 of More, 1978.
+
+Inputs: mu      - LM parameter
+        v       - velocity vector (p in Eq 4.4)
+        g       - gradient J^T f
+        f       - f(x)
+        f_trial - f(x + dx)
+        diag    - scaling matrix D
+        state   - workspace
+*/
+
+static double
+lm_calc_rho(const double mu, const gsl_vector * v,
+            const gsl_vector * g, const gsl_vector * f,
+            const gsl_vector * f_trial, const gsl_vector * diag,
+            lm_state_t * state)
+{
+  const double normf = gsl_blas_dnrm2(f);
+  const double normf_trial = gsl_blas_dnrm2(f_trial);
+  double rho;
+  double actual_reduction;
+  double pred_reduction;
+  double u;
+  double norm_Dp; /* || D p || */
+
+  /* if ||f(x+dx)|| > ||f(x)|| reject step immediately */
+  if (normf_trial >= normf)
+    return -1.0;
+
+  /* compute numerator of rho */
+  u = normf_trial / normf;
+  actual_reduction = 1.0 - u*u;
+
+  /* compute || D p || */
+  norm_Dp = scaled_norm(diag, v);
+
+  /*
+   * compute denominator of rho; instead of computing J*v,
+   * we note that:
+   *
+   * ||Jv||^2 + 2*mu*||Dv||^2 = mu*||Dv||^2 - v^T g
+   * and g = J^T f
+   */
+  u = norm_Dp / normf;
+  pred_reduction = mu * u * u;
+
+  gsl_blas_ddot(v, g, &u);
+  pred_reduction -= u / (normf * normf);
+
+  if (pred_reduction > 0.0)
+    rho = actual_reduction / pred_reduction;
+  else
+    rho = -1.0;
+
+  return rho;
 }
 
 /*
@@ -327,14 +473,12 @@ lm_iterate(void *vstate, const gsl_vector *swts,
   lm_state_t *state = (lm_state_t *) vstate;
   const size_t p = state->p;
   const gsl_multifit_nlinear_parameters *params = &(state->params);
-  gsl_vector *x_trial = state->x_trial;       /* trial x + dx */
-  gsl_vector *f_trial = state->f_trial;       /* trial f(x + dx) */
-  gsl_vector *diag = state->diag;             /* diag(D) */
   double rho;                                 /* ratio dF/dL */
   int foundstep = 0;                          /* found step dx */
   int bad_steps = 0;                          /* consecutive rejected steps */
   size_t i;
 
+#if 0
   /* initialize linear least squares solver */
   status = (params->solver->init)(f, J, g, state->solver_state);
   if (status)
@@ -437,6 +581,7 @@ lm_iterate(void *vstate, const gsl_vector *swts,
             return status;
         }
     } /* while (!foundstep) */
+#endif
 
   return GSL_SUCCESS;
 } /* lm_iterate() */
@@ -480,15 +625,15 @@ lm_avratio(void *vstate)
   return state->avratio;
 }
 
-static const gsl_multifit_nlinear_type lm_type =
+static const gsl_multifit_nlinear_method lm_type =
 {
-  "lm",
+  "levenberg-marquardt",
   lm_alloc,
   lm_init,
-  lm_iterate,
-  lm_rcond,
-  lm_avratio,
+  lm_init_J,
+  lm_step,
+  lm_check_step,
   lm_free
 };
 
-const gsl_multifit_nlinear_type *gsl_multifit_nlinear_lm = &lm_type;
+const gsl_multifit_nlinear_method *gsl_multifit_nlinear_method_lm = &lm_type;

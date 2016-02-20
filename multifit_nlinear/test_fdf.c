@@ -182,14 +182,14 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
       double epsrel = *(problem->epsrel);
       gsl_multifit_nlinear_fdf fdf;
 
-      test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
+      test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
                epsrel, 1.0, problem, NULL);
 
       /* test finite difference Jacobian */
       fdf.df = problem->fdf->df;
       problem->fdf->df = NULL;
 
-      test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
+      test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
                1.0e3 * epsrel, 1.0, problem, NULL);
 
       problem->fdf->df = fdf.df;
@@ -200,7 +200,7 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
           fdf.fvv = problem->fdf->fvv;
           problem->fdf->fvv = NULL;
 
-          test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
+          test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
                    epsrel / params->h_fvv, 1.0, problem, NULL);
 
           problem->fdf->fvv = fdf.fvv;
@@ -210,11 +210,11 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
   /* test weighted nonlinear least squares */
 
   /* internal weighting in _f and _df functions */
-  test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
+  test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
            wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
 
   /* weighting through nlinear_winit */
-  test_fdf(gsl_multifit_nlinear_lm, params, xtol, gtol, ftol,
+  test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
            wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
 }
 

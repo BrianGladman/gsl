@@ -73,7 +73,7 @@ trust_init(const gsl_matrix * J, const gsl_vector * diag,
 {
   trust_state_t *state = (trust_state_t *) vstate;
   const double factor = 100.0; /* recommended value from MINPACK */
-  double Dx = lm_scaled_norm(diag, x);
+  double Dx = scaled_norm(diag, x);
 
   /* initialize delta = factor * || D x || */
   state->delta = (Dx > 0.0) ? factor * Dx : factor;
