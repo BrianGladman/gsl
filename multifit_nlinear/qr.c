@@ -1,4 +1,4 @@
-/* multifit_nlinear/lmqr.c
+/* multifit_nlinear/qr.c
  * 
  * Copyright (C) 2015 Patrick Alken
  * 
@@ -27,7 +27,7 @@
  * using a QR approach. The solver is organized into 4 sequential steps:
  *
  * 1. init: initialize solver for a given f(x) and J(x), independent of mu
- * 2. init_mu: further solver initialization once mu is selected
+ * 2. presolve: further solver initialization once mu is selected
  * 3. solve_vel: solve above linear system for geodesic velocity (this is the
  *               standard LM step)
  * 4. solve_acc: solve a similar linear system for the geodesic acceleration:
@@ -39,6 +39,15 @@
  * use the second directional derivative in the velocity direction).
  */
 
+#include <config.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_multifit_nlinear.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_blas.h>
+
 #include "qrsolv.c"
 
 typedef struct
@@ -48,20 +57,17 @@ typedef struct
   gsl_matrix *Q;             /* Householder reflectors for J */
   gsl_permutation *perm;     /* permutation matrix */
   gsl_vector *qtf;           /* Q^T f */
-  gsl_vector *qtfvv;         /* Q^T fvv */
   gsl_vector *diag;          /* scaling matrix D */
   gsl_vector *workn;         /* workspace, length n */
   gsl_vector *workp;         /* workspace, length p */
   double mu;                 /* LM parameter */
 } qr_state_t;
 
-static int qr_init(const gsl_vector * f, const gsl_matrix * J,
-                   const gsl_vector * g, void * vstate);
-static int qr_init_mu(const double mu, const gsl_vector * diag,
-                      void * vstate);
-static int qr_solve_vel(gsl_vector *v, void *vstate);
-static int qr_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
-                        gsl_vector *a, void *vstate);
+static int qr_init(const gsl_matrix * J, void * vstate);
+static int qr_presolve(const double mu, const gsl_vector * diag,
+                       void * vstate);
+static int qr_solve(const gsl_vector * f, const gsl_vector * g,
+                    const gsl_matrix *J, gsl_vector *x, void *vstate);
 
 static void *
 qr_alloc (const size_t n, const size_t p)
@@ -99,13 +105,6 @@ qr_alloc (const size_t n, const size_t p)
   if (state->qtf == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for qtf",
-                      GSL_ENOMEM);
-    }
-
-  state->qtfvv = gsl_vector_alloc(n);
-  if (state->qtfvv == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for qtfvv",
                       GSL_ENOMEM);
     }
 
@@ -159,9 +158,6 @@ qr_free(void *vstate)
   if (state->qtf)
     gsl_vector_free(state->qtf);
 
-  if (state->qtfvv)
-    gsl_vector_free(state->qtfvv);
-
   if (state->perm)
     gsl_permutation_free(state->perm);
 
@@ -177,10 +173,9 @@ qr_free(void *vstate)
   free(state);
 }
 
-/* compute J = Q R PT and qtf = Q^T f */
+/* compute J = Q R PT */
 static int
-qr_init(const gsl_vector * f, const gsl_matrix * J,
-        const gsl_vector * g, void * vstate)
+qr_init(const gsl_matrix * J, void * vstate)
 {
   qr_state_t *state = (qr_state_t *) vstate;
   int signum;
@@ -189,20 +184,15 @@ qr_init(const gsl_vector * f, const gsl_matrix * J,
   gsl_linalg_QRPT_decomp(state->R, state->tau, state->perm,
                          &signum, state->workp);
 
-  gsl_vector_memcpy(state->qtf, f);
-  gsl_linalg_QR_QTvec(state->R, state->tau, state->qtf);
-
   /* save Householder part of R matrix which is destroyed by qrsolv() */
   gsl_matrix_memcpy(state->Q, state->R);
-
-  (void)g; /* avoid unused parameter warning */
 
   return GSL_SUCCESS;
 }
 
 static int
-qr_init_mu(const double mu, const gsl_vector * diag,
-           void * vstate)
+qr_presolve(const double mu, const gsl_vector * diag,
+            void * vstate)
 {
   qr_state_t *state = (qr_state_t *) vstate;
 
@@ -213,55 +203,33 @@ qr_init_mu(const double mu, const gsl_vector * diag,
 }
 
 static int
-qr_solve_vel(gsl_vector *v, void *vstate)
+qr_solve(const gsl_vector * f, const gsl_vector * g,
+         const gsl_matrix *J, gsl_vector *x, void *vstate)
 {
   qr_state_t *state = (qr_state_t *) vstate;
   const double sqrt_mu = sqrt(state->mu);
   int status;
 
-  /*
-   * solve:
-   *
-   * [       J       ] v = [ f ]
-   * [ sqrt(lamba) D ]     [ 0 ]
-   *
-   * using QRPT factorization of J
-   */
-  status = qrsolv(state->R, state->perm, sqrt_mu, state->diag,
-                  state->qtf, v, state->workp, state->workn);
+  (void)g;
 
-  /* reverse step to go downhill */
-  gsl_vector_scale(v, -1.0);
-
-  return status;
-}
-
-static int
-qr_solve_acc(const gsl_matrix *J, const gsl_vector *fvv,
-             gsl_vector *a, void *vstate)
-{
-  qr_state_t *state = (qr_state_t *) vstate;
-  const double sqrt_mu = sqrt(state->mu);
-  int status;
-
-  /* compute qtfvv = Q^T fvv */
-  gsl_vector_memcpy(state->qtfvv, fvv);
-  gsl_linalg_QR_QTvec(state->Q, state->tau, state->qtfvv);
+  /* compute qtf = Q^T f */
+  gsl_vector_memcpy(state->qtf, f);
+  gsl_linalg_QR_QTvec(state->Q, state->tau, state->qtf);
 
   /*
    * solve:
    *
-   * [       J       ] a = [ fvv ]
-   * [ sqrt(lamba) D ]     [  0  ]
+   * [     J      ] x = [ f ]
+   * [ sqrt(mu) D ]     [ 0 ]
    *
    * using QRPT factorization of J
    */
 
   status = qrsolv(state->R, state->perm, sqrt_mu, state->diag,
-                  state->qtfvv, a, state->workp, state->workn);
+                  state->qtf, x, state->workp, state->workn);
 
   /* reverse step to go downhill */
-  gsl_vector_scale(a, -1.0);
+  gsl_vector_scale(x, -1.0);
 
   (void)J; /* avoid unused parameter warning */
 
@@ -273,9 +241,8 @@ static const gsl_multifit_nlinear_solver qr_type =
   "qr",
   qr_alloc,
   qr_init,
-  qr_init_mu,
-  qr_solve_vel,
-  qr_solve_acc,
+  qr_presolve,
+  qr_solve,
   qr_free
 };
 

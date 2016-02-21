@@ -41,8 +41,7 @@ typedef struct
 {
   gsl_matrix *A;             /* J^T J */
   gsl_matrix *work_JTJ;      /* copy of J^T J */
-  gsl_vector *rhs_vel;       /* -J^T f */
-  gsl_vector *rhs_acc;       /* -J^T fvv */
+  gsl_vector *rhs;           /* -J^T f */
   gsl_vector *tau;           /* Householder scalars for QR, size p */
   gsl_vector *workp;         /* workspace, size p */
   int chol;                  /* Cholesky factorization successful */
@@ -51,6 +50,8 @@ typedef struct
 static void *normal_alloc (const size_t n, const size_t p);
 static int normal_init(const gsl_matrix * J, void * vstate);
 static int normal_presolve(const double mu, const gsl_vector * diag, void * vstate);
+static int normal_solve(const gsl_vector * f, const gsl_vector * g,
+                        const gsl_matrix * J, gsl_vector *x, void *vstate);
 static int normal_solve_rhs(const gsl_vector * b, gsl_vector *x, normal_state_t *state);
 static int normal_regularize(const double mu,
                              const gsl_vector * diag, gsl_matrix * A);
@@ -81,16 +82,10 @@ normal_alloc (const size_t n, const size_t p)
                       GSL_ENOMEM);
     }
 
-  state->rhs_vel = gsl_vector_alloc(p);
-  if (state->rhs_vel == NULL)
+  state->rhs = gsl_vector_alloc(p);
+  if (state->rhs == NULL)
     {
-      GSL_ERROR_NULL ("failed to allocate space for rhs_vel", GSL_ENOMEM);
-    }
-
-  state->rhs_acc = gsl_vector_alloc(p);
-  if (state->rhs_acc == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for rhs_acc", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for rhs", GSL_ENOMEM);
     }
 
   state->tau = gsl_vector_alloc(p);
@@ -119,11 +114,8 @@ normal_free(void *vstate)
   if (state->work_JTJ)
     gsl_matrix_free(state->work_JTJ);
 
-  if (state->rhs_vel)
-    gsl_vector_free(state->rhs_vel);
-
-  if (state->rhs_acc)
-    gsl_vector_free(state->rhs_acc);
+  if (state->rhs)
+    gsl_vector_free(state->rhs);
 
   if (state->tau)
     gsl_vector_free(state->tau);
@@ -224,12 +216,18 @@ normal_solve()
 
 Inputs: f      - right hand side vector f
         g      - J^T f (can be NULL)
+        J      - Jacobian matrix
         x      - (output) solution vector
         vstate - normal workspace
+
+Notes:
+1) If g is not NULL, it is assumed to equal J^T f
+   If g is NULL, J^T f is computed prior to solving
 */
+
 static int
 normal_solve(const gsl_vector * f, const gsl_vector * g,
-             gsl_vector *x, void *vstate)
+             const gsl_matrix * J, gsl_vector *x, void *vstate)
 {
   normal_state_t *state = (normal_state_t *) vstate;
   int status;
@@ -245,14 +243,12 @@ normal_solve(const gsl_vector * f, const gsl_vector * g,
     }
   else
     {
-#if 0
       /* compute rhs = -J^T f */
-      gsl_blas_dgemv(CblasTrans, -1.0, J, f, 0.0, state->rhs_acc);
+      gsl_blas_dgemv(CblasTrans, -1.0, J, f, 0.0, state->rhs);
 
-      status = normal_solve(state->rhs_acc, x, state);
+      status = normal_solve_rhs(state->rhs, x, state);
       if (status)
         return status;
-#endif
     }
 
   return GSL_SUCCESS;

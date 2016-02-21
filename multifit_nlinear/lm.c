@@ -1,6 +1,6 @@
 /* multifit_nlinear/lm.c
  * 
- * Copyright (C) 2014, 2015 Patrick Alken
+ * Copyright (C) 2014, 2015, 2016 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,30 +65,24 @@ typedef struct
 } lm_state_t;
 
 #include "common.c"
-#include "lmtrust.c"
-
-#define LM_ONE_THIRD         (0.333333333333333)
 
 static void * lm_alloc (const void * params, const size_t n, const size_t p);
 static void lm_free(void *vstate);
 static int lm_init(const gsl_vector *x, const gsl_matrix *J,
                    const gsl_vector *diag, void *vstate);
 static int lm_init_J(const gsl_matrix * J, void * vstate);
-static int lm_step(const gsl_vector * f, const gsl_vector * g,
-                   const gsl_vector * diag, gsl_vector * dx, void * vstate);
-static int lm_check_step(const gsl_vector * g, const gsl_vector * f,
-                         const gsl_vector * f_trial, const gsl_vector * diag,
+static int lm_step(const gsl_vector * x, const gsl_vector * f, const gsl_vector * g,
+                   const gsl_matrix * J, const gsl_vector * diag,
+                   const gsl_vector * swts, gsl_multifit_nlinear_fdf *fdf,
+                   gsl_vector * dx, void * vstate);
+static int lm_check_step(const gsl_vector * f, const gsl_vector * f_trial,
+                         const gsl_vector * g, const gsl_vector * diag,
                          double * rho, void * vstate);
-static double lm_calc_rho(const double mu, const gsl_vector * v,
-                          const gsl_vector * g, const gsl_vector * f,
-                          const gsl_vector * f_trial, const gsl_vector * diag,
-                          lm_state_t * state);
-static int lm_iterate(void *vstate, const gsl_vector *swts,
-                      gsl_multifit_nlinear_fdf *fdf,
-                      gsl_vector *x, gsl_vector *f, gsl_matrix *J,
-                      gsl_vector *g, gsl_vector *dx);
 static int lm_rcond(const gsl_matrix *J, double *rcond, void *vstate);
 static double lm_avratio(void *vstate);
+static double lm_calc_rho(const double mu, const gsl_vector * v,
+                          const gsl_vector * g, const gsl_vector * f,
+                          const gsl_vector * f_trial, const gsl_vector * diag);
 
 static void *
 lm_alloc (const void * params, const size_t n, const size_t p)
@@ -265,8 +259,10 @@ least squares system:
 */
 
 static int
-lm_step(const gsl_vector * f, const gsl_vector * g,
-        const gsl_vector * diag, gsl_vector * dx, void * vstate)
+lm_step(const gsl_vector * x, const gsl_vector * f, const gsl_vector * g,
+        const gsl_matrix * J, const gsl_vector * diag,
+        const gsl_vector * swts, gsl_multifit_nlinear_fdf *fdf,
+        gsl_vector * dx, void * vstate)
 {
   int status;
   lm_state_t *state = (lm_state_t *) vstate;
@@ -279,10 +275,30 @@ lm_step(const gsl_vector * f, const gsl_vector * g,
   if (status)
     return status;
 
-  /* solve linear least squares problem */
-  status = (params->solver->solve)(f, g, state->vel, state->solver_state);
+  /*
+   * solve: [     J      ] v = - [ f ]
+   *        [ sqrt(mu)*D ]       [ 0 ]
+   */
+  status = (params->solver->solve)(f, g, J, state->vel, state->solver_state);
   if (status)
     return status;
+
+  if (params->accel)
+    {
+      /* compute geodesic acceleration */
+      status = gsl_multifit_nlinear_eval_fvv(params->h_fvv, x, state->vel, f, J, swts,
+                                             fdf, state->fvv, state->workp);
+      if (status)
+        return status;
+
+      /*
+       * solve: [     J      ] a = - [ fvv ]
+       *        [ sqrt(mu)*D ]       [  0  ]
+       */
+      status = (params->solver->solve)(state->fvv, NULL, J, state->acc, state->solver_state);
+      if (status)
+        return status;
+    }
 
   /* compute step dx = v + 1/2 a */
   for (i = 0; i < p; ++i)
@@ -341,7 +357,7 @@ lm_check_step(const gsl_vector * f, const gsl_vector * f_trial,
 
   if (status == GSL_SUCCESS)
     {
-      *rho = lm_calc_rho(state->mu, state->vel, g, f, f_trial, diag, state);
+      *rho = lm_calc_rho(state->mu, state->vel, g, f, f_trial, diag);
 
       /* if rho <= 0, the step does not reduce the cost function, reject */
       if (*rho <= 0.0)
@@ -378,14 +394,12 @@ Inputs: mu      - LM parameter
         f       - f(x)
         f_trial - f(x + dx)
         diag    - scaling matrix D
-        state   - workspace
 */
 
 static double
 lm_calc_rho(const double mu, const gsl_vector * v,
             const gsl_vector * g, const gsl_vector * f,
-            const gsl_vector * f_trial, const gsl_vector * diag,
-            lm_state_t * state)
+            const gsl_vector * f_trial, const gsl_vector * diag)
 {
   const double normf = gsl_blas_dnrm2(f);
   const double normf_trial = gsl_blas_dnrm2(f_trial);
@@ -426,165 +440,6 @@ lm_calc_rho(const double mu, const gsl_vector * v,
 
   return rho;
 }
-
-/*
-lm_iterate()
-  This function performs 1 iteration of the LM algorithm 6.18
-from [1]. The algorithm is slightly modified to loop until we
-find an acceptable step dx, in order to guarantee that each
-function call contains a new input vector x.
-
-Args: vstate - lm workspace
-      swts   - data weights (NULL if unweighted)
-      fdf    - function and Jacobian pointers
-      x      - on input, current parameter vector
-               on output, new parameter vector x + dx
-      f      - on input, f(x)
-               on output, f(x + dx)
-      J      - on input, J(x)
-               on output, J(x + dx)
-      g      - on input, g(x) = J(x)' f(x)
-               on output, g(x + dx) = J(x + dx)' f(x + dx)
-      dx     - (output only) parameter step vector
-               dx = v + 1/2 a
-
-Return:
-1) GSL_SUCCESS if we found a step which reduces the cost
-function
-
-2) GSL_ENOPROG if 15 successive attempts were to made to
-find a good step without success
-
-Notes:
-1) On input, the following must be initialized in state:
-nu, mu
-
-2) On output, the following are updated with the current iterates:
-nu, mu
-*/
-
-static int
-lm_iterate(void *vstate, const gsl_vector *swts,
-           gsl_multifit_nlinear_fdf *fdf, gsl_vector *x,
-           gsl_vector *f, gsl_matrix *J, gsl_vector *g,
-           gsl_vector *dx)
-{
-  int status;
-  lm_state_t *state = (lm_state_t *) vstate;
-  const size_t p = state->p;
-  const gsl_multifit_nlinear_parameters *params = &(state->params);
-  double rho;                                 /* ratio dF/dL */
-  int foundstep = 0;                          /* found step dx */
-  int bad_steps = 0;                          /* consecutive rejected steps */
-  size_t i;
-
-#if 0
-  /* initialize linear least squares solver */
-  status = (params->solver->init)(f, J, g, state->solver_state);
-  if (status)
-    return status;
-
-  /* loop until we find an acceptable step dx */
-  while (!foundstep)
-    {
-      /* further solver initialization with current mu */
-      status = (params->solver->init_mu)(state->mu, state->diag,
-                                         state->solver_state);
-      if (status)
-        return status;
-
-      /*
-       * solve: [     J      ] v = - [ f ]
-       *        [ sqrt(mu)*D ]       [ 0 ]
-       */
-      status = (params->solver->solve_vel)(state->vel, state->solver_state);
-      if (status)
-        return status;
-
-      if (params->accel)
-        {
-          /* compute geodesic acceleration */
-          status = gsl_multifit_nlinear_eval_fvv(params->h_fvv, x, state->vel, f, J, swts,
-                                                 fdf, state->fvv, state->workp);
-          if (status)
-            return status;
-
-          /*
-           * solve: [     J      ] a = - [ fvv ]
-           *        [ sqrt(mu)*D ]       [  0  ]
-           */
-          status = (params->solver->solve_acc)(J, state->fvv, state->acc, state->solver_state);
-          if (status)
-            return status;
-        }
-
-      /* compute step dx = v + 1/2 a */
-      for (i = 0; i < p; ++i)
-        {
-          double vi = gsl_vector_get(state->vel, i);
-          double ai = gsl_vector_get(state->acc, i);
-          gsl_vector_set(dx, i, vi + 0.5 * ai);
-        }
-
-      /* compute x_trial = x + dx */
-      lm_trial_step(x, dx, x_trial);
-
-      /* compute f(x + dx) */
-      status = gsl_multifit_nlinear_eval_f(fdf, x_trial, swts, f_trial);
-      if (status)
-        return status;
-
-      /* determine whether to accept or reject proposed step */
-      status = lm_check_step(state->vel, g, f, f_trial, &rho, state);
-
-      if (status == GSL_SUCCESS)
-        {
-          /* reduction in cost function, step acceptable */
-
-          /* update LM parameter */
-          status = (params->update->accept)(rho, &(state->mu), state->update_state);
-          if (status)
-            return status;
-
-          /* compute J <- J(x + dx) */
-          status = gsl_multifit_nlinear_eval_df(x_trial, f_trial, swts,
-                                                params->h_df, params->fdtype,
-                                                fdf, J, state->workn);
-          if (status)
-            return status;
-
-          /* update x <- x + dx */
-          gsl_vector_memcpy(x, x_trial);
-
-          /* update f <- f(x + dx) */
-          gsl_vector_memcpy(f, f_trial);
-
-          /* compute new g = J^T f */
-          gsl_blas_dgemv(CblasTrans, 1.0, J, f, 0.0, g);
-
-          /* update scaling matrix D */
-          (params->scale->update)(J, diag);
-
-          foundstep = 1;
-          bad_steps = 0;
-        }
-      else
-        {
-          /* step did not reduce error, reject step */
-
-          /* if more than 15 consecutive rejected steps, report no progress */
-          if (++bad_steps > 15)
-            return GSL_ENOPROG;
-
-          status = (params->update->reject)(&(state->mu), state->update_state);
-          if (status)
-            return status;
-        }
-    } /* while (!foundstep) */
-#endif
-
-  return GSL_SUCCESS;
-} /* lm_iterate() */
 
 static int
 lm_rcond(const gsl_matrix *J, double *rcond, void *vstate)
@@ -633,6 +488,7 @@ static const gsl_multifit_nlinear_method lm_type =
   lm_init_J,
   lm_step,
   lm_check_step,
+  lm_rcond,
   lm_free
 };
 

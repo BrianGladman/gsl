@@ -70,7 +70,7 @@ main (void)
                     gsl_multifit_nlinear_solver_normal,
                     fdtype, accel);
 
-#if 0
+#if 1
           test_proc(gsl_multifit_nlinear_scale_levenberg,
                     gsl_multifit_nlinear_solver_qr,
                     fdtype, accel);

@@ -241,7 +241,6 @@ trust_iterate(void *vstate, const gsl_vector *swts,
 {
   int status;
   trust_state_t *state = (trust_state_t *) vstate;
-  const size_t p = state->p;
   const gsl_multifit_nlinear_parameters *params = &(state->params);
   gsl_vector *x_trial = state->x_trial;       /* trial x + dx */
   gsl_vector *f_trial = state->f_trial;       /* trial f(x + dx) */
@@ -249,7 +248,6 @@ trust_iterate(void *vstate, const gsl_vector *swts,
   double rho;                                 /* ratio dF/dL */
   int foundstep = 0;                          /* found step dx */
   int bad_steps = 0;                          /* consecutive rejected steps */
-  size_t i;
 
   /* initialize trust region method with this Jacobian */
   status = (params->method->init_J)(J, state->method_state);
@@ -260,7 +258,8 @@ trust_iterate(void *vstate, const gsl_vector *swts,
   while (!foundstep)
     {
       /* calculate new step */
-      status = (params->method->step)(f, g, diag, dx, state->method_state);
+      status = (params->method->step)(x, f, g, J, diag, swts, fdf,
+                                      dx, state->method_state);
       if (status)
         return status;
 
@@ -318,11 +317,11 @@ trust_rcond(const gsl_matrix *J, double *rcond, void *vstate)
 {
   int status;
   trust_state_t *state = (trust_state_t *) vstate;
+  const gsl_multifit_nlinear_parameters *params = &(state->params);
 
-  /*XXX */
-  *rcond = 0.0;
+  status = (params->method->rcond) (J, rcond, state->method_state);
 
-  return GSL_SUCCESS;
+  return status;
 }
 
 static double

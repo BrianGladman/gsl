@@ -58,7 +58,7 @@ void
 solve_system(gsl_vector *x0, gsl_multifit_nlinear_fdf *fdf,
              gsl_multifit_nlinear_parameters *params)
 {
-  const gsl_multifit_nlinear_type *T = gsl_multifit_nlinear_lm;
+  const gsl_multifit_nlinear_type *T = gsl_multifit_nlinear_trust;
   const size_t max_iter = 200;
   const double xtol = 1.0e-8;
   const double gtol = 1.0e-8;

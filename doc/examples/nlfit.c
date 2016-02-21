@@ -88,7 +88,7 @@ callback(const size_t iter, void *params,
 int
 main (void)
 {
-  const gsl_multifit_nlinear_type *T = gsl_multifit_nlinear_lm;
+  const gsl_multifit_nlinear_type *T = gsl_multifit_nlinear_trust;
   gsl_multifit_nlinear_workspace *w;
   gsl_multifit_nlinear_fdf fdf;
   gsl_multifit_nlinear_parameters fdf_params =

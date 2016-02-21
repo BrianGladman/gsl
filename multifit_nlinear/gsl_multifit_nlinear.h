@@ -71,11 +71,14 @@ typedef struct
   int (*init) (const gsl_vector * x, const gsl_matrix * J,
                const gsl_vector * diag, void * vstate);
   int (*init_J) (const gsl_matrix * J, void * vstate);
-  int (*step) (const gsl_vector * f, const gsl_vector * g,
-               const gsl_vector * diag, gsl_vector * dx, void * vstate);
+  int (*step) (const gsl_vector * x, const gsl_vector * f, const gsl_vector * g,
+               const gsl_matrix * J, const gsl_vector * diag,
+               const gsl_vector * swts, gsl_multifit_nlinear_fdf *fdf,
+               gsl_vector * dx, void * vstate);
   int (*check_step) (const gsl_vector * f, const gsl_vector * f_trial,
                      const gsl_vector * g, const gsl_vector * diag, double * rho,
                      void * vstate);
+  int (*rcond) (const gsl_matrix * J, double * rcond, void * vstate);
   void (*free) (void * vstate);
 } gsl_multifit_nlinear_method;
 
@@ -108,7 +111,7 @@ typedef struct
   int (*presolve) (const double mu, const gsl_vector * diag,
                    void * vstate);
   int (*solve) (const gsl_vector * f, const gsl_vector * g,
-                gsl_vector * x, void * vstate);
+                const gsl_matrix * J, gsl_vector * x, void * vstate);
   void (*free) (void * vstate);
 } gsl_multifit_nlinear_solver;
 
@@ -278,7 +281,7 @@ GSL_VAR const gsl_multifit_nlinear_scale * gsl_multifit_nlinear_scale_more;
 
 /* linear solvers */
 GSL_VAR const gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_normal;
-/*XXXGSL_VAR const gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_qr;*/
+GSL_VAR const gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_qr;
 
 __END_DECLS
 
