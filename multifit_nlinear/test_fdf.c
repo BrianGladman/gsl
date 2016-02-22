@@ -255,14 +255,18 @@ test_fdf(const gsl_multifit_nlinear_type * T,
   gsl_multifit_nlinear_workspace *w =
     gsl_multifit_nlinear_alloc (T, params, n, p);
   const char *pname = problem->name;
+  char buf[2048];
   char sname[2048];
   int status, info;
 
-  sprintf(sname, "%s/scale=%s/solver=%s/scale=%g%s%s",
+  sprintf(buf, "%s/%s/scale=%s/solver=%s/scale=%g%s%s",
     gsl_multifit_nlinear_name(w),
+    params->method->name,
     params->scale->name, params->solver->name, x0_scale,
     problem->fdf->df ? "" : "/fdjac",
     problem->fdf->fvv ? "" : "/fdfvv");
+
+  strcpy(sname, buf);
 
   /* scale starting point x0 */
   gsl_vector_memcpy(x0, &x0v.vector);
@@ -289,11 +293,7 @@ test_fdf(const gsl_multifit_nlinear_type * T,
       /* test again with weighting matrix W = I */
       gsl_vector *wv = gsl_vector_alloc(n);
 
-      sprintf(sname, "%s/scale=%s/solver=%s/scale=%g%s%s/weights",
-        gsl_multifit_nlinear_name(w),
-        params->scale->name, params->solver->name, x0_scale,
-        problem->fdf->df ? "" : "/fdjac",
-        problem->fdf->fvv ? "" : "/fdfvv");
+      sprintf(sname, "%s/weighted", buf);
 
       gsl_vector_memcpy(x0, &x0v.vector);
       test_scale_x0(x0, x0_scale);

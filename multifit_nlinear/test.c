@@ -23,6 +23,7 @@
 
 #include <config.h>
 #include <stdlib.h>
+#include <string.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_multifit_nlinear.h>
@@ -62,23 +63,23 @@ main (void)
     {
       for (accel = 0; accel <= 1; ++accel)
         {
+#if 0 /*XXX*/
           test_proc(gsl_multifit_nlinear_scale_levenberg,
                     gsl_multifit_nlinear_solver_normal,
                     fdtype, accel);
 
           test_proc(gsl_multifit_nlinear_scale_more,
                     gsl_multifit_nlinear_solver_normal,
-                    fdtype, accel);
-
-#if 1
-          test_proc(gsl_multifit_nlinear_scale_levenberg,
-                    gsl_multifit_nlinear_solver_qr,
-                    fdtype, accel);
-
-          test_proc(gsl_multifit_nlinear_scale_more,
-                    gsl_multifit_nlinear_solver_qr,
                     fdtype, accel);
 #endif
+
+          test_proc(gsl_multifit_nlinear_scale_levenberg,
+                    gsl_multifit_nlinear_solver_qr,
+                    fdtype, accel);
+
+          test_proc(gsl_multifit_nlinear_scale_more,
+                    gsl_multifit_nlinear_solver_qr,
+                    fdtype, accel);
         }
     }
 

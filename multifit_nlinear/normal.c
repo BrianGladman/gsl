@@ -295,6 +295,10 @@ normal_regularize(const double mu, const gsl_vector * diag,
   const size_t p = diag->size;
   size_t i;
 
+  /* quick return */
+  if (mu == 0.0)
+    return GSL_SUCCESS;
+
   for (i = 0; i < p; ++i)
     {
       double di = gsl_vector_get(diag, i);

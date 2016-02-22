@@ -178,6 +178,8 @@ trust_init(void *vstate, const gsl_vector *swts,
   int status;
   trust_state_t *state = (trust_state_t *) vstate;
   const gsl_multifit_nlinear_parameters *params = &(state->params);
+  const gsl_multifit_nlinear_trust_state trust_state = { x, f, g, J, state->diag,
+                                                         swts, params, fdf };
 
   /* evaluate function and Jacobian at x and apply weight transform */
   status = gsl_multifit_nlinear_eval_f(fdf, x, swts, f);
@@ -196,7 +198,7 @@ trust_init(void *vstate, const gsl_vector *swts,
   (params->scale->init)(J, state->diag);
 
   /* initialize trust region method solver */
-  status = (params->method->init)(x, J, state->diag, state->method_state);
+  status = (params->method->init)(&trust_state, state->method_state);
   if (status)
     return status;
 
@@ -242,6 +244,11 @@ trust_iterate(void *vstate, const gsl_vector *swts,
   int status;
   trust_state_t *state = (trust_state_t *) vstate;
   const gsl_multifit_nlinear_parameters *params = &(state->params);
+
+  /* collect all state parameters needed by low level methods */
+  const gsl_multifit_nlinear_trust_state trust_state = { x, f, g, J, state->diag,
+                                                         swts, params, fdf };
+
   gsl_vector *x_trial = state->x_trial;       /* trial x + dx */
   gsl_vector *f_trial = state->f_trial;       /* trial f(x + dx) */
   gsl_vector *diag = state->diag;             /* diag(D) */
@@ -250,7 +257,7 @@ trust_iterate(void *vstate, const gsl_vector *swts,
   int bad_steps = 0;                          /* consecutive rejected steps */
 
   /* initialize trust region method with this Jacobian */
-  status = (params->method->init_J)(J, state->method_state);
+  status = (params->method->preloop)(&trust_state, state->method_state);
   if (status)
     return status;
 
@@ -258,8 +265,7 @@ trust_iterate(void *vstate, const gsl_vector *swts,
   while (!foundstep)
     {
       /* calculate new step */
-      status = (params->method->step)(x, f, g, J, diag, swts, fdf,
-                                      dx, state->method_state);
+      status = (params->method->step)(&trust_state, dx, state->method_state);
       if (status)
         return status;
 
@@ -272,7 +278,7 @@ trust_iterate(void *vstate, const gsl_vector *swts,
         return status;
 
       /* check if new step should be accepted */
-      status = (params->method->check_step)(f, f_trial, g, diag,
+      status = (params->method->check_step)(&trust_state, f_trial,
                                             &rho, state->method_state);
 
       if (status == GSL_SUCCESS)

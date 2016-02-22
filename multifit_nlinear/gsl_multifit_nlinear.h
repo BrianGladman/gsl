@@ -68,16 +68,11 @@ typedef struct
 {
   const char *name;
   void * (*alloc) (const void * params, const size_t n, const size_t p);
-  int (*init) (const gsl_vector * x, const gsl_matrix * J,
-               const gsl_vector * diag, void * vstate);
-  int (*init_J) (const gsl_matrix * J, void * vstate);
-  int (*step) (const gsl_vector * x, const gsl_vector * f, const gsl_vector * g,
-               const gsl_matrix * J, const gsl_vector * diag,
-               const gsl_vector * swts, gsl_multifit_nlinear_fdf *fdf,
-               gsl_vector * dx, void * vstate);
-  int (*check_step) (const gsl_vector * f, const gsl_vector * f_trial,
-                     const gsl_vector * g, const gsl_vector * diag, double * rho,
-                     void * vstate);
+  int (*init) (const void * vtrust_state, void * vstate);
+  int (*preloop) (const void * vtrust_state, void * vstate);
+  int (*step) (const void * vtrust_state, gsl_vector * dx, void * vstate);
+  int (*check_step) (const void * vtrust_state, const gsl_vector * f_trial,
+                     double * rho, void * vstate);
   int (*rcond) (const gsl_matrix * J, double * rcond, void * vstate);
   void (*free) (void * vstate);
 } gsl_multifit_nlinear_method;
@@ -145,6 +140,19 @@ typedef struct
   double (*avratio) (void * state);
   void (*free) (void * state);
 } gsl_multifit_nlinear_type;
+
+/* current state passed to low-level trust region algorithms */
+typedef struct
+{
+  const gsl_vector * x;             /* parameter values x */
+  const gsl_vector * f;             /* residual vector f(x) */
+  const gsl_vector * g;             /* gradient J^T f */
+  const gsl_matrix * J;             /* Jacobian J(x) */
+  const gsl_vector * diag;          /* scaling matrix D */
+  const gsl_vector * sqrt_wts;      /* sqrt(diag(W)) or NULL for unweighted */
+  const gsl_multifit_nlinear_parameters * params;
+  gsl_multifit_nlinear_fdf * fdf;
+} gsl_multifit_nlinear_trust_state;
 
 typedef struct
 {
@@ -269,6 +277,7 @@ GSL_VAR const gsl_multifit_nlinear_type * gsl_multifit_nlinear_trust;
 
 /* trust region methods */
 GSL_VAR const gsl_multifit_nlinear_method * gsl_multifit_nlinear_method_lm;
+GSL_VAR const gsl_multifit_nlinear_method * gsl_multifit_nlinear_method_dogleg;
 
 /* parameter update methods */
 GSL_VAR const gsl_multifit_nlinear_update * gsl_multifit_nlinear_update_trust;
