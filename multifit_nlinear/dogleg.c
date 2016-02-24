@@ -69,12 +69,13 @@ static void dogleg_free(void *vstate);
 static int dogleg_init(const void *vtrust_state, void *vstate);
 static int dogleg_preloop(const void * vtrust_state, void * vstate);
 static int dogleg_step(const void * vtrust_state, gsl_vector * dx, void * vstate);
-static int dogleg_check_step(const void * vtrust_state, const gsl_vector * f_trial,
-                             double * rho, void * vstate);
+static int dogleg_check_step(const void * vtrust_state, const gsl_vector * dx,
+                             const gsl_vector * f_trial, double * rho, void * vstate);
 static int dogleg_rcond(const gsl_matrix *J, double *rcond, void *vstate);
 static double dogleg_avratio(void *vstate);
 static double dogleg_calc_rho(const gsl_multifit_nlinear_trust_state * trust_state,
-                              const gsl_vector * f_trial, dogleg_state_t * state);
+                              const gsl_vector * dx, const gsl_vector * f_trial,
+                              dogleg_state_t * state);
 
 static void *
 dogleg_alloc (const void * params, const size_t n, const size_t p)
@@ -207,7 +208,7 @@ dogleg_init(const void *vtrust_state, void *vstate)
   double normx = gsl_blas_dnrm2(trust_state->x);
 
   /*XXX*/
-  state->delta = 0.1 * (1.0 + normx);
+  state->delta = 0.3 * GSL_MAX(1.0, normx);
 
 #if 0
   /* initialize dogleg parameter mu */
@@ -291,6 +292,12 @@ dogleg_preloop(const void * vtrust_state, void * vstate)
   state->norm_gn = gsl_blas_dnrm2(state->dx_gn);
   state->norm_sd = gsl_blas_dnrm2(state->dx_sd);
 
+  /* FIXME: if J is singular then the QR solver will return
+   * a nan solution vector; set norm_gn negative so
+   * dogleg_step will use the steepest descent step */
+  if (!gsl_finite(state->norm_gn))
+    state->norm_gn = -1.0;
+
   return GSL_SUCCESS;
 }
 
@@ -314,6 +321,19 @@ dogleg_step(const void * vtrust_state, gsl_vector * dx, void * vstate)
   const double alpha = state->alpha;
   const double delta = state->delta;
   size_t i;
+
+  if (state->norm_gn < 0.0)
+    {
+      /* failed to find Gauss-Newton step due to singular
+       * Jacobian; use steepest descent direction */
+      gsl_vector_memcpy(dx, state->dx_sd);
+
+      /* truncate step if outside trust region */
+      if (state->norm_sd >= delta)
+        gsl_vector_scale(dx, delta / state->norm_sd);
+
+      return GSL_SUCCESS;
+    }
 
   if (state->norm_gn > delta)
     {
@@ -380,14 +400,13 @@ dogleg_step(const void * vtrust_state, gsl_vector * dx, void * vstate)
 /*
 dogleg_check_step()
   Test whether a new step should be accepted, and
-update mu parameter accordingly
+update trust region accordingly
 
-Inputs: f       - current residual vector f(x)
-        f_trial - proposed residual vector f(x + dx)
-        g       - gradient vector J' f
-        diag    - scaling matrix D
-        rho     - (output)
-        vstate  - workspace
+Inputs: vtrust_state - trust state
+        dx           - proposed step, size p
+        f_trial      - proposed residual vector f(x + dx)
+        rho          - (output)
+        vstate       - workspace
 
 Return:
 GSL_SUCCESS to accept step
@@ -399,8 +418,8 @@ is accepted or rejected
 */
 
 static int
-dogleg_check_step(const void * vtrust_state, const gsl_vector * f_trial,
-                  double * rho, void * vstate)
+dogleg_check_step(const void * vtrust_state, const gsl_vector * dx,
+                  const gsl_vector * f_trial, double * rho, void * vstate)
 {
   int status = GSL_SUCCESS;
   const gsl_multifit_nlinear_trust_state *trust_state =
@@ -426,7 +445,7 @@ dogleg_check_step(const void * vtrust_state, const gsl_vector * f_trial,
 
   if (status == GSL_SUCCESS)
     {
-      *rho = dogleg_calc_rho(trust_state, f_trial, state);
+      *rho = dogleg_calc_rho(trust_state, dx, f_trial, state);
 
       /* if rho <= 0, the step does not reduce the cost function, reject */
       if (*rho <= 0.0)
@@ -434,25 +453,15 @@ dogleg_check_step(const void * vtrust_state, const gsl_vector * f_trial,
     }
 
   /* update trust region size */
-  if (status == GSL_SUCCESS && *rho > 0.75)
+  if (*rho > 0.75)
     {
       /* step accepted, increase delta */
       state->delta *= 3.0;
-#if 0
-      int s = (params->update->accept)(*rho, &(state->mu), state->update_state);
-      if (s)
-        return s;
-#endif
     }
   else if (*rho < 0.25)
     {
       /* step rejected, decrease delta */
       state->delta *= 0.5;
-#if 0
-      int s = (params->update->reject)(&(state->mu), state->update_state);
-      if (s)
-        return s;
-#endif
     }
 
   return status;
@@ -463,7 +472,10 @@ dogleg_calc_rho()
   Calculate ratio of actual reduction to predicted
 reduction, given by Eq 4.4 of More, 1978.
 
-Inputs: f_trial - f(x + dx)
+Inputs: trust_state - trust state
+        dx          - proposed step, size p
+        f_trial     - f(x + dx)
+        state       - workspace
 
 Notes:
 1) On input, state->pred_red must contain predicted reduction
@@ -471,20 +483,35 @@ Notes:
 
 static double
 dogleg_calc_rho(const gsl_multifit_nlinear_trust_state * trust_state,
-                const gsl_vector * f_trial, dogleg_state_t * state)
+                const gsl_vector * dx, const gsl_vector * f_trial,
+                dogleg_state_t * state)
 {
   const double normf = gsl_blas_dnrm2(trust_state->f);
   const double normf_trial = gsl_blas_dnrm2(f_trial);
   double rho;
   double actual_reduction;
-  double pred_reduction = state->pred_red;
+  double pred_reduction;
+  double u, norm_Jp;
 
   /* if ||f(x+dx)|| > ||f(x)|| reject step immediately */
   if (normf_trial >= normf)
     return -1.0;
 
-  /* compute numerator of rho */
-  actual_reduction = 0.5*(normf*normf - normf_trial*normf_trial);
+  /* compute numerator of rho (actual reduction) */
+  u = normf_trial / normf;
+  actual_reduction = 1.0 - u*u;
+
+  /* compute denominator of rho (predicted reduction) */
+
+  /* compute J*dx */
+  gsl_blas_dgemv(CblasNoTrans, 1.0, trust_state->J, dx, 0.0, state->workn);
+  norm_Jp = gsl_blas_dnrm2(state->workn);
+
+  u = norm_Jp / normf;
+  pred_reduction = -u * u;
+
+  gsl_blas_ddot(dx, trust_state->g, &u);
+  pred_reduction -= 2.0 * u / (normf * normf);
 
   if (pred_reduction > 0.0)
     rho = actual_reduction / pred_reduction;

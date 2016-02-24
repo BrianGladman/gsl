@@ -71,8 +71,8 @@ typedef struct
   int (*init) (const void * vtrust_state, void * vstate);
   int (*preloop) (const void * vtrust_state, void * vstate);
   int (*step) (const void * vtrust_state, gsl_vector * dx, void * vstate);
-  int (*check_step) (const void * vtrust_state, const gsl_vector * f_trial,
-                     double * rho, void * vstate);
+  int (*check_step) (const void * vtrust_state, const gsl_vector * dx,
+                     const gsl_vector * f_trial, double * rho, void * vstate);
   int (*rcond) (const gsl_matrix * J, double * rcond, void * vstate);
   void (*free) (void * vstate);
 } gsl_multifit_nlinear_method;
@@ -278,6 +278,7 @@ GSL_VAR const gsl_multifit_nlinear_type * gsl_multifit_nlinear_trust;
 /* trust region methods */
 GSL_VAR const gsl_multifit_nlinear_method * gsl_multifit_nlinear_method_lm;
 GSL_VAR const gsl_multifit_nlinear_method * gsl_multifit_nlinear_method_dogleg;
+GSL_VAR const gsl_multifit_nlinear_method * gsl_multifit_nlinear_method_cgst;
 
 /* parameter update methods */
 GSL_VAR const gsl_multifit_nlinear_update * gsl_multifit_nlinear_update_trust;

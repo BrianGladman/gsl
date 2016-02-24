@@ -71,8 +71,8 @@ static void lm_free(void *vstate);
 static int lm_init(const void *vtrust_state, void *vstate);
 static int lm_preloop(const void * vtrust_state, void * vstate);
 static int lm_step(const void * vtrust_state, gsl_vector * dx, void * vstate);
-static int lm_check_step(const void * vtrust_state, const gsl_vector * f_trial,
-                         double * rho, void * vstate);
+static int lm_check_step(const void * vtrust_state, const gsl_vector * dx,
+                         const gsl_vector * f_trial, double * rho, void * vstate);
 static int lm_rcond(const gsl_matrix *J, double *rcond, void *vstate);
 static double lm_avratio(void *vstate);
 static double lm_calc_rho(const double mu, const gsl_vector * v,
@@ -330,12 +330,11 @@ lm_check_step()
   Test whether a new step should be accepted, and
 update mu parameter accordingly
 
-Inputs: f       - current residual vector f(x)
-        f_trial - proposed residual vector f(x + dx)
-        g       - gradient vector J' f
-        diag    - scaling matrix D
-        rho     - (output)
-        vstate  - workspace
+Inputs: vtrust_state - trust state
+        dx           - step vector, size p
+        f_trial      - proposed residual vector f(x + dx)
+        rho          - (output)
+        vstate       - workspace
 
 Return:
 GSL_SUCCESS to accept step
@@ -347,8 +346,8 @@ is accepted or rejected
 */
 
 static int
-lm_check_step(const void * vtrust_state, const gsl_vector * f_trial,
-              double * rho, void * vstate)
+lm_check_step(const void * vtrust_state, const gsl_vector * dx,
+              const gsl_vector * f_trial, double * rho, void * vstate)
 {
   int status = GSL_SUCCESS;
   const gsl_multifit_nlinear_trust_state *trust_state =

@@ -256,6 +256,8 @@ trust_iterate(void *vstate, const gsl_vector *swts,
   int foundstep = 0;                          /* found step dx */
   int bad_steps = 0;                          /* consecutive rejected steps */
 
+  fprintf(stderr, "x = %.12e %.12e %.12e\n", gsl_vector_get(x,0),gsl_vector_get(x,1),gsl_vector_get(x,2));
+
   /* initialize trust region method with this Jacobian */
   status = (params->method->preloop)(&trust_state, state->method_state);
   if (status)
@@ -266,20 +268,24 @@ trust_iterate(void *vstate, const gsl_vector *swts,
     {
       /* calculate new step */
       status = (params->method->step)(&trust_state, dx, state->method_state);
-      if (status)
-        return status;
 
-      /* compute x_trial = x + dx */
-      trial_step(x, dx, x_trial);
+      /* occasionally the CG Steihaug method can fail to find a step,
+       * so in this case skip check_step() and count it as a rejected step */
 
-      /* compute f(x + dx) */
-      status = gsl_multifit_nlinear_eval_f(fdf, x_trial, swts, f_trial);
-      if (status)
-        return status;
+      if (status == GSL_SUCCESS)
+        {
+          /* compute x_trial = x + dx */
+          trial_step(x, dx, x_trial);
 
-      /* check if new step should be accepted */
-      status = (params->method->check_step)(&trust_state, f_trial,
-                                            &rho, state->method_state);
+          /* compute f(x + dx) */
+          status = gsl_multifit_nlinear_eval_f(fdf, x_trial, swts, f_trial);
+          if (status)
+            return status;
+
+          /* check if new step should be accepted */
+          status = (params->method->check_step)(&trust_state, dx, f_trial,
+                                                &rho, state->method_state);
+        }
 
       if (status == GSL_SUCCESS)
         {

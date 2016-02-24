@@ -90,6 +90,7 @@ static test_fdf_problem *test_problems[] = {
    * IMM Department of Mathematical Modeling, Tech. Report
    * IMM-REP-2000-17, 2000.
    */
+#if 0
   &lin1_problem,       /* 1 */
   &lin2_problem,       /* 2 */
   &lin3_problem,       /* 3 */
@@ -101,6 +102,7 @@ static test_fdf_problem *test_problems[] = {
   &kowalik_problem,    /* 9 */
   &meyer_problem,      /* 10 */
   &watson_problem,     /* 11 */
+#endif
   &box_problem,        /* 12 */
   &jennrich_problem,   /* 13 */
   &brown1_problem,     /* 14 */
@@ -184,6 +186,7 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
 
       test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
                epsrel, 1.0, problem, NULL);
+      exit(1);
 
       /* test finite difference Jacobian */
       fdf.df = problem->fdf->df;
