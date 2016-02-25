@@ -17,28 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-static void trial_step(const gsl_vector * x, const gsl_vector * dx,
-                       gsl_vector * x_trial);
 static double scaled_norm(const gsl_vector *D, const gsl_vector *a);
 static double invscaled_norm(const gsl_vector *D, const gsl_vector *a);
 static void scaled_addition (const double alpha, const gsl_vector * x,
                              const double beta, const gsl_vector * y,
                              gsl_vector * z);
-
-/* compute x_trial = x + dx */
-static void
-trial_step(const gsl_vector * x, const gsl_vector * dx,
-           gsl_vector * x_trial)
-{
-  size_t i, N = x->size;
-
-  for (i = 0; i < N; i++)
-    {
-      double dxi = gsl_vector_get (dx, i);
-      double xi = gsl_vector_get (x, i);
-      gsl_vector_set (x_trial, i, xi + dxi);
-    }
-}
 
 /* compute || diag(D) a || */
 static double

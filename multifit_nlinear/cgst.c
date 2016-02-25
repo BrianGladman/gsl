@@ -47,7 +47,6 @@ typedef struct
   gsl_vector *acc;           /* geodesic acceleration, size p */
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
-  double delta;              /* trust region size */
   double normg;              /* || D g || */
   double pred_red;           /* predicted reduction */
 
@@ -68,9 +67,8 @@ static void * cgst_alloc (const void * params, const size_t n, const size_t p);
 static void cgst_free(void *vstate);
 static int cgst_init(const void *vtrust_state, void *vstate);
 static int cgst_preloop(const void * vtrust_state, void * vstate);
-static int cgst_step(const void * vtrust_state, gsl_vector * dx, void * vstate);
-static int cgst_check_step(const void * vtrust_state, const gsl_vector * dx,
-                           const gsl_vector * f_trial, double * rho, void * vstate);
+static int cgst_step(const void * vtrust_state, const double delta,
+                     gsl_vector * dx, void * vstate);
 static int cgst_rcond(const gsl_matrix *J, double *rcond, void *vstate);
 static double cgst_avratio(void *vstate);
 static double cgst_calc_rho(const gsl_multifit_nlinear_trust_state * trust_state,
@@ -215,14 +213,6 @@ cgst_init(const void *vtrust_state, void *vstate)
   const gsl_multifit_nlinear_trust_state *trust_state =
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   cgst_state_t *state = (cgst_state_t *) vstate;
-  const double factor = 100.0;
-  double normx = gsl_blas_dnrm2(trust_state->x);
-  double Dx = scaled_norm(trust_state->diag, trust_state->x);
-
-  /*XXX*/
-  /*state->delta = (Dx > 0.0) ? factor * Dx : factor;*/
-  /*state->delta = 0.3 * GSL_MAX(1.0, normx);*/
-  state->delta = 0.3 * GSL_MAX(1.0, Dx);
 
   gsl_vector_set_zero(state->vel);
   gsl_vector_set_zero(state->acc);
@@ -281,7 +271,8 @@ GSL_EMAXITER if no solution found
 */
 
 static int
-cgst_step(const void * vtrust_state, gsl_vector * dx, void * vstate)
+cgst_step(const void * vtrust_state, const double delta,
+          gsl_vector * dx, void * vstate)
 {
   const gsl_multifit_nlinear_trust_state *trust_state =
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
@@ -290,7 +281,6 @@ cgst_step(const void * vtrust_state, gsl_vector * dx, void * vstate)
   const gsl_matrix * J = trust_state->J;
   const gsl_vector * diag = trust_state->diag;
   const size_t p = state->p;
-  const double delta = state->delta;
   double alpha, beta, u;
   double norm_Jd, norm_Dinvr, norm_Drp1;
   size_t i, k;
@@ -370,86 +360,6 @@ cgst_step(const void * vtrust_state, gsl_vector * dx, void * vstate)
 
   /* failed to find CG solution */
   return GSL_EMAXITER;
-}
-
-/*
-cgst_check_step()
-  Test whether a new step should be accepted, and
-update mu parameter accordingly
-
-Inputs: vtrust_state - trust state
-        dx           - proposed step vector, size p
-        f_trial      - proposed residual vector f(x + dx)
-        rho          - (output)
-        vstate       - workspace
-
-Return:
-GSL_SUCCESS to accept step
-GSL_FAILURE to reject step
-
-Notes:
-1) state->mu is updated according to whether step
-is accepted or rejected
-*/
-
-static int
-cgst_check_step(const void * vtrust_state, const gsl_vector * dx,
-                const gsl_vector * f_trial, double * rho, void * vstate)
-{
-  int status = GSL_SUCCESS;
-  const gsl_multifit_nlinear_trust_state *trust_state =
-    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
-  cgst_state_t *state = (cgst_state_t *) vstate;
-  const gsl_multifit_nlinear_parameters *params = trust_state->params;
-
-#if 0
-  /* if using geodesic acceleration, check that |a|/|v| < alpha */
-  if (params->accel)
-    {
-      double anorm = scaled_norm(diag, state->acc);
-      double vnorm = scaled_norm(diag, state->vel);
-
-      /* store |a| / |v| */
-      state->avratio = anorm / vnorm;
-
-      /* reject step if acceleration is too large compared to velocity */
-      if (state->avratio > params->avmax)
-        status = GSL_FAILURE;
-    }
-#endif
-
-  if (status == GSL_SUCCESS)
-    {
-      *rho = cgst_calc_rho(trust_state, dx, f_trial, state);
-
-      /* if rho <= 0, the step does not reduce the cost function, reject */
-      if (*rho <= 0.0)
-        status = GSL_FAILURE;
-    }
-
-  /* update trust region size */
-  if (*rho > 0.75)
-    {
-      /* step accepted, increase delta */
-      state->delta *= 3.0;
-#if 0
-      int s = (params->update->accept)(*rho, &(state->mu), state->update_state);
-      if (s)
-        return s;
-#endif
-    }
-  else if (*rho < 0.25)
-    {
-      /* step rejected, decrease delta */
-      state->delta *= 0.5;
-#if 0
-      int s = (params->update->reject)(&(state->mu), state->update_state);
-      if (s)
-        return s;
-#endif
-    }
-
-  return status;
 }
 
 /*
@@ -573,7 +483,7 @@ static const gsl_multifit_nlinear_method cgst_type =
   cgst_init,
   cgst_preloop,
   cgst_step,
-  cgst_check_step,
+  NULL,
   cgst_rcond,
   cgst_free
 };

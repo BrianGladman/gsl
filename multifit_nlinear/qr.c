@@ -207,7 +207,7 @@ qr_solve(const gsl_vector * f, const gsl_vector * g,
          const gsl_matrix *J, gsl_vector *x, void *vstate)
 {
   qr_state_t *state = (qr_state_t *) vstate;
-  const double sqrt_mu = sqrt(state->mu);
+  double sqrt_mu = sqrt(state->mu);
   int status;
 
   (void)g;
@@ -218,29 +218,21 @@ qr_solve(const gsl_vector * f, const gsl_vector * g,
 
   if (state->mu == 0.0)
     {
-      /* solve: J x = f; this system can arise from the dogleg method */
-
-      const size_t p = state->R->size2;
-      gsl_matrix_view R = gsl_matrix_submatrix(state->R, 0, 0, p, p);
-      gsl_vector_view qtf = gsl_vector_subvector(state->qtf, 0, p);
-
-      status = gsl_linalg_QRPT_Rsolve(&R.matrix, state->perm,
-                                      &qtf.vector, x);
+      double mu = 1.0e-8;
+      sqrt_mu = sqrt(mu);
     }
-  else
-    {
-      /*
-       * solve:
-       *
-       * [     J      ] x = [ f ]
-       * [ sqrt(mu) D ]     [ 0 ]
-       *
-       * using QRPT factorization of J
-       */
 
-      status = qrsolv(state->R, state->perm, sqrt_mu, state->diag,
-                      state->qtf, x, state->workp, state->workn);
-    }
+  /*
+   * solve:
+   *
+   * [     J      ] x = [ f ]
+   * [ sqrt(mu) D ]     [ 0 ]
+   *
+   * using QRPT factorization of J
+   */
+
+  status = qrsolv(state->R, state->perm, sqrt_mu, state->diag,
+                  state->qtf, x, state->workp, state->workn);
 
   /* reverse step to go downhill */
   gsl_vector_scale(x, -1.0);

@@ -2,8 +2,11 @@
 @cindex least squares fitting, nonlinear
 
 This chapter describes functions for multidimensional nonlinear
-least-squares fitting.  This library is based on the iterative
-Levenberg-Marquardt algorithm and provides the user with
+least-squares fitting.  There are generally two classes of
+algorithms for solving nonlinear least squares problems, which
+fall under line search methods and trust region methods.
+GSL currently provides only trust region methods and
+provides the user with
 full access to intermediate steps of the iteration. The user
 also has the ability to tune a number of parameters which affect
 low-level aspects of the algorithm which can help to accelerate
@@ -53,6 +56,132 @@ $$
 
 @end ifinfo
 @noindent
+In trust region methods, the objective (or cost) function @math{\Phi(x)} is approximated
+by a model function @math{m_k(\delta)} in the vicinity of some point @math{x_k}. The
+model function is often simply a second order Taylor series expansion around the
+point @math{x_k}, ie:
+@tex
+\beforedisplay
+$$
+\Phi(x_k + \delta) \approx m_k(\delta) = \Phi(x_k) + g_k^T \delta + {1 \over 2} \delta^T B_k \delta
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+\Phi(x_k + \delta) ~=~ m_k(\delta) = \Phi(x_k) + g_k^T \delta + 1/2 \delta^T B_k \delta
+@end example
+
+@end ifinfo
+where @math{g_k = \nabla \Phi(x_k) = J^T f} is the gradient vector at the point @math{x_k},
+@math{B_k = \nabla^2 \Phi(x_k)} is the Hessian matrix at @math{x_k}, or some
+approximation to it, and @math{J} is the @math{n}-by-@math{p} Jacobian matrix
+@c{$J_{ij} = \partial f_i / \partial x_j$}
+@math{J_@{ij@} = d f_i / d x_j}.
+In order to find the next step @math{\delta}, we minimize the model function
+@math{m_k(\delta)}, but search for solutions only within a region where
+we trust that @math{m_k(\delta)} is a good approximation to the objective
+function @math{\Phi(x_k + \delta)}. In other words,
+we seek a solution of the trust region subproblem (TRS)
+@tex
+\beforedisplay
+$$
+\min_{\delta \in R^p} m_k(\delta) = \Phi(x_k) + g_k^T \delta + {1 \over 2} \delta^T B_k \delta, \qquad\hbox{s.t.}\quad || D_k \delta || \le \Delta_k
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+\min_{\delta \in R^p} m_k(\delta), s.t. || D_k \delta || <= \Delta_k
+@end example
+
+@end ifinfo
+where @math{\Delta_k > 0} is the trust region radius and @math{D_k} is
+a scaling matrix. If @math{D_k = I}, then the trust region is a ball
+of radius @math{\Delta_k} centered at @math{x_k}. In some applications,
+the parameter vector @math{x} may have widely different scales. For
+example, one parameter might be a temperature on the order of
+@math{10^3} K, while another might be a length on the order of
+@math{10^{-6}} m. In such cases, a spherical trust region may not
+be the best choice, since if @math{\Phi} changes rapidly along
+directions with one scale, and more slowly along directions with
+a different scale, the model function @math{m_k} may be a poor
+approximation to @math{\Phi} along the rapidly changing directions.
+In such problems, it may be best to use an elliptical trust region,
+by setting @math{D_k} to a diagonal matrix whose entries are designed
+so that the scaled step @math{D_k \delta} has entries of approximately the same
+order of magnitude.
+
+The trust region subproblem above normally amounts to solving a
+linear least squares system for the step @math{\delta}. Once @math{\delta}
+is computed, it is checked whether or not it reduces the objective
+function @math{\Phi(x)}. A useful statistic for this is to look
+at the ratio
+@tex
+\beforedisplay
+$$
+\rho_k = { \Phi(x_k) - \Phi(x_k + \delta_k) \over m_k(0) - m_k(\delta_k) }
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+\rho_k = ( \Phi(x_k) - \Phi(x_k + \delta_k) / ( m_k(0) - m_k(\delta_k) )
+@end example
+
+@end ifinfo
+where the numerator is the actual reduction of the objective function
+due to the step @math{\delta_k}, and the denominator is the predicted
+reduction due to the model @math{m_k}. If @math{\rho_k} is negative,
+it means that the step @math{\delta_k} increased the objective function
+and so it is rejected. If @math{\rho_k} is positive,
+then we have found a step which reduced the objective function and
+it is accepted. Furthermore, if @math{\rho_k} is close to 1,
+then this indicates that the model function is a good approximation
+to the objective function in the trust region, and so on the next
+iteration the trust region is enlarged in order to take more ambitious
+steps. When a step is rejected, the trust region is made smaller and
+the TRS is solved again. An outline for the general trust region method
+used by GSL can now be given.
+
+@noindent
+Trust Region Algorithm
+@enumerate
+
+@item Initialize: given @math{x_0}, construct @math{m_0(\delta)}, @math{D_0} and @math{\Delta_0 > 0}
+
+@item For k = 0, 1, 2, ...
+
+@enumerate a
+
+@item If converged, then stop
+
+@item Solve TRS for trial step @math{\delta_k}
+
+@item Compute @math{\rho_k} and evaluate trial step
+
+@enumerate
+@item if step is accepted, set @math{x_{k+1} = x_k + \delta_k} and increase radius, @math{\Delta_{k+1} = \alpha \Delta_k}
+@item if step is rejected, set @math{x_{k+1} = x_k} and decrease radius, @math{\Delta_{k+1} = {\Delta_k \over \beta}}; goto 2(b)
+@end enumerate
+
+@item Construct @math{m_{k+1}(\delta)} and @math{D_{k+1}}
+
+@end enumerate
+
+@end enumerate
+
+@noindent
+GSL offers the user a number of different algorithms for solving the trust
+region subproblem in 2(b), as well as different choices of scaling matrices
+@math{D_k} and different methods of updating the trust region radius
+@math{\Delta_k}. Therefore, while reasonable default methods are provided,
+the user has a lot of control to fine-tune the various steps of the
+algorithm for their specific problem.
+
 The Levenberg-Marquardt algorithm proceeds using the linearization,
 @tex
 \beforedisplay

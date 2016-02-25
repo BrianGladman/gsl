@@ -49,7 +49,6 @@ typedef struct
   gsl_vector *acc;           /* geodesic acceleration, size p */
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
-  double delta;              /* trust region size */
   double alpha;              /* || g ||^2 / || J*g ||^2 */
   double pred_red;           /* predicted reduction */
 
@@ -68,9 +67,8 @@ static void * dogleg_alloc (const void * params, const size_t n, const size_t p)
 static void dogleg_free(void *vstate);
 static int dogleg_init(const void *vtrust_state, void *vstate);
 static int dogleg_preloop(const void * vtrust_state, void * vstate);
-static int dogleg_step(const void * vtrust_state, gsl_vector * dx, void * vstate);
-static int dogleg_check_step(const void * vtrust_state, const gsl_vector * dx,
-                             const gsl_vector * f_trial, double * rho, void * vstate);
+static int dogleg_step(const void * vtrust_state, const double delta,
+                       gsl_vector * dx, void * vstate);
 static int dogleg_rcond(const gsl_matrix *J, double *rcond, void *vstate);
 static double dogleg_avratio(void *vstate);
 static double dogleg_calc_rho(const gsl_multifit_nlinear_trust_state * trust_state,
@@ -190,10 +188,8 @@ dogleg_free(void *vstate)
 dogleg_init()
   Initialize dogleg solver
 
-Inputs: x      - initial parameter values
-        J      - J(x) matrix
-        diag   - D matrix
-        vstate - workspace
+Inputs: vtrust_state - trust state
+        vstate       - workspace
 
 Return: success/error
 */
@@ -205,19 +201,6 @@ dogleg_init(const void *vtrust_state, void *vstate)
   const gsl_multifit_nlinear_trust_state *trust_state =
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   dogleg_state_t *state = (dogleg_state_t *) vstate;
-  double normx = gsl_blas_dnrm2(trust_state->x);
-
-  /*XXX*/
-  state->delta = 0.3 * GSL_MAX(1.0, normx);
-
-#if 0
-  /* initialize dogleg parameter mu */
-  status = (params->update->init)(J, diag, x,
-                                  &(state->mu),
-                                  state->update_state);
-  if (status)
-    return status;
-#endif
 
   gsl_vector_set_zero(state->vel);
   gsl_vector_set_zero(state->acc);
@@ -292,12 +275,6 @@ dogleg_preloop(const void * vtrust_state, void * vstate)
   state->norm_gn = gsl_blas_dnrm2(state->dx_gn);
   state->norm_sd = gsl_blas_dnrm2(state->dx_sd);
 
-  /* FIXME: if J is singular then the QR solver will return
-   * a nan solution vector; set norm_gn negative so
-   * dogleg_step will use the steepest descent step */
-  if (!gsl_finite(state->norm_gn))
-    state->norm_gn = -1.0;
-
   return GSL_SUCCESS;
 }
 
@@ -310,17 +287,15 @@ Notes: on output,
 */
 
 static int
-dogleg_step(const void * vtrust_state, gsl_vector * dx, void * vstate)
+dogleg_step(const void * vtrust_state, const double delta,
+            gsl_vector * dx, void * vstate)
 {
   int status;
   const gsl_multifit_nlinear_trust_state *trust_state =
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   dogleg_state_t *state = (dogleg_state_t *) vstate;
   const gsl_multifit_nlinear_parameters *params = trust_state->params;
-  const size_t p = state->p;
   const double alpha = state->alpha;
-  const double delta = state->delta;
-  size_t i;
 
   if (state->norm_gn < 0.0)
     {
@@ -395,76 +370,6 @@ dogleg_step(const void * vtrust_state, gsl_vector * dx, void * vstate)
     }
 
   return GSL_SUCCESS;
-}
-
-/*
-dogleg_check_step()
-  Test whether a new step should be accepted, and
-update trust region accordingly
-
-Inputs: vtrust_state - trust state
-        dx           - proposed step, size p
-        f_trial      - proposed residual vector f(x + dx)
-        rho          - (output)
-        vstate       - workspace
-
-Return:
-GSL_SUCCESS to accept step
-GSL_FAILURE to reject step
-
-Notes:
-1) state->mu is updated according to whether step
-is accepted or rejected
-*/
-
-static int
-dogleg_check_step(const void * vtrust_state, const gsl_vector * dx,
-                  const gsl_vector * f_trial, double * rho, void * vstate)
-{
-  int status = GSL_SUCCESS;
-  const gsl_multifit_nlinear_trust_state *trust_state =
-    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
-  dogleg_state_t *state = (dogleg_state_t *) vstate;
-  const gsl_multifit_nlinear_parameters *params = trust_state->params;
-
-#if 0
-  /* if using geodesic acceleration, check that |a|/|v| < alpha */
-  if (params->accel)
-    {
-      double anorm = scaled_norm(diag, state->acc);
-      double vnorm = scaled_norm(diag, state->vel);
-
-      /* store |a| / |v| */
-      state->avratio = anorm / vnorm;
-
-      /* reject step if acceleration is too large compared to velocity */
-      if (state->avratio > params->avmax)
-        status = GSL_FAILURE;
-    }
-#endif
-
-  if (status == GSL_SUCCESS)
-    {
-      *rho = dogleg_calc_rho(trust_state, dx, f_trial, state);
-
-      /* if rho <= 0, the step does not reduce the cost function, reject */
-      if (*rho <= 0.0)
-        status = GSL_FAILURE;
-    }
-
-  /* update trust region size */
-  if (*rho > 0.75)
-    {
-      /* step accepted, increase delta */
-      state->delta *= 3.0;
-    }
-  else if (*rho < 0.25)
-    {
-      /* step rejected, decrease delta */
-      state->delta *= 0.5;
-    }
-
-  return status;
 }
 
 /*
@@ -546,7 +451,7 @@ static const gsl_multifit_nlinear_method dogleg_type =
   dogleg_init,
   dogleg_preloop,
   dogleg_step,
-  dogleg_check_step,
+  NULL,
   dogleg_rcond,
   dogleg_free
 };

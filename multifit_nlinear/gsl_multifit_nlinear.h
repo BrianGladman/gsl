@@ -70,9 +70,10 @@ typedef struct
   void * (*alloc) (const void * params, const size_t n, const size_t p);
   int (*init) (const void * vtrust_state, void * vstate);
   int (*preloop) (const void * vtrust_state, void * vstate);
-  int (*step) (const void * vtrust_state, gsl_vector * dx, void * vstate);
+  int (*step) (const void * vtrust_state, const double delta,
+               gsl_vector * dx, void * vstate);
   int (*check_step) (const void * vtrust_state, const gsl_vector * dx,
-                     const gsl_vector * f_trial, double * rho, void * vstate);
+                     const gsl_vector * f_trial, const double rho, void * vstate);
   int (*rcond) (const gsl_matrix * J, double * rcond, void * vstate);
   void (*free) (void * vstate);
 } gsl_multifit_nlinear_method;
@@ -166,6 +167,7 @@ typedef struct
   gsl_vector * sqrt_wts_work; /* sqrt(W) */
   gsl_vector * sqrt_wts;      /* ptr to sqrt_wts_work, or NULL if not using weights */
   size_t niter;               /* number of iterations performed */
+  gsl_multifit_nlinear_parameters params;
   void *state;
 } gsl_multifit_nlinear_workspace;
 
@@ -222,6 +224,9 @@ gsl_multifit_nlinear_niter (const gsl_multifit_nlinear_workspace * w);
 
 int
 gsl_multifit_nlinear_rcond (double *rcond, const gsl_multifit_nlinear_workspace * w);
+
+const char *
+gsl_multifit_nlinear_method_name (const gsl_multifit_nlinear_workspace * w);
 
 int gsl_multifit_nlinear_eval_f(gsl_multifit_nlinear_fdf *fdf,
                                 const gsl_vector *x,

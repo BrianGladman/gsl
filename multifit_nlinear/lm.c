@@ -70,9 +70,10 @@ static void * lm_alloc (const void * params, const size_t n, const size_t p);
 static void lm_free(void *vstate);
 static int lm_init(const void *vtrust_state, void *vstate);
 static int lm_preloop(const void * vtrust_state, void * vstate);
-static int lm_step(const void * vtrust_state, gsl_vector * dx, void * vstate);
+static int lm_step(const void * vtrust_state, const double delta,
+                   gsl_vector * dx, void * vstate);
 static int lm_check_step(const void * vtrust_state, const gsl_vector * dx,
-                         const gsl_vector * f_trial, double * rho, void * vstate);
+                         const gsl_vector * f_trial, const double rho, void * vstate);
 static int lm_rcond(const gsl_matrix *J, double *rcond, void *vstate);
 static double lm_avratio(void *vstate);
 static double lm_calc_rho(const double mu, const gsl_vector * v,
@@ -259,7 +260,8 @@ least squares system:
 */
 
 static int
-lm_step(const void * vtrust_state, gsl_vector * dx, void * vstate)
+lm_step(const void * vtrust_state, const double delta,
+        gsl_vector * dx, void * vstate)
 {
   int status;
   const gsl_multifit_nlinear_trust_state *trust_state =
@@ -347,13 +349,18 @@ is accepted or rejected
 
 static int
 lm_check_step(const void * vtrust_state, const gsl_vector * dx,
-              const gsl_vector * f_trial, double * rho, void * vstate)
+              const gsl_vector * f_trial, const double rho, void * vstate)
 {
-  int status = GSL_SUCCESS;
+  int status;
   const gsl_multifit_nlinear_trust_state *trust_state =
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   lm_state_t *state = (lm_state_t *) vstate;
   const gsl_multifit_nlinear_parameters *params = trust_state->params;
+
+  if (rho > 0.0)
+    status = GSL_SUCCESS;
+  else
+    status = GSL_FAILURE;
 
   /* if using geodesic acceleration, check that |a|/|v| < alpha */
   if (params->accel)
@@ -369,25 +376,11 @@ lm_check_step(const void * vtrust_state, const gsl_vector * dx,
         status = GSL_FAILURE;
     }
 
-  if (status == GSL_SUCCESS)
-    {
-      *rho = lm_calc_rho(state->mu,
-                         state->vel,
-                         trust_state->g,
-                         trust_state->f,
-                         f_trial,
-                         trust_state->diag);
-
-      /* if rho <= 0, the step does not reduce the cost function, reject */
-      if (*rho <= 0.0)
-        status = GSL_FAILURE;
-    }
-
   /* update state->mu */
   if (status == GSL_SUCCESS)
     {
       /* step accepted, decrease mu */
-      int s = (params->update->accept)(*rho, &(state->mu), state->update_state);
+      int s = (params->update->accept)(rho, &(state->mu), state->update_state);
       if (s)
         return s;
     }

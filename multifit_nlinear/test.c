@@ -33,7 +33,7 @@
 #include "test_fdf.c"
 
 static const gsl_multifit_nlinear_method **nlinear_methods[] = {
-#if 0
+#if 1
   &gsl_multifit_nlinear_method_lm,
 #elif 0
   &gsl_multifit_nlinear_method_dogleg,
@@ -83,21 +83,25 @@ main (void)
         {
           for (accel = 0; accel <= 1; ++accel)
             {
-#if 0
+#if 1
               test_proc(*method, gsl_multifit_nlinear_scale_levenberg,
                         gsl_multifit_nlinear_solver_normal,
                         fdtype, accel);
 #endif
 
+#if 1
               test_proc(*method, gsl_multifit_nlinear_scale_more,
                         gsl_multifit_nlinear_solver_normal,
                         fdtype, accel);
+#endif
 
-#if 0
+#if 1
               test_proc(*method, gsl_multifit_nlinear_scale_levenberg,
                         gsl_multifit_nlinear_solver_qr,
                         fdtype, accel);
+#endif
 
+#if 1
               test_proc(*method, gsl_multifit_nlinear_scale_more,
                         gsl_multifit_nlinear_solver_qr,
                         fdtype, accel);

@@ -96,6 +96,7 @@ gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * T,
   w->type = T;
   w->fdf = NULL;
   w->niter = 0;
+  w->params = *params;
 
   return w;
 }
@@ -356,6 +357,12 @@ gsl_multifit_nlinear_rcond (double *rcond, const gsl_multifit_nlinear_workspace 
 {
   int status = (w->type->rcond) (w->J, rcond, w->state);
   return status;
+}
+
+const char *
+gsl_multifit_nlinear_method_name (const gsl_multifit_nlinear_workspace * w)
+{
+  return w->params.method->name;
 }
 
 /*
