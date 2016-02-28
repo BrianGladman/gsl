@@ -2,7 +2,7 @@
 #define lin3_P         10  /* >= 3 */
 
 static double lin3_x0[lin3_P] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
-static double lin3_epsrel = 1.0e-9;
+static double lin3_epsrel = 1.0e-8;
 
 static void
 lin3_checksol(const double x[], const double sumsq,

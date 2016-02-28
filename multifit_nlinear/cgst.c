@@ -45,9 +45,7 @@ typedef struct
   gsl_vector *fvv;           /* D_v^2 f(x), size n */
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
-  gsl_vector *diag;
   double normg;              /* || D g || */
-  double pred_red;           /* predicted reduction */
 
   void *update_state;        /* workspace for parameter update method */
   void *solver_state;        /* workspace for linear solver */
@@ -69,12 +67,8 @@ static int cgst_step(const void * vtrust_state, const double delta,
                      gsl_vector * dx, void * vstate);
 static int cgst_rcond(const gsl_matrix *J, double *rcond, void *vstate);
 static double cgst_avratio(void *vstate);
-static double cgst_calc_rho(const gsl_multifit_nlinear_trust_state * trust_state,
-                            const gsl_vector * dx, const gsl_vector * f_trial,
-                            cgst_state_t * state);
 static double cgst_calc_tau(const gsl_vector * p, const gsl_vector * d,
-                            const gsl_vector * diag, const double delta,
-                            cgst_state_t * state);
+                            const double delta, cgst_state_t * state);
 
 static void *
 cgst_alloc (const void * params, const size_t n, const size_t p)
@@ -124,13 +118,6 @@ cgst_alloc (const void * params, const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for fvv", GSL_ENOMEM);
     }
 
-  state->diag = gsl_vector_alloc(p);
-  if (state->diag == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for diag", GSL_ENOMEM);
-    }
-  gsl_vector_set_all(state->diag, 1.0);
-
   state->update_state = (mparams->update->alloc)();
   if (state->update_state == NULL)
     {
@@ -174,9 +161,6 @@ cgst_free(void *vstate)
   if (state->fvv)
     gsl_vector_free(state->fvv);
 
-  if (state->diag)
-    gsl_vector_free(state->diag);
-
   if (state->update_state)
     (params->update->free)(state->update_state);
 
@@ -199,14 +183,13 @@ Return: success/error
 static int
 cgst_init(const void *vtrust_state, void *vstate)
 {
-  int status;
-  const gsl_multifit_nlinear_trust_state *trust_state =
-    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   cgst_state_t *state = (cgst_state_t *) vstate;
 
   /* set default parameters */
   state->cgmaxit = 50;
   state->cgtol = 1.0e-6;
+
+  (void)vtrust_state;
 
   return GSL_SUCCESS;
 }
@@ -221,11 +204,9 @@ Notes: on output,
 static int
 cgst_preloop(const void * vtrust_state, void * vstate)
 {
-  int status;
   const gsl_multifit_nlinear_trust_state *trust_state =
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   cgst_state_t *state = (cgst_state_t *) vstate;
-  const gsl_multifit_nlinear_parameters *params = trust_state->params;
   const size_t p = state->p;
   size_t i;
 
@@ -234,15 +215,14 @@ cgst_preloop(const void * vtrust_state, void * vstate)
   for (i = 0; i < p; ++i)
     {
       double gi = gsl_vector_get(trust_state->g, i);
-      double Di = gsl_vector_get(state->diag, i);
 
       gsl_vector_set(state->z, i, 0.0);
       gsl_vector_set(state->r, i, -gi);
-      gsl_vector_set(state->d, i, -gi / (Di * Di));
+      gsl_vector_set(state->d, i, -gi);
     }
 
-  /* compute || D g || */
-  state->normg = scaled_norm(state->diag, trust_state->g);
+  /* compute || g || */
+  state->normg = gsl_blas_dnrm2(trust_state->g);
 
   return GSL_SUCCESS;
 }
@@ -263,13 +243,10 @@ cgst_step(const void * vtrust_state, const double delta,
   const gsl_multifit_nlinear_trust_state *trust_state =
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   cgst_state_t *state = (cgst_state_t *) vstate;
-  const gsl_multifit_nlinear_parameters *params = trust_state->params;
   const gsl_matrix * J = trust_state->J;
-  const gsl_vector * diag = state->diag;
-  const size_t p = state->p;
   double alpha, beta, u;
-  double norm_Jd, norm_Dinvr, norm_Drp1;
-  size_t i, k;
+  double norm_Jd, norm_r, norm_rp1;
+  size_t i;
 
   for (i = 0; i < state->cgmaxit; ++i)
     {
@@ -280,7 +257,7 @@ cgst_step(const void * vtrust_state, const double delta,
       /* Step 2 of [1], section 2 */
       if (norm_Jd == 0.0)
         {
-          double tau = cgst_calc_tau(state->z, state->d, diag, delta, state);
+          double tau = cgst_calc_tau(state->z, state->d, delta, state);
 
           /* dx = z_i + tau*d_i */
           scaled_addition(1.0, state->z, tau, state->d, dx);
@@ -290,16 +267,16 @@ cgst_step(const void * vtrust_state, const double delta,
 
       /* Step 3 of [1], section 2 */
 
-      norm_Dinvr = invscaled_norm(diag, state->r);
-      u = norm_Dinvr / norm_Jd;
+      norm_r = gsl_blas_dnrm2(state->r);
+      u = norm_r / norm_Jd;
       alpha = u * u;
 
       /* workp <= z_{i+1} = z_i + alpha_i*d_i */
       scaled_addition(1.0, state->z, alpha, state->d, state->workp);
-      u = scaled_norm(diag, state->workp);
+      u = gsl_blas_dnrm2(state->workp);
       if (u >= delta)
         {
-          double tau = cgst_calc_tau(state->z, state->d, diag, delta, state);
+          double tau = cgst_calc_tau(state->z, state->d, delta, state);
 
           /* dx = z_i + tau*d_i */
           scaled_addition(1.0, state->z, tau, state->d, dx);
@@ -318,9 +295,9 @@ cgst_step(const void * vtrust_state, const double delta,
 
       /* r_{i+1} = r_i - alpha*B*d_i */
       gsl_vector_sub(state->r, state->workp);
-      norm_Drp1 = scaled_norm(diag, state->r);
+      norm_rp1 = gsl_blas_dnrm2(state->r);
 
-      u = norm_Drp1 / state->normg;
+      u = norm_rp1 / state->normg;
       if (u < state->cgtol)
         {
           gsl_vector_memcpy(dx, state->z);
@@ -329,77 +306,16 @@ cgst_step(const void * vtrust_state, const double delta,
 
       /* Step 5 of [1], section 2 */
 
-      /* compute u = ||D^{-1} r_{i+1}|| / ||D^{-1} r_i|| */
-      u = invscaled_norm(diag, state->r) / norm_Dinvr;
+      /* compute u = ||r_{i+1}|| / ||r_i|| */
+      u = norm_rp1 / norm_r;
       beta = u * u;
 
-      /* compute: d_{i+1} = D^{-2} r_{i+1} + beta*d_i */
-      for (k = 0; k < p; ++k)
-        {
-          double Dk = gsl_vector_get(diag, k);
-          double dk = gsl_vector_get(state->d, k);
-          double rk = gsl_vector_get(state->r, k);
-
-          gsl_vector_set(state->d, k, rk / (Dk * Dk) + beta*dk);
-        }
+      /* compute: d_{i+1} = r_{i+1} + beta*d_i */
+      scaled_addition(1.0, state->r, beta, state->d, state->d);
     }
 
   /* failed to find CG solution */
   return GSL_EMAXITER;
-}
-
-/*
-cgst_calc_rho()
-  Calculate ratio of actual reduction to predicted
-reduction, given by Eq 4.4 of More, 1978.
-
-Inputs: trust_state - trust state
-        dx          - proposed step, size p
-        f_trial     - f(x + dx)
-        state       - workspace
-
-Notes:
-1) On input, state->pred_red must contain predicted reduction
-*/
-
-static double
-cgst_calc_rho(const gsl_multifit_nlinear_trust_state * trust_state,
-              const gsl_vector * dx, const gsl_vector * f_trial,
-              cgst_state_t * state)
-{
-  const double normf = gsl_blas_dnrm2(trust_state->f);
-  const double normf_trial = gsl_blas_dnrm2(f_trial);
-  double rho;
-  double actual_reduction;
-  double pred_reduction;
-  double u, norm_Jp;
-
-  /* if ||f(x+dx)|| > ||f(x)|| reject step immediately */
-  if (normf_trial >= normf)
-    return -1.0;
-
-  /* compute numerator of rho (actual reduction) */
-  u = normf_trial / normf;
-  actual_reduction = 1.0 - u*u;
-
-  /* compute denominator of rho (predicted reduction) */
-
-  /* compute J*dx */
-  gsl_blas_dgemv(CblasNoTrans, 1.0, trust_state->J, dx, 0.0, state->workn);
-  norm_Jp = gsl_blas_dnrm2(state->workn);
-
-  u = norm_Jp / normf;
-  pred_reduction = -u * u;
-
-  gsl_blas_ddot(dx, trust_state->g, &u);
-  pred_reduction -= 2.0 * u / (normf * normf);
-
-  if (pred_reduction > 0.0)
-    rho = actual_reduction / pred_reduction;
-  else
-    rho = -1.0;
-
-  return rho;
 }
 
 static int
@@ -424,40 +340,25 @@ cgst_avratio(void *vstate)
 cgst_calc_tau()
   Compute tau > 0 such that:
 
-|| D (p + tau*d) || = delta
+|| p + tau*d || = delta
 */
 
 static double
 cgst_calc_tau(const gsl_vector * p, const gsl_vector * d,
-              const gsl_vector * diag, const double delta,
-              cgst_state_t * state)
+              const double delta, cgst_state_t * state)
 {
-  const size_t N = p->size;
-  gsl_vector_view Dp = gsl_vector_subvector(state->workp, 0, N);
-  gsl_vector_view Dd = gsl_vector_subvector(state->workn, 0, N);
-  double norm_Dp, norm_Dd, u;
+  double norm_p, norm_d, u;
   double t1, t2, tau;
-  size_t i;
 
-  for (i = 0; i < N; ++i)
-    {
-      double Di = gsl_vector_get(diag, i);
-      double pi = gsl_vector_get(p, i);
-      double di = gsl_vector_get(d, i);
+  norm_p = gsl_blas_dnrm2(p);
+  norm_d = gsl_blas_dnrm2(d);
 
-      gsl_vector_set(&Dp.vector, i, Di * pi);
-      gsl_vector_set(&Dd.vector, i, Di * di);
-    }
+  /* compute (p, d) */
+  gsl_blas_ddot(p, d, &u);
 
-  norm_Dp = gsl_blas_dnrm2(&Dp.vector);
-  norm_Dd = gsl_blas_dnrm2(&Dd.vector);
-
-  /* compute (Dp, Dd) */
-  gsl_blas_ddot(&Dp.vector, &Dd.vector, &u);
-
-  t1 = u / (norm_Dd * norm_Dd);
-  t2 = t1*u + delta*delta - norm_Dp*norm_Dp;
-  tau = -t1 + sqrt(t2) / norm_Dd;
+  t1 = u / (norm_d * norm_d);
+  t2 = t1*u + delta*delta - norm_p*norm_p;
+  tau = -t1 + sqrt(t2) / norm_d;
 
   return tau;
 }

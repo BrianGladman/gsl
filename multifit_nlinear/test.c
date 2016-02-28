@@ -33,12 +33,11 @@
 #include "test_fdf.c"
 
 static const gsl_multifit_nlinear_trs **nlinear_trs[] = {
-#if 0
+#if 1
   &gsl_multifit_nlinear_trs_lm,
-#elif 1
-  &gsl_multifit_nlinear_trs_dogleg,
-#else
   &gsl_multifit_nlinear_trs_cgst,
+#elif 0
+  &gsl_multifit_nlinear_trs_dogleg,
 #endif
 
   NULL
@@ -83,13 +82,13 @@ main (void)
         {
           for (accel = 0; accel <= 0; ++accel)
             {
-#if 0
+#if 1
               test_proc(*trs, gsl_multifit_nlinear_scale_levenberg,
                         gsl_multifit_nlinear_solver_normal,
                         fdtype, accel);
 #endif
 
-#if 0
+#if 1
               test_proc(*trs, gsl_multifit_nlinear_scale_more,
                         gsl_multifit_nlinear_solver_normal,
                         fdtype, accel);

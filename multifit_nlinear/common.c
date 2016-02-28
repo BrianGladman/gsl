@@ -18,7 +18,6 @@
  */
 
 static double scaled_norm(const gsl_vector *D, const gsl_vector *a);
-static double invscaled_norm(const gsl_vector *D, const gsl_vector *a);
 static void scaled_addition (const double alpha, const gsl_vector * x,
                              const double beta, const gsl_vector * y,
                              gsl_vector * z);
@@ -36,26 +35,6 @@ scaled_norm(const gsl_vector *D, const gsl_vector *a)
       double Di = gsl_vector_get(D, i);
       double ai = gsl_vector_get(a, i);
       double u = Di * ai;
-
-      e2 += u * u;
-    }
-
-  return sqrt (e2);
-}
-
-/* compute || diag(D^{-1}) a || */
-static double
-invscaled_norm(const gsl_vector *D, const gsl_vector *a)
-{
-  const size_t n = a->size;
-  double e2 = 0.0;
-  size_t i;
-
-  for (i = 0; i < n; ++i)
-    {
-      double Di = gsl_vector_get(D, i);
-      double ai = gsl_vector_get(a, i);
-      double u = ai / Di;
 
       e2 += u * u;
     }
