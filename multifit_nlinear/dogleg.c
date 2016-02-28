@@ -241,7 +241,7 @@ dogleg_preloop(const void * vtrust_state, void * vstate)
     return status;
 
   /* prepare the linear solver to compute Gauss-Newton step */
-  status = (params->solver->presolve)(0.0, trust_state->diag, state->solver_state);
+  status = (params->solver->presolve)(0.0, state->solver_state);
   if (status)
     return status;
 
@@ -444,7 +444,7 @@ dogleg_avratio(void *vstate)
   return state->avratio;
 }
 
-static const gsl_multifit_nlinear_method dogleg_type =
+static const gsl_multifit_nlinear_trs dogleg_type =
 {
   "dogleg",
   dogleg_alloc,
@@ -456,4 +456,4 @@ static const gsl_multifit_nlinear_method dogleg_type =
   dogleg_free
 };
 
-const gsl_multifit_nlinear_method *gsl_multifit_nlinear_method_dogleg = &dogleg_type;
+const gsl_multifit_nlinear_trs *gsl_multifit_nlinear_trs_dogleg = &dogleg_type;

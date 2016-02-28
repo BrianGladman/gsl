@@ -21,11 +21,11 @@
  * This module calculates the solution of the linear least squares
  * system:
  *
- * [ J^T J + mu D^T D ] v = -J^T f, for geodesic velocity
+ * [ J^T J + mu*I ] v = -J^T f, for geodesic velocity
  *
  * and
  *
- * [ J^T J + mu D^T D ] a = -J^T fvv, for geodesic acceleration
+ * [ J^T J + mu*I ] a = -J^T fvv, for geodesic acceleration
  */
 
 #include <config.h>
@@ -49,12 +49,11 @@ typedef struct
 
 static void *normal_alloc (const size_t n, const size_t p);
 static int normal_init(const gsl_matrix * J, void * vstate);
-static int normal_presolve(const double mu, const gsl_vector * diag, void * vstate);
+static int normal_presolve(const double mu, void * vstate);
 static int normal_solve(const gsl_vector * f, const gsl_vector * g,
                         const gsl_matrix * J, gsl_vector *x, void *vstate);
 static int normal_solve_rhs(const gsl_vector * b, gsl_vector *x, normal_state_t *state);
-static int normal_regularize(const double mu,
-                             const gsl_vector * diag, gsl_matrix * A);
+static int normal_regularize(const double mu, gsl_matrix * A);
 
 static void *
 normal_alloc (const size_t n, const size_t p)
@@ -140,15 +139,14 @@ normal_init(const gsl_matrix * J, void * vstate)
 
 /*
 normal_presolve()
-  Compute the Cholesky decomposition of J^T J + mu * D^T D
+  Compute the Cholesky decomposition of J^T J + mu * I
 
 Inputs: mu     - LM parameter
-        diag   - diag(D)
         vstate - workspace
 
 Notes:
 1) On output, state->work_JTJ contains the Cholesky decomposition of
-J^T J + mu D^T D
+J^T J + mu*I
 
 2) On output, state->workp contains scale factors needed for a
 solution
@@ -158,7 +156,7 @@ contains Householder scalars
 */
 
 static int
-normal_presolve(const double mu, const gsl_vector * diag, void * vstate)
+normal_presolve(const double mu, void * vstate)
 {
   normal_state_t *state = (normal_state_t *) vstate;
   gsl_matrix *JTJ = state->work_JTJ;
@@ -169,8 +167,8 @@ normal_presolve(const double mu, const gsl_vector * diag, void * vstate)
   /* copy lower triangle of A to workspace */
   gsl_matrix_tricpy('L', 1, JTJ, state->A);
 
-  /* augment normal equations with LM term: A -> A + mu D^T D */
-  status = normal_regularize(mu, diag, JTJ);
+  /* augment normal equations with LM term: A -> A + mu*I */
+  status = normal_regularize(mu, JTJ);
   if (status)
     return status;
 
@@ -192,7 +190,7 @@ normal_presolve(const double mu, const gsl_vector * diag, void * vstate)
 
       /* Cholesky failed, restore matrix and use QR decomposition */
       gsl_matrix_tricpy('L', 1, JTJ, state->A);
-      normal_regularize(mu, diag, JTJ);
+      normal_regularize(mu, JTJ);
 
       /* scale: JTJ <- diag(D) JTJ diag(D) to try to reduce cond(JTJ) */
       status = gsl_linalg_cholesky_scale(JTJ, chol_D);
@@ -287,25 +285,17 @@ normal_solve_rhs(const gsl_vector * b, gsl_vector *x, normal_state_t *state)
   return GSL_SUCCESS;
 }
 
-/* A <- A + mu D^T D */
+/* A <- A + mu*I */
 static int
-normal_regularize(const double mu, const gsl_vector * diag,
-                  gsl_matrix * A)
+normal_regularize(const double mu, gsl_matrix * A)
 {
-  const size_t p = diag->size;
-  size_t i;
+  gsl_vector_view d = gsl_matrix_diagonal(A);
 
   /* quick return */
   if (mu == 0.0)
     return GSL_SUCCESS;
 
-  for (i = 0; i < p; ++i)
-    {
-      double di = gsl_vector_get(diag, i);
-      double *Aii = gsl_matrix_ptr(A, i, i);
-
-      *Aii += mu * di * di;
-    }
+  gsl_vector_add_constant(&d.vector, mu);
 
   return GSL_SUCCESS;
 }

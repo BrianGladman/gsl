@@ -64,8 +64,7 @@ typedef struct
 } qr_state_t;
 
 static int qr_init(const gsl_matrix * J, void * vstate);
-static int qr_presolve(const double mu, const gsl_vector * diag,
-                       void * vstate);
+static int qr_presolve(const double mu, void * vstate);
 static int qr_solve(const gsl_vector * f, const gsl_vector * g,
                     const gsl_matrix *J, gsl_vector *x, void *vstate);
 
@@ -137,6 +136,7 @@ qr_alloc (const size_t n, const size_t p)
     }
 
   state->mu = 0.0;
+  gsl_vector_set_all(state->diag, 1.0);
 
   return state;
 }
@@ -191,13 +191,11 @@ qr_init(const gsl_matrix * J, void * vstate)
 }
 
 static int
-qr_presolve(const double mu, const gsl_vector * diag,
-            void * vstate)
+qr_presolve(const double mu, void * vstate)
 {
   qr_state_t *state = (qr_state_t *) vstate;
 
   state->mu = mu;
-  gsl_vector_memcpy(state->diag, diag);
 
   return GSL_SUCCESS;
 }

@@ -53,8 +53,8 @@ typedef struct
 
 static void *nielsen_alloc(void);
 static void nielsen_free(void *vstate);
-static int nielsen_init(const gsl_matrix * J, const gsl_vector * diag,
-                        const gsl_vector * x, double * mu, void * vstate);
+static int nielsen_init(const gsl_matrix * J, const gsl_vector * x,
+                        double * mu, void * vstate);
 static int nielsen_accept(const double rho, double * mu, void * vstate);
 static int nielsen_reject(double * mu, void * vstate);
 
@@ -82,35 +82,28 @@ nielsen_free(void *vstate)
 }
 
 static int
-nielsen_init(const gsl_matrix * J, const gsl_vector * diag,
-             const gsl_vector * x, double * mu, void * vstate)
+nielsen_init(const gsl_matrix * J, const gsl_vector * x,
+             double * mu, void * vstate)
 {
   nielsen_state_t *state = (nielsen_state_t *) vstate;
-  double min, max;
+  const size_t p = J->size2;
+  size_t j;
+  double max = -1.0;
 
   (void)x;
 
   state->nu = 2;
-  *mu = state->mu0;
 
-  gsl_vector_minmax(diag, &min, &max);
-  if (min == 1.0 && max == 1.0)
+  /* set mu = mu0 * max(diag(J^T J)) */
+
+  for (j = 0; j < p; ++j)
     {
-      /* when D = I, set mu = mu0 * max(diag(J^T J)) */
-
-      const size_t p = J->size2;
-      size_t j;
-      double max = -1.0;
-
-      for (j = 0; j < p; ++j)
-        {
-          gsl_vector_const_view v = gsl_matrix_const_column(J, j);
-          double norm = gsl_blas_dnrm2(&v.vector);
-          max = GSL_MAX(max, norm);
-        }
-
-      *mu *= max * max;
+      gsl_vector_const_view v = gsl_matrix_const_column(J, j);
+      double norm = gsl_blas_dnrm2(&v.vector);
+      max = GSL_MAX(max, norm);
     }
+
+  *mu = state->mu0 * max * max;
 
   return GSL_SUCCESS;
 }

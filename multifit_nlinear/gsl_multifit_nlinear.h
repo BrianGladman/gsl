@@ -63,7 +63,7 @@ typedef struct
   size_t nevalfvv; /* number of fvv evaluations */
 } gsl_multifit_nlinear_fdf;
 
-/* trust region overall method */
+/* trust region subproblem method */
 typedef struct
 {
   const char *name;
@@ -76,15 +76,15 @@ typedef struct
                      const gsl_vector * f_trial, const double rho, void * vstate);
   int (*rcond) (const gsl_matrix * J, double * rcond, void * vstate);
   void (*free) (void * vstate);
-} gsl_multifit_nlinear_method;
+} gsl_multifit_nlinear_trs;
 
 /* LM parameter updating method */
 typedef struct
 {
   const char *name;
   void * (*alloc) (void);
-  int (*init) (const gsl_matrix * J, const gsl_vector * diag,
-               const gsl_vector * x, double * mu, void * vstate);
+  int (*init) (const gsl_matrix * J, const gsl_vector * x,
+               double * mu, void * vstate);
   int (*accept) (const double rho, double * mu, void * vstate);
   int (*reject) (double * mu, void * vstate);
   void (*free) (void * vstate);
@@ -104,8 +104,7 @@ typedef struct
   const char *name;
   void * (*alloc) (const size_t n, const size_t p);
   int (*init) (const gsl_matrix * J, void * vstate);
-  int (*presolve) (const double mu, const gsl_vector * diag,
-                   void * vstate);
+  int (*presolve) (const double mu, void * vstate);
   int (*solve) (const gsl_vector * f, const gsl_vector * g,
                 const gsl_matrix * J, gsl_vector * x, void * vstate);
   void (*free) (void * vstate);
@@ -114,7 +113,7 @@ typedef struct
 /* tunable parameters for Levenberg-Marquardt method */
 typedef struct
 {
-  const gsl_multifit_nlinear_method *method;  /* trust region method (LM, dogleg) */
+  const gsl_multifit_nlinear_trs *trs;        /* trust region subproblem method */
   const gsl_multifit_nlinear_update *update;  /* LM parameter update method */
   const gsl_multifit_nlinear_scale *scale;    /* scaling method */
   const gsl_multifit_nlinear_solver *solver;  /* solver method */
@@ -226,7 +225,7 @@ int
 gsl_multifit_nlinear_rcond (double *rcond, const gsl_multifit_nlinear_workspace * w);
 
 const char *
-gsl_multifit_nlinear_method_name (const gsl_multifit_nlinear_workspace * w);
+gsl_multifit_nlinear_trs_name (const gsl_multifit_nlinear_workspace * w);
 
 int gsl_multifit_nlinear_eval_f(gsl_multifit_nlinear_fdf *fdf,
                                 const gsl_vector *x,
@@ -280,10 +279,10 @@ gsl_multifit_nlinear_fdfvv(const double h, const gsl_vector *x, const gsl_vector
 /* top-level algorithms */
 GSL_VAR const gsl_multifit_nlinear_type * gsl_multifit_nlinear_trust;
 
-/* trust region methods */
-GSL_VAR const gsl_multifit_nlinear_method * gsl_multifit_nlinear_method_lm;
-GSL_VAR const gsl_multifit_nlinear_method * gsl_multifit_nlinear_method_dogleg;
-GSL_VAR const gsl_multifit_nlinear_method * gsl_multifit_nlinear_method_cgst;
+/* trust region subproblem methods */
+GSL_VAR const gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_lm;
+GSL_VAR const gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_dogleg;
+GSL_VAR const gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_cgst;
 
 /* parameter update methods */
 GSL_VAR const gsl_multifit_nlinear_update * gsl_multifit_nlinear_update_trust;

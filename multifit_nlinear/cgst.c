@@ -476,7 +476,7 @@ cgst_calc_tau(const gsl_vector * p, const gsl_vector * d,
   return tau;
 }
 
-static const gsl_multifit_nlinear_method cgst_type =
+static const gsl_multifit_nlinear_trs cgst_type =
 {
   "steihaug-toint",
   cgst_alloc,
@@ -488,4 +488,4 @@ static const gsl_multifit_nlinear_method cgst_type =
   cgst_free
 };
 
-const gsl_multifit_nlinear_method *gsl_multifit_nlinear_method_cgst = &cgst_type;
+const gsl_multifit_nlinear_trs *gsl_multifit_nlinear_trs_cgst = &cgst_type;

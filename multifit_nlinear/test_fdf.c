@@ -90,9 +90,11 @@ static test_fdf_problem *test_problems[] = {
    * IMM Department of Mathematical Modeling, Tech. Report
    * IMM-REP-2000-17, 2000.
    */
+#if 0
   &lin1_problem,       /* 1 */
   &lin2_problem,       /* 2 */
   &lin3_problem,       /* 3 */
+#endif
   &rosenbrock_problem, /* 4 */
   &helical_problem,    /* 5 */
   &powell1_problem,    /* 6 */
@@ -184,9 +186,6 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
 
       test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
                epsrel, 1.0, problem, NULL);
-#if 0
-      exit(1);/*XXX*/
-#endif
 
       /* test finite difference Jacobian */
       fdf.df = problem->fdf->df;
@@ -264,7 +263,7 @@ test_fdf(const gsl_multifit_nlinear_type * T,
 
   sprintf(buf, "%s/%s/scale=%s/solver=%s/scale=%g/accel=%d%s%s",
     gsl_multifit_nlinear_name(w),
-    params->method->name,
+    params->trs->name,
     params->scale->name, params->solver->name, x0_scale,
     params->accel,
     problem->fdf->df ? "" : "/fdjac",

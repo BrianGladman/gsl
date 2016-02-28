@@ -76,9 +76,6 @@ static int lm_check_step(const void * vtrust_state, const gsl_vector * dx,
                          const gsl_vector * f_trial, const double rho, void * vstate);
 static int lm_rcond(const gsl_matrix *J, double *rcond, void *vstate);
 static double lm_avratio(void *vstate);
-static double lm_calc_rho(const double mu, const gsl_vector * v,
-                          const gsl_vector * g, const gsl_vector * f,
-                          const gsl_vector * f_trial, const gsl_vector * diag);
 
 static void *
 lm_alloc (const void * params, const size_t n, const size_t p)
@@ -193,10 +190,8 @@ lm_free(void *vstate)
 lm_init()
   Initialize LM solver
 
-Inputs: x      - initial parameter values
-        J      - J(x) matrix
-        diag   - D matrix
-        vstate - workspace
+Inputs: vtrust_state - trust state
+        vstate       - workspace
 
 Return: success/error
 */
@@ -212,7 +207,6 @@ lm_init(const void *vtrust_state, void *vstate)
 
   /* initialize LM parameter mu */
   status = (params->update->init)(trust_state->J,
-                                  trust_state->diag,
                                   trust_state->x,
                                   &(state->mu),
                                   state->update_state);
@@ -272,13 +266,13 @@ lm_step(const void * vtrust_state, const double delta,
   size_t i;
 
   /* prepare the linear solver with current LM parameter mu */
-  status = (params->solver->presolve)(state->mu, trust_state->diag, state->solver_state);
+  status = (params->solver->presolve)(state->mu, state->solver_state);
   if (status)
     return status;
 
   /*
    * solve: [     J      ] v = - [ f ]
-   *        [ sqrt(mu)*D ]       [ 0 ]
+   *        [ sqrt(mu)*I ]       [ 0 ]
    */
   status = (params->solver->solve)(trust_state->f,
                                    trust_state->g,
@@ -287,6 +281,14 @@ lm_step(const void * vtrust_state, const double delta,
                                    state->solver_state);
   if (status)
     return status;
+
+  /* compute unscaled velocity, v := D^{-1} v */
+  for (i = 0; i < p; ++i)
+    {
+      double di = gsl_vector_get(trust_state->diag, i);
+      double *vi = gsl_vector_ptr(state->vel, i);
+      *vi /= di;
+    }
 
   if (params->accel)
     {
@@ -316,12 +318,15 @@ lm_step(const void * vtrust_state, const double delta,
         return status;
     }
 
-  /* compute step dx = v + 1/2 a */
+  /* compute (scaled) step dx_scaled = D*(v + 1/2 a) */
   for (i = 0; i < p; ++i)
     {
       double vi = gsl_vector_get(state->vel, i);
       double ai = gsl_vector_get(state->acc, i);
-      gsl_vector_set(dx, i, vi + 0.5 * ai);
+      double di = gsl_vector_get(trust_state->diag, i);
+      double dxi = vi + 0.5 * ai;
+
+      gsl_vector_set(dx, i, dxi * di);
     }
 
   return GSL_SUCCESS;
@@ -365,8 +370,8 @@ lm_check_step(const void * vtrust_state, const gsl_vector * dx,
   /* if using geodesic acceleration, check that |a|/|v| < alpha */
   if (params->accel)
     {
-      double anorm = scaled_norm(trust_state->diag, state->acc);
-      double vnorm = scaled_norm(trust_state->diag, state->vel);
+      double anorm = gsl_blas_dnrm2(state->acc);
+      double vnorm = gsl_blas_dnrm2(state->vel);
 
       /* store |a| / |v| */
       state->avratio = anorm / vnorm;
@@ -393,64 +398,6 @@ lm_check_step(const void * vtrust_state, const gsl_vector * dx,
     }
 
   return status;
-}
-
-/*
-lm_calc_rho()
-  Calculate ratio of actual reduction to predicted
-reduction, given by Eq 4.4 of More, 1978.
-
-Inputs: mu      - LM parameter
-        v       - velocity vector (p in Eq 4.4)
-        g       - gradient J^T f
-        f       - f(x)
-        f_trial - f(x + dx)
-        diag    - scaling matrix D
-*/
-
-static double
-lm_calc_rho(const double mu, const gsl_vector * v,
-            const gsl_vector * g, const gsl_vector * f,
-            const gsl_vector * f_trial, const gsl_vector * diag)
-{
-  const double normf = gsl_blas_dnrm2(f);
-  const double normf_trial = gsl_blas_dnrm2(f_trial);
-  double rho;
-  double actual_reduction;
-  double pred_reduction;
-  double u;
-  double norm_Dp; /* || D p || */
-
-  /* if ||f(x+dx)|| > ||f(x)|| reject step immediately */
-  if (normf_trial >= normf)
-    return -1.0;
-
-  /* compute numerator of rho */
-  u = normf_trial / normf;
-  actual_reduction = 1.0 - u*u;
-
-  /* compute || D p || */
-  norm_Dp = scaled_norm(diag, v);
-
-  /*
-   * compute denominator of rho; instead of computing J*v,
-   * we note that:
-   *
-   * ||Jv||^2 + 2*mu*||Dv||^2 = mu*||Dv||^2 - v^T g
-   * and g = J^T f
-   */
-  u = norm_Dp / normf;
-  pred_reduction = mu * u * u;
-
-  gsl_blas_ddot(v, g, &u);
-  pred_reduction -= u / (normf * normf);
-
-  if (pred_reduction > 0.0)
-    rho = actual_reduction / pred_reduction;
-  else
-    rho = -1.0;
-
-  return rho;
 }
 
 static int
@@ -492,7 +439,7 @@ lm_avratio(void *vstate)
   return state->avratio;
 }
 
-static const gsl_multifit_nlinear_method lm_type =
+static const gsl_multifit_nlinear_trs lm_type =
 {
   "levenberg-marquardt",
   lm_alloc,
@@ -504,4 +451,4 @@ static const gsl_multifit_nlinear_method lm_type =
   lm_free
 };
 
-const gsl_multifit_nlinear_method *gsl_multifit_nlinear_method_lm = &lm_type;
+const gsl_multifit_nlinear_trs *gsl_multifit_nlinear_trs_lm = &lm_type;

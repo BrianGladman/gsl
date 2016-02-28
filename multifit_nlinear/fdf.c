@@ -135,7 +135,7 @@ gsl_multifit_nlinear_default_parameters(void)
 {
   gsl_multifit_nlinear_parameters params;
 
-  params.method = gsl_multifit_nlinear_method_lm;
+  params.trs = gsl_multifit_nlinear_trs_lm;
   params.update = gsl_multifit_nlinear_update_nielsen;
   params.scale = gsl_multifit_nlinear_scale_more;
   params.solver = gsl_multifit_nlinear_solver_qr;
@@ -360,9 +360,9 @@ gsl_multifit_nlinear_rcond (double *rcond, const gsl_multifit_nlinear_workspace 
 }
 
 const char *
-gsl_multifit_nlinear_method_name (const gsl_multifit_nlinear_workspace * w)
+gsl_multifit_nlinear_trs_name (const gsl_multifit_nlinear_workspace * w)
 {
-  return w->params.method->name;
+  return w->params.trs->name;
 }
 
 /*
