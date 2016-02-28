@@ -47,6 +47,7 @@
 #include <gsl/gsl_multifit_nlinear.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
+#include <gsl/gsl_permute_vector.h>
 
 #include "qrsolv.c"
 
@@ -67,6 +68,9 @@ static int qr_init(const gsl_matrix * J, void * vstate);
 static int qr_presolve(const double mu, void * vstate);
 static int qr_solve(const gsl_vector * f, const gsl_vector * g,
                     const gsl_matrix *J, gsl_vector *x, void *vstate);
+static size_t qr_nonsing (const gsl_matrix * r);
+static int qr_newton (const gsl_matrix * r, const gsl_permutation * perm,
+                      const gsl_vector * qtf, gsl_vector * x);
 
 static void *
 qr_alloc (const size_t n, const size_t p)
@@ -205,7 +209,6 @@ qr_solve(const gsl_vector * f, const gsl_vector * g,
          const gsl_matrix *J, gsl_vector *x, void *vstate)
 {
   qr_state_t *state = (qr_state_t *) vstate;
-  double sqrt_mu = sqrt(state->mu);
   int status;
 
   (void)g;
@@ -216,21 +219,28 @@ qr_solve(const gsl_vector * f, const gsl_vector * g,
 
   if (state->mu == 0.0)
     {
-      double mu = 1.0e-8;
-      sqrt_mu = sqrt(mu);
+      /*
+       * compute Gauss-Newton direction by solving
+       * J x = f
+       */
+      status = qr_newton(state->R, state->perm, state->qtf, x);
     }
+  else
+    {
+      /*
+       * solve:
+       *
+       * [     J      ] x = [ f ]
+       * [ sqrt(mu) D ]     [ 0 ]
+       *
+       * using QRPT factorization of J
+       */
 
-  /*
-   * solve:
-   *
-   * [     J      ] x = [ f ]
-   * [ sqrt(mu) D ]     [ 0 ]
-   *
-   * using QRPT factorization of J
-   */
+      double sqrt_mu = sqrt(state->mu);
 
-  status = qrsolv(state->R, state->perm, sqrt_mu, state->diag,
-                  state->qtf, x, state->workp, state->workn);
+      status = qrsolv(state->R, state->perm, sqrt_mu, state->diag,
+                      state->qtf, x, state->workp, state->workn);
+    }
 
   /* reverse step to go downhill */
   gsl_vector_scale(x, -1.0);
@@ -238,6 +248,77 @@ qr_solve(const gsl_vector * f, const gsl_vector * g,
   (void)J; /* avoid unused parameter warning */
 
   return status;
+}
+
+static size_t
+qr_nonsing (const gsl_matrix * r)
+{
+  /* Count the number of nonsingular entries. Returns the index of the
+     first entry which is singular. */
+
+  size_t n = r->size2;
+  size_t i;
+
+  for (i = 0; i < n; i++)
+    {
+      double rii = gsl_matrix_get (r, i, i);
+
+      if (rii == 0)
+        {
+          break;
+        }
+    }
+
+  return i;
+}
+
+/* compute Gauss-Newton direction */
+static int
+qr_newton (const gsl_matrix * r, const gsl_permutation * perm,
+           const gsl_vector * qtf, gsl_vector * x)
+{
+
+  /* Compute and store in x the Gauss-Newton direction. If the
+     Jacobian is rank-deficient then obtain a least squares
+     solution. */
+
+  const size_t n = r->size2;
+  size_t i, j, nsing;
+
+  for (i = 0; i < n; i++)
+    {
+      double qtfi = gsl_vector_get (qtf, i);
+      gsl_vector_set (x, i,  qtfi);
+    }
+
+  nsing = qr_nonsing (r);
+
+  for (i = nsing; i < n; i++)
+    {
+      gsl_vector_set (x, i, 0.0);
+    }
+
+  if (nsing > 0)
+    {
+      for (j = nsing; j > 0 && j--;)
+        {
+          double rjj = gsl_matrix_get (r, j, j);
+          double temp = gsl_vector_get (x, j) / rjj;
+          
+          gsl_vector_set (x, j, temp);
+          
+          for (i = 0; i < j; i++)
+            {
+              double rij = gsl_matrix_get (r, i, j);
+              double xi = gsl_vector_get (x, i);
+              gsl_vector_set (x, i, xi - rij * temp);
+            }
+        }
+    }
+
+  gsl_permute_vector_inverse (perm, x);
+
+  return GSL_SUCCESS;
 }
 
 static const gsl_multifit_nlinear_solver qr_type =

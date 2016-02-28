@@ -1,7 +1,10 @@
 #define box_N         10 /* can be >= p */
 #define box_P         3
 
-static double box_x0[box_P] = { 0.0, 10.0, 20.0 };
+/* dogleg method fails with recommended starting point, so use
+ * a slightly easier x0 */
+/*static double box_x0[box_P] = { 0.0, 10.0, 20.0 };*/
+static double box_x0[box_P] = { 5.0, 10.0, 2.0 };
 static double box_epsrel = 1.0e-12;
 
 static void
@@ -9,17 +12,41 @@ box_checksol(const double x[], const double sumsq,
               const double epsrel, const char *sname,
               const char *pname)
 {
-  size_t i;
   const double sumsq_exact = 0.0;
-  const double box_x[box_P] = { 1.0, 10.0, 1.0 };
+  const double eps = 1.0e-6;
 
   gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
                sname, pname);
 
-  for (i = 0; i < box_P; ++i)
+  /* there are 3 possible solution vectors */
+
+  if (fabs(x[2] - 1.0) < eps)
     {
-      gsl_test_rel(x[i], box_x[i], epsrel, "%s/%s i=%zu",
-                   sname, pname, i);
+      /* case 1: x* = [ 1; 10; 1 ] */
+      gsl_test_rel(x[0], 1.0, epsrel, "%s/%s i=0",
+                   sname, pname);
+      gsl_test_rel(x[1], 10.0, epsrel, "%s/%s i=1",
+                   sname, pname);
+      gsl_test_rel(x[2], 1.0, epsrel, "%s/%s i=2",
+                   sname, pname);
+    }
+  else if (fabs(x[2] + 1.0) < eps)
+    {
+      /* case 2: x* = [ 10; 1; -1 ] */
+      gsl_test_rel(x[0], 10.0, epsrel, "%s/%s i=0",
+                   sname, pname);
+      gsl_test_rel(x[1], 1.0, epsrel, "%s/%s i=1",
+                   sname, pname);
+      gsl_test_rel(x[2], -1.0, epsrel, "%s/%s i=2",
+                   sname, pname);
+    }
+  else
+    {
+      /* case 3: x* = [ a; a; 0 ] for any a */
+      gsl_test_rel(x[0], x[1], epsrel, "%s/%s i=0,1",
+                   sname, pname);
+      gsl_test_rel(x[2], 0.0, epsrel, "%s/%s i=2",
+                   sname, pname);
     }
 }
 

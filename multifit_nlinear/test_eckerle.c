@@ -37,13 +37,29 @@ eckerle_checksol(const double x[], const double sumsq,
   const double eckerle_x[eckerle_P] = { 1.5543827178E+00,
                                         4.0888321754E+00,
                                         4.5154121844E+02 };
+  double new_x[3];
 
   gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
                sname, pname);
 
+  /* x1 and x2 are unique up to a sign, but they must be
+   * the same sign */
+  if (x[0] < 0.0 && x[1] < 0.0)
+    {
+      new_x[0] = -x[0];
+      new_x[1] = -x[1];
+    }
+  else
+    {
+      new_x[0] = x[0];
+      new_x[1] = x[1];
+    }
+
+  new_x[2] = x[2];
+
   for (i = 0; i < eckerle_P; ++i)
     {
-      gsl_test_rel(x[i], eckerle_x[i], epsrel, "%s/%s i=%zu",
+      gsl_test_rel(new_x[i], eckerle_x[i], epsrel, "%s/%s i=%zu",
                    sname, pname, i);
     }
 }

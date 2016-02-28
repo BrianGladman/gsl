@@ -318,6 +318,14 @@ lm_step(const void * vtrust_state, const double delta,
         return status;
     }
 
+  /* compute unscaled acceleration, a := D^{-1} a */
+  for (i = 0; i < p; ++i)
+    {
+      double di = gsl_vector_get(trust_state->diag, i);
+      double *ai = gsl_vector_ptr(state->acc, i);
+      *ai /= di;
+    }
+
   /* compute (scaled) step dx_scaled = D*(v + 1/2 a) */
   for (i = 0; i < p; ++i)
     {

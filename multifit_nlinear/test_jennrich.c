@@ -2,7 +2,7 @@
 #define jennrich_P         2
 
 static double jennrich_x0[jennrich_P] = { 0.3, 0.4 };
-static double jennrich_epsrel = 1.0e-8;
+static double jennrich_epsrel = 1.0e-7;
 
 static void
 jennrich_checksol(const double x[], const double sumsq,

@@ -43,17 +43,15 @@ typedef struct
   gsl_vector *r;             /* steepest descent step, size p */
   gsl_vector *d;             /* steepest descent step, size p */
   gsl_vector *fvv;           /* D_v^2 f(x), size n */
-  gsl_vector *vel;           /* geodesic velocity (standard step), size p */
-  gsl_vector *acc;           /* geodesic acceleration, size p */
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
+  gsl_vector *diag;
   double normg;              /* || D g || */
   double pred_red;           /* predicted reduction */
 
   void *update_state;        /* workspace for parameter update method */
   void *solver_state;        /* workspace for linear solver */
 
-  double avratio;            /* current |a| / |v| */
   double cgtol;              /* tolerance for CG solution */
   size_t cgmaxit;            /* maximum CG iterations */
 
@@ -126,17 +124,12 @@ cgst_alloc (const void * params, const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for fvv", GSL_ENOMEM);
     }
 
-  state->vel = gsl_vector_alloc(p);
-  if (state->vel == NULL)
+  state->diag = gsl_vector_alloc(p);
+  if (state->diag == NULL)
     {
-      GSL_ERROR_NULL ("failed to allocate space for vel", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for diag", GSL_ENOMEM);
     }
-
-  state->acc = gsl_vector_alloc(p);
-  if (state->acc == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for acc", GSL_ENOMEM);
-    }
+  gsl_vector_set_all(state->diag, 1.0);
 
   state->update_state = (mparams->update->alloc)();
   if (state->update_state == NULL)
@@ -181,11 +174,8 @@ cgst_free(void *vstate)
   if (state->fvv)
     gsl_vector_free(state->fvv);
 
-  if (state->vel)
-    gsl_vector_free(state->vel);
-
-  if (state->acc)
-    gsl_vector_free(state->acc);
+  if (state->diag)
+    gsl_vector_free(state->diag);
 
   if (state->update_state)
     (params->update->free)(state->update_state);
@@ -214,11 +204,7 @@ cgst_init(const void *vtrust_state, void *vstate)
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   cgst_state_t *state = (cgst_state_t *) vstate;
 
-  gsl_vector_set_zero(state->vel);
-  gsl_vector_set_zero(state->acc);
-
   /* set default parameters */
-  state->avratio = 0.0;
   state->cgmaxit = 50;
   state->cgtol = 1.0e-6;
 
@@ -248,7 +234,7 @@ cgst_preloop(const void * vtrust_state, void * vstate)
   for (i = 0; i < p; ++i)
     {
       double gi = gsl_vector_get(trust_state->g, i);
-      double Di = gsl_vector_get(trust_state->diag, i);
+      double Di = gsl_vector_get(state->diag, i);
 
       gsl_vector_set(state->z, i, 0.0);
       gsl_vector_set(state->r, i, -gi);
@@ -256,7 +242,7 @@ cgst_preloop(const void * vtrust_state, void * vstate)
     }
 
   /* compute || D g || */
-  state->normg = scaled_norm(trust_state->diag, trust_state->g);
+  state->normg = scaled_norm(state->diag, trust_state->g);
 
   return GSL_SUCCESS;
 }
@@ -279,7 +265,7 @@ cgst_step(const void * vtrust_state, const double delta,
   cgst_state_t *state = (cgst_state_t *) vstate;
   const gsl_multifit_nlinear_parameters *params = trust_state->params;
   const gsl_matrix * J = trust_state->J;
-  const gsl_vector * diag = trust_state->diag;
+  const gsl_vector * diag = state->diag;
   const size_t p = state->p;
   double alpha, beta, u;
   double norm_Jd, norm_Dinvr, norm_Drp1;
@@ -431,7 +417,7 @@ static double
 cgst_avratio(void *vstate)
 {
   cgst_state_t *state = (cgst_state_t *) vstate;
-  return state->avratio;
+  return 0.0;
 }
 
 /*
