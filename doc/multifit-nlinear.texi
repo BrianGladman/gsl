@@ -94,7 +94,7 @@ $$
 @ifinfo
 
 @example
-\min_{\delta \in R^p} m_k(\delta), s.t. || D_k \delta || <= \Delta_k
+\min_(\delta \in R^p) m_k(\delta), s.t. || D_k \delta || <= \Delta_k
 @end example
 
 @end ifinfo
