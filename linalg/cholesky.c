@@ -1,10 +1,8 @@
 /* Cholesky Decomposition
  *
- * Copyright (C) 2000  Thomas Walter
- *
- * 03 May 2000: Modified for GSL by Brian Gough
- * 29 Jul 2005: Additions by Gerard Jungman
- * Copyright (C) 2000,2001, 2002, 2003, 2005, 2007 Brian Gough, Gerard Jungman
+ * Copyright (C) 2000 Thomas Walter
+ * Copyright (C) 2000, 2001, 2002, 2003, 2005, 2007 Brian Gough, Gerard Jungman
+ * Copyright (C) 2016 Patrick Alken
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -15,6 +13,10 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
  * for more details.
+ *
+ * 03 May 2000: Modified for GSL by Brian Gough
+ * 29 Jul 2005: Additions by Gerard Jungman
+ * 04 Mar 2016: Change Cholesky algorithm to gaxpy version by Patrick Alken
  */
 
 /*
@@ -40,13 +42,20 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 
-static inline 
-double
-quiet_sqrt (double x)  
-     /* avoids runtime error, for checking matrix for positive definiteness */
-{
-  return (x >= 0) ? sqrt(x) : GSL_NAN;
-}
+/*
+gsl_linalg_cholesky_decomp()
+  Perform Cholesky decomposition of a symmetric positive
+definite matrix
+
+Inputs: A - (input) symmetric, positive definite matrix
+            (output) lower triangle contains Cholesky factor
+
+Return: success/error
+
+Notes:
+1) Based on algorithm 4.2.1 (Gaxpy Cholesky) of Golub and
+Van Loan, Matrix Computations (4th ed).
+*/
 
 int
 gsl_linalg_cholesky_decomp (gsl_matrix * A)
@@ -60,107 +69,39 @@ gsl_linalg_cholesky_decomp (gsl_matrix * A)
     }
   else
     {
-      size_t i,j,k;
-      int status = 0;
+      size_t j;
 
-      /* Do the first 2 rows explicitly.  It is simple, and faster.  And
-       * one can return if the matrix has only 1 or 2 rows.  
-       */
-
-      double A_00 = gsl_matrix_get (A, 0, 0);
-      
-      double L_00 = quiet_sqrt(A_00);
-      
-      if (A_00 <= 0)
+      for (j = 0; j < N; ++j)
         {
-          status = GSL_EDOM ;
-        }
+          double ajj;
+          gsl_vector_view v = gsl_matrix_subcolumn(A, j, j, N - j); /* A(j:n,j) */
 
-      gsl_matrix_set (A, 0, 0, L_00);
-  
-      if (M > 1)
-        {
-          double A_10 = gsl_matrix_get (A, 1, 0);
-          double A_11 = gsl_matrix_get (A, 1, 1);
-          
-          double L_10 = A_10 / L_00;
-          double diag = A_11 - L_10 * L_10;
-          double L_11 = quiet_sqrt(diag);
-          
-          if (diag <= 0)
+          if (j > 0)
             {
-              status = GSL_EDOM;
+              gsl_vector_view w = gsl_matrix_subrow(A, j, 0, j);           /* A(j,1:j-1)^T */
+              gsl_matrix_view m = gsl_matrix_submatrix(A, j, 0, N - j, j); /* A(j:n,1:j-1) */
+
+              gsl_blas_dgemv(CblasNoTrans, -1.0, &m.matrix, &w.vector, 1.0, &v.vector);
             }
 
-          gsl_matrix_set (A, 1, 0, L_10);        
-          gsl_matrix_set (A, 1, 1, L_11);
-        }
-      
-      for (k = 2; k < M; k++)
-        {
-          double A_kk = gsl_matrix_get (A, k, k);
-          
-          for (i = 0; i < k; i++)
+          ajj = gsl_matrix_get(A, j, j);
+
+          if (ajj <= 0.0)
             {
-              double sum = 0;
-
-              double A_ki = gsl_matrix_get (A, k, i);
-              double A_ii = gsl_matrix_get (A, i, i);
-
-              gsl_vector_view ci = gsl_matrix_row (A, i);
-              gsl_vector_view ck = gsl_matrix_row (A, k);
-
-              if (i > 0) {
-                gsl_vector_view di = gsl_vector_subvector(&ci.vector, 0, i);
-                gsl_vector_view dk = gsl_vector_subvector(&ck.vector, 0, i);
-                
-                gsl_blas_ddot (&di.vector, &dk.vector, &sum);
-              }
-
-              A_ki = (A_ki - sum) / A_ii;
-              gsl_matrix_set (A, k, i, A_ki);
-            } 
-
-          {
-            gsl_vector_view ck = gsl_matrix_row (A, k);
-            gsl_vector_view dk = gsl_vector_subvector (&ck.vector, 0, k);
-            
-            double sum = gsl_blas_dnrm2 (&dk.vector);
-            double diag = A_kk - sum * sum;
-
-            double L_kk = quiet_sqrt(diag);
-            
-            if (diag <= 0)
-              {
-                status = GSL_EDOM;
-              }
-            
-            gsl_matrix_set (A, k, k, L_kk);
-          }
-        }
-
-      /* Now copy the transposed lower triangle to the upper triangle,
-       * the diagonal is common.  
-       */
-      
-      for (i = 1; i < M; i++)
-        {
-          for (j = 0; j < i; j++)
-            {
-              double A_ij = gsl_matrix_get (A, i, j);
-              gsl_matrix_set (A, j, i, A_ij);
+              GSL_ERROR("matrix is not positive definite", GSL_EDOM);
             }
-        } 
-      
-      if (status == GSL_EDOM)
-        {
-          GSL_ERROR ("matrix must be positive definite", GSL_EDOM);
+
+          ajj = sqrt(ajj);
+          gsl_vector_scale(&v.vector, 1.0 / ajj);
         }
+
+      /* now copy the transposed lower triangle to the upper triangle,
+       * the diagonal is common. */
+      gsl_matrix_transpose_tricpy('L', 0, A, A);
       
       return GSL_SUCCESS;
     }
 }
-
 
 int
 gsl_linalg_cholesky_solve (const gsl_matrix * LLT,
