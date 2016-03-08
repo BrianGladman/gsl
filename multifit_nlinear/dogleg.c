@@ -34,6 +34,10 @@
  * [1] H. B. Nielsen, K. Madsen, Introduction to Optimization and
  *     Data Fitting, Informatics and Mathematical Modeling,
  *     Technical University of Denmark (DTU), 2010.
+ *
+ * [2] J. E. Dennis and H. H. W. Mei, Two new unconstrained optimization
+ *     algorithms which use function and gradient values, J. Opt. Theory and
+ *     Appl., 28(4), 1979.
  */
 
 typedef struct
@@ -44,18 +48,13 @@ typedef struct
   gsl_vector *dx_sd;         /* steepest descent step, size p */
   double norm_gn;            /* || dx_gn || */
   double norm_sd;            /* || dx_sd || */
-  gsl_vector *fvv;           /* D_v^2 f(x), size n */
-  gsl_vector *vel;           /* geodesic velocity (standard step), size p */
-  gsl_vector *acc;           /* geodesic acceleration, size p */
+  double norm_g;             /* || g || */
+  double norm_Jg;            /* || J g || */
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
-  double alpha;              /* || g ||^2 / || J*g ||^2 */
-  double pred_red;           /* predicted reduction */
 
   void *update_state;        /* workspace for parameter update method */
   void *solver_state;        /* workspace for linear solver */
-
-  double avratio;            /* current |a| / |v| */
 
   /* tunable parameters */
   gsl_multifit_nlinear_parameters params;
@@ -69,11 +68,11 @@ static int dogleg_init(const void *vtrust_state, void *vstate);
 static int dogleg_preloop(const void * vtrust_state, void * vstate);
 static int dogleg_step(const void * vtrust_state, const double delta,
                        gsl_vector * dx, void * vstate);
+static int dogleg_double_step(const void * vtrust_state, const double delta,
+                              gsl_vector * dx, void * vstate);
 static int dogleg_rcond(const gsl_matrix *J, double *rcond, void *vstate);
 static double dogleg_avratio(void *vstate);
-static double dogleg_calc_rho(const gsl_multifit_nlinear_trust_state * trust_state,
-                              const gsl_vector * dx, const gsl_vector * f_trial,
-                              dogleg_state_t * state);
+static double dogleg_beta(const double t, const double delta, dogleg_state_t *state);
 
 static void *
 dogleg_alloc (const void * params, const size_t n, const size_t p)
@@ -109,24 +108,6 @@ dogleg_alloc (const void * params, const size_t n, const size_t p)
   if (state->workn == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for workn", GSL_ENOMEM);
-    }
-
-  state->fvv = gsl_vector_alloc(n);
-  if (state->fvv == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for fvv", GSL_ENOMEM);
-    }
-
-  state->vel = gsl_vector_alloc(p);
-  if (state->vel == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for vel", GSL_ENOMEM);
-    }
-
-  state->acc = gsl_vector_alloc(p);
-  if (state->acc == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for acc", GSL_ENOMEM);
     }
 
   state->update_state = (mparams->update->alloc)();
@@ -166,15 +147,6 @@ dogleg_free(void *vstate)
   if (state->workn)
     gsl_vector_free(state->workn);
 
-  if (state->fvv)
-    gsl_vector_free(state->fvv);
-
-  if (state->vel)
-    gsl_vector_free(state->vel);
-
-  if (state->acc)
-    gsl_vector_free(state->acc);
-
   if (state->update_state)
     (params->update->free)(state->update_state);
 
@@ -197,16 +169,8 @@ Return: success/error
 static int
 dogleg_init(const void *vtrust_state, void *vstate)
 {
-  int status;
-  const gsl_multifit_nlinear_trust_state *trust_state =
-    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
-  dogleg_state_t *state = (dogleg_state_t *) vstate;
-
-  gsl_vector_set_zero(state->vel);
-  gsl_vector_set_zero(state->acc);
-
-  /* set default parameters */
-  state->avratio = 0.0;
+  (void)vtrust_state;
+  (void)vstate;
 
   return GSL_SUCCESS;
 }
@@ -220,7 +184,8 @@ steepest descent step
 Notes: on output,
 1) state->dx_gn contains Gauss-Newton step
 2) state->dx_sd contains steepest descent step
-3) state->alpha = ||g||^2 / ||Jg||^2
+3) state->norm_g contains || g ||
+4) state->norm_Jg contains || J g ||
 */
 
 static int
@@ -231,9 +196,8 @@ dogleg_preloop(const void * vtrust_state, void * vstate)
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   dogleg_state_t *state = (dogleg_state_t *) vstate;
   const gsl_multifit_nlinear_parameters *params = trust_state->params;
-  double norm_g,  /* || g || */
-         norm_Jg; /* || J*g || */
   double u;
+  double alpha; /* ||g||^2 / ||Jg||^2 */
 
   /* initialize linear least squares solver */
   status = (params->solver->init)(trust_state->J, state->solver_state);
@@ -260,16 +224,16 @@ dogleg_preloop(const void * vtrust_state, void * vstate)
   gsl_blas_dgemv(CblasNoTrans, 1.0, trust_state->J, trust_state->g, 0.0, state->workn);
 
   /* compute |g| and |Jg| */
-  norm_g = gsl_blas_dnrm2(trust_state->g);
-  norm_Jg = gsl_blas_dnrm2(state->workn);
+  state->norm_g = gsl_blas_dnrm2(trust_state->g);
+  state->norm_Jg = gsl_blas_dnrm2(state->workn);
 
   /* alpha = |g|^2 / |Jg|^2 */
-  u = norm_g / norm_Jg;
-  state->alpha = u * u;
+  u = state->norm_g / state->norm_Jg;
+  alpha = u * u;
 
   /* dx_sd = -alpha * g */
   gsl_vector_memcpy(state->dx_sd, trust_state->g);
-  gsl_vector_scale(state->dx_sd, -state->alpha);
+  gsl_vector_scale(state->dx_sd, -alpha);
 
   /* store norms */
   state->norm_gn = gsl_blas_dnrm2(state->dx_gn);
@@ -281,34 +245,13 @@ dogleg_preloop(const void * vtrust_state, void * vstate)
 /*
 dogleg_step()
   Calculate a new step vector
-
-Notes: on output,
-1) state->pred_red contains the predicted reduction
 */
 
 static int
 dogleg_step(const void * vtrust_state, const double delta,
             gsl_vector * dx, void * vstate)
 {
-  int status;
-  const gsl_multifit_nlinear_trust_state *trust_state =
-    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   dogleg_state_t *state = (dogleg_state_t *) vstate;
-  const gsl_multifit_nlinear_parameters *params = trust_state->params;
-  const double alpha = state->alpha;
-
-  if (state->norm_gn < 0.0)
-    {
-      /* failed to find Gauss-Newton step due to singular
-       * Jacobian; use steepest descent direction */
-      gsl_vector_memcpy(dx, state->dx_sd);
-
-      /* truncate step if outside trust region */
-      if (state->norm_sd >= delta)
-        gsl_vector_scale(dx, delta / state->norm_sd);
-
-      return GSL_SUCCESS;
-    }
 
   if (state->norm_gn > delta)
     {
@@ -319,119 +262,97 @@ dogleg_step(const void * vtrust_state, const double delta,
            * region boundary */
           gsl_vector_memcpy(dx, state->dx_sd);
           gsl_vector_scale(dx, delta / state->norm_sd);
-          state->pred_red = delta * (2.0*state->norm_sd - delta) / (2.0 * alpha);
         }
       else
         {
           /* Gauss-Newton step is outside trust region, but steepest
            * descent is inside; use dogleg step */
 
-          double normf = gsl_blas_dnrm2(trust_state->f);
-          double normg = gsl_blas_dnrm2(trust_state->g);
-          double c, beta, dterm, diff_sq;
-
-          /* compute: workp = dx_gn - dx_sd */
-          gsl_vector_memcpy(state->workp, state->dx_gn);
-          gsl_vector_sub(state->workp, state->dx_sd);
-
-          /* compute: diff_sq = || dx_gn - dx_sd ||^2 */
-          gsl_blas_ddot(state->workp, state->workp, &diff_sq);
-
-          /* c = dx_sd . (dx_gn - dx_sd) */
-          gsl_blas_ddot(state->dx_sd, state->workp, &c);
-
-          /* dterm = delta^2 - || dx_sd ||^2 */
-          dterm = (delta + state->norm_sd) * (delta - state->norm_sd);
-
-          if (c > 0.0)
-            {
-              beta = dterm / (c + sqrt(c*c + diff_sq*dterm));
-            }
-          else
-            {
-              beta = (sqrt(c*c + diff_sq*dterm) - c) / diff_sq;
-            }
+          double beta = dogleg_beta(1.0, delta, state);
 
           /* dx = dx_sd + beta*(dx_gn - dx_sd) */
-          gsl_vector_memcpy(dx, state->dx_sd);
-          gsl_blas_daxpy(beta, state->workp, dx);
-
-          state->pred_red = 0.5*alpha*(1.0 - beta)*(1.0 - beta)*normg*normg +
-                            0.5*beta*(2.0 - beta)*normf*normf;
+          scaled_addition(beta, state->workp, 1.0, state->dx_sd, dx);
         }
     }
   else
     {
-      double normf = gsl_blas_dnrm2(trust_state->f);
-
       /* Gauss-Newton step is inside trust region, use it as final step */
       gsl_vector_memcpy(dx, state->dx_gn);
-      state->pred_red = 0.5 * normf * normf;
     }
+
+  (void)vtrust_state;
 
   return GSL_SUCCESS;
 }
 
 /*
-dogleg_calc_rho()
-  Calculate ratio of actual reduction to predicted
-reduction, given by Eq 4.4 of More, 1978.
-
-Inputs: trust_state - trust state
-        dx          - proposed step, size p
-        f_trial     - f(x + dx)
-        state       - workspace
-
-Notes:
-1) On input, state->pred_red must contain predicted reduction
+dogleg_double_step()
+  Calculate a new step with double dogleg method. Based on
+section 3 of [2]
 */
 
-static double
-dogleg_calc_rho(const gsl_multifit_nlinear_trust_state * trust_state,
-                const gsl_vector * dx, const gsl_vector * f_trial,
-                dogleg_state_t * state)
+static int
+dogleg_double_step(const void * vtrust_state, const double delta,
+                   gsl_vector * dx, void * vstate)
 {
-  const double normf = gsl_blas_dnrm2(trust_state->f);
-  const double normf_trial = gsl_blas_dnrm2(f_trial);
-  double rho;
-  double actual_reduction;
-  double pred_reduction;
-  double u, norm_Jp;
+  const double alpha_fac = 0.8; /* recommended value from Dennis and Mei */
+  const gsl_multifit_nlinear_trust_state *trust_state =
+    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
+  dogleg_state_t *state = (dogleg_state_t *) vstate;
 
-  /* if ||f(x+dx)|| > ||f(x)|| reject step immediately */
-  if (normf_trial >= normf)
-    return -1.0;
+  if (state->norm_gn > delta)
+    {
+      double t, u, v, c;
 
-  /* compute numerator of rho (actual reduction) */
-  u = normf_trial / normf;
-  actual_reduction = 1.0 - u*u;
+      /* compute: u = ||g||^2 / ||J*g||^2 */
+      v = state->norm_g / state->norm_Jg;
+      u = v * v;
 
-  /* compute denominator of rho (predicted reduction) */
+      /* compute: v = g^T dx_gn */
+      gsl_blas_ddot(trust_state->g, state->dx_gn, &v);
 
-  /* compute J*dx */
-  gsl_blas_dgemv(CblasNoTrans, 1.0, trust_state->J, dx, 0.0, state->workn);
-  norm_Jp = gsl_blas_dnrm2(state->workn);
+      /* compute: c = ||g||^4 / (||J*g||^2 * |g^T dx_gn|) */
+      c = u * (state->norm_g / fabs(v)) * state->norm_g;
 
-  u = norm_Jp / normf;
-  pred_reduction = -u * u;
+      /* compute: t = 1 - alpha_fac*(1-c) */
+      t = 1.0 - alpha_fac*(1.0 - c);
 
-  gsl_blas_ddot(dx, trust_state->g, &u);
-  pred_reduction -= 2.0 * u / (normf * normf);
+      if (t * state->norm_gn <= delta)
+        {
+          /* set dx = (delta / ||dx_gn||) dx_gn */
+          gsl_vector_memcpy(dx, state->dx_gn);
+          gsl_vector_scale(dx, delta / state->norm_gn);
+        }
+      else if (state->norm_sd >= delta)
+        {
+          /* both Gauss-Newton and steepest descent steps are outside
+           * trust region; truncate steepest descent step to trust
+           * region boundary */
+          gsl_vector_memcpy(dx, state->dx_sd);
+          gsl_vector_scale(dx, delta / state->norm_sd);
+        }
+      else
+        {
+          /* Cauchy point is inside, Gauss-Newton is outside trust region;
+           * use double dogleg step */
+          double beta = dogleg_beta(t, delta, state);
 
-  if (pred_reduction > 0.0)
-    rho = actual_reduction / pred_reduction;
+          /* dx = dx_sd + beta*(t*dx_gn - dx_sd) */
+          scaled_addition(beta, state->workp, 1.0, state->dx_sd, dx);
+        }
+    }
   else
-    rho = -1.0;
+    {
+      /* Gauss-Newton step is inside trust region, use it as final step */
+      gsl_vector_memcpy(dx, state->dx_gn);
+    }
 
-  return rho;
+  return GSL_SUCCESS;
 }
 
 static int
 dogleg_rcond(const gsl_matrix *J, double *rcond, void *vstate)
 {
-  int status;
-  dogleg_state_t *state = (dogleg_state_t *) vstate;
-
   *rcond = 0.0; /* XXX */
 
   return GSL_SUCCESS;
@@ -440,8 +361,57 @@ dogleg_rcond(const gsl_matrix *J, double *rcond, void *vstate)
 static double
 dogleg_avratio(void *vstate)
 {
-  dogleg_state_t *state = (dogleg_state_t *) vstate;
-  return state->avratio;
+  return 0.0;
+}
+
+/*
+dogleg_beta()
+  This function finds beta in [0,1] such that the step
+
+dx = dx_sd + beta*(t*dx_gn - dx_sd)
+
+has norm
+
+||dx|| = delta
+
+Inputs: t     - amount of Gauss-Newton step to use for dogleg
+                (= 1 for classical dogleg, <= 1 for double dogleg)
+        delta - trust region radius
+        state - workspace
+
+Notes:
+1) On output, state->workp contains t*dx_gn - dx_sd
+*/
+
+static double
+dogleg_beta(const double t, const double delta, dogleg_state_t *state)
+{
+  double dot1, dot2;
+  double dterm;
+  double beta;
+
+  /* compute: workp = t*dx_gn - dx_sd */
+  scaled_addition(t, state->dx_gn, -1.0, state->dx_sd, state->workp);
+
+  /* compute: dot1 = dx_sd . (t*dx_gn - dx_sd) */
+  gsl_blas_ddot(state->dx_sd, state->workp, &dot1);
+
+  /* compute: dot2 = || t*dx_gn - dx_sd ||^2 */
+  gsl_blas_ddot(state->workp, state->workp, &dot2);
+
+  /* dterm = delta^2 - || dx_sd ||^2 */
+  dterm = (delta + state->norm_sd) * (delta - state->norm_sd);
+
+  if (dot1 > 0.0)
+    {
+      beta = dterm / (dot1 + sqrt(dot1*dot1 + dot2*dterm));
+    }
+  else
+    {
+      beta = (sqrt(dot1*dot1 + dot2*dterm) - dot1) / dot2;
+    }
+
+  return beta;
 }
 
 static const gsl_multifit_nlinear_trs dogleg_type =
@@ -457,3 +427,17 @@ static const gsl_multifit_nlinear_trs dogleg_type =
 };
 
 const gsl_multifit_nlinear_trs *gsl_multifit_nlinear_trs_dogleg = &dogleg_type;
+
+static const gsl_multifit_nlinear_trs ddogleg_type =
+{
+  "double-dogleg",
+  dogleg_alloc,
+  dogleg_init,
+  dogleg_preloop,
+  dogleg_double_step,
+  NULL,
+  dogleg_rcond,
+  dogleg_free
+};
+
+const gsl_multifit_nlinear_trs *gsl_multifit_nlinear_trs_ddogleg = &ddogleg_type;

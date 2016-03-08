@@ -1,6 +1,6 @@
 /* multifit_nlinear/test.c
  * 
- * Copyright (C) 2007, 2013, 2015 Brian Gough, Patrick Alken
+ * Copyright (C) 2007, 2013, 2015, 2016 Brian Gough, Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,10 @@
 #include "test_fdf.c"
 
 static const gsl_multifit_nlinear_trs **nlinear_trs[] = {
-#if 1
   &gsl_multifit_nlinear_trs_lm,
-  &gsl_multifit_nlinear_trs_cgst,
-#elif 0
   &gsl_multifit_nlinear_trs_dogleg,
-#endif
+  &gsl_multifit_nlinear_trs_ddogleg,
+  &gsl_multifit_nlinear_trs_cgst,
 
   NULL
 };
@@ -82,13 +80,13 @@ main (void)
         {
           for (accel = 0; accel <= 0; ++accel)
             {
-#if 1
+#if 0
               test_proc(*trs, gsl_multifit_nlinear_scale_levenberg,
                         gsl_multifit_nlinear_solver_normal,
                         fdtype, accel);
 #endif
 
-#if 1
+#if 0
               test_proc(*trs, gsl_multifit_nlinear_scale_more,
                         gsl_multifit_nlinear_solver_normal,
                         fdtype, accel);

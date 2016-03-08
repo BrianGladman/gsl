@@ -17,6 +17,7 @@ multidimensional nonlinear fitting functions and related declarations.
 
 @menu
 * Nonlinear Least-Squares Overview::
+* Nonlinear Least-Squares TRS Overview::
 * Nonlinear Least-Squares Weighted Overview::
 * Nonlinear Least-Squares Tunable Parameters::
 * Nonlinear Least-Squares Initialization::
@@ -148,7 +149,7 @@ the TRS is solved again. An outline for the general trust region method
 used by GSL can now be given.
 
 @noindent
-Trust Region Algorithm
+@b{Trust Region Algorithm}
 @enumerate
 
 @item Initialize: given @math{x_0}, construct @math{m_0(\delta)}, @math{D_0} and @math{\Delta_0 > 0}
@@ -161,7 +162,7 @@ Trust Region Algorithm
 
 @item Solve TRS for trial step @math{\delta_k}
 
-@item Compute @math{\rho_k} and evaluate trial step
+@item Evaluate trial step by computing @math{\rho_k}
 
 @enumerate
 @item if step is accepted, set @math{x_{k+1} = x_k + \delta_k} and increase radius, @math{\Delta_{k+1} = \alpha \Delta_k}
@@ -182,49 +183,72 @@ region subproblem in 2(b), as well as different choices of scaling matrices
 the user has a lot of control to fine-tune the various steps of the
 algorithm for their specific problem.
 
-The Levenberg-Marquardt algorithm proceeds using the linearization,
+@noindent
+Note that the model parameters are denoted by @math{x} in this chapter
+since the non-linear least-squares algorithms are described
+geometrically (i.e. finding the minimum of a surface).  The
+independent variable of any data to be fitted is denoted by @math{t}.
+
+@node Nonlinear Least-Squares TRS Overview
+@section Solving the Trust Region Subproblem (TRS)
+
+@menu
+* Nonlinear Least-Squares TRS Levenberg-Marquardt::
+* Nonlinear Least-Squares TRS Dogleg::
+@end menu
+
+Below we describe the methods available for solving the trust region
+subproblem. In all algorithms below, the Hessian matrix @math{B_k}
+is approximated as @math{B_k \approx J_k^T J_k}, where
+@math{J_k = J(x_k)}.
+
+@node Nonlinear Least-Squares TRS Levenberg-Marquardt
+@subsection Levenberg-Marquardt
+
+There is a theorem which states that if @math{\delta_k} is a solution
+to the trust region subproblem stated above, then there exists
+@math{\mu_k \ge 0} such that
 @tex
 \beforedisplay
 $$
-|| f(x+\delta) || \approx || f(x) + J \delta\, ||
+\left( B_k + \mu_k D_k^T D_k \right) \delta_k = -g_k
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-|| f(x+\delta) || ~=~ || f(x) + J \delta ||
+( B_k + \mu_k D_k^T D_k ) \delta_k = -g_k
 @end example
 
 @end ifinfo
-@noindent
-where @math{x} is the initial point, @math{\delta} is the proposed step
-and @math{J} is the
-Jacobian matrix @c{$J_{ij} = \partial f_i / \partial x_j$}
-@math{J_@{ij@} = d f_i / d x_j}.
-Various strategies are used to determine whether a proposed
-step @math{\delta} should be accepted during the iteration.
-These include requiring a decrease in the norm @math{||f||} on each
-step or using a trust region to avoid steps which fall outside the linear 
-regime.
+with @math{\mu_k (\Delta_k - ||D_k \delta_k||) = 0}. This
+forms the basis of the Levenberg-Marquardt algorithm, which controls
+the trust region size by adjusting the parameter @math{\mu_k}
+rather than the radius @math{\Delta_k} directly. For each radius
+@math{\Delta_k}, there is a unique parameter @math{\mu_k} which
+solves the TRS, and they have an inverse relationship, so that large values of
+@math{\mu_k} correspond to smaller trust regions, while small
+values of @math{\mu_k} correspond to larger trust regions.
 
 @noindent
-On each iteration, in order to calculate the step @math{\delta},
+With the approximation @math{B_k \approx J_k^T J_k}, on each iteration,
+in order to calculate the step @math{\delta_k},
 the following linear least squares problem is solved:
 @tex
 \beforedisplay
 $$
 \left[
 \matrix{
-J \cr
-\sqrt{\mu} D
+J_k \cr
+\sqrt{\mu_k} D_k
 }
 \right]
-\delta =
+\delta_k =
 -
 \left[
 \matrix{
-f \cr
+f_k \cr
 0
 }
 \right]
@@ -234,41 +258,18 @@ $$
 @ifinfo
 
 @example
-[J; sqrt(mu) D] \delta = - [f; 0]
+[J_k; sqrt(mu_k) D_k] \delta_k = - [f_k; 0]
 @end example
 
 @end ifinfo
 @noindent
-where @math{\mu} is known as the Levenberg-Marquardt
-parameter, and @math{D} is a diagonal matrix chosen
-to represent the relative scaling of the parameters.
-After @math{\delta} is computed from the above linear
-system, the proposed step @math{x + \delta} is tested
-to see if it improves the solution (for example if it
-results in a reduced cost @math{||f(x+\delta)||^2 < ||f(x)||^2}).
-If the step @math{\delta} is accepted as an improvement
-to the solution, then @math{\mu} is decreased by
-some factor and the iteration continues. If @math{\delta}
-does not improve the solution, then @math{\mu} is increased
-by some factor and the process is repeated until an
-acceptable step @math{\delta} is found.
+If the step @math{\delta_k} is accepted, then
+@math{\mu_k} is decreased on the next iteration in order
+to take a larger step, otherwise it is increased to take
+a smaller step.
 
-@noindent
-The manner in which @math{\mu} is updated and also the
-choice of the damping matrix @math{D} can have significant
-effects on the convergence speed of the method, and these
-choices are usually highly problem specific. The library
-provides the user with reasonable default choices, but the
-user may select other choices to improve the convergence
-of their particular problem. See
-@ref{Nonlinear Least-Squares Tunable Parameters}
-for further information.
-
-@noindent
-Note that the model parameters are denoted by @math{x} in this chapter
-since the non-linear least-squares algorithms are described
-geometrically (i.e. finding the minimum of a surface).  The
-independent variable of any data to be fitted is denoted by @math{t}.
+@node Nonlinear Least-Squares TRS Dogleg
+@subsection Dogleg
 
 @node Nonlinear Least-Squares Weighted Overview
 @section Weighted Nonlinear Least-Squares
