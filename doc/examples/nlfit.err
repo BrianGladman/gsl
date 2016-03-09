@@ -15,7 +15,7 @@ iter 13: A = 5.1737, lambda = 0.1110, b = 1.0528, cond(J) = 90.6803, |f(x)| = 5.
 iter 14: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) = 90.6791, |f(x)| = 5.4542
 iter 15: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) = 90.6790, |f(x)| = 5.4542
 iter 16: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) = 90.6790, |f(x)| = 5.4542
-summary from method 'trust-region'
+summary from method 'trust-region/levenberg-marquardt'
 number of iterations: 16
 function evaluations: 23
 Jacobian evaluations: 17

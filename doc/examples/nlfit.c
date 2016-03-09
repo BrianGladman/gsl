@@ -161,8 +161,9 @@ main (void)
 #define FIT(i) gsl_vector_get(w->x, i)
 #define ERR(i) sqrt(gsl_matrix_get(covar,i,i))
 
-  fprintf(stderr, "summary from method '%s'\n",
-          gsl_multifit_nlinear_name(w));
+  fprintf(stderr, "summary from method '%s/%s'\n",
+          gsl_multifit_nlinear_name(w),
+          gsl_multifit_nlinear_trs_name(w));
   fprintf(stderr, "number of iterations: %zu\n",
           gsl_multifit_nlinear_niter(w));
   fprintf(stderr, "function evaluations: %zu\n", fdf.nevalf);

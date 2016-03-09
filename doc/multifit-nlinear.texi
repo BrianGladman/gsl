@@ -195,6 +195,8 @@ independent variable of any data to be fitted is denoted by @math{t}.
 @menu
 * Nonlinear Least-Squares TRS Levenberg-Marquardt::
 * Nonlinear Least-Squares TRS Dogleg::
+* Nonlinear Least-Squares TRS Double Dogleg::
+* Nonlinear Least-Squares TRS Steihaug-Toint Conjugate Gradient::
 @end menu
 
 Below we describe the methods available for solving the trust region
@@ -270,6 +272,61 @@ a smaller step.
 
 @node Nonlinear Least-Squares TRS Dogleg
 @subsection Dogleg
+
+This is Powell's dogleg method, which attemps to use
+the Gauss-Newton step if it is located inside the trust
+region. The Gauss-Newton step is given by
+@tex
+\beforedisplay
+$$
+J_k \delta_{gn} = -f_k
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+J_k \delta_{gn} = -f_k
+@end example
+
+@end ifinfo
+If the Gauss-Newton step is outside, the method
+calculates the Cauchy point, which is located along the
+gradient direction. If the Cauchy point is also outside
+the trust region, the method assumes that it is still far
+from the minimum and so proceeds along the gradient
+direction, truncating the step at the trust region
+boundary. If the Cauchy point is inside the trust region,
+with the Gauss-Newton point outside, the method
+uses a dogleg step, which is a linear combination of the
+gradient direction and the Gauss-Newton direction, stopping at the trust
+region boundary.
+
+@node Nonlinear Least-Squares TRS Double Dogleg
+@subsection Double Dogleg
+
+This method is an improvement over the classical dogleg
+algorithm, which attempts to include information about
+the Gauss-Newton step while the iteration is still far from
+the minimum. When the Cauchy point is inside the trust region
+and the Gauss-Newton point is outside, the method computes
+a scaled Gauss-Newton point and then takes a dogleg step
+between the Cauchy point and the scaled Gauss-Newton point.
+The scaling is calculated to ensure that the reduction
+in the model @math{m_k} is about the same as the reduction
+provided by the Cauchy point.
+
+@node Nonlinear Least-Squares TRS Steihaug-Toint Conjugate Gradient
+@subsection Steihaug-Toint Conjugate Gradient
+
+One difficulty of the dogleg methods is calculating the
+Gauss-Newton step when the Jacobian matrix is singular. The
+Steihaug-Toint method also computes a generalized dogleg
+step, but avoids solving for the Gauss-Newton step directly,
+instead using an iterative conjugate gradient algorithm. This
+method performs well at points where the Jacobian is singular,
+and is also suitable for large-scale problems where factoring
+the Jacobian matrix could be prohibitively expensive.
 
 @node Nonlinear Least-Squares Weighted Overview
 @section Weighted Nonlinear Least-Squares
@@ -1657,7 +1714,7 @@ iter 13: A = 5.1737, lambda = 0.1110, b = 1.0528, cond(J) = 90.6803, |f(x)| = 5.
 iter 14: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) = 90.6791, |f(x)| = 5.4542
 iter 15: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) = 90.6790, |f(x)| = 5.4542
 iter 16: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) = 90.6790, |f(x)| = 5.4542
-summary from method 'lm'
+summary from method 'trust-region/levenberg-marquardt'
 number of iterations: 16
 function evaluations: 23
 Jacobian evaluations: 17
