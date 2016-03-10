@@ -53,7 +53,7 @@ typedef struct
 
 static void *nielsen_alloc(void);
 static void nielsen_free(void *vstate);
-static int nielsen_init(const gsl_matrix * J, const gsl_vector * x,
+static int nielsen_init(const gsl_matrix * J, const gsl_vector * diag,
                         double * mu, void * vstate);
 static int nielsen_accept(const double rho, double * mu, void * vstate);
 static int nielsen_reject(double * mu, void * vstate);
@@ -82,7 +82,7 @@ nielsen_free(void *vstate)
 }
 
 static int
-nielsen_init(const gsl_matrix * J, const gsl_vector * x,
+nielsen_init(const gsl_matrix * J, const gsl_vector * diag,
              double * mu, void * vstate)
 {
   nielsen_state_t *state = (nielsen_state_t *) vstate;
@@ -90,16 +90,15 @@ nielsen_init(const gsl_matrix * J, const gsl_vector * x,
   size_t j;
   double max = -1.0;
 
-  (void)x;
-
   state->nu = 2;
 
-  /* set mu = mu0 * max(diag(J^T J)) */
+  /* set mu = mu0 * max(diag(J~^T J~)), with J~ = J D^{-1} */
 
   for (j = 0; j < p; ++j)
     {
       gsl_vector_const_view v = gsl_matrix_const_column(J, j);
-      double norm = gsl_blas_dnrm2(&v.vector);
+      double dj = gsl_vector_get(diag, j);
+      double norm = gsl_blas_dnrm2(&v.vector) / dj;
       max = GSL_MAX(max, norm);
     }
 

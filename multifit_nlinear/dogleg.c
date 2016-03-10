@@ -70,8 +70,8 @@ static int dogleg_step(const void * vtrust_state, const double delta,
                        gsl_vector * dx, void * vstate);
 static int dogleg_double_step(const void * vtrust_state, const double delta,
                               gsl_vector * dx, void * vstate);
-static int dogleg_rcond(const gsl_matrix *J, double *rcond, void *vstate);
-static double dogleg_avratio(void *vstate);
+static int dogleg_preduction(const void * vtrust_state, const gsl_vector * dx,
+                             double * pred, void * vstate);
 static double dogleg_beta(const double t, const double delta, dogleg_state_t *state);
 
 static void *
@@ -351,17 +351,16 @@ dogleg_double_step(const void * vtrust_state, const double delta,
 }
 
 static int
-dogleg_rcond(const gsl_matrix *J, double *rcond, void *vstate)
+dogleg_preduction(const void * vtrust_state, const gsl_vector * dx,
+                  double * pred, void * vstate)
 {
-  *rcond = 0.0; /* XXX */
+  const gsl_multifit_nlinear_trust_state *trust_state =
+    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
+  dogleg_state_t *state = (dogleg_state_t *) vstate;
+
+  *pred = quadratic_preduction(trust_state->f, trust_state->J, dx, state->workn);
 
   return GSL_SUCCESS;
-}
-
-static double
-dogleg_avratio(void *vstate)
-{
-  return 0.0;
 }
 
 /*
@@ -421,8 +420,7 @@ static const gsl_multifit_nlinear_trs dogleg_type =
   dogleg_init,
   dogleg_preloop,
   dogleg_step,
-  NULL,
-  dogleg_rcond,
+  dogleg_preduction,
   dogleg_free
 };
 
@@ -435,8 +433,7 @@ static const gsl_multifit_nlinear_trs ddogleg_type =
   dogleg_init,
   dogleg_preloop,
   dogleg_double_step,
-  NULL,
-  dogleg_rcond,
+  dogleg_preduction,
   dogleg_free
 };
 

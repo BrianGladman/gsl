@@ -65,10 +65,10 @@ static int cgst_init(const void *vtrust_state, void *vstate);
 static int cgst_preloop(const void * vtrust_state, void * vstate);
 static int cgst_step(const void * vtrust_state, const double delta,
                      gsl_vector * dx, void * vstate);
-static int cgst_rcond(const gsl_matrix *J, double *rcond, void *vstate);
-static double cgst_avratio(void *vstate);
+static int cgst_preduction(const void * vtrust_state, const gsl_vector * dx,
+                           double * pred, void * vstate);
 static double cgst_calc_tau(const gsl_vector * p, const gsl_vector * d,
-                            const double delta, cgst_state_t * state);
+                            const double delta);
 
 static void *
 cgst_alloc (const void * params, const size_t n, const size_t p)
@@ -257,7 +257,7 @@ cgst_step(const void * vtrust_state, const double delta,
       /* Step 2 of [1], section 2 */
       if (norm_Jd == 0.0)
         {
-          double tau = cgst_calc_tau(state->z, state->d, delta, state);
+          double tau = cgst_calc_tau(state->z, state->d, delta);
 
           /* dx = z_i + tau*d_i */
           scaled_addition(1.0, state->z, tau, state->d, dx);
@@ -276,7 +276,7 @@ cgst_step(const void * vtrust_state, const double delta,
       u = gsl_blas_dnrm2(state->workp);
       if (u >= delta)
         {
-          double tau = cgst_calc_tau(state->z, state->d, delta, state);
+          double tau = cgst_calc_tau(state->z, state->d, delta);
 
           /* dx = z_i + tau*d_i */
           scaled_addition(1.0, state->z, tau, state->d, dx);
@@ -319,21 +319,16 @@ cgst_step(const void * vtrust_state, const double delta,
 }
 
 static int
-cgst_rcond(const gsl_matrix *J, double *rcond, void *vstate)
+cgst_preduction(const void * vtrust_state, const gsl_vector * dx,
+                double * pred, void * vstate)
 {
-  int status;
+  const gsl_multifit_nlinear_trust_state *trust_state =
+    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   cgst_state_t *state = (cgst_state_t *) vstate;
 
-  *rcond = 0.0; /* XXX */
+  *pred = quadratic_preduction(trust_state->f, trust_state->J, dx, state->workn);
 
   return GSL_SUCCESS;
-}
-
-static double
-cgst_avratio(void *vstate)
-{
-  cgst_state_t *state = (cgst_state_t *) vstate;
-  return 0.0;
 }
 
 /*
@@ -345,7 +340,7 @@ cgst_calc_tau()
 
 static double
 cgst_calc_tau(const gsl_vector * p, const gsl_vector * d,
-              const double delta, cgst_state_t * state)
+              const double delta)
 {
   double norm_p, norm_d, u;
   double t1, t2, tau;
@@ -370,8 +365,7 @@ static const gsl_multifit_nlinear_trs cgst_type =
   cgst_init,
   cgst_preloop,
   cgst_step,
-  NULL,
-  cgst_rcond,
+  cgst_preduction,
   cgst_free
 };
 

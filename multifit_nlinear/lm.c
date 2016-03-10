@@ -26,7 +26,6 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_permutation.h>
-#include <gsl/gsl_eigen.h>
 
 /*
  * This module contains an implementation of the Levenberg-Marquardt
@@ -50,13 +49,8 @@ typedef struct
   gsl_vector *acc;           /* geodesic acceleration, size p */
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
-  double mu;                 /* LM parameter mu */
 
-  void *update_state;        /* workspace for parameter update method */
   void *solver_state;        /* workspace for linear solver */
-
-  gsl_matrix *JTJ;           /* J^T J for rcond calculation */
-  gsl_eigen_symm_workspace *eigen_p;
 
   double avratio;            /* current |a| / |v| */
 
@@ -72,10 +66,8 @@ static int lm_init(const void *vtrust_state, void *vstate);
 static int lm_preloop(const void * vtrust_state, void * vstate);
 static int lm_step(const void * vtrust_state, const double delta,
                    gsl_vector * dx, void * vstate);
-static int lm_check_step(const void * vtrust_state, const gsl_vector * dx,
-                         const gsl_vector * f_trial, const double rho, void * vstate);
-static int lm_rcond(const gsl_matrix *J, double *rcond, void *vstate);
-static double lm_avratio(void *vstate);
+static int lm_preduction(const void * vtrust_state, const gsl_vector * dx,
+                         double * pred, void * vstate);
 
 static void *
 lm_alloc (const void * params, const size_t n, const size_t p)
@@ -119,28 +111,10 @@ lm_alloc (const void * params, const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for acc", GSL_ENOMEM);
     }
 
-  state->update_state = (mparams->update->alloc)();
-  if (state->update_state == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for update state", GSL_ENOMEM);
-    }
-
   state->solver_state = (mparams->solver->alloc)(n, p);
   if (state->solver_state == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for solver state", GSL_ENOMEM);
-    }
-
-  state->JTJ = gsl_matrix_alloc(p, p);
-  if (state->JTJ == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for JTJ", GSL_ENOMEM);
-    }
-
-  state->eigen_p = gsl_eigen_symm_alloc(p);
-  if (state->eigen_p == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for eigen workspace", GSL_ENOMEM);
     }
 
   state->n = n;
@@ -171,17 +145,8 @@ lm_free(void *vstate)
   if (state->acc)
     gsl_vector_free(state->acc);
 
-  if (state->update_state)
-    (params->update->free)(state->update_state);
-
   if (state->solver_state)
     (params->solver->free)(state->solver_state);
-
-  if (state->JTJ)
-    gsl_matrix_free(state->JTJ);
-
-  if (state->eigen_p)
-    gsl_eigen_symm_free(state->eigen_p);
 
   free(state);
 }
@@ -199,25 +164,15 @@ Return: success/error
 static int
 lm_init(const void *vtrust_state, void *vstate)
 {
-  int status;
-  const gsl_multifit_nlinear_trust_state *trust_state =
-    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   lm_state_t *state = (lm_state_t *) vstate;
-  const gsl_multifit_nlinear_parameters *params = trust_state->params;
-
-  /* initialize LM parameter mu */
-  status = (params->update->init)(trust_state->J,
-                                  trust_state->x,
-                                  &(state->mu),
-                                  state->update_state);
-  if (status)
-    return status;
 
   gsl_vector_set_zero(state->vel);
   gsl_vector_set_zero(state->acc);
 
   /* set default parameters */
   state->avratio = 0.0;
+
+  (void)vtrust_state;
 
   return GSL_SUCCESS;
 }
@@ -262,11 +217,12 @@ lm_step(const void * vtrust_state, const double delta,
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   lm_state_t *state = (lm_state_t *) vstate;
   const gsl_multifit_nlinear_parameters *params = trust_state->params;
-  const size_t p = state->p;
-  size_t i;
+  const double mu = *(trust_state->mu);
+
+  (void)delta;
 
   /* prepare the linear solver with current LM parameter mu */
-  status = (params->solver->presolve)(state->mu, state->solver_state);
+  status = (params->solver->presolve)(mu, state->solver_state);
   if (status)
     return status;
 
@@ -282,16 +238,13 @@ lm_step(const void * vtrust_state, const double delta,
   if (status)
     return status;
 
-  /* compute unscaled velocity, v := D^{-1} v */
-  for (i = 0; i < p; ++i)
-    {
-      double di = gsl_vector_get(trust_state->diag, i);
-      double *vi = gsl_vector_ptr(state->vel, i);
-      *vi /= di;
-    }
-
   if (params->accel)
     {
+      double anorm, vnorm;
+
+      /* compute unscaled velocity, v := D^{-1} v for fvv computation */
+      gsl_vector_div(state->vel, trust_state->diag);
+
       /* compute geodesic acceleration */
       status = gsl_multifit_nlinear_eval_fvv(params->h_fvv,
                                              trust_state->x,
@@ -307,7 +260,7 @@ lm_step(const void * vtrust_state, const double delta,
 
       /*
        * solve: [     J      ] a = - [ fvv ]
-       *        [ sqrt(mu)*D ]       [  0  ]
+       *        [ sqrt(mu)*I ]       [  0  ]
        */
       status = (params->solver->solve)(state->fvv,
                                        NULL,
@@ -316,135 +269,56 @@ lm_step(const void * vtrust_state, const double delta,
                                        state->solver_state);
       if (status)
         return status;
+
+      /* compute scaled velocity, v := D v for step computation below */
+      gsl_vector_mul(state->vel, trust_state->diag);
+
+      anorm = gsl_blas_dnrm2(state->acc);
+      vnorm = gsl_blas_dnrm2(state->vel);
+
+      /* store |a| / |v| */
+      *(trust_state->avratio) = anorm / vnorm;
     }
 
-  /* compute unscaled acceleration, a := D^{-1} a */
-  for (i = 0; i < p; ++i)
-    {
-      double di = gsl_vector_get(trust_state->diag, i);
-      double *ai = gsl_vector_ptr(state->acc, i);
-      *ai /= di;
-    }
-
-  /* compute (scaled) step dx_scaled = D*(v + 1/2 a) */
-  for (i = 0; i < p; ++i)
-    {
-      double vi = gsl_vector_get(state->vel, i);
-      double ai = gsl_vector_get(state->acc, i);
-      double di = gsl_vector_get(trust_state->diag, i);
-      double dxi = vi + 0.5 * ai;
-
-      gsl_vector_set(dx, i, dxi * di);
-    }
+  /* compute step dx = v + 1/2 a */
+  scaled_addition(1.0, state->vel, 0.5, state->acc, dx);
 
   return GSL_SUCCESS;
 }
 
 /*
-lm_check_step()
-  Test whether a new step should be accepted, and
-update mu parameter accordingly
-
-Inputs: vtrust_state - trust state
-        dx           - step vector, size p
-        f_trial      - proposed residual vector f(x + dx)
-        rho          - (output)
-        vstate       - workspace
-
-Return:
-GSL_SUCCESS to accept step
-GSL_FAILURE to reject step
-
-Notes:
-1) state->mu is updated according to whether step
-is accepted or rejected
+lm_preduction()
+  Compute predicted reduction using Eq 4.4 of More 1978
 */
 
 static int
-lm_check_step(const void * vtrust_state, const gsl_vector * dx,
-              const gsl_vector * f_trial, const double rho, void * vstate)
+lm_preduction(const void * vtrust_state, const gsl_vector * dx,
+              double * pred, void * vstate)
 {
-  int status;
   const gsl_multifit_nlinear_trust_state *trust_state =
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   lm_state_t *state = (lm_state_t *) vstate;
-  const gsl_multifit_nlinear_parameters *params = trust_state->params;
+  const gsl_vector *p = state->vel;
+  const double norm_Dp = gsl_blas_dnrm2(p);
+  const double normf = gsl_blas_dnrm2(trust_state->f);
+  const double mu = *(trust_state->mu);
+  double norm_Jp;
+  double u, v;
 
-  if (rho > 0.0)
-    status = GSL_SUCCESS;
-  else
-    status = GSL_FAILURE;
+  (void)dx;
 
-  /* if using geodesic acceleration, check that |a|/|v| < alpha */
-  if (params->accel)
-    {
-      double anorm = gsl_blas_dnrm2(state->acc);
-      double vnorm = gsl_blas_dnrm2(state->vel);
+  /* compute work = J*p */
+  gsl_blas_dgemv(CblasNoTrans, 1.0, trust_state->J, p, 0.0, state->workn);
 
-      /* store |a| / |v| */
-      state->avratio = anorm / vnorm;
+  /* compute ||J*p|| */
+  norm_Jp = gsl_blas_dnrm2(state->workn);
 
-      /* reject step if acceleration is too large compared to velocity */
-      if (state->avratio > params->avmax)
-        status = GSL_FAILURE;
-    }
+  u = norm_Jp / normf;
+  v = norm_Dp / normf;
 
-  /* update state->mu */
-  if (status == GSL_SUCCESS)
-    {
-      /* step accepted, decrease mu */
-      int s = (params->update->accept)(rho, &(state->mu), state->update_state);
-      if (s)
-        return s;
-    }
-  else
-    {
-      /* step rejected, increase mu */
-      int s = (params->update->reject)(&(state->mu), state->update_state);
-      if (s)
-        return s;
-    }
-
-  return status;
-}
-
-static int
-lm_rcond(const gsl_matrix *J, double *rcond, void *vstate)
-{
-  int status;
-  lm_state_t *state = (lm_state_t *) vstate;
-  gsl_vector *eval = state->workp;
-  double eval_min, eval_max;
-
-  /* compute J^T J */
-  gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, J, 0.0, state->JTJ);
-
-  /* compute eigenvalues of J^T J */
-  status = gsl_eigen_symm(state->JTJ, eval, state->eigen_p);
-  if (status)
-    return status;
-
-  gsl_vector_minmax(eval, &eval_min, &eval_max);
-
-  if (eval_max > 0.0 && eval_min > 0.0)
-    {
-      *rcond = sqrt(eval_min / eval_max);
-    }
-  else
-    {
-      /* compute eigenvalues are not accurate; possibly due
-       * to rounding errors in forming J^T J */
-      *rcond = 0.0;
-    }
+  *pred = u * u + 2.0 * mu * v * v;
 
   return GSL_SUCCESS;
-}
-
-static double
-lm_avratio(void *vstate)
-{
-  lm_state_t *state = (lm_state_t *) vstate;
-  return state->avratio;
 }
 
 static const gsl_multifit_nlinear_trs lm_type =
@@ -454,8 +328,7 @@ static const gsl_multifit_nlinear_trs lm_type =
   lm_init,
   lm_preloop,
   lm_step,
-  lm_check_step,
-  lm_rcond,
+  lm_preduction,
   lm_free
 };
 

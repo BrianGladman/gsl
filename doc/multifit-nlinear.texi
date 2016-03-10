@@ -286,7 +286,7 @@ $$
 @ifinfo
 
 @example
-J_k \delta_{gn} = -f_k
+J_k \delta_gn = -f_k
 @end example
 
 @end ifinfo

@@ -33,10 +33,12 @@
 #include "test_fdf.c"
 
 static const gsl_multifit_nlinear_trs **nlinear_trs[] = {
+#if 1
   &gsl_multifit_nlinear_trs_lm,
   &gsl_multifit_nlinear_trs_dogleg,
   &gsl_multifit_nlinear_trs_ddogleg,
   &gsl_multifit_nlinear_trs_cgst,
+#endif
 
   NULL
 };
@@ -78,7 +80,7 @@ main (void)
       for (fdtype = GSL_MULTIFIT_NLINEAR_FWDIFF;
            fdtype <= GSL_MULTIFIT_NLINEAR_CTRDIFF; ++fdtype)
         {
-          for (accel = 0; accel <= 0; ++accel)
+          for (accel = 0; accel <= 1; ++accel)
             {
 #if 0
               test_proc(*trs, gsl_multifit_nlinear_scale_levenberg,

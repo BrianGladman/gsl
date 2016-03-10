@@ -17,30 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-static double scaled_norm(const gsl_vector *D, const gsl_vector *a);
 static void scaled_addition (const double alpha, const gsl_vector * x,
                              const double beta, const gsl_vector * y,
                              gsl_vector * z);
-
-/* compute || diag(D) a || */
-static double
-scaled_norm(const gsl_vector *D, const gsl_vector *a)
-{
-  const size_t n = a->size;
-  double e2 = 0.0;
-  size_t i;
-
-  for (i = 0; i < n; ++i)
-    {
-      double Di = gsl_vector_get(D, i);
-      double ai = gsl_vector_get(a, i);
-      double u = Di * ai;
-
-      e2 += u * u;
-    }
-
-  return sqrt (e2);
-}
+static double quadratic_preduction(const gsl_vector *f, const gsl_matrix * J,
+                                   const gsl_vector * dx, gsl_vector * work);
 
 /* compute z = alpha*x + beta*y */
 static void
@@ -56,4 +37,54 @@ scaled_addition (const double alpha, const gsl_vector * x,
       double yi = gsl_vector_get (y, i);
       gsl_vector_set (z, i, alpha * xi + beta * yi);
     }
+}
+
+/*
+quadratic_preduction()
+  Calculate predicted reduction based on standard
+quadratic model:
+
+m_k(dx) = Phi(x_k) + dx' g + 1/2 dx' B_k dx
+
+predicted_reduction = m_k(0) - m_k(dx)
+                    = -2 g^T dx / ||f||^2 - ( ||J*dx|| / ||f|| )^2
+                    = -2 fhat . beta - ||beta||^2
+
+where: beta = J*dx / ||f||
+
+Inputs: f     - f(x), size n
+        J     - Jacobian J(x), n-by-p
+        dx    - proposed step, size p
+        work  - workspace, size n
+
+Return: predicted reduction
+*/
+
+static double
+quadratic_preduction(const gsl_vector * f, const gsl_matrix * J,
+                     const gsl_vector * dx, gsl_vector * work)
+{
+  const size_t n = f->size;
+  const double normf = gsl_blas_dnrm2(f);
+  double pred_reduction;
+  double norm_beta; /* ||J*dx|| / ||f|| */
+  size_t i;
+
+  /* compute beta = J*dx / ||f|| */
+  gsl_blas_dgemv(CblasNoTrans, 1.0 / normf, J, dx, 0.0, work);
+  norm_beta = gsl_blas_dnrm2(work);
+
+  /* initialize to ( ||J*dx|| / ||f|| )^2 */
+  pred_reduction = -norm_beta * norm_beta;
+
+  /* subtract 2*fhat.beta */
+  for (i = 0; i < n; ++i)
+    {
+      double fi = gsl_vector_get(f, i);
+      double betai = gsl_vector_get(work, i);
+
+      pred_reduction -= 2.0 * (fi / normf) * betai;
+    }
+
+  return pred_reduction;
 }

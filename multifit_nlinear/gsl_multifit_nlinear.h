@@ -72,9 +72,8 @@ typedef struct
   int (*preloop) (const void * vtrust_state, void * vstate);
   int (*step) (const void * vtrust_state, const double delta,
                gsl_vector * dx, void * vstate);
-  int (*check_step) (const void * vtrust_state, const gsl_vector * dx,
-                     const gsl_vector * f_trial, const double rho, void * vstate);
-  int (*rcond) (const gsl_matrix * J, double * rcond, void * vstate);
+  int (*preduction) (const void * vtrust_state, const gsl_vector * dx,
+                     double * pred, void * vstate);
   void (*free) (void * vstate);
 } gsl_multifit_nlinear_trs;
 
@@ -83,7 +82,7 @@ typedef struct
 {
   const char *name;
   void * (*alloc) (void);
-  int (*init) (const gsl_matrix * J, const gsl_vector * x,
+  int (*init) (const gsl_matrix * J, const gsl_vector * diag,
                double * mu, void * vstate);
   int (*accept) (const double rho, double * mu, void * vstate);
   int (*reject) (double * mu, void * vstate);
@@ -150,8 +149,10 @@ typedef struct
   const gsl_matrix * J;             /* Jacobian J(x) */
   const gsl_vector * diag;          /* scaling matrix D */
   const gsl_vector * sqrt_wts;      /* sqrt(diag(W)) or NULL for unweighted */
+  const double *mu;                 /* LM parameter */
   const gsl_multifit_nlinear_parameters * params;
   gsl_multifit_nlinear_fdf * fdf;
+  double *avratio;                  /* |a| / |v| */
 } gsl_multifit_nlinear_trust_state;
 
 typedef struct
