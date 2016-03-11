@@ -470,9 +470,10 @@ yvv~ = sqrt(W) yvv
 
 Inputs: h    - step size for finite difference, if needed
         x    - model parameters, size p
-        v    - geodesic velocity vector, size p
+        v    - unscaled geodesic velocity vector, size p
         f    - residual vector f(x), size n
-        J    - Jacobian matrix J(x), n-by-p
+        J    - scaled Jacobian matrix J(x) D^{-1}, n-by-p
+        diag - diag(D) scaling matrix
         swts - weight matrix sqrt(W) = sqrt(diag(w1,w2,...,wn))
                set to NULL for unweighted fit
         fdf  - callback function
@@ -487,6 +488,7 @@ gsl_multifit_nlinear_eval_fvv(const double h,
                               const gsl_vector *v,
                               const gsl_vector *f,
                               const gsl_matrix *J,
+                              const gsl_vector *diag,
                               const gsl_vector *swts,
                               gsl_multifit_nlinear_fdf *fdf,
                               gsl_vector *yvv, gsl_vector *work)
@@ -502,7 +504,8 @@ gsl_multifit_nlinear_eval_fvv(const double h,
   else
     {
       /* use finite difference approximation */
-      status = gsl_multifit_nlinear_fdfvv(h, x, v, f, J, swts, fdf, yvv, work);
+      status = gsl_multifit_nlinear_fdfvv(h, x, v, f, J, diag,
+                                          swts, fdf, yvv, work);
     }
 
   /* yvv <- sqrt(W) yvv */

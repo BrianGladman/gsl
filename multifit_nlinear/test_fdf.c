@@ -91,6 +91,7 @@ static void test_scale_x0(gsl_vector *x0, const double scale);
  * cgst       brown1
  * dogleg     thurbera
  * dogleg     rat43a
+ * all        boxboda
  */
 
 static test_fdf_problem *test_problems[] = {
@@ -101,7 +102,6 @@ static test_fdf_problem *test_problems[] = {
    * IMM Department of Mathematical Modeling, Tech. Report
    * IMM-REP-2000-17, 2000.
    */
-#if 0/*XXX*/
   &lin1_problem,       /* 1 */
   &lin2_problem,       /* 2 */
   &lin3_problem,       /* 3 */
@@ -122,7 +122,6 @@ static test_fdf_problem *test_problems[] = {
   &osborne_problem,    /* 17 */
   &exp1_problem,       /* 18 */
   &meyerscal_problem,  /* 20 */
-#endif
 
   &powell2_problem,
 
@@ -164,7 +163,6 @@ static test_fdf_problem *test_problems[] = {
   &lin2_problem,         /* 33 */
   &lin3_problem,         /* 34 */
 
-#if 0/*XXX*/
   /* NIST test cases */
   &kirby2a_problem,
   &kirby2b_problem,
@@ -174,7 +172,7 @@ static test_fdf_problem *test_problems[] = {
   &ensob_problem,
   /*&thurbera_problem,*/
   &thurberb_problem,
-  /*FIXME: &boxboda_problem, */
+  /*&boxboda_problem,*/
   &boxbodb_problem,
   &rat42a_problem,
   &rat42b_problem,
@@ -182,7 +180,6 @@ static test_fdf_problem *test_problems[] = {
   &eckerleb_problem,
   /*&rat43a_problem,*/
   &rat43b_problem,
-#endif
 
   NULL
 };
@@ -212,8 +209,6 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
                1.0e3 * epsrel, 1.0, problem, NULL);
 
       problem->fdf->df = fdf.df;
-
-      continue;/*XXX*/
 
       if (params->accel == 1 && problem->fdf->fvv != NULL)
         {

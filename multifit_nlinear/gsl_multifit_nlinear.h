@@ -247,6 +247,7 @@ gsl_multifit_nlinear_eval_fvv(const double h,
                               const gsl_vector *v,
                               const gsl_vector *f,
                               const gsl_matrix *J,
+                              const gsl_vector *diag,
                               const gsl_vector *swts,
                               gsl_multifit_nlinear_fdf *fdf,
                               gsl_vector *yvv, gsl_vector *work);
@@ -273,7 +274,7 @@ gsl_multifit_nlinear_df(const double h, const gsl_multifit_nlinear_fdtype fdtype
 int
 gsl_multifit_nlinear_fdfvv(const double h, const gsl_vector *x, const gsl_vector *v,
                            const gsl_vector *f, const gsl_matrix *J,
-                           const gsl_vector *swts,
+                           const gsl_vector *diag, const gsl_vector *swts,
                            gsl_multifit_nlinear_fdf *fdf,
                            gsl_vector *fvv, gsl_vector *work);
 
