@@ -1623,6 +1623,7 @@ squares fitting capabilities.
 @menu
 * Nonlinear Least-Squares Exponential Fit Example::
 * Nonlinear Least-Squares Geodesic Acceleration Example::
+* Nonlinear Least-Squares Comparison Example::
 @end menu
 
 @node Nonlinear Least-Squares Exponential Fit Example
@@ -1918,6 +1919,74 @@ The program is given below.
 
 @example
 @verbatiminclude examples/nlfit2.c
+@end example
+
+@node Nonlinear Least-Squares Comparison Example
+@subsection Comparing TRS Methods Example
+
+The following program compares all available nonlinear least squares
+trust-region subproblem (TRS) methods on the Branin function, a common
+optimization test problem. The cost function is given by
+@tex
+\beforedisplay
+$$
+\eqalign{
+\Phi(x) &= {1 \over 2} (f_1^2 + f_2^2) \cr
+f_1 &= x_2 + a_1 x_1^2 + a_2 x_1 + a_3 \cr
+f_2 &= \sqrt{a_4} \sqrt{1 + (1 - a_5) \cos{x_1}}
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+\Phi(x) &= 1/2 (f_1^2 + f_2^2)
+f_1 &= x_2 + a_1 x_1^2 + a_2 x_1 + a_3
+f_2 &= sqrt(a_4) sqrt(1 + (1 - a_5) cos(x_1))
+@end example
+
+@end ifinfo
+with @math{a_1 = -{5.1 \over 4 \pi^2}, a_2 = {5 \over \pi}, a_3 = -6, a_4 = 10, a_5 = {1 \over 8\pi}}.
+There are three minima of this function in the range
+@math{(x_1,x_2) \in [-5,15] \times [-5,15]}. The program
+below uses the starting point @math{(x_1,x_2) = (6,14.5)}
+and calculates the solution with all available nonlinear
+least squares TRS methods. The program output is shown below.
+
+@smallexample
+Method               NITER  NFEV   NJEV   Initial Cost  Final cost   Final cond(J) Final x        
+levenberg-marquardt  20     27     21     1.9874e+02    3.9789e-01   1.4844e+08    (-3.14e+00, 1.23e+01)
+levenberg-marquardt  27     36     28     1.9874e+02    3.9789e-01   3.4719e+07    (3.14e+00, 2.27e+00)
+dogleg               23     64     23     1.9874e+02    3.9789e-01   inf           (3.14e+00, 2.28e+00)
+double-dogleg        24     69     24     1.9874e+02    3.9789e-01   3.1929e+07    (3.14e+00, 2.27e+00)
+steihaug-toint       34     86     32     1.9874e+02    3.9789e-01   8.8667e+02    (3.14e+00, 2.28e+00)
+@end smallexample
+
+@noindent
+The first row of output above corresponds to standard Levenberg-Marquardt, while
+the second row includes geodesic acceleration. We see that the standard LM method
+converges to the minimum at @math{(-\pi,12.275)} and also uses the least number
+of iterations and Jacobian evaluations. All other methods converge to the minimum
+@math{(\pi,2.275)} and among these the dogleg methods perform the best in terms
+of number of Jacobian evaluations. We see that @math{J} is fairly ill-conditioned
+at both minima, indicating that the QR solver is the best choice for this problem.
+Since there are only two parameters in this optimization problem, we can easily
+visualize the paths taken by each method, which are shown in the figure below.
+The figure shows contours of the cost function @math{\Phi(x_1,x_2)} which exhibits
+three global minima in the range @math{[-5,15] \times [-5,15]}. The paths taken
+by each solver are shown as colored lines.
+
+@iftex
+@sp 1
+@center @image{nlfit3,6in}
+@end iftex
+
+@noindent
+The program is given below.
+
+@example
+@verbatiminclude examples/nlfit3.c
 @end example
 
 @node Nonlinear Least-Squares References and Further Reading

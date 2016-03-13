@@ -17,9 +17,9 @@ unset table
 
 load 'lines2.cfg'
 set view map
-set key tc variable font "Arial-Bold"
+set key tc variable font "Arial-Bold" opaque
 set xrange [-1.2:1.2]
 
 plot 'cntrs.dat' us 1:2 w li lc rgb "black" ti "", \
-     'nlfit2.txt' index 1 us 1:2 w lp lw 4 ps 1.5 pt 7 lt 1 ti "Without geodesic acceleration", \
-     'nlfit2.txt' index 2 us 1:2 w lp lw 4 ps 1.5 pt 9 lt 2 ti "With geodesic acceleration"
+     'nlfit2.txt' index 1 us 1:2 w lp lw 4 ps 1.5 pt 7 lt 1 ti "LM", \
+     'nlfit2.txt' index 2 us 1:2 w lp lw 4 ps 1.5 pt 9 lt 3 ti "LM + geodesic acceleration"
