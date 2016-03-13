@@ -1,5 +1,8 @@
 * What is new in gsl-2.2:
 
+** improved precision in Bessel K0/K1 near x = 2
+   (Pavel Holoborodko, bug #47401)
+
 ** added support for compressed row storage sparse
    matrices (Alexis Tantet)
 

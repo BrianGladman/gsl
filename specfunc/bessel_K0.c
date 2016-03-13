@@ -1,6 +1,7 @@
 /* specfunc/bessel_K0.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 Gerard Jungman
+ * Copyright (C) 2016 Pavel Holoborodko
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,7 +143,7 @@ int gsl_sf_bessel_K0_scaled_e(const double x, gsl_sf_result * result)
     gsl_sf_result c;
     cheb_eval_e(&bk0_cs, 0.5*x*x-1.0, &c);
     stat_I0 = gsl_sf_bessel_I0_e(x, &I0);
-    result->val  = ex * ((-lx+M_LN2)*I0.val - 0.25 + c.val);
+    result->val  = ex * (-log(0.5*x)*I0.val - 0.25 + c.val);
     result->err  = ex * ((M_LN2+fabs(lx))*I0.err + c.err);
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_I0;
@@ -182,7 +183,7 @@ int gsl_sf_bessel_K0_e(const double x, gsl_sf_result * result)
     gsl_sf_result c;
     cheb_eval_e(&bk0_cs, 0.5*x*x-1.0, &c);
     stat_I0 = gsl_sf_bessel_I0_e(x, &I0);
-    result->val  = (-lx+M_LN2)*I0.val - 0.25 + c.val;
+    result->val  = (-log(0.5*x))*I0.val - 0.25 + c.val;
     result->err  = (fabs(lx) + M_LN2) * I0.err + c.err;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return stat_I0;
