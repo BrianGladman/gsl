@@ -33,13 +33,30 @@
 #include "test_fdf.c"
 
 static const gsl_multifit_nlinear_trs **nlinear_trs[] = {
-#if 0
+#if 1
   &gsl_multifit_nlinear_trs_lm,
-#elif 1
   &gsl_multifit_nlinear_trs_dogleg,
   &gsl_multifit_nlinear_trs_ddogleg,
   &gsl_multifit_nlinear_trs_cgst,
 #endif
+
+  NULL
+};
+
+static const gsl_multifit_nlinear_solver **nlinear_solvers[] = {
+#if 0
+  &gsl_multifit_nlinear_solver_normal,
+#endif
+  &gsl_multifit_nlinear_solver_qr,
+  &gsl_multifit_nlinear_solver_svd,
+
+  NULL
+};
+
+/* skip Marquardt scaling since it won't pass */
+static const gsl_multifit_nlinear_scale **nlinear_scales[] = {
+  &gsl_multifit_nlinear_scale_levenberg,
+  &gsl_multifit_nlinear_scale_more,
 
   NULL
 };
@@ -66,46 +83,34 @@ int
 main (void)
 {
   const gsl_multifit_nlinear_trs **trs;
+  const gsl_multifit_nlinear_solver **solver;
+  const gsl_multifit_nlinear_scale **scale;
   int fdtype, accel;
   size_t i = 0;
 
   gsl_ieee_env_setup();
 
-  /* run testsuite over all parameter combinations;
-   * but skip Marquardt scaling since it won't pass */
+  /* run testsuite over all parameter combinations */
 
   for (trs = nlinear_trs[i]; trs != NULL; trs = nlinear_trs[++i])
     {
+      size_t j = 0;
       fprintf(stderr, "trs = %s\n", (*trs)->name);
 
-      for (fdtype = GSL_MULTIFIT_NLINEAR_FWDIFF;
-           fdtype <= GSL_MULTIFIT_NLINEAR_CTRDIFF; ++fdtype)
+      for (solver = nlinear_solvers[j]; solver != NULL; solver = nlinear_solvers[++j])
         {
-          for (accel = 0; accel <= 1; ++accel)
+          size_t k = 0;
+          fprintf(stderr, "solver = %s\n", (*solver)->name);
+          for (scale = nlinear_scales[k]; scale != NULL; scale = nlinear_scales[++k])
             {
-#if 0
-              test_proc(*trs, gsl_multifit_nlinear_scale_levenberg,
-                        gsl_multifit_nlinear_solver_normal,
-                        fdtype, accel);
-#endif
-
-#if 0
-              test_proc(*trs, gsl_multifit_nlinear_scale_more,
-                        gsl_multifit_nlinear_solver_normal,
-                        fdtype, accel);
-#endif
-
-#if 1
-              test_proc(*trs, gsl_multifit_nlinear_scale_levenberg,
-                        gsl_multifit_nlinear_solver_qr,
-                        fdtype, accel);
-#endif
-
-#if 1
-              test_proc(*trs, gsl_multifit_nlinear_scale_more,
-                        gsl_multifit_nlinear_solver_qr,
-                        fdtype, accel);
-#endif
+              for (fdtype = GSL_MULTIFIT_NLINEAR_FWDIFF;
+                   fdtype <= GSL_MULTIFIT_NLINEAR_CTRDIFF; ++fdtype)
+                {
+                  for (accel = 0; accel <= 1; ++accel)
+                    {
+                      test_proc(*trs, *scale, *solver, fdtype, accel);
+                    }
+                }
             }
         }
     }

@@ -265,7 +265,7 @@ test_fdf(const gsl_multifit_nlinear_type * T,
   gsl_multifit_nlinear_fdf *fdf = problem->fdf;
   const size_t n = fdf->n;
   const size_t p = fdf->p;
-  const size_t max_iter = 1500;
+  const size_t max_iter = 2500;
   gsl_vector *x0 = gsl_vector_alloc(p);
   gsl_vector_view x0v = gsl_vector_view_array(problem->x0, p);
   gsl_multifit_nlinear_workspace *w =

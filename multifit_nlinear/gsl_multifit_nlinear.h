@@ -299,6 +299,7 @@ GSL_VAR const gsl_multifit_nlinear_scale * gsl_multifit_nlinear_scale_more;
 /* linear solvers */
 GSL_VAR const gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_normal;
 GSL_VAR const gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_qr;
+GSL_VAR const gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_svd;
 
 __END_DECLS
 
