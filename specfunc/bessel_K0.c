@@ -78,30 +78,36 @@ static cheb_series bk0_cs = {
   10
 };
 
-/* from SLATEC dbsk0e.f */
-static double ak0_data[17] = {
-  -.7643947903327941424E-1,
-  -.2235652605699819052E-1,
-  +.7734181154693858235E-3,
-  -.4281006688886099464E-4,
-  +.3081700173862974744E-5,
-  -.2639367222009664974E-6,
-  +.2563713036403469206E-7,
-  -.2742705549900201264E-8,
-  +.3169429658097499592E-9,
-  -.3902353286962184142E-10,
-  +.5068040698188575402E-11,
-  -.6889574741007870680E-12,
-  +.9744978497825917691E-13,
-  -.1427332841884548505E-13,
-  +.2156412571021463040E-14,
-  -.3349654255149562772E-15,
-  +.5335260216952911692E-16
+static double ak0_data[24] = {
+   -1.26623786709465010054e-01,
+   -4.49369057710236879694e-02,
+   +2.98149992004308094718e-03,
+   -3.03693649396187919971e-04,
+   +3.91085569307646836345e-05,
+   -5.86872422399215952130e-06,
+   +9.82873709937322008693e-07,
+   -1.78978645055651171083e-07,
+   +3.48332306845240956625e-08,
+   -7.15909210462546599338e-09,
+   +1.54019930048919494164e-09,
+   -3.44555485579194210447e-10,
+   +7.97356101783753035249e-11,
+   -1.90090968913069750269e-11,
+   +4.65295609304114801504e-12,
+   -1.16614287433470984283e-12,
+   +2.98554375218599103982e-13,
+   -7.79276979512315360449e-14,
+   +2.07027467168971951795e-14,
+   -5.58987860394057232281e-15,
+   +1.53202965950868210061e-15,
+   -4.25737536714227681839e-16,
+   +1.19840238503161452270e-16,
+   -3.41407346777640561583e-17
 };
 
 static cheb_series ak0_cs = {
   ak0_data,
-  16,
+  23,
   -1, 1,
   10
 };
@@ -134,14 +140,27 @@ static cheb_series ak02_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_bessel_K0_scaled_e(const double x, gsl_sf_result * result)
+/*
+gsl_sf_bessel_K0_scaled_e()
+  Compute scaled K0 Bessel function
+
+Notes:
+1) On [0,1], the Chebyshev expansion from SLATEC is used
+
+2) On [1,8], a new Chebyshev expansion from Pavel Holoborodko is used
+
+3) On [8,inf], another Chebyshev expansion from SLATEC is used
+*/
+
+int
+gsl_sf_bessel_K0_scaled_e(const double x, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
     DOMAIN_ERROR(result);
   }
-  else if(x <= 2.0) {
+  else if(x <= 1.0) {
     const double lx = log(x);
     const double ex = exp(x);
     int stat_I0;
@@ -157,7 +176,7 @@ int gsl_sf_bessel_K0_scaled_e(const double x, gsl_sf_result * result)
   else if(x <= 8.0) {
     const double sx = sqrt(x);
     gsl_sf_result c;
-    cheb_eval_e(&ak0_cs, (16.0/x-5.0)/3.0, &c);
+    cheb_eval_e(&ak0_cs, (16.0/x-9.0)/7.0, &c);
     result->val  = (1.25 + c.val) / sx;
     result->err  = c.err / sx;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
