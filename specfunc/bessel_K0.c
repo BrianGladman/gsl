@@ -23,6 +23,7 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_poly.h>
 #include <gsl/gsl_sf_exp.h>
 #include <gsl/gsl_sf_bessel.h>
 
@@ -33,51 +34,35 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* based on SLATEC bk0(), bk0e() */
-
-/* chebyshev expansions 
-
- series for bk0        on the interval  0.          to  4.00000d+00
-                                        with weighted error   3.57e-19
-                                         log weighted error  18.45
-                               significant figures required  17.99
-                                    decimal places required  18.97
-
- series for ak0        on the interval  1.25000d-01 to  5.00000d-01
-                                        with weighted error   5.34e-17
-                                         log weighted error  16.27
-                               significant figures required  14.92
-                                    decimal places required  16.89
-
- series for ak02       on the interval  0.          to  1.25000d-01
-                                        with weighted error   2.34e-17
-                                         log weighted error  16.63
-                               significant figures required  14.67
-                                    decimal places required  17.20
+/*
+ Minimax rational approximation for [0,1), peak relative error = 1.6*GSL_DBL_EPSILON.
+ Source: http://www.advanpix.com/?p=3812
 */
-
-/* from SLATEC dbesk0.f */
-static double bk0_data[11] = {
-  -.3532739323390276872E-1,
-  +.3442898999246284869E+0,
-  +.3597993651536150163E-1,
-  +.1264615411446925923E-2,
-  +.2286212103119451786E-4,
-  +.2534791079026149457E-6,
-  +.1904516377220208859E-8,
-  +.1034969525763362459E-10,
-  +.4259816142791082577E-13,
-  +.1374465435880750897E-15,
-  +.3570896528508373591E-18
+static double k0_poly[8] = {
+   1.1593151565841244842077226e-01,
+   2.7898287891460317300886539e-01,
+   2.5248929932161220559969776e-02,
+   8.4603509072136578707676406e-04,
+   1.4914719243067801775856150e-05,
+   1.6271068931224552553548933e-07,
+   1.2082660336282566759313543e-09,
+   6.6117104672254184399933971e-12
 };
 
-static cheb_series bk0_cs = {
-  bk0_data,
-  10,
-  -1, 1,
-  10
+static double i0_poly[7] = {
+   1.0000000000000000044974165e+00,
+   2.4999999999999822316775454e-01,
+   2.7777777777892149148858521e-02,
+   1.7361111083544590676709592e-03,
+   6.9444476047072424198677755e-05,
+   1.9288265756466775034067979e-06,
+   3.9908220583262192851839992e-08
 };
 
+/*
+ Chebyshev expansion for [1,8], peak relative error = 1.3*GSL_DBL_EPSILON.
+ Source: Pavel Holoborodko.
+*/
 static double ak0_data[24] = {
    -1.26623786709465010054e-01,
    -4.49369057710236879694e-02,
@@ -112,7 +97,10 @@ static cheb_series ak0_cs = {
   10
 };
 
-/* from SLATEC dbsk0e.f */
+/* 
+ Chebyshev expansion for [8,inf], peak relative error = 1.2*GSL_DBL_EPSILON. 
+ Source: SLATEC/dbsk0e.f
+*/
 static double ak02_data[14] = {
   -.1201869826307592240E-1,
   -.9174852691025695311E-2,
@@ -140,38 +128,21 @@ static cheb_series ak02_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-/*
-gsl_sf_bessel_K0_scaled_e()
-  Compute scaled K0 Bessel function
-
-Notes:
-1) On [0,1], the Chebyshev expansion from SLATEC is used
-
-2) On [1,8], a new Chebyshev expansion from Pavel Holoborodko is used
-
-3) On [8,inf], another Chebyshev expansion from SLATEC is used
-*/
-
-int
-gsl_sf_bessel_K0_scaled_e(const double x, gsl_sf_result * result)
+int gsl_sf_bessel_K0_scaled_e(const double x, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
   if(x <= 0.0) {
     DOMAIN_ERROR(result);
   }
-  else if(x <= 1.0) {
+  else if(x < 1.0) {
     const double lx = log(x);
     const double ex = exp(x);
-    int stat_I0;
-    gsl_sf_result I0;
-    gsl_sf_result c;
-    cheb_eval_e(&bk0_cs, 0.5*x*x-1.0, &c);
-    stat_I0 = gsl_sf_bessel_I0_e(x, &I0);
-    result->val  = ex * (-log(0.5*x)*I0.val - 0.25 + c.val);
-    result->err  = ex * ((M_LN2+fabs(lx))*I0.err + c.err);
+    const double x2 = x*x;
+    result->val  = ex * (gsl_poly_eval(k0_poly,8,x2)-lx*(1.0+0.25*x2*gsl_poly_eval(i0_poly,7,0.25*x2)));
+    result->err  = ex * (1.6+fabs(lx)*0.6) * GSL_DBL_EPSILON;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return stat_I0;
+    return GSL_SUCCESS;
   }
   else if(x <= 8.0) {
     const double sx = sqrt(x);
@@ -201,17 +172,13 @@ int gsl_sf_bessel_K0_e(const double x, gsl_sf_result * result)
   if(x <= 0.0) {
     DOMAIN_ERROR(result);
   }
-  else if(x <= 2.0) {
+  else if(x < 1.0) {
     const double lx = log(x);
-    int stat_I0;
-    gsl_sf_result I0;
-    gsl_sf_result c;
-    cheb_eval_e(&bk0_cs, 0.5*x*x-1.0, &c);
-    stat_I0 = gsl_sf_bessel_I0_e(x, &I0);
-    result->val  = (-log(0.5*x))*I0.val - 0.25 + c.val;
-    result->err  = (fabs(lx) + M_LN2) * I0.err + c.err;
+    const double x2 = x*x;
+    result->val  = gsl_poly_eval(k0_poly,8,x2)-lx*(1.0+0.25*x2*gsl_poly_eval(i0_poly,7,0.25*x2));
+    result->err  = (1.6+fabs(lx)*0.6) * GSL_DBL_EPSILON;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return stat_I0;
+    return GSL_SUCCESS;
   }
   else {
     gsl_sf_result K0_scaled;
