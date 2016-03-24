@@ -35,7 +35,7 @@
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 /*
- Minimax rational approximation for [0,1), peak relative error = 1.84*GSL_DBL_EPSILON.
+ Minimax rational approximation for [0,1), peak relative error = 2.04*GSL_DBL_EPSILON.
  Source: http://www.advanpix.com/?p=3812
 */
 static double k0_poly[8] = {
@@ -60,7 +60,7 @@ static double i0_poly[7] = {
 };
 
 /*
- Chebyshev expansion for [1,8], peak relative error = 1.32*GSL_DBL_EPSILON. 
+ Chebyshev expansion for [1,8], peak relative error = 1.28*GSL_DBL_EPSILON. 
  Source: Pavel Holoborodko.
 */
 static double ak0_data[24] = {
@@ -98,7 +98,7 @@ static cheb_series ak0_cs = {
 };
 
 /* 
- Chebyshev expansion for [8,inf), peak relative error = 1.17*GSL_DBL_EPSILON.
+ Chebyshev expansion for [8,inf), peak relative error = 1.25*GSL_DBL_EPSILON.
  Source: SLATEC/dbsk0e.f
 */
 static double ak02_data[14] = {
