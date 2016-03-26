@@ -474,6 +474,20 @@ int gsl_linalg_complex_cholesky_svx (const gsl_matrix_complex * cholesky,
 
 int gsl_linalg_complex_cholesky_invert(gsl_matrix_complex * cholesky);
 
+/* Modified Cholesky decomposition */
+
+int gsl_linalg_mcholesky_decomp (gsl_matrix * A, gsl_vector * E);
+
+/* Pivoted Cholesky LDLT decomposition */
+
+int gsl_linalg_pcholesky_decomp (gsl_matrix * A, gsl_permutation * p);
+int gsl_linalg_pcholesky_solve(const gsl_matrix * LDLT,
+                               const gsl_permutation * p,
+                               const gsl_vector * b,
+                               gsl_vector * x);
+int gsl_linalg_pcholesky_svx(const gsl_matrix * LDLT,
+                             const gsl_permutation * p,
+                             gsl_vector * x);
 
 /* Symmetric to symmetric tridiagonal decomposition */
 

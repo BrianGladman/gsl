@@ -98,6 +98,8 @@ int test_cholesky_decomp_dim(const gsl_matrix * m, double eps);
 int test_cholesky_decomp(void);
 int test_cholesky_invert_dim(const gsl_matrix * m, double eps);
 int test_cholesky_invert(void);
+int test_mcholesky_decomp_dim(const gsl_matrix * m, double eps);
+int test_mcholesky_decomp(void);
 int test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_HH_solve(void);
 int test_TDS_solve_dim(unsigned long dim, double d, double od, const double * actual, double eps);
@@ -3800,6 +3802,86 @@ test_choleskyc_invert(void)
   return s;
 }
 
+int
+test_mcholesky_decomp_dim(const gsl_matrix * m, double eps)
+{
+  int s = 0;
+  unsigned long i,j, M = m->size1, N = m->size2;
+
+  gsl_matrix * v  = gsl_matrix_alloc(M,N);
+  gsl_matrix * a  = gsl_matrix_alloc(M,N);
+  gsl_matrix * l  = gsl_matrix_alloc(M,N);
+  gsl_matrix * lt  = gsl_matrix_alloc(N,N);
+  gsl_vector * e = gsl_vector_alloc(N);
+
+  gsl_matrix_memcpy(v, m);
+
+  s += gsl_linalg_mcholesky_decomp(v, e);
+  
+  /* Compute L, LT */
+  
+  for (i = 0; i < N ; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          double vij = gsl_matrix_get(v, i, j);
+          gsl_matrix_set (l, i, j, i>=j ? vij : 0);
+          gsl_matrix_set (lt, i, j, i<=j ? vij : 0);
+        }
+    }
+            
+  /* compute a = l lt */
+  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, l, lt, 0.0, a);
+
+  for(i=0; i<M; i++) {
+    for(j=0; j<N; j++) {
+      double aij = gsl_matrix_get(a, i, j);
+      double mij = gsl_matrix_get(m, i, j);
+      int foo = check(aij, mij, eps);
+      if(foo) {
+        printf("(%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", M, N, i,j, aij, mij);
+      }
+      s += foo;
+    }
+  }
+
+  printf("norm = %.12e\n", gsl_blas_dnrm2(e));
+
+  gsl_matrix_free(v);
+  gsl_matrix_free(a);
+  gsl_matrix_free(l);
+  gsl_matrix_free(lt);
+  gsl_vector_free(e);
+
+  return s;
+}
+
+int
+test_mcholesky_decomp(void)
+{
+  int f;
+  int s = 0;
+
+  f = test_mcholesky_decomp_dim(hilb2, 2 * 8.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  mcholesky_decomp hilbert(2)");
+  s += f;
+
+#if 1
+  f = test_mcholesky_decomp_dim(hilb3, 2 * 64.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  mcholesky_decomp hilbert(3)");
+  s += f;
+
+  f = test_mcholesky_decomp_dim(hilb4, 2 * 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  mcholesky_decomp hilbert(4)");
+  s += f;
+
+  f = test_mcholesky_decomp_dim(hilb12, 2 * 1024.0 * GSL_DBL_EPSILON);
+  gsl_test(f, "  mcholesky_decomp hilbert(12)");
+  s += f;
+#endif
+
+  return s;
+}
 
 
 int
@@ -4294,7 +4376,8 @@ my_error_handler (const char *reason, const char *file, int line, int err)
   if (1) printf ("(caught [%s:%d: %s (%d)])\n", file, line, reason, err) ;
 }
 
-int main(void)
+int
+main(void)
 {
   gsl_ieee_env_setup ();
   gsl_set_error_handler (&my_error_handler);
@@ -4388,6 +4471,7 @@ int main(void)
   gsl_test(test_choleskyc_decomp(),      "Complex Cholesky Decomposition");
   gsl_test(test_choleskyc_solve(),       "Complex Cholesky Solve");
   gsl_test(test_choleskyc_invert(),      "Complex Cholesky Inverse");
+  gsl_test(test_mcholesky_decomp(),      "Modified Cholesky Decomposition");
 
   gsl_test(test_HH_solve(),              "Householder solve");
   gsl_test(test_TDS_solve(),             "Tridiagonal symmetric solve");
