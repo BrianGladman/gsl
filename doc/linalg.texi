@@ -19,6 +19,7 @@ The functions described in this chapter are declared in the header file
 * QR Decomposition with Column Pivoting::  
 * Singular Value Decomposition::  
 * Cholesky Decomposition::      
+* Pivoted Cholesky Decomposition::      
 * Tridiagonal Decomposition of Real Symmetric Matrices::  
 * Tridiagonal Decomposition of Hermitian Matrices::  
 * Hessenberg Decomposition of Real Matrices::
@@ -638,6 +639,60 @@ of the matrix of smallest possible condition number over all
 possible diagonal scalings. On output, @var{D} contains the
 scale factors, given by @math{D_i = 1/\sqrt{A_{ii}}} and
 @var{A} contains the scaled matrix @math{D A D}.
+@end deftypefun
+
+@node Pivoted Cholesky Decomposition
+@section Pivoted Cholesky Decomposition
+@cindex Cholesky decomposition, pivoted
+@cindex Pivoted Cholesky Decomposition
+
+A symmetric, positive definite square matrix @math{A} has an alternate
+Cholesky decomposition into a product of a lower unit triangular matrix @math{L},
+a diagonal matrix @math{D} and @math{L^T}, given by @math{L D L^T}. This is
+equivalent to the Cholesky formulation discussed above, with
+the standard Cholesky lower triangular factor given by @math{L D^{1 \over 2}}.
+For ill-conditioned matrices, it can help to use a pivoting strategy to
+ensure @math{D_1 \ge D_2 \ge \cdots \ge D_n > 0}, where @math{D_i} are
+the diagonal entries of @math{D}. The final decomposition is given by
+@tex
+\beforedisplay
+$$
+P A P^T = L D L^T
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+P A P^T = L D L^T
+@end example
+
+@end ifinfo
+
+@deftypefun int gsl_linalg_pcholesky_decomp (gsl_matrix * @var{A}, gsl_permutation * @var{p})
+This function factors the symmetric, positive-definite square matrix
+@var{A} into the Pivoted Cholesky decomposition @math{P A P^T = L D L^T}.
+On input, the values from the diagonal and lower-triangular part of the matrix @var{A} are
+used to construct the factorization, while the upper triangular part is used as temporary storage.
+On output the diagonal of the input matrix @var{A} stores the diagonal
+elements of @math{D}, and the lower triangular portion of @var{A}
+contains the matrix @math{L}. Since @math{L} has ones on its diagonal these
+do not need to be explicitely stored. The permutation matrix @math{P} is
+stored in @var{p} on output.
+@end deftypefun
+
+@deftypefun int gsl_linalg_pcholesky_solve (const gsl_matrix * @var{LDLT}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} using the Pivoted Cholesky
+decomposition of @math{A} held in the matrix @var{LDLT} and permutation
+@var{p} which must have been previously computed by @code{gsl_linalg_pcholesky_decomp}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_pcholesky_svx (const gsl_matrix * @var{LDLT}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
+This function solves the system @math{A x = b} in-place using the Pivoted Cholesky
+decomposition of @math{A} held in the matrix @var{LDLT} and permutation
+@var{p} which must have been previously computed by @code{gsl_linalg_pcholesky_decomp}.
+On input, @var{x} contains the right hand side vector @math{b} which is
+replaced by the solution vector on output.
 @end deftypefun
 
 @node Tridiagonal Decomposition of Real Symmetric Matrices
