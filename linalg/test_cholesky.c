@@ -36,7 +36,7 @@ static int test_cholesky_decomp_eps(const int scale, const gsl_matrix * m,
                                     const double eps, const char * desc);
 static int test_cholesky_decomp(gsl_rng * r);
 static int test_pcholesky_decomp(gsl_rng * r);
-int test_pcholesky_solve_eps(const gsl_matrix * m, const gsl_vector * rhs,
+int test_pcholesky_solve_eps(const int scale, const gsl_matrix * m, const gsl_vector * rhs,
                              const gsl_vector * sol, const double eps,
                              const char * desc);
 static int test_pcholesky_solve(gsl_rng * r);
@@ -127,12 +127,12 @@ test_cholesky_decomp_eps(const int scale, const gsl_matrix * m,
   gsl_matrix * A  = gsl_matrix_alloc(M, N);
   gsl_matrix * L  = gsl_matrix_alloc(M, N);
   gsl_matrix * LT = gsl_matrix_alloc(N, N);
-  gsl_vector * D = gsl_vector_alloc(N);
+  gsl_vector * S = gsl_vector_alloc(N);
 
   gsl_matrix_memcpy(V, m);
 
   if (scale)
-    s += gsl_linalg_cholesky_decomp2(V, D);
+    s += gsl_linalg_cholesky_decomp2(V, S);
   else
     s += gsl_linalg_cholesky_decomp(V);
   
@@ -149,15 +149,15 @@ test_cholesky_decomp_eps(const int scale, const gsl_matrix * m,
 
   if (scale)
     {
-      /* L <- D^{-1} L, LT <- LT D^{-1} */
+      /* L <- S^{-1} L, LT <- LT S^{-1} */
       for (i = 0; i < N; ++i)
         {
-          double Di = gsl_vector_get(D, i);
+          double Si = gsl_vector_get(S, i);
           gsl_vector_view v = gsl_matrix_row(L, i);
           gsl_vector_view w = gsl_matrix_column(LT, i);
 
-          gsl_vector_scale(&v.vector, 1.0 / Di);
-          gsl_vector_scale(&w.vector, 1.0 / Di);
+          gsl_vector_scale(&v.vector, 1.0 / Si);
+          gsl_vector_scale(&w.vector, 1.0 / Si);
         }
     }
             
@@ -181,7 +181,7 @@ test_cholesky_decomp_eps(const int scale, const gsl_matrix * m,
   gsl_matrix_free(A);
   gsl_matrix_free(L);
   gsl_matrix_free(LT);
-  gsl_vector_free(D);
+  gsl_vector_free(S);
 
   return s;
 }
@@ -334,17 +334,16 @@ test_pcholesky_decomp_eps(const int scale, const gsl_matrix * m,
   gsl_matrix * A  = gsl_matrix_alloc(M, N);
   gsl_matrix * L  = gsl_matrix_alloc(M, N);
   gsl_matrix * LT = gsl_matrix_alloc(N, N);
+  gsl_vector * S = gsl_vector_alloc(N);
   gsl_permutation * perm = gsl_permutation_alloc(N);
 
   gsl_vector_view D = gsl_matrix_diagonal(V);
 
   gsl_matrix_memcpy(V, m);
 
-#if 0
   if (scale)
-    s += gsl_linalg_pcholesky_decomp2(V, D);
+    s += gsl_linalg_pcholesky_decomp2(V, perm, S);
   else
-#endif
     s += gsl_linalg_pcholesky_decomp(V, perm);
 
   /* check that D is decreasing */
@@ -400,8 +399,16 @@ test_pcholesky_decomp_eps(const int scale, const gsl_matrix * m,
   /* compute A = L D LT */
   gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, L, LT, 0.0, A);
 
-  /* compute V = P M P^T */
+  /* compute V = P S M S P^T */
+
   gsl_matrix_memcpy(V, m);
+
+  /* compute S M S */
+  if (scale)
+    {
+      gsl_linalg_cholesky_scale_apply(V, S);
+      gsl_matrix_transpose_tricpy('L', 0, V, V);
+    }
 
   /* compute M P^T */
   for (i = 0; i < N; ++i)
@@ -434,6 +441,7 @@ test_pcholesky_decomp_eps(const int scale, const gsl_matrix * m,
   gsl_matrix_free(A);
   gsl_matrix_free(L);
   gsl_matrix_free(LT);
+  gsl_vector_free(S);
   gsl_permutation_free(perm);
 
   return s;
@@ -468,7 +476,7 @@ test_pcholesky_decomp(gsl_rng * r)
 }
 
 int
-test_pcholesky_solve_eps(const gsl_matrix * m, const gsl_vector * rhs,
+test_pcholesky_solve_eps(const int scale, const gsl_matrix * m, const gsl_vector * rhs,
                          const gsl_vector * sol, const double eps,
                          const char * desc)
 {
@@ -476,12 +484,21 @@ test_pcholesky_solve_eps(const gsl_matrix * m, const gsl_vector * rhs,
   size_t i, N = m->size1;
   gsl_matrix * u  = gsl_matrix_alloc(N, N);
   gsl_vector * x = gsl_vector_calloc(N);
+  gsl_vector * S = gsl_vector_alloc(N);
   gsl_permutation * perm = gsl_permutation_alloc(N);
 
   gsl_matrix_memcpy(u, m);
 
-  s += gsl_linalg_pcholesky_decomp(u, perm);
-  s += gsl_linalg_pcholesky_solve(u, perm, rhs, x);
+  if (scale)
+    {
+      s += gsl_linalg_pcholesky_decomp2(u, perm, S);
+      s += gsl_linalg_pcholesky_solve2(u, perm, S, rhs, x);
+    }
+  else
+    {
+      s += gsl_linalg_pcholesky_decomp(u, perm);
+      s += gsl_linalg_pcholesky_solve(u, perm, rhs, x);
+    }
 
   for (i = 0; i < N; i++)
     {
@@ -494,6 +511,7 @@ test_pcholesky_solve_eps(const gsl_matrix * m, const gsl_vector * rhs,
     }
 
   gsl_vector_free(x);
+  gsl_vector_free(S);
   gsl_matrix_free(u);
   gsl_permutation_free(perm);
 
@@ -517,13 +535,15 @@ test_pcholesky_solve(gsl_rng * r)
       create_random_vector(sol, r);
       gsl_blas_dsymv(CblasLower, 1.0, m, sol, 0.0, rhs);
 
-      test_pcholesky_solve_eps(m, rhs, sol, 16.0 * N * GSL_DBL_EPSILON, "pcholesky_solve unscaled random");
+      test_pcholesky_solve_eps(0, m, rhs, sol, 16.0 * N * GSL_DBL_EPSILON, "pcholesky_solve unscaled random");
+      test_pcholesky_solve_eps(1, m, rhs, sol, 16.0 * N * GSL_DBL_EPSILON, "pcholesky_solve scaled random");
 
       if (N <= 4)
         {
           create_hilbert_matrix(m);
           gsl_blas_dsymv(CblasLower, 1.0, m, sol, 0.0, rhs);
-          test_pcholesky_solve_eps(m, rhs, sol, 512.0 * N * GSL_DBL_EPSILON, "pcholesky_solve unscaled hilbert");
+          test_pcholesky_solve_eps(0, m, rhs, sol, 512.0 * N * GSL_DBL_EPSILON, "pcholesky_solve unscaled hilbert");
+          test_pcholesky_solve_eps(1, m, rhs, sol, 1024.0 * N * GSL_DBL_EPSILON, "pcholesky_solve scaled hilbert");
         }
 
       gsl_matrix_free(m);

@@ -187,6 +187,128 @@ gsl_linalg_pcholesky_svx(const gsl_matrix * LDLT,
     }
 }
 
+int
+gsl_linalg_pcholesky_decomp2(gsl_matrix * A, gsl_permutation * p,
+                             gsl_vector * S)
+{
+  const size_t M = A->size1;
+  const size_t N = A->size2;
+
+  if (M != N)
+    {
+      GSL_ERROR("cholesky decomposition requires square matrix", GSL_ENOTSQR);
+    }
+  else if (N != p->size)
+    {
+      GSL_ERROR ("matrix size must match permutation size", GSL_EBADLEN);
+    }
+  else if (N != S->size)
+    {
+      GSL_ERROR("S must have length N", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+
+      /* compute scaling factors to reduce cond(A) */
+      status = gsl_linalg_cholesky_scale(A, S);
+      if (status)
+        return status;
+
+      /* apply scaling factors */
+      status = gsl_linalg_cholesky_scale_apply(A, S);
+      if (status)
+        return status;
+
+      /* compute Cholesky decomposition of diag(S) A diag(S) */
+      status = gsl_linalg_pcholesky_decomp(A, p);
+      if (status)
+        return status;
+
+      return GSL_SUCCESS;
+    }
+}
+
+int
+gsl_linalg_pcholesky_solve2(const gsl_matrix * LDLT,
+                            const gsl_permutation * p,
+                            const gsl_vector * S,
+                            const gsl_vector * b,
+                            gsl_vector * x)
+{
+  if (LDLT->size1 != LDLT->size2)
+    {
+      GSL_ERROR ("LDLT matrix must be square", GSL_ENOTSQR);
+    }
+  else if (LDLT->size1 != p->size)
+    {
+      GSL_ERROR ("matrix size must match permutation size", GSL_EBADLEN);
+    }
+  else if (LDLT->size1 != S->size)
+    {
+      GSL_ERROR ("matrix size must match S", GSL_EBADLEN);
+    }
+  else if (LDLT->size1 != b->size)
+    {
+      GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
+    }
+  else if (LDLT->size2 != x->size)
+    {
+      GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+
+      gsl_vector_memcpy (x, b);
+
+      status = gsl_linalg_pcholesky_svx2 (LDLT, p, S, x);
+      
+      return status;
+    }
+}
+
+int
+gsl_linalg_pcholesky_svx2(const gsl_matrix * LDLT,
+                          const gsl_permutation * p,
+                          const gsl_vector * S,
+                          gsl_vector * x)
+{
+  if (LDLT->size1 != LDLT->size2)
+    {
+      GSL_ERROR ("LDLT matrix must be square", GSL_ENOTSQR);
+    }
+  else if (LDLT->size1 != p->size)
+    {
+      GSL_ERROR ("matrix size must match permutation size", GSL_EBADLEN);
+    }
+  else if (LDLT->size1 != S->size)
+    {
+      GSL_ERROR ("matrix size must match S", GSL_EBADLEN);
+    }
+  else if (LDLT->size2 != x->size)
+    {
+      GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+
+      /* x := S b */
+      gsl_vector_mul(x, S);
+
+      /* solve: A~ x~ = b~, with A~ = S A S, b~ = S b */
+      status = gsl_linalg_pcholesky_svx(LDLT, p, x);
+      if (status)
+        return status;
+
+      /* compute: x = S x~ */
+      gsl_vector_mul(x, S);
+
+      return GSL_SUCCESS;
+    }
+}
+
 /*
 pcholesky_swap_rowcol()
   Swap rows and columns i and j of matrix m, assuming only the

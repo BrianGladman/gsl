@@ -448,16 +448,18 @@ int gsl_linalg_cholesky_invert(gsl_matrix * cholesky);
  */
 int gsl_linalg_cholesky_decomp_unit(gsl_matrix * A, gsl_vector * D);
 
-int gsl_linalg_cholesky_scale(gsl_matrix * A, gsl_vector * D);
+int gsl_linalg_cholesky_scale(const gsl_matrix * A, gsl_vector * S);
 
-int gsl_linalg_cholesky_decomp2(gsl_matrix * A, gsl_vector * D);
+int gsl_linalg_cholesky_scale_apply(gsl_matrix * A, const gsl_vector * S);
+
+int gsl_linalg_cholesky_decomp2(gsl_matrix * A, gsl_vector * S);
 
 int gsl_linalg_cholesky_svx2 (const gsl_matrix * LLT,
-                              const gsl_vector * D,
+                              const gsl_vector * S,
                               gsl_vector * x);
 
 int gsl_linalg_cholesky_solve2 (const gsl_matrix * LLT,
-                                const gsl_vector * D,
+                                const gsl_vector * S,
                                 const gsl_vector * b,
                                 gsl_vector * x);
 
@@ -481,13 +483,29 @@ int gsl_linalg_mcholesky_decomp (gsl_matrix * A, gsl_vector * E);
 /* Pivoted Cholesky LDLT decomposition */
 
 int gsl_linalg_pcholesky_decomp (gsl_matrix * A, gsl_permutation * p);
+
 int gsl_linalg_pcholesky_solve(const gsl_matrix * LDLT,
                                const gsl_permutation * p,
                                const gsl_vector * b,
                                gsl_vector * x);
+
 int gsl_linalg_pcholesky_svx(const gsl_matrix * LDLT,
                              const gsl_permutation * p,
                              gsl_vector * x);
+
+int gsl_linalg_pcholesky_decomp2(gsl_matrix * A, gsl_permutation * p,
+                                 gsl_vector * S);
+
+int gsl_linalg_pcholesky_solve2(const gsl_matrix * LDLT,
+                                const gsl_permutation * p,
+                                const gsl_vector * S,
+                                const gsl_vector * b,
+                                gsl_vector * x);
+
+int gsl_linalg_pcholesky_svx2(const gsl_matrix * LDLT,
+                              const gsl_permutation * p,
+                              const gsl_vector * S,
+                              gsl_vector * x);
 
 /* Symmetric to symmetric tridiagonal decomposition */
 

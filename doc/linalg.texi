@@ -538,19 +538,19 @@ by scaling as
 @tex
 \beforedisplay
 $$
-\left( D A D \right) \left( D^{-1} x \right) = D b
+\left( S A S \right) \left( S^{-1} x \right) = S b
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-( D A D ) ( D^(-1) x ) = D b
+( S A S ) ( S^(-1) x ) = S b
 @end example
 
 @end ifinfo
-where @math{D} is a diagonal matrix whose elements are given by
-@math{D_{ii} = 1/\sqrt{A_{ii}}}. This scaling is also known as
+where @math{S} is a diagonal matrix whose elements are given by
+@math{S_{ii} = 1/\sqrt{A_{ii}}}. This scaling is also known as
 Jacobi preconditioning. There are routines below to solve
 both the scaled and unscaled systems.
 
@@ -599,46 +599,48 @@ by @code{gsl_linalg_cholesky_decomp} or
 stored in-place in @var{cholesky}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_cholesky_decomp2 (gsl_matrix * @var{A}, gsl_vector * @var{D})
-This function calculates a diagonal scaling transformation @math{D} for
+@deftypefun int gsl_linalg_cholesky_decomp2 (gsl_matrix * @var{A}, gsl_vector * @var{S})
+This function calculates a diagonal scaling transformation @math{S} for
 the symmetric, positive-definite square matrix @var{A}, and then
-computes the Cholesky decomposition @math{D A D = L L^T}.
+computes the Cholesky decomposition @math{S A S = L L^T}.
 On input, the values from the diagonal and lower-triangular part of the matrix @var{A} are
 used (the upper triangular part is ignored).  On output the diagonal and lower triangular part
 of the input matrix @var{A} contain the matrix @math{L}, while the upper triangular part
 of the input matrix is overwritten with @math{L^T} (the diagonal terms being
 identical for both @math{L} and @math{L^T}).  If the matrix is not
 positive-definite then the decomposition will fail, returning the
-error code @code{GSL_EDOM}. The diagonal scale factors are stored in @var{D}
+error code @code{GSL_EDOM}. The diagonal scale factors are stored in @var{S}
 on output.
 
 When testing whether a matrix is positive-definite, disable the error
 handler first to avoid triggering an error.
 @end deftypefun
 
-@deftypefun int gsl_linalg_cholesky_solve2 (const gsl_matrix * @var{cholesky}, const gsl_vector * @var{D}, const gsl_vector * @var{b}, gsl_vector * @var{x})
-This function solves the system @math{(D A D) (D^{-1} x) = D b} using the Cholesky
-decomposition of @math{D A D} held in the matrix @var{cholesky} which must
+@deftypefun int gsl_linalg_cholesky_solve2 (const gsl_matrix * @var{cholesky}, const gsl_vector * @var{S}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the system @math{(S A S) (S^{-1} x) = S b} using the Cholesky
+decomposition of @math{S A S} held in the matrix @var{cholesky} which must
 have been previously computed by @code{gsl_linalg_cholesky_decomp2}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_cholesky_svx2 (const gsl_matrix * @var{cholesky}, const gsl_vector * @var{D}, gsl_vector * @var{x})
-This function solves the system @math{(D A D) (D^{-1} x) = D b} in-place using the
-Cholesky decomposition of @math{D A D} held in the matrix @var{cholesky}
+@deftypefun int gsl_linalg_cholesky_svx2 (const gsl_matrix * @var{cholesky}, const gsl_vector * @var{S}, gsl_vector * @var{x})
+This function solves the system @math{(S A S) (S^{-1} x) = S b} in-place using the
+Cholesky decomposition of @math{S A S} held in the matrix @var{cholesky}
 which must have been previously computed by
 @code{gsl_linalg_cholesky_decomp2}.  On input @var{x} should
 contain the right-hand side @math{b}, which is replaced by the
 solution on output.
 @end deftypefun
 
-@deftypefun int gsl_linalg_cholesky_scale (gsl_matrix * @var{A}, gsl_vector * @var{D})
+@deftypefun int gsl_linalg_cholesky_scale (gsl_matrix * @var{A}, gsl_vector * @var{S})
 This function calculates a diagonal scaling transformation of the
 symmetric, positive definite matrix @var{A}, such that
-@math{D A D} has a condition number within a factor of @math{N}
+@math{S A S} has a condition number within a factor of @math{N}
 of the matrix of smallest possible condition number over all
-possible diagonal scalings. On output, @var{D} contains the
-scale factors, given by @math{D_i = 1/\sqrt{A_{ii}}} and
-@var{A} contains the scaled matrix @math{D A D}.
+possible diagonal scalings. On output, @var{S} contains the
+scale factors, given by @math{S_i = 1/\sqrt{A_{ii}}} and
+@var{A} contains the scaled matrix @math{S A S}. For any
+@math{A_{ii} \le 0}, the corresponding scale factor @math{S_i}
+is set to @math{1}.
 @end deftypefun
 
 @node Pivoted Cholesky Decomposition
@@ -652,6 +654,7 @@ a diagonal matrix @math{D} and @math{L^T}, given by @math{L D L^T}. This is
 equivalent to the Cholesky formulation discussed above, with
 the standard Cholesky lower triangular factor given by @math{L D^{1 \over 2}}.
 For ill-conditioned matrices, it can help to use a pivoting strategy to
+prevent the entries of @math{D} and @math{L} from growing too large, and also
 ensure @math{D_1 \ge D_2 \ge \cdots \ge D_n > 0}, where @math{D_i} are
 the diagonal entries of @math{D}. The final decomposition is given by
 @tex
@@ -691,6 +694,39 @@ decomposition of @math{A} held in the matrix @var{LDLT} and permutation
 This function solves the system @math{A x = b} in-place using the Pivoted Cholesky
 decomposition of @math{A} held in the matrix @var{LDLT} and permutation
 @var{p} which must have been previously computed by @code{gsl_linalg_pcholesky_decomp}.
+On input, @var{x} contains the right hand side vector @math{b} which is
+replaced by the solution vector on output.
+@end deftypefun
+
+@deftypefun int gsl_linalg_pcholesky_decomp2 (gsl_matrix * @var{A}, gsl_permutation * @var{p}, gsl_vector * @var{S})
+This function computes the pivoted Cholesky factorization of the matrix
+@math{S A S}, where the input matrix @var{A} is symmetric and positive
+definite, and the diagonal scaling matrix @var{S} is computed to reduce the
+condition number of @var{A} as much as possible. See
+@ref{Cholesky Decomposition} for more information on the matrix @var{S}.
+The Pivoted Cholesky decomposition satisfies @math{P S A S P^T = L D L^T}.
+On input, the values from the diagonal and lower-triangular part of the matrix @var{A} are
+used to construct the factorization, while the upper triangular part is used as temporary storage.
+On output the diagonal of the input matrix @var{A} stores the diagonal
+elements of @math{D}, and the lower triangular portion of @var{A}
+contains the matrix @math{L}. Since @math{L} has ones on its diagonal these
+do not need to be explicitely stored. The permutation matrix @math{P} is
+stored in @var{p} on output. The diagonal scaling transformation is stored
+in @var{S} on output.
+@end deftypefun
+
+@deftypefun int gsl_linalg_pcholesky_solve2 (const gsl_matrix * @var{LDLT}, const gsl_permutation * @var{p}, const gsl_vector * @var{S}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the system @math{(S A S) (S^{-1} x) = S b} using the Pivoted Cholesky
+decomposition of @math{S A S} held in the matrix @var{LDLT}, permutation
+@var{p}, and vector @var{S}, which must have been previously computed by
+@code{gsl_linalg_pcholesky_decomp2}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_pcholesky_svx2 (const gsl_matrix * @var{LDLT}, const gsl_permutation * @var{p}, const gsl_vector * @var{S}, gsl_vector * @var{x})
+This function solves the system @math{(S A S) (S^{-1} x) = S b} in-place using the Pivoted Cholesky
+decomposition of @math{S A S} held in the matrix @var{LDLT}, permutation
+@var{p} and vector @var{S}, which must have been previously computed by
+@code{gsl_linalg_pcholesky_decomp2}.
 On input, @var{x} contains the right hand side vector @math{b} which is
 replaced by the solution vector on output.
 @end deftypefun
