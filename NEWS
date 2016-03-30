@@ -1,5 +1,8 @@
 * What is new in gsl-2.2:
 
+** added modified Cholesky factorization to handle
+   symmetric indefinite matrices
+
 ** rewrote (real) Cholesky decomposition to use
    a Level-2 blas algorithm instead of Level-1. Flop
    count is about the same but the code is much simpler
@@ -24,10 +27,8 @@
 ** updated multilarge normal equations method to use
    new Cholesky scaling for better numerical stability
 
-** added new Cholesky routines
-   _decomp2, _solve2, _svx2, _scale
-   to attempt to reduce the condition number of
-   the matrix prior to factorization
+** added scaling to Cholesky routines to reduce the
+   condition number prior to factorization
 
 * What was new in gsl-2.1:
 

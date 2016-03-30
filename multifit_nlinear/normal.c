@@ -21,11 +21,7 @@
  * This module calculates the solution of the linear least squares
  * system:
  *
- * [ J^T J + mu*I ] v = -J^T f, for geodesic velocity
- *
- * and
- *
- * [ J^T J + mu*I ] a = -J^T fvv, for geodesic acceleration
+ * [ J^T J + mu*I ] v = -J^T f
  */
 
 #include <config.h>
@@ -36,15 +32,15 @@
 #include <gsl/gsl_multifit_nlinear.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
+#include <gsl/gsl_permutation.h>
 
 typedef struct
 {
-  gsl_matrix *A;             /* J^T J */
+  gsl_matrix *JTJ;           /* J^T J */
   gsl_matrix *work_JTJ;      /* copy of J^T J */
   gsl_vector *rhs;           /* -J^T f */
-  gsl_vector *tau;           /* Householder scalars for QR, size p */
-  gsl_vector *workp;         /* workspace, size p */
-  int chol;                  /* Cholesky factorization successful */
+  gsl_vector *S;             /* Cholesky scale factors, size p */
+  gsl_permutation *perm;     /* permutation matrix for modified Cholesky */
 } normal_state_t;
 
 static void *normal_alloc (const size_t n, const size_t p);
@@ -68,10 +64,10 @@ normal_alloc (const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate normal state", GSL_ENOMEM);
     }
 
-  state->A = gsl_matrix_alloc(p, p);
-  if (state->A == NULL)
+  state->JTJ = gsl_matrix_alloc(p, p);
+  if (state->JTJ == NULL)
     {
-      GSL_ERROR_NULL ("failed to allocate space for A", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for JTJ", GSL_ENOMEM);
     }
 
   state->work_JTJ = gsl_matrix_alloc(p, p);
@@ -87,16 +83,16 @@ normal_alloc (const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for rhs", GSL_ENOMEM);
     }
 
-  state->tau = gsl_vector_alloc(p);
-  if (state->tau == NULL)
+  state->S = gsl_vector_alloc(p);
+  if (state->S == NULL)
     {
-      GSL_ERROR_NULL ("failed to allocate space for tau", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for S", GSL_ENOMEM);
     }
 
-  state->workp = gsl_vector_alloc(p);
-  if (state->workp == NULL)
+  state->perm = gsl_permutation_alloc(p);
+  if (state->perm == NULL)
     {
-      GSL_ERROR_NULL ("failed to allocate space for workp", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for perm", GSL_ENOMEM);
     }
 
   return state;
@@ -107,8 +103,8 @@ normal_free(void *vstate)
 {
   normal_state_t *state = (normal_state_t *) vstate;
 
-  if (state->A)
-    gsl_matrix_free(state->A);
+  if (state->JTJ)
+    gsl_matrix_free(state->JTJ);
 
   if (state->work_JTJ)
     gsl_matrix_free(state->work_JTJ);
@@ -116,30 +112,31 @@ normal_free(void *vstate)
   if (state->rhs)
     gsl_vector_free(state->rhs);
 
-  if (state->tau)
-    gsl_vector_free(state->tau);
+  if (state->S)
+    gsl_vector_free(state->S);
 
-  if (state->workp)
-    gsl_vector_free(state->workp);
+  if (state->perm)
+    gsl_permutation_free(state->perm);
 
   free(state);
 }
 
-/* compute A = J^T J */
 static int
 normal_init(const gsl_matrix * J, void * vstate)
 {
   normal_state_t *state = (normal_state_t *) vstate;
 
-  /* compute A = J^T J */
-  gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, J, 0.0, state->A);
+  /* compute J^T J */
+  gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, J, 0.0, state->JTJ);
 
   return GSL_SUCCESS;
 }
 
 /*
 normal_presolve()
-  Compute the Cholesky decomposition of J^T J + mu * I
+  Compute the modified Cholesky decomposition of J^T J + mu * I.
+Modified Cholesky is used in case mu = 0 and there are rounding
+errors in forming J^T J which could lead to an indefinite matrix.
 
 Inputs: mu     - LM parameter
         vstate - workspace
@@ -148,11 +145,7 @@ Notes:
 1) On output, state->work_JTJ contains the Cholesky decomposition of
 J^T J + mu*I
 
-2) On output, state->workp contains scale factors needed for a
-solution
-
-3) If Cholesky fails, QR decompsition is used and on output, state->tau
-contains Householder scalars
+2) On output, state->S contains scale factors needed for a solution
 */
 
 static int
@@ -160,50 +153,20 @@ normal_presolve(const double mu, void * vstate)
 {
   normal_state_t *state = (normal_state_t *) vstate;
   gsl_matrix *JTJ = state->work_JTJ;
-  gsl_vector *chol_D = state->workp;
-  gsl_error_handler_t *err_handler;
   int status;
 
   /* copy lower triangle of A to workspace */
-  gsl_matrix_tricpy('L', 1, JTJ, state->A);
+  gsl_matrix_tricpy('L', 1, JTJ, state->JTJ);
 
-  /* augment normal equations with LM term: A -> A + mu*I */
+  /* augment normal equations: A -> A + mu*I */
   status = normal_regularize(mu, JTJ);
   if (status)
     return status;
 
-  /* turn off error handler in case Cholesky fails */
-  err_handler = gsl_set_error_handler_off();
-
-  status = gsl_linalg_cholesky_decomp2(JTJ, chol_D);
-
-  /* restore error handler */
-  gsl_set_error_handler(err_handler);
-
-  if (status == GSL_SUCCESS)
-    {
-      state->chol = 1;
-    }
-  else
-    {
-      state->chol = 0;
-
-      /* Cholesky failed, restore matrix and use QR decomposition */
-      gsl_matrix_tricpy('L', 1, JTJ, state->A);
-      normal_regularize(mu, JTJ);
-
-      /* scale: JTJ <- diag(D) JTJ diag(D) to try to reduce cond(JTJ) */
-      status = gsl_linalg_cholesky_scale(JTJ, chol_D);
-      if (status)
-        return status;
-
-      /* copy lower triangle of A to upper */
-      gsl_matrix_transpose_tricpy('L', 0, JTJ, JTJ);
-
-      status = gsl_linalg_QR_decomp(JTJ, state->tau);
-      if (status)
-        return status;
-    }
+  /* compute modified Cholesky decomposition */
+  status = gsl_linalg_mcholesky_decomp2(JTJ, state->perm, NULL, state->S);
+  if (status)
+    return status;
 
   return GSL_SUCCESS;
 }
@@ -258,29 +221,10 @@ normal_solve_rhs(const gsl_vector * b, gsl_vector *x, normal_state_t *state)
 {
   int status;
   gsl_matrix *JTJ = state->work_JTJ;
-  gsl_vector *chol_D = state->workp;
 
-  if (state->chol == 1)
-    {
-      /* we have a Cholesky factorization of J^T J + mu D^T D */
-      status = gsl_linalg_cholesky_solve2(JTJ, chol_D, b, x);
-      if (status)
-        return status;
-    }
-  else
-    {
-      /* scale rhs vector: b <- diag(D) b */
-      gsl_vector_memcpy(x, b);
-      gsl_vector_mul(x, chol_D);
-
-      /* solve system */
-      status = gsl_linalg_QR_svx(JTJ, state->tau, x);
-      if (status)
-        return status;
-
-      /* undo scaling */
-      gsl_vector_mul(x, chol_D);
-    }
+  status = gsl_linalg_mcholesky_solve2(JTJ, state->perm, state->S, b, x);
+  if (status)
+    return status;
 
   return GSL_SUCCESS;
 }
@@ -289,13 +233,11 @@ normal_solve_rhs(const gsl_vector * b, gsl_vector *x, normal_state_t *state)
 static int
 normal_regularize(const double mu, gsl_matrix * A)
 {
-  gsl_vector_view d = gsl_matrix_diagonal(A);
-
-  /* quick return */
-  if (mu == 0.0)
-    return GSL_SUCCESS;
-
-  gsl_vector_add_constant(&d.vector, mu);
+  if (mu != 0.0)
+    {
+      gsl_vector_view d = gsl_matrix_diagonal(A);
+      gsl_vector_add_constant(&d.vector, mu);
+    }
 
   return GSL_SUCCESS;
 }

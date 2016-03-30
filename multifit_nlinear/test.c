@@ -44,9 +44,7 @@ static const gsl_multifit_nlinear_trs **nlinear_trs[] = {
 };
 
 static const gsl_multifit_nlinear_solver **nlinear_solvers[] = {
-#if 0
   &gsl_multifit_nlinear_solver_normal,
-#endif
   &gsl_multifit_nlinear_solver_qr,
   &gsl_multifit_nlinear_solver_svd,
 
@@ -85,7 +83,7 @@ main (void)
   const gsl_multifit_nlinear_trs **trs;
   const gsl_multifit_nlinear_solver **solver;
   const gsl_multifit_nlinear_scale **scale;
-  int fdtype, accel;
+  int fdtype;
   size_t i = 0;
 
   gsl_ieee_env_setup();
@@ -106,9 +104,12 @@ main (void)
               for (fdtype = GSL_MULTIFIT_NLINEAR_FWDIFF;
                    fdtype <= GSL_MULTIFIT_NLINEAR_CTRDIFF; ++fdtype)
                 {
-                  for (accel = 0; accel <= 1; ++accel)
+                  test_proc(*trs, *scale, *solver, fdtype, 0);
+
+                  if (*trs == gsl_multifit_nlinear_trs_lm)
                     {
-                      test_proc(*trs, *scale, *solver, fdtype, accel);
+                      /* test LM with geodesic acceleration */
+                      test_proc(*trs, *scale, *solver, fdtype, 1);
                     }
                 }
             }
