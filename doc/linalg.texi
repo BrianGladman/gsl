@@ -671,6 +671,7 @@ P A P^T = L D L^T
 @end example
 
 @end ifinfo
+where @math{P} is a permutation matrix.
 
 @deftypefun int gsl_linalg_pcholesky_decomp (gsl_matrix * @var{A}, gsl_permutation * @var{p})
 This function factors the symmetric, positive-definite square matrix
