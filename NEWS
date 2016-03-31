@@ -1,7 +1,10 @@
 * What is new in gsl-2.2:
 
-** added modified Cholesky factorization to handle
-   symmetric indefinite matrices
+** added modified Cholesky factorization (gsl_linalg_mcholesky)
+   to handle symmetric indefinite matrices
+
+** added pivoted Cholesky factorization (gsl_linalg_pcholesky)
+   for ill-conditioned matrices
 
 ** rewrote (real) Cholesky decomposition to use
    a Level-2 blas algorithm instead of Level-1. Flop
@@ -10,7 +13,7 @@
 
 ** completely rewritten nonlinear least squares module,
    including support for large problems; the user may
-   now control the linear solver used, the damping parameter
+   now control the linear solver used, the trust region
    updating strategy, and the scaling method. In addition,
    support has been added for the geodesic acceleration
    step (Transtrum 2011) which can speed up convergence
