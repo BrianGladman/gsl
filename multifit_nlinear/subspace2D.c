@@ -28,6 +28,81 @@
 #include <gsl/gsl_poly.h>
 
 /*
+ * This module implements a 2D subspace trust region subproblem method,
+ * as outlined in
+ *
+ * [1] G. A. Shultz, R. B. Schnabel, and R. H. Byrd
+ *     A Family of Trust-Region-Based Algorithms for Unconstrained
+ *     Minimization with Strong Global Convergence Properties,
+ *     SIAM Journal on Numerical Analysis 1985 22:1, 47-67 
+ *
+ * [2] R. H. Byrd, R. B. Schnabel, G. A. Shultz,
+ *     Approximate solution of the trust region problem by
+ *     minimization over two-dimensional subspaces,
+ *     Mathematical Programming, January 1988, Volume 40,
+ *     Issue 1, pp 247-263
+ *
+ * The idea is to solve:
+ *
+ * min_{dx} g^T dx + 1/2 dx^T B dx
+ * 
+ * with constraints:
+ *
+ * ||dx|| <= delta
+ * dx \in span{dx_sd, dx_gn}
+ *
+ * where B is the Hessian matrix, B = J^T J
+ *
+ * The steps are as follows:
+ *
+ * 1. preloop:
+ *    a. Compute Gauss-Newton and steepest descent vectors,
+ *       dx_gn, dx_sd
+ *    b. Compute an orthonormal basis for span(dx_sd, dx_gn) by
+ *       constructing W = [ dx_sd, dx_gn ] and performing a QR
+ *       decomposition of W. The 2 columns of the Q matrix
+ *       will then span the column space of W. W should have rank 2
+ *       unless dx_sd and dx_gn are parallel, in which case it will
+ *       have rank 1.
+ *    c. Precompute various quantities needed for the step calculation
+ *
+ * 2. step:
+ *    a. If the Gauss-Newton step is inside the trust region, use it
+ *    b. if W has rank 1, we cannot form a 2D subspace, so in this case
+ *       follow the steepest descent direction to the trust region boundary
+ *       and use that as the step.
+ *    c. In the full rank 2 case, if the GN point is outside the trust region,
+ *       then the minimizer of the objective function lies on the trust
+ *       region boundary. Therefore the minimization problem becomes:
+ *
+ *       min_{dx} g^T dx + 1/2 dx^T B dx, with ||dx|| = delta, dx = Q * x
+ *
+ *       where x is a 2-vector to be determined and the columns of Q are
+ *       the orthonormal basis vectors of the subspace. Note the equality
+ *       constraint now instead of <=. In terms of the new variable x,
+ *       the minimization problem becomes:
+ *
+ *       min_x subg^T x + 1/2 x^T subB x, with ||Q*x|| = ||x|| = delta
+ *
+ *       where:
+ *         subg = Q^T g   (2-by-1)
+ *         subB = Q^T B Q (2-by-2)
+ *
+ *       This equality constrained 2D minimization problem can be solved
+ *       with a Lagrangian multiplier, which results in a 4th degree polynomial
+ *       equation to be solved. The equation is:
+ *
+ *         lambda^4  1
+ *       + lambda^3  2 tr(B)
+ *       + lambda^2  (tr(B)^2 + 2 det(B) - g^T g / delta^2)
+ *       + lambda^1  (2 det(B) tr(B) - 2 g^T adj(B)^T g / delta^2)
+ *       + lambda^0  (det(B)^2 - g^T adj(B)^T adj(B) g / delta^2)
+ *
+ *       where adj(B) is the adjugate matrix of B.
+ *
+ *       We then check each of the 4 solutions for lambda to determine which
+ *       lambda results in the smallest objective function value. This x
+ *       is then used to construct the final step: dx = Q*x
  */
 
 typedef struct
@@ -55,6 +130,8 @@ typedef struct
   void *solver_state;        /* workspace for linear solver */
 
   size_t rank;               /* rank of [ dx_sd, dx_gn ] matrix */
+
+  gsl_poly_complex_workspace *poly_p;
 
   /* tunable parameters */
   gsl_multifit_nlinear_parameters params;
@@ -148,6 +225,12 @@ subspace2D_alloc (const void * params, const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for perm", GSL_ENOMEM);
     }
 
+  state->poly_p = gsl_poly_complex_workspace_alloc(5);
+  if (state->poly_p == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for poly workspace", GSL_ENOMEM);
+    }
+
   state->n = n;
   state->p = p;
   state->rank = 0;
@@ -191,6 +274,9 @@ subspace2D_free(void *vstate)
 
   if (state->perm)
     gsl_permutation_free(state->perm);
+
+  if (state->poly_p)
+    gsl_poly_complex_workspace_free(state->poly_p);
 
   free(state);
 }
@@ -415,7 +501,6 @@ subspace2D_step(const void * vtrust_state, const double delta,
       const double delta_sq = delta * delta;
       double u = state->normg / delta;
       double a[5];
-      gsl_poly_complex_workspace *poly_p = gsl_poly_complex_workspace_alloc(5); /*XXX*/
       double z[8];
 
       a[0] = state->detB * state->detB - state->term0 / delta_sq;
@@ -424,7 +509,7 @@ subspace2D_step(const void * vtrust_state, const double delta,
       a[3] = 2 * state->trB;
       a[4] = 1.0;
 
-      status = gsl_poly_complex_solve(a, 5, poly_p, z);
+      status = gsl_poly_complex_solve(a, 5, state->poly_p, z);
       if (status == GSL_SUCCESS)
         {
           size_t i;
@@ -482,8 +567,6 @@ subspace2D_step(const void * vtrust_state, const double delta,
           /*XXX*/
           fprintf(stderr, "poly solve failed\n");
         }
-
-      gsl_poly_complex_workspace_free(poly_p);
     }
 
   return GSL_SUCCESS;
