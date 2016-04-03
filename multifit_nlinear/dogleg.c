@@ -53,7 +53,6 @@ typedef struct
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
 
-  void *update_state;        /* workspace for parameter update method */
   void *solver_state;        /* workspace for linear solver */
 
   /* tunable parameters */
@@ -110,12 +109,6 @@ dogleg_alloc (const void * params, const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for workn", GSL_ENOMEM);
     }
 
-  state->update_state = (mparams->update->alloc)();
-  if (state->update_state == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for update state", GSL_ENOMEM);
-    }
-
   state->solver_state = (mparams->solver->alloc)(n, p);
   if (state->solver_state == NULL)
     {
@@ -146,9 +139,6 @@ dogleg_free(void *vstate)
 
   if (state->workn)
     gsl_vector_free(state->workn);
-
-  if (state->update_state)
-    (params->update->free)(state->update_state);
 
   if (state->solver_state)
     (params->solver->free)(state->solver_state);
@@ -253,31 +243,29 @@ dogleg_step(const void * vtrust_state, const double delta,
 {
   dogleg_state_t *state = (dogleg_state_t *) vstate;
 
-  if (state->norm_gn > delta)
+  if (state->norm_gn <= delta)
     {
-      if (state->norm_sd >= delta)
-        {
-          /* both Gauss-Newton and steepest descent steps are outside
-           * trust region; truncate steepest descent step to trust
-           * region boundary */
-          gsl_vector_memcpy(dx, state->dx_sd);
-          gsl_vector_scale(dx, delta / state->norm_sd);
-        }
-      else
-        {
-          /* Gauss-Newton step is outside trust region, but steepest
-           * descent is inside; use dogleg step */
-
-          double beta = dogleg_beta(1.0, delta, state);
-
-          /* dx = dx_sd + beta*(dx_gn - dx_sd) */
-          scaled_addition(beta, state->workp, 1.0, state->dx_sd, dx);
-        }
+      /* Gauss-Newton step is inside trust region, use it as final step
+       * since it is the global minimizer of the quadratic model function */
+      gsl_vector_memcpy(dx, state->dx_gn);
+    }
+  else if (state->norm_sd >= delta)
+    {
+      /* both Gauss-Newton and steepest descent steps are outside
+       * trust region; truncate steepest descent step to trust
+       * region boundary */
+      gsl_vector_memcpy(dx, state->dx_sd);
+      gsl_vector_scale(dx, delta / state->norm_sd);
     }
   else
     {
-      /* Gauss-Newton step is inside trust region, use it as final step */
-      gsl_vector_memcpy(dx, state->dx_gn);
+      /* Gauss-Newton step is outside trust region, but steepest
+       * descent is inside; use dogleg step */
+
+      double beta = dogleg_beta(1.0, delta, state);
+
+      /* dx = dx_sd + beta*(dx_gn - dx_sd) */
+      scaled_addition(beta, state->workp, 1.0, state->dx_sd, dx);
     }
 
   (void)vtrust_state;
@@ -300,7 +288,13 @@ dogleg_double_step(const void * vtrust_state, const double delta,
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   dogleg_state_t *state = (dogleg_state_t *) vstate;
 
-  if (state->norm_gn > delta)
+  if (state->norm_gn <= delta)
+    {
+      /* Gauss-Newton step is inside trust region, use it as final step
+       * since it is the global minimizer of the quadratic model function */
+      gsl_vector_memcpy(dx, state->dx_gn);
+    }
+  else
     {
       double t, u, v, c;
 
@@ -340,11 +334,6 @@ dogleg_double_step(const void * vtrust_state, const double delta,
           /* dx = dx_sd + beta*(t*dx_gn - dx_sd) */
           scaled_addition(beta, state->workp, 1.0, state->dx_sd, dx);
         }
-    }
-  else
-    {
-      /* Gauss-Newton step is inside trust region, use it as final step */
-      gsl_vector_memcpy(dx, state->dx_gn);
     }
 
   return GSL_SUCCESS;

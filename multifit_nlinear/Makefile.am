@@ -4,7 +4,7 @@ pkginclude_HEADERS = gsl_multifit_nlinear.h
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
-libgslmultifit_nlinear_la_SOURCES = cgst.c convergence.c covar.c dogleg.c fdf.c fdfvv.c fdjac.c lm.c nielsen.c normal.c qr.c scaling.c svd.c trust.c
+libgslmultifit_nlinear_la_SOURCES = cgst.c convergence.c covar.c dogleg.c fdf.c fdfvv.c fdjac.c lm.c nielsen.c normal.c qr.c scaling.c subspace2D.c svd.c trust.c
 
 noinst_HEADERS =        \
 common.c                \
@@ -54,4 +54,4 @@ check_PROGRAMS = test
 TESTS = $(check_PROGRAMS)
 
 test_SOURCES = test.c
-test_LDADD = libgslmultifit_nlinear.la ../eigen/libgsleigen.la ../linalg/libgsllinalg.la ../permutation/libgslpermutation.la ../blas/libgslblas.la ../cblas/libgslcblas.la ../matrix/libgslmatrix.la ../sort/libgslsort.la ../statistics/libgslstatistics.la ../vector/libgslvector.la ../block/libgslblock.la  ../complex/libgslcomplex.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la ../sys/libgslsys.la ../rng/libgslrng.la ../specfunc/libgslspecfunc.la
+test_LDADD = libgslmultifit_nlinear.la ../eigen/libgsleigen.la ../linalg/libgsllinalg.la ../permutation/libgslpermutation.la ../blas/libgslblas.la ../cblas/libgslcblas.la ../matrix/libgslmatrix.la ../sort/libgslsort.la ../statistics/libgslstatistics.la ../vector/libgslvector.la ../block/libgslblock.la  ../complex/libgslcomplex.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../test/libgsltest.la ../utils/libutils.la ../sys/libgslsys.la ../rng/libgslrng.la ../specfunc/libgslspecfunc.la ../poly/libgslpoly.la

@@ -215,59 +215,6 @@ gsl_linalg_mcholesky_svx(const gsl_matrix * LDLT,
   return status;
 }
 
-int
-gsl_linalg_mcholesky_decomp2(gsl_matrix * A, gsl_permutation * p,
-                             gsl_vector * E, gsl_vector * S)
-{
-  const size_t M = A->size1;
-  const size_t N = A->size2;
-
-  if (M != N)
-    {
-      GSL_ERROR("cholesky decomposition requires square matrix", GSL_ENOTSQR);
-    }
-  else if (N != p->size)
-    {
-      GSL_ERROR ("matrix size must match permutation size", GSL_EBADLEN);
-    }
-  else if (N != S->size)
-    {
-      GSL_ERROR("S must have length N", GSL_EBADLEN);
-    }
-  else
-    {
-      int status;
-
-      /* compute scaling factors to reduce cond(A) */
-      status = gsl_linalg_cholesky_scale(A, S);
-      if (status)
-        return status;
-
-      /* apply scaling factors */
-      status = gsl_linalg_cholesky_scale_apply(A, S);
-      if (status)
-        return status;
-
-      /* compute Cholesky decomposition of diag(S) A diag(S) */
-      status = gsl_linalg_mcholesky_decomp(A, p, E);
-      if (status)
-        return status;
-
-      return GSL_SUCCESS;
-    }
-}
-
-int
-gsl_linalg_mcholesky_solve2(const gsl_matrix * LDLT,
-                            const gsl_permutation * p,
-                            const gsl_vector * S,
-                            const gsl_vector * b,
-                            gsl_vector * x)
-{
-  int status = gsl_linalg_pcholesky_solve2(LDLT, p, S, b, x);
-  return status;
-}
-
 /*
 mcholesky_maxabs()
   Compute:

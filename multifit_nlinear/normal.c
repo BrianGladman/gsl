@@ -39,7 +39,6 @@ typedef struct
   gsl_matrix *JTJ;           /* J^T J */
   gsl_matrix *work_JTJ;      /* copy of J^T J */
   gsl_vector *rhs;           /* -J^T f */
-  gsl_vector *S;             /* Cholesky scale factors, size p */
   gsl_permutation *perm;     /* permutation matrix for modified Cholesky */
 } normal_state_t;
 
@@ -83,12 +82,6 @@ normal_alloc (const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for rhs", GSL_ENOMEM);
     }
 
-  state->S = gsl_vector_alloc(p);
-  if (state->S == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for S", GSL_ENOMEM);
-    }
-
   state->perm = gsl_permutation_alloc(p);
   if (state->perm == NULL)
     {
@@ -111,9 +104,6 @@ normal_free(void *vstate)
 
   if (state->rhs)
     gsl_vector_free(state->rhs);
-
-  if (state->S)
-    gsl_vector_free(state->S);
 
   if (state->perm)
     gsl_permutation_free(state->perm);
@@ -144,8 +134,6 @@ Inputs: mu     - LM parameter
 Notes:
 1) On output, state->work_JTJ contains the Cholesky decomposition of
 J^T J + mu*I
-
-2) On output, state->S contains scale factors needed for a solution
 */
 
 static int
@@ -164,7 +152,7 @@ normal_presolve(const double mu, void * vstate)
     return status;
 
   /* compute modified Cholesky decomposition */
-  status = gsl_linalg_mcholesky_decomp2(JTJ, state->perm, NULL, state->S);
+  status = gsl_linalg_mcholesky_decomp(JTJ, state->perm, NULL);
   if (status)
     return status;
 
@@ -222,7 +210,7 @@ normal_solve_rhs(const gsl_vector * b, gsl_vector *x, normal_state_t *state)
   int status;
   gsl_matrix *JTJ = state->work_JTJ;
 
-  status = gsl_linalg_mcholesky_solve2(JTJ, state->perm, state->S, b, x);
+  status = gsl_linalg_mcholesky_solve(JTJ, state->perm, b, x);
   if (status)
     return status;
 

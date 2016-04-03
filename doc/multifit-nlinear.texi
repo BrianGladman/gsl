@@ -1,5 +1,5 @@
-@cindex nonlinear least squares fitting
-@cindex least squares fitting, nonlinear
+@cindex nonlinear least squares
+@cindex least squares, nonlinear
 
 This chapter describes functions for multidimensional nonlinear
 least-squares fitting.  There are generally two classes of
@@ -35,7 +35,7 @@ multidimensional nonlinear fitting functions and related declarations.
 
 @node Nonlinear Least-Squares Overview
 @section Overview
-@cindex nonlinear least squares fitting, overview
+@cindex nonlinear least squares, overview
 
 The problem of multidimensional nonlinear least-squares fitting requires
 the minimization of the squared residuals of @math{n} functions,
@@ -116,10 +116,10 @@ so that the scaled step @math{D_k \delta} has entries of approximately the same
 order of magnitude.
 
 The trust region subproblem above normally amounts to solving a
-linear least squares system for the step @math{\delta}. Once @math{\delta}
-is computed, it is checked whether or not it reduces the objective
-function @math{\Phi(x)}. A useful statistic for this is to look
-at the ratio
+linear least squares system (or multiple systems) for the step
+@math{\delta}. Once @math{\delta} is computed, it is checked whether
+or not it reduces the objective function @math{\Phi(x)}. A useful
+statistic for this is to look at the ratio
 @tex
 \beforedisplay
 $$
@@ -200,12 +200,15 @@ independent variable of any data to be fitted is denoted by @math{t}.
 @end menu
 
 Below we describe the methods available for solving the trust region
-subproblem. In all algorithms below, the Hessian matrix @math{B_k}
-is approximated as @math{B_k \approx J_k^T J_k}, where
-@math{J_k = J(x_k)}.
+subproblem. The methods available provide either exact or approximate
+solutions to the trust region subproblem. In all algorithms below,
+the Hessian matrix @math{B_k} is approximated as @math{B_k \approx J_k^T J_k},
+where @math{J_k = J(x_k)}.
 
 @node Nonlinear Least-Squares TRS Levenberg-Marquardt
 @subsection Levenberg-Marquardt
+@cindex Levenberg-Marquardt algorithm
+@cindex nonlinear least squares, levenberg-marquardt
 
 There is a theorem which states that if @math{\delta_k} is a solution
 to the trust region subproblem stated above, then there exists
@@ -268,14 +271,26 @@ $$
 If the step @math{\delta_k} is accepted, then
 @math{\mu_k} is decreased on the next iteration in order
 to take a larger step, otherwise it is increased to take
-a smaller step.
+a smaller step. The Levenberg-Marquardt algorithm provides
+an exact solution of the trust region subproblem, but
+typically has a higher computational cost per iteration
+than the approximate methods discussed below, since it
+may need to solve the least squares system above several
+times for different values of @math{\mu_k}.
 
 @node Nonlinear Least-Squares TRS Dogleg
 @subsection Dogleg
+@cindex Dogleg algorithm
+@cindex nonlinear least squares, dogleg
 
-This is Powell's dogleg method, which attemps to use
-the Gauss-Newton step if it is located inside the trust
-region. The Gauss-Newton step is given by
+This is Powell's dogleg method, which finds an approximate
+solution to the trust region subproblem, by restricting
+its search to a piecewise linear ``dogleg'' path,
+composed of the origin, the Cauchy point which represents
+the model minimizer along the steepest descent direction,
+and the Gauss-Newton point, which is the overall minimizer
+of the unconstrained model. The Gauss-Newton step is calculated by
+solving
 @tex
 \beforedisplay
 $$
@@ -290,7 +305,10 @@ J_k \delta_gn = -f_k
 @end example
 
 @end ifinfo
-If the Gauss-Newton step is outside, the method
+which is the main computational task for each iteration,
+but only needs to be performed once per iteration. If
+the Gauss-Newton point is inside the trust region, it is
+selected as the step. If it is outside, the method then
 calculates the Cauchy point, which is located along the
 gradient direction. If the Cauchy point is also outside
 the trust region, the method assumes that it is still far
@@ -304,6 +322,9 @@ region boundary.
 
 @node Nonlinear Least-Squares TRS Double Dogleg
 @subsection Double Dogleg
+@cindex double Dogleg algorithm
+@cindex Dogleg algorithm, double
+@cindex nonlinear least squares, double dogleg
 
 This method is an improvement over the classical dogleg
 algorithm, which attempts to include information about
@@ -1038,10 +1059,9 @@ convergence---the function must be suitable for this technique and the
 initial guess must be sufficiently close to the minimum for it to work.
 
 @comment ============================================================
-@cindex Levenberg-Marquardt algorithms
+@cindex Levenberg-Marquardt algorithm
 
 @deffn {Derivative Solver} gsl_multifit_nlinear_lm
-@cindex LM algorithm
 @cindex minimization algorithms
 
 This specifies the Levenberg-Marquardt algorithm and is currently
@@ -1563,7 +1583,7 @@ location of the minimum. There is no absolute guarantee of
 convergence---the function must be suitable for this technique and the
 initial guess must be sufficiently close to the minimum for it to work.
 
-@cindex Levenberg-Marquardt algorithms
+@cindex Levenberg-Marquardt algorithm
 
 @deffn {Derivative Solver} gsl_multilarge_nlinear_lm
 @cindex minimization algorithms

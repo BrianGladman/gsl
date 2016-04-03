@@ -233,10 +233,7 @@ test_mcholesky_decomp_eps(const int posdef, const int scale, const gsl_matrix * 
 
   gsl_matrix_memcpy(V, m);
 
-  if (scale)
-    s += gsl_linalg_mcholesky_decomp2(V, perm, E, S);
-  else
-    s += gsl_linalg_mcholesky_decomp(V, perm, E);
+  s += gsl_linalg_mcholesky_decomp(V, perm, E);
 
   if (posdef)
     {
@@ -373,17 +370,14 @@ test_mcholesky_decomp(gsl_rng * r)
 
       create_posdef_matrix(m, r);
       test_mcholesky_decomp_eps(1, 0, m, 128.0 * N * GSL_DBL_EPSILON, "mcholesky_decomp unscaled random posdef");
-      test_mcholesky_decomp_eps(1, 1, m, 128.0 * N * GSL_DBL_EPSILON, "mcholesky_decomp scaled random posdef");
 
       create_symm_matrix(m, r);
       test_mcholesky_decomp_eps(0, 0, m, 8192.0 * N * GSL_DBL_EPSILON, "mcholesky_decomp unscaled random symm");
-      test_mcholesky_decomp_eps(0, 1, m, 8192.0 * N * GSL_DBL_EPSILON, "mcholesky_decomp scaled random symm");
 
       if (N <= 8)
         {
           create_hilbert_matrix(m);
           test_mcholesky_decomp_eps(1, 0, m, N * GSL_DBL_EPSILON, "mcholesky_decomp unscaled hilbert");
-          test_mcholesky_decomp_eps(1, 1, m, N * GSL_DBL_EPSILON, "mcholesky_decomp scaled hilbert");
         }
 
       gsl_matrix_free(m);
@@ -406,16 +400,8 @@ test_mcholesky_solve_eps(const int scale, const gsl_matrix * m, const gsl_vector
 
   gsl_matrix_memcpy(u, m);
 
-  if (scale)
-    {
-      s += gsl_linalg_mcholesky_decomp2(u, perm, NULL, S);
-      s += gsl_linalg_mcholesky_solve2(u, perm, S, rhs, x);
-    }
-  else
-    {
-      s += gsl_linalg_mcholesky_decomp(u, perm, NULL);
-      s += gsl_linalg_mcholesky_solve(u, perm, rhs, x);
-    }
+  s += gsl_linalg_mcholesky_decomp(u, perm, NULL);
+  s += gsl_linalg_mcholesky_solve(u, perm, rhs, x);
 
   for (i = 0; i < N; i++)
     {

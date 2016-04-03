@@ -285,6 +285,7 @@ GSL_VAR const gsl_multifit_nlinear_type * gsl_multifit_nlinear_trust;
 GSL_VAR const gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_lm;
 GSL_VAR const gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_dogleg;
 GSL_VAR const gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_ddogleg;
+GSL_VAR const gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_subspace2D;
 GSL_VAR const gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_cgst;
 
 /* parameter update methods */

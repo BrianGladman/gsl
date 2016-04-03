@@ -102,6 +102,7 @@ static test_fdf_problem *test_problems[] = {
    * IMM Department of Mathematical Modeling, Tech. Report
    * IMM-REP-2000-17, 2000.
    */
+#if 0
   &lin1_problem,       /* 1 */
   &lin2_problem,       /* 2 */
   &lin3_problem,       /* 3 */
@@ -164,6 +165,7 @@ static test_fdf_problem *test_problems[] = {
   &lin3_problem,         /* 34 */
 
   /* NIST test cases */
+#endif/*XXX*/
   &kirby2a_problem,
   &kirby2b_problem,
   &hahn1a_problem,

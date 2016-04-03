@@ -20,6 +20,7 @@ The functions described in this chapter are declared in the header file
 * Singular Value Decomposition::  
 * Cholesky Decomposition::      
 * Pivoted Cholesky Decomposition::      
+* Modified Cholesky Decomposition::      
 * Tridiagonal Decomposition of Real Symmetric Matrices::  
 * Tridiagonal Decomposition of Hermitian Matrices::  
 * Hessenberg Decomposition of Real Matrices::
@@ -730,6 +731,90 @@ decomposition of @math{S A S} held in the matrix @var{LDLT}, permutation
 @code{gsl_linalg_pcholesky_decomp2}.
 On input, @var{x} contains the right hand side vector @math{b} which is
 replaced by the solution vector on output.
+@end deftypefun
+
+@node Modified Cholesky Decomposition
+@section Modified Cholesky Decomposition
+@cindex Cholesky decomposition, modified
+@cindex Modified Cholesky Decomposition
+
+The modified Cholesky decomposition is suitable for solving systems
+@math{A x = b} where @math{A} is a symmetric indefinite matrix. Such
+matrices arise in nonlinear optimization algorithms. The standard
+Cholesky decomposition requires a positive definite matrix and would
+fail in this case. Instead of resorting to a method like QR or SVD,
+which do not take into account the symmetry of the matrix, we can
+instead introduce a small perturbation to the matrix @math{A} to
+make it positive definite, and then use a Cholesky decomposition on
+the perturbed matrix. The resulting decomposition satisfies
+@tex
+\beforedisplay
+$$
+P (A + E) P^T = L D L^T
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+P (A + E) P^T = L D L^T
+@end example
+
+@end ifinfo
+where @math{P} is a permutation matrix, @math{E} is a diagonal
+perturbation matrix, @math{L} is unit lower triangular, and
+@math{D} is diagonal. If @math{A} is sufficiently positive
+definite, then the perturbation matrix @math{E} will be zero
+and this method is equivalent to the pivoted Cholesky algorithm.
+For indefinite matrices, the perturbation matrix @math{E} is
+computed to ensure that @math{A + E} is positive definite and
+well conditioned.
+
+@deftypefun int gsl_linalg_mcholesky_decomp (gsl_matrix * @var{A}, gsl_permutation * @var{p}, gsl_vector * @var{E})
+This function factors the symmetric, indefinite square matrix
+@var{A} into the Modified Cholesky decomposition @math{P (A + E) P^T = L D L^T}.
+On input, the values from the diagonal and lower-triangular part of the matrix @var{A} are
+used to construct the factorization, while the upper triangular part is used as temporary storage.
+On output the diagonal of the input matrix @var{A} stores the diagonal
+elements of @math{D}, and the lower triangular portion of @var{A}
+contains the matrix @math{L}. Since @math{L} has ones on its diagonal these
+do not need to be explicitely stored. The permutation matrix @math{P} is
+stored in @var{p} on output. The diagonal perturbation matrix is stored in
+@var{E} on output. The parameter @var{E} may be set to NULL if it is not
+required.
+@end deftypefun
+
+@deftypefun int gsl_linalg_mcholesky_solve (const gsl_matrix * @var{LDLT}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
+This function solves the perturbed system @math{(A + E) x = b} using the Cholesky
+decomposition of @math{A + E} held in the matrix @var{LDLT} and permutation
+@var{p} which must have been previously computed by @code{gsl_linalg_mcholesky_decomp}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_mcholesky_svx (const gsl_matrix * @var{LDLT}, const gsl_permutation * @var{p}, gsl_vector * @var{x})
+This function solves the perturbed system @math{(A + E) x = b} in-place using the Cholesky
+decomposition of @math{A + E} held in the matrix @var{LDLT} and permutation
+@var{p} which must have been previously computed by @code{gsl_linalg_mcholesky_decomp}.
+On input, @var{x} contains the right hand side vector @math{b} which is
+replaced by the solution vector on output.
+@end deftypefun
+
+@deftypefun int gsl_linalg_mcholesky_decomp2 (gsl_matrix * @var{A}, gsl_permutation * @var{p}, gsl_vector * @var{E}, gsl_vector * @var{S})
+This function computes the modified Cholesky factorization of the matrix
+@math{S A S}, where the input matrix @var{A} is symmetric indefinite,
+and the diagonal scaling matrix @var{S} is computed to reduce the
+condition number of @var{A} as much as possible. See
+@ref{Cholesky Decomposition} for more information on the matrix @var{S}.
+The modified Cholesky decomposition satisfies @math{P (S A S + E) P^T = L D L^T}.
+On input, the values from the diagonal and lower-triangular part of the matrix @var{A} are
+used to construct the factorization, while the upper triangular part is used as temporary storage.
+On output the diagonal of the input matrix @var{A} stores the diagonal
+elements of @math{D}, and the lower triangular portion of @var{A}
+contains the matrix @math{L}. Since @math{L} has ones on its diagonal these
+do not need to be explicitely stored. The permutation matrix @math{P} is
+stored in @var{p} on output. The diagonal scaling transformation is stored
+in @var{S} on output. The diagonal perturbation matrix is stored in
+@var{E} on output. The parameter @var{E} may be set to NULL if it is not
+required.
 @end deftypefun
 
 @node Tridiagonal Decomposition of Real Symmetric Matrices
