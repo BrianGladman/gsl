@@ -1,4 +1,4 @@
-/* multifit_nlinear/normal.c
+/* multifit_nlinear/cholesky.c
  * 
  * Copyright (C) 2015, 2016 Patrick Alken
  * 
@@ -18,10 +18,12 @@
  */
 
 /*
- * This module calculates the solution of the linear least squares
+ * This module calculates the solution of the normal equations least squares
  * system:
  *
  * [ J^T J + mu*I ] v = -J^T f
+ *
+ * using the modified Cholesky decomposition
  */
 
 #include <config.h>
@@ -40,27 +42,27 @@ typedef struct
   gsl_matrix *work_JTJ;      /* copy of J^T J */
   gsl_vector *rhs;           /* -J^T f */
   gsl_permutation *perm;     /* permutation matrix for modified Cholesky */
-} normal_state_t;
+} cholesky_state_t;
 
-static void *normal_alloc (const size_t n, const size_t p);
-static int normal_init(const gsl_matrix * J, void * vstate);
-static int normal_presolve(const double mu, void * vstate);
-static int normal_solve(const gsl_vector * f, const gsl_vector * g,
-                        const gsl_matrix * J, gsl_vector *x, void *vstate);
-static int normal_solve_rhs(const gsl_vector * b, gsl_vector *x, normal_state_t *state);
-static int normal_regularize(const double mu, gsl_matrix * A);
+static void *cholesky_alloc (const size_t n, const size_t p);
+static int cholesky_init(const gsl_matrix * J, void * vstate);
+static int cholesky_presolve(const double mu, void * vstate);
+static int cholesky_solve(const gsl_vector * f, const gsl_vector * g,
+                          const gsl_matrix * J, gsl_vector *x, void *vstate);
+static int cholesky_solve_rhs(const gsl_vector * b, gsl_vector *x, cholesky_state_t *state);
+static int cholesky_regularize(const double mu, gsl_matrix * A);
 
 static void *
-normal_alloc (const size_t n, const size_t p)
+cholesky_alloc (const size_t n, const size_t p)
 {
-  normal_state_t *state;
+  cholesky_state_t *state;
 
   (void)n;
   
-  state = calloc(1, sizeof(normal_state_t));
+  state = calloc(1, sizeof(cholesky_state_t));
   if (state == NULL)
     {
-      GSL_ERROR_NULL ("failed to allocate normal state", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate cholesky state", GSL_ENOMEM);
     }
 
   state->JTJ = gsl_matrix_alloc(p, p);
@@ -92,9 +94,9 @@ normal_alloc (const size_t n, const size_t p)
 }
 
 static void
-normal_free(void *vstate)
+cholesky_free(void *vstate)
 {
-  normal_state_t *state = (normal_state_t *) vstate;
+  cholesky_state_t *state = (cholesky_state_t *) vstate;
 
   if (state->JTJ)
     gsl_matrix_free(state->JTJ);
@@ -112,9 +114,9 @@ normal_free(void *vstate)
 }
 
 static int
-normal_init(const gsl_matrix * J, void * vstate)
+cholesky_init(const gsl_matrix * J, void * vstate)
 {
-  normal_state_t *state = (normal_state_t *) vstate;
+  cholesky_state_t *state = (cholesky_state_t *) vstate;
 
   /* compute J^T J */
   gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, J, 0.0, state->JTJ);
@@ -123,7 +125,7 @@ normal_init(const gsl_matrix * J, void * vstate)
 }
 
 /*
-normal_presolve()
+cholesky_presolve()
   Compute the modified Cholesky decomposition of J^T J + mu * I.
 Modified Cholesky is used in case mu = 0 and there are rounding
 errors in forming J^T J which could lead to an indefinite matrix.
@@ -137,9 +139,9 @@ J^T J + mu*I
 */
 
 static int
-normal_presolve(const double mu, void * vstate)
+cholesky_presolve(const double mu, void * vstate)
 {
-  normal_state_t *state = (normal_state_t *) vstate;
+  cholesky_state_t *state = (cholesky_state_t *) vstate;
   gsl_matrix *JTJ = state->work_JTJ;
   int status;
 
@@ -147,7 +149,7 @@ normal_presolve(const double mu, void * vstate)
   gsl_matrix_tricpy('L', 1, JTJ, state->JTJ);
 
   /* augment normal equations: A -> A + mu*I */
-  status = normal_regularize(mu, JTJ);
+  status = cholesky_regularize(mu, JTJ);
   if (status)
     return status;
 
@@ -160,14 +162,14 @@ normal_presolve(const double mu, void * vstate)
 }
 
 /*
-normal_solve()
+cholesky_solve()
   Compute (J^T J + mu D^T D) x = -J^T f
 
 Inputs: f      - right hand side vector f
         g      - J^T f (can be NULL)
         J      - Jacobian matrix
         x      - (output) solution vector
-        vstate - normal workspace
+        vstate - cholesky workspace
 
 Notes:
 1) If g is not NULL, it is assumed to equal J^T f
@@ -175,15 +177,15 @@ Notes:
 */
 
 static int
-normal_solve(const gsl_vector * f, const gsl_vector * g,
+cholesky_solve(const gsl_vector * f, const gsl_vector * g,
              const gsl_matrix * J, gsl_vector *x, void *vstate)
 {
-  normal_state_t *state = (normal_state_t *) vstate;
+  cholesky_state_t *state = (cholesky_state_t *) vstate;
   int status;
 
   if (g != NULL)
     {
-      status = normal_solve_rhs(g, x, state);
+      status = cholesky_solve_rhs(g, x, state);
       if (status)
         return status;
 
@@ -195,7 +197,7 @@ normal_solve(const gsl_vector * f, const gsl_vector * g,
       /* compute rhs = -J^T f */
       gsl_blas_dgemv(CblasTrans, -1.0, J, f, 0.0, state->rhs);
 
-      status = normal_solve_rhs(state->rhs, x, state);
+      status = cholesky_solve_rhs(state->rhs, x, state);
       if (status)
         return status;
     }
@@ -205,7 +207,7 @@ normal_solve(const gsl_vector * f, const gsl_vector * g,
 
 /* solve: (J^T J + mu D^T D) x = b */
 static int
-normal_solve_rhs(const gsl_vector * b, gsl_vector *x, normal_state_t *state)
+cholesky_solve_rhs(const gsl_vector * b, gsl_vector *x, cholesky_state_t *state)
 {
   int status;
   gsl_matrix *JTJ = state->work_JTJ;
@@ -219,7 +221,7 @@ normal_solve_rhs(const gsl_vector * b, gsl_vector *x, normal_state_t *state)
 
 /* A <- A + mu*I */
 static int
-normal_regularize(const double mu, gsl_matrix * A)
+cholesky_regularize(const double mu, gsl_matrix * A)
 {
   if (mu != 0.0)
     {
@@ -230,14 +232,14 @@ normal_regularize(const double mu, gsl_matrix * A)
   return GSL_SUCCESS;
 }
 
-static const gsl_multifit_nlinear_solver normal_type =
+static const gsl_multifit_nlinear_solver cholesky_type =
 {
-  "normal",
-  normal_alloc,
-  normal_init,
-  normal_presolve,
-  normal_solve,
-  normal_free
+  "cholesky",
+  cholesky_alloc,
+  cholesky_init,
+  cholesky_presolve,
+  cholesky_solve,
+  cholesky_free
 };
 
-const gsl_multifit_nlinear_solver *gsl_multifit_nlinear_solver_normal = &normal_type;
+const gsl_multifit_nlinear_solver *gsl_multifit_nlinear_solver_cholesky = &cholesky_type;

@@ -57,6 +57,7 @@ typedef struct
 
   void *trs_state;           /* workspace for trust region subproblem */
   void *update_state;        /* workspace for trust region update method */
+  void *solver_state;        /* workspace for linear least squares solver */
 
   double avratio;            /* current |a| / |v| */
 
@@ -152,6 +153,12 @@ trust_alloc (const gsl_multifit_nlinear_parameters * params,
       GSL_ERROR_NULL ("failed to allocate space for update state", GSL_ENOMEM);
     }
 
+  state->solver_state = (params->solver->alloc)(n, p);
+  if (state->solver_state == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for solver state", GSL_ENOMEM);
+    }
+
   state->JTJ = gsl_matrix_alloc(p, p);
   if (state->JTJ == NULL)
     {
@@ -201,6 +208,9 @@ trust_free(void *vstate)
 
   if (state->update_state)
     (params->update->free)(state->update_state);
+
+  if (state->solver_state)
+    (params->solver->free)(state->solver_state);
 
   if (state->JTJ)
     gsl_matrix_free(state->JTJ);
@@ -265,7 +275,8 @@ trust_init(void *vstate, const gsl_vector *swts,
   /* initialize trust region method solver */
   {
     const gsl_multifit_nlinear_trust_state trust_state = { x, f, g, J, state->diag,
-                                                           swts, &(state->mu), params, fdf,
+                                                           swts, &(state->mu), params,
+                                                           state->solver_state, fdf,
                                                            &(state->avratio) };
 
     /* only scaled J/g should be passed to TRS */
@@ -330,7 +341,8 @@ trust_iterate(void *vstate, const gsl_vector *swts,
 
   /* collect all state parameters needed by low level methods */
   const gsl_multifit_nlinear_trust_state trust_state = { x, f, g, J, state->diag,
-                                                         swts, &(state->mu), params, fdf,
+                                                         swts, &(state->mu), params,
+                                                         state->solver_state, fdf,
                                                          &(state->avratio) };
 
   gsl_vector *x_trial = state->x_trial;       /* trial x + dx */
@@ -550,7 +562,8 @@ trust_calc_rho(const gsl_vector * f, const gsl_vector * f_trial,
   const gsl_multifit_nlinear_parameters *params = &(state->params);
   const gsl_multifit_nlinear_trs *trs = params->trs;
   const gsl_multifit_nlinear_trust_state trust_state = { NULL, f, g, J, state->diag,
-                                                         NULL, &(state->mu), params, NULL,
+                                                         NULL, &(state->mu), params,
+                                                         state->solver_state, NULL,
                                                          &(state->avratio) };
   const double normf = gsl_blas_dnrm2(f);
   const double normf_trial = gsl_blas_dnrm2(f_trial);

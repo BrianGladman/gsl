@@ -151,6 +151,7 @@ typedef struct
   const gsl_vector * sqrt_wts;      /* sqrt(diag(W)) or NULL for unweighted */
   const double *mu;                 /* LM parameter */
   const gsl_multifit_nlinear_parameters * params;
+  void *solver_state;               /* workspace for linear least squares solver */
   gsl_multifit_nlinear_fdf * fdf;
   double *avratio;                  /* |a| / |v| */
 } gsl_multifit_nlinear_trust_state;
@@ -298,7 +299,7 @@ GSL_VAR const gsl_multifit_nlinear_scale * gsl_multifit_nlinear_scale_marquardt;
 GSL_VAR const gsl_multifit_nlinear_scale * gsl_multifit_nlinear_scale_more;
 
 /* linear solvers */
-GSL_VAR const gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_normal;
+GSL_VAR const gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_cholesky;
 GSL_VAR const gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_qr;
 GSL_VAR const gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_svd;
 

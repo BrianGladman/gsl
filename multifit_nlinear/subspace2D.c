@@ -27,6 +27,8 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_poly.h>
 
+#include "oct.c"
+
 /*
  * This module implements a 2D subspace trust region subproblem method,
  * as outlined in
@@ -116,6 +118,7 @@ typedef struct
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
   gsl_matrix *W;             /* orthonormal basis for 2D subspace, p-by-2 */
+  gsl_matrix *J;             /* copy of Jacobian matrix, n-by-p */
   gsl_vector *tau;           /* Householder scalars */
   gsl_vector *subg;          /* subspace gradient = W^T g, 2-by-1 */
   gsl_matrix *subB;          /* subspace Hessian = W^T B W, 2-by-2 */
@@ -126,8 +129,6 @@ typedef struct
   double normg;              /* || subg || */
   double term0;              /* g^T adj(B)^T adj(B) g */
   double term1;              /* g^T adj(B)^T g */
-
-  void *solver_state;        /* workspace for linear solver */
 
   size_t rank;               /* rank of [ dx_sd, dx_gn ] matrix */
 
@@ -189,16 +190,16 @@ subspace2D_alloc (const void * params, const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for workn", GSL_ENOMEM);
     }
 
-  state->solver_state = (mparams->solver->alloc)(n, p);
-  if (state->solver_state == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for solver state", GSL_ENOMEM);
-    }
-
   state->W = gsl_matrix_alloc(p, 2);
   if (state->W == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for W", GSL_ENOMEM);
+    }
+
+  state->J = gsl_matrix_alloc(n, p);
+  if (state->J == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for J", GSL_ENOMEM);
     }
 
   state->tau = gsl_vector_alloc(2);
@@ -243,7 +244,6 @@ static void
 subspace2D_free(void *vstate)
 {
   subspace2D_state_t *state = (subspace2D_state_t *) vstate;
-  const gsl_multifit_nlinear_parameters *params = &(state->params);
 
   if (state->dx_gn)
     gsl_vector_free(state->dx_gn);
@@ -257,11 +257,11 @@ subspace2D_free(void *vstate)
   if (state->workn)
     gsl_vector_free(state->workn);
 
-  if (state->solver_state)
-    (params->solver->free)(state->solver_state);
-
   if (state->W)
     gsl_matrix_free(state->W);
+
+  if (state->J)
+    gsl_matrix_free(state->J);
 
   if (state->tau)
     gsl_vector_free(state->tau);
@@ -300,29 +300,6 @@ subspace2D_init(const void *vtrust_state, void *vstate)
   return GSL_SUCCESS;
 }
 
-/*XXX*/
-static size_t
-qr_nonsing (const gsl_matrix * r)
-{
-  /* Count the number of nonsingular entries. Returns the index of the
-     first entry which is singular. */
-
-  size_t n = r->size2;
-  size_t i;
-
-  for (i = 0; i < n; i++)
-    {
-      double rii = gsl_matrix_get (r, i, i);
-
-      if (rii == 0)
-        {
-          break;
-        }
-    }
-
-  return i;
-}
-
 /*
 subspace2D_preloop()
   Initialize subspace2D method prior to iteration loop.
@@ -357,12 +334,12 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
   int signum;
 
   /* initialize linear least squares solver */
-  status = (params->solver->init)(trust_state->J, state->solver_state);
+  status = (params->solver->init)(trust_state->J, trust_state->solver_state);
   if (status)
     return status;
 
   /* prepare the linear solver to compute Gauss-Newton step */
-  status = (params->solver->presolve)(0.0, state->solver_state);
+  status = (params->solver->presolve)(0.0, trust_state->solver_state);
   if (status)
     return status;
 
@@ -371,7 +348,7 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
                                    trust_state->g,
                                    trust_state->J,
                                    state->dx_gn,
-                                   state->solver_state);
+                                   trust_state->solver_state);
   if (status)
     return status;
 
@@ -422,10 +399,12 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
        * subg = W^T g
        * subB = W^T B W where B = J^T J
        */
+      const size_t p = state->p;
       size_t i;
-      gsl_matrix *J = gsl_matrix_alloc(state->n, state->p); /* XXX */
-      gsl_matrix_view JW = gsl_matrix_submatrix(J, 0, 0, state->n, GSL_MIN(2, state->p));
+      gsl_matrix_view JW = gsl_matrix_submatrix(state->J, 0, 0, state->n, GSL_MIN(2, p));
       double B00, B10, B11, g0, g1;
+
+      /* compute subg */
 
       gsl_vector_memcpy(state->workp, trust_state->g);
       gsl_linalg_QR_QTvec(state->W, state->tau, state->workp);
@@ -436,8 +415,8 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
           gsl_vector_set(state->subg, i, gi);
         }
 
-      gsl_matrix_memcpy(J, trust_state->J);
-      gsl_linalg_QR_matQ(state->W, state->tau, J);
+      gsl_matrix_memcpy(state->J, trust_state->J);
+      gsl_linalg_QR_matQ(state->W, state->tau, state->J);
       gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &JW.matrix, 0.0, state->subB);
 
       B00 = gsl_matrix_get(state->subB, 0, 0);
@@ -458,8 +437,6 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
 
       /* g^T adj(B)^T g */
       state->term1 = B11 * g0 * g0 + g1 * (B00*g1 - 2*B10*g0);
-
-      gsl_matrix_free(J);
     }
 
   return GSL_SUCCESS;
@@ -477,9 +454,9 @@ static int
 subspace2D_step(const void * vtrust_state, const double delta,
                 gsl_vector * dx, void * vstate)
 {
-  const gsl_multifit_nlinear_trust_state *trust_state =
-    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   subspace2D_state_t *state = (subspace2D_state_t *) vstate;
+
+  (void) vtrust_state;
 
   if (state->norm_gn <= delta)
     {
@@ -564,8 +541,7 @@ subspace2D_step(const void * vtrust_state, const double delta,
         }
       else
         {
-          /*XXX*/
-          fprintf(stderr, "poly solve failed\n");
+          GSL_ERROR ("gsl_poly_complex_solve failed", status);
         }
     }
 

@@ -53,8 +53,6 @@ typedef struct
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
 
-  void *solver_state;        /* workspace for linear solver */
-
   /* tunable parameters */
   gsl_multifit_nlinear_parameters params;
 } dogleg_state_t;
@@ -109,12 +107,6 @@ dogleg_alloc (const void * params, const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for workn", GSL_ENOMEM);
     }
 
-  state->solver_state = (mparams->solver->alloc)(n, p);
-  if (state->solver_state == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for solver state", GSL_ENOMEM);
-    }
-
   state->n = n;
   state->p = p;
   state->params = *mparams;
@@ -126,7 +118,6 @@ static void
 dogleg_free(void *vstate)
 {
   dogleg_state_t *state = (dogleg_state_t *) vstate;
-  const gsl_multifit_nlinear_parameters *params = &(state->params);
 
   if (state->dx_gn)
     gsl_vector_free(state->dx_gn);
@@ -139,9 +130,6 @@ dogleg_free(void *vstate)
 
   if (state->workn)
     gsl_vector_free(state->workn);
-
-  if (state->solver_state)
-    (params->solver->free)(state->solver_state);
 
   free(state);
 }
@@ -190,12 +178,12 @@ dogleg_preloop(const void * vtrust_state, void * vstate)
   double alpha; /* ||g||^2 / ||Jg||^2 */
 
   /* initialize linear least squares solver */
-  status = (params->solver->init)(trust_state->J, state->solver_state);
+  status = (params->solver->init)(trust_state->J, trust_state->solver_state);
   if (status)
     return status;
 
   /* prepare the linear solver to compute Gauss-Newton step */
-  status = (params->solver->presolve)(0.0, state->solver_state);
+  status = (params->solver->presolve)(0.0, trust_state->solver_state);
   if (status)
     return status;
 
@@ -204,7 +192,7 @@ dogleg_preloop(const void * vtrust_state, void * vstate)
                                    trust_state->g,
                                    trust_state->J,
                                    state->dx_gn,
-                                   state->solver_state);
+                                   trust_state->solver_state);
   if (status)
     return status;
 

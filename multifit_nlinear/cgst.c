@@ -47,9 +47,6 @@ typedef struct
   gsl_vector *workn;         /* workspace, length n */
   double normg;              /* || D g || */
 
-  void *update_state;        /* workspace for parameter update method */
-  void *solver_state;        /* workspace for linear solver */
-
   double cgtol;              /* tolerance for CG solution */
   size_t cgmaxit;            /* maximum CG iterations */
 
@@ -118,18 +115,6 @@ cgst_alloc (const void * params, const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for fvv", GSL_ENOMEM);
     }
 
-  state->update_state = (mparams->update->alloc)();
-  if (state->update_state == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for update state", GSL_ENOMEM);
-    }
-
-  state->solver_state = (mparams->solver->alloc)(n, p);
-  if (state->solver_state == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for solver state", GSL_ENOMEM);
-    }
-
   state->n = n;
   state->p = p;
   state->params = *mparams;
@@ -141,7 +126,6 @@ static void
 cgst_free(void *vstate)
 {
   cgst_state_t *state = (cgst_state_t *) vstate;
-  const gsl_multifit_nlinear_parameters *params = &(state->params);
 
   if (state->z)
     gsl_vector_free(state->z);
@@ -160,12 +144,6 @@ cgst_free(void *vstate)
 
   if (state->fvv)
     gsl_vector_free(state->fvv);
-
-  if (state->update_state)
-    (params->update->free)(state->update_state);
-
-  if (state->solver_state)
-    (params->solver->free)(state->solver_state);
 
   free(state);
 }

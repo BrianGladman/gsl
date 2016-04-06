@@ -50,8 +50,6 @@ typedef struct
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
 
-  void *solver_state;        /* workspace for linear solver */
-
   double avratio;            /* current |a| / |v| */
 
   /* tunable parameters */
@@ -111,12 +109,6 @@ lm_alloc (const void * params, const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for acc", GSL_ENOMEM);
     }
 
-  state->solver_state = (mparams->solver->alloc)(n, p);
-  if (state->solver_state == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for solver state", GSL_ENOMEM);
-    }
-
   state->n = n;
   state->p = p;
   state->params = *mparams;
@@ -128,7 +120,6 @@ static void
 lm_free(void *vstate)
 {
   lm_state_t *state = (lm_state_t *) vstate;
-  const gsl_multifit_nlinear_parameters *params = &(state->params);
 
   if (state->workp)
     gsl_vector_free(state->workp);
@@ -144,9 +135,6 @@ lm_free(void *vstate)
 
   if (state->acc)
     gsl_vector_free(state->acc);
-
-  if (state->solver_state)
-    (params->solver->free)(state->solver_state);
 
   free(state);
 }
@@ -188,11 +176,12 @@ lm_preloop(const void * vtrust_state, void * vstate)
   int status;
   const gsl_multifit_nlinear_trust_state *trust_state =
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
-  lm_state_t *state = (lm_state_t *) vstate;
   const gsl_multifit_nlinear_parameters *params = trust_state->params;
 
+  (void)vstate;
+
   /* initialize linear least squares solver */
-  status = (params->solver->init)(trust_state->J, state->solver_state);
+  status = (params->solver->init)(trust_state->J, trust_state->solver_state);
   if (status)
     return status;
 
@@ -222,7 +211,7 @@ lm_step(const void * vtrust_state, const double delta,
   (void)delta;
 
   /* prepare the linear solver with current LM parameter mu */
-  status = (params->solver->presolve)(mu, state->solver_state);
+  status = (params->solver->presolve)(mu, trust_state->solver_state);
   if (status)
     return status;
 
@@ -234,7 +223,7 @@ lm_step(const void * vtrust_state, const double delta,
                                    trust_state->g,
                                    trust_state->J,
                                    state->vel,
-                                   state->solver_state);
+                                   trust_state->solver_state);
   if (status)
     return status;
 
@@ -267,7 +256,7 @@ lm_step(const void * vtrust_state, const double delta,
                                        NULL,
                                        trust_state->J,
                                        state->acc,
-                                       state->solver_state);
+                                       trust_state->solver_state);
       if (status)
         return status;
 

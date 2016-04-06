@@ -49,6 +49,7 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_permute_vector.h>
 
+#include "common.c"
 #include "qrsolv.c"
 
 typedef struct
@@ -68,7 +69,6 @@ static int qr_init(const gsl_matrix * J, void * vstate);
 static int qr_presolve(const double mu, void * vstate);
 static int qr_solve(const gsl_vector * f, const gsl_vector * g,
                     const gsl_matrix *J, gsl_vector *x, void *vstate);
-static size_t qr_nonsing (const gsl_matrix * r);
 static int qr_newton (const gsl_matrix * r, const gsl_permutation * perm,
                       const gsl_vector * qtf, gsl_vector * x);
 
@@ -248,28 +248,6 @@ qr_solve(const gsl_vector * f, const gsl_vector * g,
   (void)J; /* avoid unused parameter warning */
 
   return status;
-}
-
-static size_t
-qr_nonsing (const gsl_matrix * r)
-{
-  /* Count the number of nonsingular entries. Returns the index of the
-     first entry which is singular. */
-
-  size_t n = r->size2;
-  size_t i;
-
-  for (i = 0; i < n; i++)
-    {
-      double rii = gsl_matrix_get (r, i, i);
-
-      if (rii == 0)
-        {
-          break;
-        }
-    }
-
-  return i;
 }
 
 /* compute Gauss-Newton direction */

@@ -196,6 +196,7 @@ independent variable of any data to be fitted is denoted by @math{t}.
 * Nonlinear Least-Squares TRS Levenberg-Marquardt::
 * Nonlinear Least-Squares TRS Dogleg::
 * Nonlinear Least-Squares TRS Double Dogleg::
+* Nonlinear Least-Squares TRS 2D Subspace::
 * Nonlinear Least-Squares TRS Steihaug-Toint Conjugate Gradient::
 @end menu
 
@@ -211,7 +212,7 @@ where @math{J_k = J(x_k)}.
 @cindex nonlinear least squares, levenberg-marquardt
 
 There is a theorem which states that if @math{\delta_k} is a solution
-to the trust region subproblem stated above, then there exists
+to the trust region subproblem given above, then there exists
 @math{\mu_k \ge 0} such that
 @tex
 \beforedisplay
@@ -336,6 +337,22 @@ between the Cauchy point and the scaled Gauss-Newton point.
 The scaling is calculated to ensure that the reduction
 in the model @math{m_k} is about the same as the reduction
 provided by the Cauchy point.
+
+@node Nonlinear Least-Squares TRS 2D Subspace
+@subsection Two Dimensional Subspace
+
+The dogleg methods restrict the search for the TRS solution
+to a 1D curve defined by the Cauchy and Gauss-Newton points.
+An improvement to this is to search for a solution using
+the full two dimensional subspace spanned by the Cauchy
+and Gauss-Newton directions. The dogleg path is of course
+inside this subspace, and so this method solves the TRS
+at least as accurately as the dogleg methods. Since this
+method searches a larger subspace for a solution, it can
+converge more quickly than dogleg on some problems. Because
+the subspace is only two dimensional, this method is
+very efficient and the main computation per iteration is
+to determine the Gauss-Newton point.
 
 @node Nonlinear Least-Squares TRS Steihaug-Toint Conjugate Gradient
 @subsection Steihaug-Toint Conjugate Gradient
@@ -467,9 +484,8 @@ may work well on certain classes of problems.
 @deftypevr {Parameter} {const gsl_multifit_nlinear_solver *} solver
 
 @noindent
-As discussed in @ref{Nonlinear Least-Squares Overview}
-the following linear least squares system is solved on each iteration
-to determine the next step:
+Solving the trust region subproblem on each iteration almost always
+requires the solution of the following linear least squares system
 @tex
 \beforedisplay
 $$
@@ -506,11 +522,11 @@ This method solves the system using a rank revealing QR
 decomposition of the Jacobian @math{J}. This method will
 produce reliable solutions in cases where the Jacobian
 is rank deficient or near-singular but does require about
-twice as many operations as the normal equations method discussed
+twice as many operations as the Cholesky method discussed
 below.
 @end defvr
 
-@defvr {Option} gsl_multifit_nlinear_solver_normal
+@defvr {Option} gsl_multifit_nlinear_solver_cholesky
 This method solves the alternate normal equations problem
 @tex
 \beforedisplay
@@ -536,6 +552,13 @@ of the matrix using Jacobi preconditioning, but for highly
 ill-conditioned problems the QR approach is better. If it is
 known that the Jacobian matrix is well conditioned, this method
 is accurate and will perform faster than the QR approach.
+@end defvr
+
+@defvr {Default} gsl_multifit_nlinear_solver_svd
+This method solves the system using a singular value
+decomposition of the Jacobian @math{J}. This method will
+produce the most reliable solutions for ill-conditioned Jacobians
+but is also the slowest solver method.
 @end defvr
 
 @end deftypevr
@@ -1980,6 +2003,7 @@ levenberg-marquardt  20     27     21     1.9874e+02    3.9789e-01   1.4844e+08 
 levenberg-marquardt  27     36     28     1.9874e+02    3.9789e-01   3.4719e+07    (3.14e+00, 2.27e+00)
 dogleg               23     64     23     1.9874e+02    3.9789e-01   inf           (3.14e+00, 2.28e+00)
 double-dogleg        24     69     24     1.9874e+02    3.9789e-01   3.1929e+07    (3.14e+00, 2.27e+00)
+2D-subspace          23     54     24     1.9874e+02    3.9789e-01   5.1824e+07    (3.14e+00, 2.27e+00)
 steihaug-toint       34     86     32     1.9874e+02    3.9789e-01   8.8667e+02    (3.14e+00, 2.28e+00)
 @end smallexample
 
@@ -1988,9 +2012,9 @@ The first row of output above corresponds to standard Levenberg-Marquardt, while
 the second row includes geodesic acceleration. We see that the standard LM method
 converges to the minimum at @math{(-\pi,12.275)} and also uses the least number
 of iterations and Jacobian evaluations. All other methods converge to the minimum
-@math{(\pi,2.275)} and among these the dogleg methods perform the best in terms
-of number of Jacobian evaluations. We see that @math{J} is fairly ill-conditioned
-at both minima, indicating that the QR solver is the best choice for this problem.
+@math{(\pi,2.275)} and perform similarly in terms of number of Jacobian evaluations.
+We see that @math{J} is fairly ill-conditioned
+at both minima, indicating that the QR (or SVD) solver is the best choice for this problem.
 Since there are only two parameters in this optimization problem, we can easily
 visualize the paths taken by each method, which are shown in the figure below.
 The figure shows contours of the cost function @math{\Phi(x_1,x_2)} which exhibits
