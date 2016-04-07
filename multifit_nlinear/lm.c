@@ -181,7 +181,7 @@ lm_preloop(const void * vtrust_state, void * vstate)
   (void)vstate;
 
   /* initialize linear least squares solver */
-  status = (params->solver->init)(trust_state->J, trust_state->solver_state);
+  status = (params->solver->init)(trust_state, trust_state->solver_state);
   if (status)
     return status;
 
@@ -211,18 +211,18 @@ lm_step(const void * vtrust_state, const double delta,
   (void)delta;
 
   /* prepare the linear solver with current LM parameter mu */
-  status = (params->solver->presolve)(mu, trust_state->solver_state);
+  status = (params->solver->presolve)(mu, trust_state, trust_state->solver_state);
   if (status)
     return status;
 
   /*
    * solve: [     J      ] v = - [ f ]
-   *        [ sqrt(mu)*I ]       [ 0 ]
+   *        [ sqrt(mu)*D ]       [ 0 ]
    */
   status = (params->solver->solve)(trust_state->f,
                                    trust_state->g,
-                                   trust_state->J,
                                    state->vel,
+                                   trust_state,
                                    trust_state->solver_state);
   if (status)
     return status;
@@ -231,16 +231,12 @@ lm_step(const void * vtrust_state, const double delta,
     {
       double anorm, vnorm;
 
-      /* compute unscaled velocity, v := D^{-1} v for fvv computation */
-      gsl_vector_div(state->vel, trust_state->diag);
-
       /* compute geodesic acceleration */
       status = gsl_multifit_nlinear_eval_fvv(params->h_fvv,
                                              trust_state->x,
                                              state->vel,
                                              trust_state->f,
                                              trust_state->J,
-                                             trust_state->diag,
                                              trust_state->sqrt_wts,
                                              trust_state->fdf,
                                              state->fvv,
@@ -250,18 +246,15 @@ lm_step(const void * vtrust_state, const double delta,
 
       /*
        * solve: [     J      ] a = - [ fvv ]
-       *        [ sqrt(mu)*I ]       [  0  ]
+       *        [ sqrt(mu)*D ]       [  0  ]
        */
       status = (params->solver->solve)(state->fvv,
                                        NULL,
-                                       trust_state->J,
                                        state->acc,
+                                       trust_state,
                                        trust_state->solver_state);
       if (status)
         return status;
-
-      /* compute scaled velocity, v := D v for step computation below */
-      gsl_vector_mul(state->vel, trust_state->diag);
 
       anorm = gsl_blas_dnrm2(state->acc);
       vnorm = gsl_blas_dnrm2(state->vel);
@@ -288,8 +281,9 @@ lm_preduction(const void * vtrust_state, const gsl_vector * dx,
   const gsl_multifit_nlinear_trust_state *trust_state =
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   lm_state_t *state = (lm_state_t *) vstate;
+  const gsl_vector *diag = trust_state->diag;
   const gsl_vector *p = state->vel;
-  const double norm_Dp = gsl_blas_dnrm2(p);
+  const double norm_Dp = scaled_enorm(diag, p);
   const double normf = gsl_blas_dnrm2(trust_state->f);
   const double mu = *(trust_state->mu);
   double norm_Jp;

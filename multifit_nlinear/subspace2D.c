@@ -334,20 +334,20 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
   int signum;
 
   /* initialize linear least squares solver */
-  status = (params->solver->init)(trust_state->J, trust_state->solver_state);
+  status = (params->solver->init)(trust_state, trust_state->solver_state);
   if (status)
     return status;
 
   /* prepare the linear solver to compute Gauss-Newton step */
-  status = (params->solver->presolve)(0.0, trust_state->solver_state);
+  status = (params->solver->presolve)(0.0, trust_state, trust_state->solver_state);
   if (status)
     return status;
 
   /* solve: J dx_gn = -f for Gauss-Newton step */
   status = (params->solver->solve)(trust_state->f,
                                    trust_state->g,
-                                   trust_state->J,
                                    state->dx_gn,
+                                   trust_state,
                                    trust_state->solver_state);
   if (status)
     return status;

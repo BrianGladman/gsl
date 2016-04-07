@@ -39,8 +39,7 @@ Inputs: h     - step size for finite difference
         x     - parameter vector, size p
         v     - geodesic velocity, size p
         f     - vector of function values f_i(x), size n
-        J     - scaled Jacobian matrix J(x) D^{-1}, n-by-p
-        diag  - diag(D) scaling matrix
+        J     - Jacobian matrix J(x), n-by-p
         swts  - data weights
         fdf   - fdf struct
         fvv   - (output) approximate second directional derivative
@@ -52,8 +51,7 @@ Return: success or error
 
 static int
 fdfvv(const double h, const gsl_vector *x, const gsl_vector *v,
-      const gsl_vector *f, const gsl_matrix *J,
-      const gsl_vector *diag, const gsl_vector *swts,
+      const gsl_vector *f, const gsl_matrix *J, const gsl_vector *swts,
       gsl_multifit_nlinear_fdf *fdf, gsl_vector *fvv, gsl_vector *work)
 {
   int status;
@@ -76,14 +74,6 @@ fdfvv(const double h, const gsl_vector *x, const gsl_vector *v,
   if (status)
     return status;
 
-  /* compute work = D v */
-  for (i = 0; i < p; ++i)
-    {
-      double di = gsl_vector_get(diag, i);
-      double vi = gsl_vector_get(v, i);
-      gsl_vector_set(work, i, di * vi);
-    }
-
   for (i = 0; i < n; ++i)
     {
       double fi = gsl_vector_get(f, i);    /* f_i(x) */
@@ -92,7 +82,7 @@ fdfvv(const double h, const gsl_vector *x, const gsl_vector *v,
       double u, fvvi;
 
       /* compute u = sum_{ij} J_{ij} D v_j */
-      gsl_blas_ddot(&row.vector, work, &u);
+      gsl_blas_ddot(&row.vector, v, &u);
 
       fvvi = (2.0 * hinv) * ((fip - fi) * hinv - u);
 
@@ -111,8 +101,7 @@ Inputs: h    - step size for finite difference
         x    - parameter vector, size p
         v    - geodesic velocity, size p
         f    - function values f_i(x), size n
-        J    - scaled Jacobian matrix J(x) D^{-1}, n-by-p
-        diag - diag(D) scaling matrix
+        J    - Jacobian matrix J(x), n-by-p
         swts - sqrt data weights (set to NULL if not needed)
         fdf  - fdf
         fvv  - (output) approximate second directional derivative
@@ -125,9 +114,8 @@ Return: success or error
 int
 gsl_multifit_nlinear_fdfvv(const double h, const gsl_vector *x, const gsl_vector *v,
                            const gsl_vector *f, const gsl_matrix *J,
-                           const gsl_vector *diag, const gsl_vector *swts,
-                           gsl_multifit_nlinear_fdf *fdf,
+                           const gsl_vector *swts, gsl_multifit_nlinear_fdf *fdf,
                            gsl_vector *fvv, gsl_vector *work)
 {
-  return fdfvv(h, x, v, f, J, diag, swts, fdf, fvv, work);
+  return fdfvv(h, x, v, f, J, swts, fdf, fvv, work);
 }

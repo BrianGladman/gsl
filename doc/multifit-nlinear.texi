@@ -5,7 +5,7 @@ This chapter describes functions for multidimensional nonlinear
 least-squares fitting.  There are generally two classes of
 algorithms for solving nonlinear least squares problems, which
 fall under line search methods and trust region methods.
-GSL currently provides only trust region methods and
+GSL currently implements only trust region methods and
 provides the user with
 full access to intermediate steps of the iteration. The user
 also has the ability to tune a number of parameters which affect
@@ -1790,7 +1790,7 @@ be outside the range of validity for Gaussian errors.
 @noindent
 Additionally, we see that the condition number of @math{J(x)} stays
 reasonably small throughout the iteration. This indicates we could
-safely switch to the normal equations solver for speed improvement,
+safely switch to the Cholesky solver for speed improvement,
 although this particular system is too small to really benefit.
 
 @iftex

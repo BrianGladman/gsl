@@ -21,14 +21,22 @@
  * This module handles the solution of the linear least squares
  * system:
  *
- * [     J      ] delta = - [ f ]
- * [ sqrt(mu)*I ]           [ 0 ]
+ * [     J      ] dx = - [ f ]
+ * [ sqrt(mu)*D ]        [ 0 ]
  *
- * using a SVD approach. The solver is organized into 4 sequential steps:
+ * using an SVD approach. The system above is transformed to "standard form"
+ * via:
  *
- * 1. init: initialize solver for a given J(x), independent of mu
- * 2. presolve: further solver initialization once mu is selected
- * 3. solve: solve LS system
+ * J~ = J D^{-1}
+ * dx~ = D dx
+ *
+ * so that
+ *
+ * [     J~     ] dx~ = - [ f ]
+ * [ sqrt(mu)*I ]         [ 0 ]
+ *
+ * can be solved with a standard SVD method, and then dx is recovered
+ * from dx~ via: dx = D^{-1} dx~
  */
 
 #include <config.h>
@@ -51,10 +59,11 @@ typedef struct
   double mu;                 /* LM parameter */
 } svd_state_t;
 
-static int svd_init(const gsl_matrix * J, void * vstate);
-static int svd_presolve(const double mu, void * vstate);
+static int svd_init(const void * vtrust_state, void * vstate);
+static int svd_presolve(const double mu, const void * vtrust_state, void * vstate);
 static int svd_solve(const gsl_vector * f, const gsl_vector * g,
-                     const gsl_matrix *J, gsl_vector *x, void *vstate);
+                     gsl_vector *x, const void * vtrust_state, void *vstate);
+static int svd_rcond(double * rcond, void * vstate);
 
 static void *
 svd_alloc (const size_t n, const size_t p)
@@ -124,32 +133,50 @@ svd_free(void *vstate)
 
 /* compute svd of J */
 static int
-svd_init(const gsl_matrix * J, void * vstate)
+svd_init(const void * vtrust_state, void * vstate)
 {
   int status;
+  const gsl_multifit_nlinear_trust_state *trust_state =
+    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   svd_state_t *state = (svd_state_t *) vstate;
+  size_t i;
 
-  gsl_matrix_memcpy(state->U, J);
+  gsl_matrix_set_zero(state->U);
+
+  /* compute U = J D^{-1} */
+  for (i = 0; i < state->p; ++i)
+    {
+      gsl_vector_const_view Ji = gsl_matrix_const_column(trust_state->J, i);
+      gsl_vector_view ui = gsl_matrix_column(state->U, i);
+      double di = gsl_vector_get(trust_state->diag, i);
+
+      gsl_blas_daxpy(1.0 / di, &Ji.vector, &ui.vector);
+    }
+
   status = gsl_linalg_SV_decomp(state->U, state->V, state->S, state->workp);
 
   return status;
 }
 
 static int
-svd_presolve(const double mu, void * vstate)
+svd_presolve(const double mu, const void * vtrust_state, void * vstate)
 {
   svd_state_t *state = (svd_state_t *) vstate;
 
   state->mu = mu;
+
+  (void)vtrust_state;
 
   return GSL_SUCCESS;
 }
 
 static int
 svd_solve(const gsl_vector * f, const gsl_vector * g,
-          const gsl_matrix *J, gsl_vector *x, void *vstate)
+          gsl_vector *x, const void * vtrust_state, void *vstate)
 {
   int status = GSL_SUCCESS;
+  const gsl_multifit_nlinear_trust_state *trust_state =
+    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   svd_state_t *state = (svd_state_t *) vstate;
   const size_t p = state->p;
   const double tol = GSL_DBL_EPSILON;
@@ -191,10 +218,10 @@ svd_solve(const gsl_vector * f, const gsl_vector * g,
       /*
        * solve:
        *
-       * [     J      ] x = -[ f ]
-       * [ sqrt(mu) I ]      [ 0 ]
+       * [  J D^{-1}  ] (D x) = -[ f ]
+       * [ sqrt(mu) I ]          [ 0 ]
        *
-       * using SVD factorization of J
+       * using SVD factorization of J D^{-1}
        */
 
       for (j = 0; j < p; ++j)
@@ -209,8 +236,23 @@ svd_solve(const gsl_vector * f, const gsl_vector * g,
   /* compute: x = V * workp */
   gsl_blas_dgemv(CblasNoTrans, 1.0, state->V, state->workp, 0.0, x);
 
-  (void)J; /* avoid unused parameter warning */
+  /* compute D^{-1} x */
+  gsl_vector_div(x, trust_state->diag);
+
   (void)g;
+
+  return status;
+}
+
+static int
+svd_rcond(double * rcond, void * vstate)
+{
+  int status = GSL_SUCCESS;
+  svd_state_t *state = (svd_state_t *) vstate;
+  double smax = gsl_vector_get(state->S, 0);
+  double smin = gsl_vector_get(state->S, state->p - 1);
+
+  *rcond = smin / smax;
 
   return status;
 }
@@ -222,6 +264,7 @@ static const gsl_multifit_nlinear_solver svd_type =
   svd_init,
   svd_presolve,
   svd_solve,
+  svd_rcond,
   svd_free
 };
 

@@ -17,12 +17,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+static double scaled_enorm (const gsl_vector * d, const gsl_vector * f);
 static void scaled_addition (const double alpha, const gsl_vector * x,
                              const double beta, const gsl_vector * y,
                              gsl_vector * z);
 static double quadratic_preduction(const gsl_vector *f, const gsl_matrix * J,
                                    const gsl_vector * dx, gsl_vector * work);
 static size_t qr_nonsing (const gsl_matrix * r);
+
+/* compute || diag(d) f || */
+static double
+scaled_enorm (const gsl_vector * d, const gsl_vector * f)
+{
+  double e2 = 0;
+  size_t i, n = f->size;
+  for (i = 0; i < n; i++)
+    {
+      double fi = gsl_vector_get (f, i);
+      double di = gsl_vector_get (d, i);
+      double u = di * fi;
+      e2 += u * u;
+    }
+  return sqrt (e2);
+}
 
 /* compute z = alpha*x + beta*y */
 static void

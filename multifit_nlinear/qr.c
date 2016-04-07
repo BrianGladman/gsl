@@ -24,19 +24,7 @@
  * [     J      ] v = - [ f ]
  * [ sqrt(mu)*D ]       [ 0 ]
  *
- * using a QR approach. The solver is organized into 4 sequential steps:
- *
- * 1. init: initialize solver for a given f(x) and J(x), independent of mu
- * 2. presolve: further solver initialization once mu is selected
- * 3. solve_vel: solve above linear system for geodesic velocity (this is the
- *               standard LM step)
- * 4. solve_acc: solve a similar linear system for the geodesic acceleration:
- *
- * [     J      ] a = - [ fvv ]
- * [ sqrt(mu)*D ]       [  0  ]
- *
- * only the right hand side is different in this case (instead of f(x) we
- * use the second directional derivative in the velocity direction).
+ * using a QR approach.
  */
 
 #include <config.h>
@@ -59,16 +47,15 @@ typedef struct
   gsl_matrix *Q;             /* Householder reflectors for J */
   gsl_permutation *perm;     /* permutation matrix */
   gsl_vector *qtf;           /* Q^T f */
-  gsl_vector *diag;          /* scaling matrix D */
   gsl_vector *workn;         /* workspace, length n */
   gsl_vector *workp;         /* workspace, length p */
   double mu;                 /* LM parameter */
 } qr_state_t;
 
-static int qr_init(const gsl_matrix * J, void * vstate);
-static int qr_presolve(const double mu, void * vstate);
+static int qr_init(const void * vtrust_state, void * vstate);
+static int qr_presolve(const double mu, const void * vtrust_state, void * vstate);
 static int qr_solve(const gsl_vector * f, const gsl_vector * g,
-                    const gsl_matrix *J, gsl_vector *x, void *vstate);
+                    gsl_vector *x, const void * vtrust_state, void *vstate);
 static int qr_newton (const gsl_matrix * r, const gsl_permutation * perm,
                       const gsl_vector * qtf, gsl_vector * x);
 
@@ -125,13 +112,6 @@ qr_alloc (const size_t n, const size_t p)
                       GSL_ENOMEM);
     }
 
-  state->diag = gsl_vector_alloc(p);
-  if (state->diag == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for diag",
-                      GSL_ENOMEM);
-    }
-
   state->workp = gsl_vector_alloc(p);
   if (state->workp == NULL)
     {
@@ -140,7 +120,6 @@ qr_alloc (const size_t n, const size_t p)
     }
 
   state->mu = 0.0;
-  gsl_vector_set_all(state->diag, 1.0);
 
   return state;
 }
@@ -165,9 +144,6 @@ qr_free(void *vstate)
   if (state->perm)
     gsl_permutation_free(state->perm);
 
-  if (state->diag)
-    gsl_vector_free(state->diag);
-
   if (state->workn)
     gsl_vector_free(state->workn);
 
@@ -179,12 +155,14 @@ qr_free(void *vstate)
 
 /* compute J = Q R PT */
 static int
-qr_init(const gsl_matrix * J, void * vstate)
+qr_init(const void * vtrust_state, void * vstate)
 {
+  const gsl_multifit_nlinear_trust_state *trust_state =
+    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   qr_state_t *state = (qr_state_t *) vstate;
   int signum;
 
-  gsl_matrix_memcpy(state->R, J);
+  gsl_matrix_memcpy(state->R, trust_state->J);
   gsl_linalg_QRPT_decomp(state->R, state->tau, state->perm,
                          &signum, state->workp);
 
@@ -195,18 +173,20 @@ qr_init(const gsl_matrix * J, void * vstate)
 }
 
 static int
-qr_presolve(const double mu, void * vstate)
+qr_presolve(const double mu, const void * vtrust_state, void * vstate)
 {
   qr_state_t *state = (qr_state_t *) vstate;
 
   state->mu = mu;
+
+  (void) vtrust_state;
 
   return GSL_SUCCESS;
 }
 
 static int
 qr_solve(const gsl_vector * f, const gsl_vector * g,
-         const gsl_matrix *J, gsl_vector *x, void *vstate)
+         gsl_vector *x, const void * vtrust_state, void *vstate)
 {
   qr_state_t *state = (qr_state_t *) vstate;
   int status;
@@ -236,16 +216,18 @@ qr_solve(const gsl_vector * f, const gsl_vector * g,
        * using QRPT factorization of J
        */
 
+      const gsl_multifit_nlinear_trust_state *trust_state =
+        (const gsl_multifit_nlinear_trust_state *) vtrust_state;
       double sqrt_mu = sqrt(state->mu);
 
-      status = qrsolv(state->R, state->perm, sqrt_mu, state->diag,
+      status = qrsolv(state->R, state->perm, sqrt_mu, trust_state->diag,
                       state->qtf, x, state->workp, state->workn);
     }
 
   /* reverse step to go downhill */
   gsl_vector_scale(x, -1.0);
 
-  (void)J; /* avoid unused parameter warning */
+  (void)vtrust_state; /* avoid unused parameter warning */
 
   return status;
 }
@@ -306,6 +288,7 @@ static const gsl_multifit_nlinear_solver qr_type =
   qr_init,
   qr_presolve,
   qr_solve,
+  NULL, /* XXX */
   qr_free
 };
 

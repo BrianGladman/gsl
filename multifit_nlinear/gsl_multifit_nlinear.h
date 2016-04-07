@@ -97,15 +97,28 @@ typedef struct
   int (*update) (const gsl_matrix * J, gsl_vector * diag);
 } gsl_multifit_nlinear_scale;
 
-/* linear least squares solvers */
+/*
+ * linear least squares solvers - there are three steps to
+ * solving a least squares problem using a trust region
+ * method:
+ *
+ * 1. init: called once per iteration when a new Jacobian matrix
+ *          is computed; perform factorization of Jacobian (qr,svd)
+ *          or form normal equations matrix (cholesky)
+ * 2. presolve: called each time a new LM parameter value mu is available;
+ *              used for cholesky method in order to factor
+ *              the (J^T J + mu D^T D) matrix
+ * 3. solve: solve the least square system for a given rhs
+ */
 typedef struct
 {
   const char *name;
   void * (*alloc) (const size_t n, const size_t p);
-  int (*init) (const gsl_matrix * J, void * vstate);
-  int (*presolve) (const double mu, void * vstate);
+  int (*init) (const void * vtrust_state, void * vstate);
+  int (*presolve) (const double mu, const void * vtrust_state, void * vstate);
   int (*solve) (const gsl_vector * f, const gsl_vector * g,
-                const gsl_matrix * J, gsl_vector * x, void * vstate);
+                gsl_vector * x, const void * vtrust_state, void * vstate);
+  int (*rcond) (double * rcond, void * vstate);
   void (*free) (void * vstate);
 } gsl_multifit_nlinear_solver;
 
@@ -248,7 +261,6 @@ gsl_multifit_nlinear_eval_fvv(const double h,
                               const gsl_vector *v,
                               const gsl_vector *f,
                               const gsl_matrix *J,
-                              const gsl_vector *diag,
                               const gsl_vector *swts,
                               gsl_multifit_nlinear_fdf *fdf,
                               gsl_vector *yvv, gsl_vector *work);
@@ -275,8 +287,7 @@ gsl_multifit_nlinear_df(const double h, const gsl_multifit_nlinear_fdtype fdtype
 int
 gsl_multifit_nlinear_fdfvv(const double h, const gsl_vector *x, const gsl_vector *v,
                            const gsl_vector *f, const gsl_matrix *J,
-                           const gsl_vector *diag, const gsl_vector *swts,
-                           gsl_multifit_nlinear_fdf *fdf,
+                           const gsl_vector *swts, gsl_multifit_nlinear_fdf *fdf,
                            gsl_vector *fvv, gsl_vector *work);
 
 /* top-level algorithms */

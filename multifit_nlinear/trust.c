@@ -280,12 +280,14 @@ trust_init(void *vstate, const gsl_vector *swts,
                                                            &(state->avratio) };
 
     /* only scaled J/g should be passed to TRS */
-    trust_scale_Jg(1, state->diag, J, g, state);
+    if (params->trs != gsl_multifit_nlinear_trs_lm)
+      trust_scale_Jg(1, state->diag, J, g, state);
 
     status = (params->trs->init)(&trust_state, state->trs_state);
 
     /* undo scaling */
-    trust_scale_Jg(-1, state->diag, J, g, state);
+    if (params->trs != gsl_multifit_nlinear_trs_lm)
+      trust_scale_Jg(-1, state->diag, J, g, state);
 
     if (status)
       return status;
@@ -360,7 +362,8 @@ trust_iterate(void *vstate, const gsl_vector *swts,
    * g := D^{-1} g
    * J := J D^{-1}
    */
-  trust_scale_Jg(1, diag, J, g, state);
+  if (trs != gsl_multifit_nlinear_trs_lm)
+    trust_scale_Jg(1, diag, J, g, state);
 
   /* initialize trust region subproblem with this Jacobian */
   status = (trs->preloop)(&trust_state, state->trs_state);
@@ -379,7 +382,8 @@ trust_iterate(void *vstate, const gsl_vector *swts,
       if (status == GSL_SUCCESS)
         {
           /* undo scaling: dx = D^{-1} dx_scaled */
-          if (params->scale != gsl_multifit_nlinear_scale_levenberg)
+          if (params->scale != gsl_multifit_nlinear_scale_levenberg &&
+              trs != gsl_multifit_nlinear_trs_lm)
             {
               for (i = 0; i < state->p; ++i)
                 {
@@ -466,7 +470,8 @@ trust_iterate(void *vstate, const gsl_vector *swts,
           if (++bad_steps > 15)
             {
               /* undo Jacobian and gradient scaling prior to returning */
-              trust_scale_Jg(-1, diag, J, g, state);
+              if (trs != gsl_multifit_nlinear_trs_lm)
+                trust_scale_Jg(-1, diag, J, g, state);
               return GSL_ENOPROG;
             }
         }
@@ -480,6 +485,12 @@ trust_rcond(const gsl_matrix *J, double *rcond, void *vstate)
 {
   int status;
   trust_state_t *state = (trust_state_t *) vstate;
+
+#if 0
+  const gsl_multifit_nlinear_parameters *params = &(state->params);
+  status = (params->solver->rcond)(rcond, state->solver_state);
+  return status;
+#else
   gsl_vector *eval = state->workp;
   double eval_min, eval_max;
 
@@ -505,6 +516,7 @@ trust_rcond(const gsl_matrix *J, double *rcond, void *vstate)
     }
 
   return GSL_SUCCESS;
+#endif
 }
 
 static double

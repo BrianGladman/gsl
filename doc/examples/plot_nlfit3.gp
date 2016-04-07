@@ -23,6 +23,7 @@ set key bottom right tc variable font "Arial-Bold" opaque
 set xrange [-5:15]
 set yrange [-5:15]
 
+set title "Minimizing the Branin function"
 plot 'cntrs.dat' us 1:2:3 w li palette ti "", \
      'nlfit3.txt' index 1 us 1:2 w lp lw 6 ps 1.5 pt 7 lt 1 ti "LM", \
      'nlfit3.txt' index 2 us 1:2 w lp lw 6 ps 1.5 pt 9 lt 2 ti "LM + geodesic acceleration", \

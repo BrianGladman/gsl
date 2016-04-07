@@ -21,7 +21,7 @@
  * This module calculates the solution of the normal equations least squares
  * system:
  *
- * [ J^T J + mu*I ] v = -J^T f
+ * [ J^T J + mu D^T D ] v = -J^T f
  *
  * using the modified Cholesky decomposition
  */
@@ -45,12 +45,12 @@ typedef struct
 } cholesky_state_t;
 
 static void *cholesky_alloc (const size_t n, const size_t p);
-static int cholesky_init(const gsl_matrix * J, void * vstate);
-static int cholesky_presolve(const double mu, void * vstate);
+static int cholesky_init(const void * vtrust_state, void * vstate);
+static int cholesky_presolve(const double mu, const void * vtrust_state, void * vstate);
 static int cholesky_solve(const gsl_vector * f, const gsl_vector * g,
-                          const gsl_matrix * J, gsl_vector *x, void *vstate);
+                          gsl_vector *x, const  void * vtrust_state, void *vstate);
 static int cholesky_solve_rhs(const gsl_vector * b, gsl_vector *x, cholesky_state_t *state);
-static int cholesky_regularize(const double mu, gsl_matrix * A);
+static int cholesky_regularize(const double mu, const gsl_vector * diag, gsl_matrix * A);
 
 static void *
 cholesky_alloc (const size_t n, const size_t p)
@@ -114,19 +114,21 @@ cholesky_free(void *vstate)
 }
 
 static int
-cholesky_init(const gsl_matrix * J, void * vstate)
+cholesky_init(const void * vtrust_state, void * vstate)
 {
+  const gsl_multifit_nlinear_trust_state *trust_state =
+    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   cholesky_state_t *state = (cholesky_state_t *) vstate;
 
   /* compute J^T J */
-  gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, J, 0.0, state->JTJ);
+  gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, trust_state->J, 0.0, state->JTJ);
 
   return GSL_SUCCESS;
 }
 
 /*
 cholesky_presolve()
-  Compute the modified Cholesky decomposition of J^T J + mu * I.
+  Compute the modified Cholesky decomposition of J^T J + mu D^T D.
 Modified Cholesky is used in case mu = 0 and there are rounding
 errors in forming J^T J which could lead to an indefinite matrix.
 
@@ -135,21 +137,24 @@ Inputs: mu     - LM parameter
 
 Notes:
 1) On output, state->work_JTJ contains the Cholesky decomposition of
-J^T J + mu*I
+J^T J + mu D^T D
 */
 
 static int
-cholesky_presolve(const double mu, void * vstate)
+cholesky_presolve(const double mu, const void * vtrust_state, void * vstate)
 {
+  const gsl_multifit_nlinear_trust_state *trust_state =
+    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   cholesky_state_t *state = (cholesky_state_t *) vstate;
   gsl_matrix *JTJ = state->work_JTJ;
+  const gsl_vector *diag = trust_state->diag;
   int status;
 
   /* copy lower triangle of A to workspace */
   gsl_matrix_tricpy('L', 1, JTJ, state->JTJ);
 
-  /* augment normal equations: A -> A + mu*I */
-  status = cholesky_regularize(mu, JTJ);
+  /* augment normal equations: A -> A + mu D^T D */
+  status = cholesky_regularize(mu, diag, JTJ);
   if (status)
     return status;
 
@@ -167,7 +172,6 @@ cholesky_solve()
 
 Inputs: f      - right hand side vector f
         g      - J^T f (can be NULL)
-        J      - Jacobian matrix
         x      - (output) solution vector
         vstate - cholesky workspace
 
@@ -178,8 +182,10 @@ Notes:
 
 static int
 cholesky_solve(const gsl_vector * f, const gsl_vector * g,
-             const gsl_matrix * J, gsl_vector *x, void *vstate)
+               gsl_vector *x, const  void * vtrust_state, void *vstate)
 {
+  const gsl_multifit_nlinear_trust_state *trust_state =
+    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   cholesky_state_t *state = (cholesky_state_t *) vstate;
   int status;
 
@@ -195,7 +201,7 @@ cholesky_solve(const gsl_vector * f, const gsl_vector * g,
   else
     {
       /* compute rhs = -J^T f */
-      gsl_blas_dgemv(CblasTrans, -1.0, J, f, 0.0, state->rhs);
+      gsl_blas_dgemv(CblasTrans, -1.0, trust_state->J, f, 0.0, state->rhs);
 
       status = cholesky_solve_rhs(state->rhs, x, state);
       if (status)
@@ -219,14 +225,20 @@ cholesky_solve_rhs(const gsl_vector * b, gsl_vector *x, cholesky_state_t *state)
   return GSL_SUCCESS;
 }
 
-/* A <- A + mu*I */
+/* A <- A + mu D^T D */
 static int
-cholesky_regularize(const double mu, gsl_matrix * A)
+cholesky_regularize(const double mu, const gsl_vector * diag, gsl_matrix * A)
 {
   if (mu != 0.0)
     {
-      gsl_vector_view d = gsl_matrix_diagonal(A);
-      gsl_vector_add_constant(&d.vector, mu);
+      size_t i;
+
+      for (i = 0; i < diag->size; ++i)
+        {
+          double di = gsl_vector_get(diag, i);
+          double *Aii = gsl_matrix_ptr(A, i, i);
+          *Aii += mu * di * di;
+        }
     }
 
   return GSL_SUCCESS;
@@ -239,6 +251,7 @@ static const gsl_multifit_nlinear_solver cholesky_type =
   cholesky_init,
   cholesky_presolve,
   cholesky_solve,
+  NULL, /* XXX */
   cholesky_free
 };
 
