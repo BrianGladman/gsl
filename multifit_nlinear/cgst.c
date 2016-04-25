@@ -33,6 +33,18 @@
  *
  * [1] T. Steihaug, The conjugate gradient method and trust regions
  *     in large scale optimization, SIAM J. Num. Anal., 20(3) 1983.
+ *
+ * In the below algorithm, the Jacobian and gradient are scaled
+ * according to:
+ *
+ * J~ = J D^{-1}
+ * g~ = D^{-1}
+ *
+ * prior to any calculations which results in better numerical
+ * stability when solving for the Gauss-Newton step. The resulting
+ * step vector is then backtransformed as:
+ *
+ * dx = D^{-1} dx~
  */
 
 typedef struct
@@ -42,10 +54,9 @@ typedef struct
   gsl_vector *z;             /* Gauss-Newton step, size p */
   gsl_vector *r;             /* steepest descent step, size p */
   gsl_vector *d;             /* steepest descent step, size p */
-  gsl_vector *fvv;           /* D_v^2 f(x), size n */
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
-  double normg;              /* || D g || */
+  double norm_g;             /* || g~ || */
 
   double cgtol;              /* tolerance for CG solution */
   size_t cgmaxit;            /* maximum CG iterations */
@@ -109,12 +120,6 @@ cgst_alloc (const void * params, const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for workn", GSL_ENOMEM);
     }
 
-  state->fvv = gsl_vector_alloc(n);
-  if (state->fvv == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for fvv", GSL_ENOMEM);
-    }
-
   state->n = n;
   state->p = p;
   state->params = *mparams;
@@ -142,15 +147,12 @@ cgst_free(void *vstate)
   if (state->workn)
     gsl_vector_free(state->workn);
 
-  if (state->fvv)
-    gsl_vector_free(state->fvv);
-
   free(state);
 }
 
 /*
 cgst_init()
-  Initialize st solver
+  Initialize cgst solver
 
 Inputs: vtrust_state - trust state
         vstate       - workspace
@@ -188,19 +190,26 @@ cgst_preloop(const void * vtrust_state, void * vstate)
   const size_t p = state->p;
   size_t i;
 
-  /* Step 1 of [1], section 2 */
+  /* Step 1 of [1], section 2; scale gradient as
+   *
+   * g~ = D^{-1} g
+   *
+   * for better numerical stability
+   */
 
   for (i = 0; i < p; ++i)
     {
       double gi = gsl_vector_get(trust_state->g, i);
+      double di = gsl_vector_get(trust_state->diag, i);
 
       gsl_vector_set(state->z, i, 0.0);
-      gsl_vector_set(state->r, i, -gi);
-      gsl_vector_set(state->d, i, -gi);
+      gsl_vector_set(state->r, i, -gi / di);
+      gsl_vector_set(state->d, i, -gi / di);
+      gsl_vector_set(state->workp, i, gi / di);
     }
 
-  /* compute || g || */
-  state->normg = gsl_blas_dnrm2(trust_state->g);
+  /* compute || g~ || */
+  state->norm_g = gsl_blas_dnrm2(state->workp);
 
   return GSL_SUCCESS;
 }
@@ -222,14 +231,21 @@ cgst_step(const void * vtrust_state, const double delta,
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   cgst_state_t *state = (cgst_state_t *) vstate;
   const gsl_matrix * J = trust_state->J;
+  const gsl_vector * diag = trust_state->diag;
   double alpha, beta, u;
-  double norm_Jd, norm_r, norm_rp1;
+  double norm_Jd;   /* || J D^{-1} d_i || */
+  double norm_r;    /* || r_i || */
+  double norm_rp1;  /* || r_{i+1} || */
   size_t i;
 
   for (i = 0; i < state->cgmaxit; ++i)
     {
-      /* compute || J d_i || */
-      gsl_blas_dgemv(CblasNoTrans, 1.0, J, state->d, 0.0, state->workn);
+      /* workp := D^{-1} d_i */
+      gsl_vector_memcpy(state->workp, state->d);
+      gsl_vector_div(state->workp, trust_state->diag);
+
+      /* compute || J D^{-1} d_i || */
+      gsl_blas_dgemv(CblasNoTrans, 1.0, J, state->workp, 0.0, state->workn);
       norm_Jd = gsl_blas_dnrm2(state->workn);
 
       /* Step 2 of [1], section 2 */
@@ -239,6 +255,7 @@ cgst_step(const void * vtrust_state, const double delta,
 
           /* dx = z_i + tau*d_i */
           scaled_addition(1.0, state->z, tau, state->d, dx);
+          gsl_vector_div(dx, diag);
 
           return GSL_SUCCESS;
         }
@@ -251,6 +268,7 @@ cgst_step(const void * vtrust_state, const double delta,
 
       /* workp <= z_{i+1} = z_i + alpha_i*d_i */
       scaled_addition(1.0, state->z, alpha, state->d, state->workp);
+
       u = gsl_blas_dnrm2(state->workp);
       if (u >= delta)
         {
@@ -258,6 +276,7 @@ cgst_step(const void * vtrust_state, const double delta,
 
           /* dx = z_i + tau*d_i */
           scaled_addition(1.0, state->z, tau, state->d, dx);
+          gsl_vector_div(dx, diag);
 
           return GSL_SUCCESS;
         }
@@ -267,32 +286,37 @@ cgst_step(const void * vtrust_state, const double delta,
 
       /* Step 4 of [1], section 2 */
 
-      /* compute: workp <= alpha B d_i = alpha J^T J d_i,
-       * where J d_i is already stored in workn */
+      /* compute: workp := alpha B d_i = alpha D^{-1} J^T J D^{-1} d_i,
+       * where J D^{-1}  d_i is already stored in workn */
       gsl_blas_dgemv(CblasTrans, alpha, J, state->workn, 0.0, state->workp);
+      gsl_vector_div(state->workp, trust_state->diag);
 
       /* r_{i+1} = r_i - alpha*B*d_i */
       gsl_vector_sub(state->r, state->workp);
       norm_rp1 = gsl_blas_dnrm2(state->r);
 
-      u = norm_rp1 / state->normg;
+      u = norm_rp1 / state->norm_g;
       if (u < state->cgtol)
         {
           gsl_vector_memcpy(dx, state->z);
+          gsl_vector_div(dx, diag);
           return GSL_SUCCESS;
         }
 
       /* Step 5 of [1], section 2 */
 
-      /* compute u = ||r_{i+1}|| / ||r_i|| */
+      /* compute u = ||r_{i+1}|| / || r_i|| */
       u = norm_rp1 / norm_r;
       beta = u * u;
 
-      /* compute: d_{i+1} = r_{i+1} + beta*d_i */
+      /* compute: d_{i+1} = rt_{i+1} + beta*d_i */
       scaled_addition(1.0, state->r, beta, state->d, state->d);
     }
 
-  /* failed to find CG solution */
+  /* failed to converge, return current estimate */
+  gsl_vector_memcpy(dx, state->z);
+  gsl_vector_div(dx, diag);
+
   return GSL_EMAXITER;
 }
 

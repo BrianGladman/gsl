@@ -30,6 +30,8 @@
 
 #include "common.c"
 
+#define SCALE_SUB2D           1
+
 /*
  * This module contains a high level driver for a general trust
  * region nonlinear least squares solver. This container handles
@@ -280,14 +282,12 @@ trust_init(void *vstate, const gsl_vector *swts,
                                                            &(state->avratio) };
 
     /* only scaled J/g should be passed to TRS */
-    if (params->trs != gsl_multifit_nlinear_trs_lm)
-      trust_scale_Jg(1, state->diag, J, g, state);
+    trust_scale_Jg(1, state->diag, J, g, state);
 
     status = (params->trs->init)(&trust_state, state->trs_state);
 
     /* undo scaling */
-    if (params->trs != gsl_multifit_nlinear_trs_lm)
-      trust_scale_Jg(-1, state->diag, J, g, state);
+    trust_scale_Jg(-1, state->diag, J, g, state);
 
     if (status)
       return status;
@@ -362,8 +362,7 @@ trust_iterate(void *vstate, const gsl_vector *swts,
    * g := D^{-1} g
    * J := J D^{-1}
    */
-  if (trs != gsl_multifit_nlinear_trs_lm)
-    trust_scale_Jg(1, diag, J, g, state);
+  trust_scale_Jg(1, diag, J, g, state);
 
   /* initialize trust region subproblem with this Jacobian */
   status = (trs->preloop)(&trust_state, state->trs_state);
@@ -383,7 +382,14 @@ trust_iterate(void *vstate, const gsl_vector *swts,
         {
           /* undo scaling: dx = D^{-1} dx_scaled */
           if (params->scale != gsl_multifit_nlinear_scale_levenberg &&
-              trs != gsl_multifit_nlinear_trs_lm)
+              trs != gsl_multifit_nlinear_trs_lm &&
+              trs != gsl_multifit_nlinear_trs_dogleg &&
+              trs != gsl_multifit_nlinear_trs_ddogleg &&
+#if !SCALE_SUB2D
+              trs != gsl_multifit_nlinear_trs_subspace2D &&
+#endif
+              trs != gsl_multifit_nlinear_trs_cgst &&
+              1)
             {
               for (i = 0; i < state->p; ++i)
                 {
@@ -409,6 +415,18 @@ trust_iterate(void *vstate, const gsl_vector *swts,
           status = trust_eval_step(f, f_trial, g, J, dx_scaled, &rho, state);
           if (status == GSL_SUCCESS)
             foundstep = 1;
+
+#if 0 /*XXX*/
+          fprintf(stdout, "delta = %.12e |D dx| = %.12e |dx| = %.12e, dx0 = %.12e dx1 = %.12e |x_trial| = %.12e |f_trial| = %.12e rho = %.12e\n",
+                  state->delta,
+                  scaled_enorm(state->diag, dx),
+                  gsl_blas_dnrm2(dx),
+                  gsl_vector_get(dx, 0),
+                  gsl_vector_get(dx, 1),
+                  gsl_blas_dnrm2(x_trial),
+                  gsl_blas_dnrm2(f_trial),
+                  rho);
+#endif
         }
       else
         {
@@ -425,9 +443,9 @@ trust_iterate(void *vstate, const gsl_vector *swts,
        * can happen even if the step is accepted.
        */
       if (rho > 0.75)
-        state->delta *= 3.0;
+        state->delta *= params->factor_up;
       else if (rho < 0.25)
-        state->delta *= 0.5;
+        state->delta /= params->factor_down;
 
       if (foundstep)
         {
@@ -470,8 +488,7 @@ trust_iterate(void *vstate, const gsl_vector *swts,
           if (++bad_steps > 15)
             {
               /* undo Jacobian and gradient scaling prior to returning */
-              if (trs != gsl_multifit_nlinear_trs_lm)
-                trust_scale_Jg(-1, diag, J, g, state);
+              trust_scale_Jg(-1, diag, J, g, state);
               return GSL_ENOPROG;
             }
         }
@@ -664,6 +681,19 @@ trust_scale_Jg(const int dir, const gsl_vector * diag,
 {
   const size_t N = J->size2;
   size_t i;
+  const gsl_multifit_nlinear_trs *trs = state->params.trs;
+
+  /* no scaling XXX */
+  if (trs == gsl_multifit_nlinear_trs_lm ||
+      trs == gsl_multifit_nlinear_trs_dogleg ||
+      trs == gsl_multifit_nlinear_trs_ddogleg ||
+      trs == gsl_multifit_nlinear_trs_cgst)
+    return GSL_SUCCESS;
+
+#if !SCALE_SUB2D
+  if (trs == gsl_multifit_nlinear_trs_subspace2D)
+    return GSL_SUCCESS;
+#endif
 
   /* quick return if D = I */
   if (state->params.scale == gsl_multifit_nlinear_scale_levenberg)

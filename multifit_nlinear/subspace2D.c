@@ -29,6 +29,8 @@
 
 #include "oct.c"
 
+#define SCALE_SUB2D     1
+
 /*
  * This module implements a 2D subspace trust region subproblem method,
  * as outlined in
@@ -113,8 +115,8 @@ typedef struct
   size_t p;                  /* number of parameters */
   gsl_vector *dx_gn;         /* Gauss-Newton step, size p */
   gsl_vector *dx_sd;         /* steepest descent step, size p */
-  double norm_gn;            /* || dx_gn || */
-  double norm_sd;            /* || dx_sd || */
+  double norm_Dgn;           /* || D dx_gn || */
+  double norm_Dsd;           /* || D dx_sd || */
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
   gsl_matrix *W;             /* orthonormal basis for 2D subspace, p-by-2 */
@@ -144,8 +146,6 @@ static void * subspace2D_alloc (const void * params, const size_t n, const size_
 static void subspace2D_free(void *vstate);
 static int subspace2D_init(const void *vtrust_state, void *vstate);
 static int subspace2D_preloop(const void * vtrust_state, void * vstate);
-static int subspace2D_step(const void * vtrust_state, const double delta,
-                           gsl_vector * dx, void * vstate);
 static int subspace2D_step(const void * vtrust_state, const double delta,
                            gsl_vector * dx, void * vstate);
 static int subspace2D_preduction(const void * vtrust_state, const gsl_vector * dx,
@@ -328,10 +328,16 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
   double norm_g;  /* ||g|| */
   double norm_Jg; /* || J g || */
   double alpha;   /* ||g||^2 / ||Jg||^2 */
+  double norm_Dinvg;   /* || D^{-1} g || */
+  double norm_JDinv2g; /* || J D^{-2} g || */
   gsl_vector_view v;
   double work_data[2];
   gsl_vector_view work = gsl_vector_view_array(work_data, 2);
   int signum;
+
+  print_octave(trust_state->J, "J");
+  printv_octave(trust_state->f, "f");
+  printv_octave(trust_state->diag, "d");
 
   /* initialize linear least squares solver */
   status = (params->solver->init)(trust_state, trust_state->solver_state);
@@ -354,6 +360,8 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
 
   /* now calculate the steepest descent step */
 
+#if SCALE_SUB2D
+
   /* compute: workn = J*g */
   gsl_blas_dgemv(CblasNoTrans, 1.0, trust_state->J, trust_state->g, 0.0, state->workn);
 
@@ -370,8 +378,35 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
   gsl_vector_scale(state->dx_sd, -alpha);
 
   /* store norms */
-  state->norm_gn = gsl_blas_dnrm2(state->dx_gn);
-  state->norm_sd = gsl_blas_dnrm2(state->dx_sd);
+  state->norm_Dgn = gsl_blas_dnrm2(state->dx_gn);
+  state->norm_Dsd = gsl_blas_dnrm2(state->dx_sd);
+
+#else
+
+  /* compute workp = D^{-1} g and its norm */
+  gsl_vector_memcpy(state->workp, trust_state->g);
+  gsl_vector_div(state->workp, trust_state->diag);
+  norm_Dinvg = gsl_blas_dnrm2(state->workp);
+
+  /* compute workp = D^{-2} g */
+  gsl_vector_div(state->workp, trust_state->diag);
+
+  /* compute: workn = J D^{-2} g */
+  gsl_blas_dgemv(CblasNoTrans, 1.0, trust_state->J, state->workp, 0.0, state->workn);
+  norm_JDinv2g = gsl_blas_dnrm2(state->workn);
+
+  u = norm_Dinvg / norm_JDinv2g;
+  alpha = u * u;
+
+  /* dx_sd = -alpha D^{-2} g */
+  gsl_vector_memcpy(state->dx_sd, state->workp);
+  gsl_vector_scale(state->dx_sd, -alpha);
+
+  /* store norms */
+  state->norm_Dgn = scaled_enorm(trust_state->diag, state->dx_gn);
+  state->norm_Dsd = scaled_enorm(trust_state->diag, state->dx_sd);
+
+#endif
 
   /*
    * now compute orthonormal basis for span(dx_sd, dx_gn) using
@@ -396,13 +431,15 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
     {
       /*
        * full rank subspace, compute:
-       * subg = W^T g
-       * subB = W^T B W where B = J^T J
+       * subg = Q^T D^{-1} g
+       * subB = Q^T D^{-1} B D^{-1} Q where B = J^T J
        */
       const size_t p = state->p;
       size_t i;
       gsl_matrix_view JW = gsl_matrix_submatrix(state->J, 0, 0, state->n, GSL_MIN(2, p));
       double B00, B10, B11, g0, g1;
+
+#if SCALE_SUB2D
 
       /* compute subg */
 
@@ -437,7 +474,61 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
 
       /* g^T adj(B)^T g */
       state->term1 = B11 * g0 * g0 + g1 * (B00*g1 - 2*B10*g0);
+
+#else
+
+      /* compute subg */
+      gsl_vector_memcpy(state->workp, trust_state->g);
+      gsl_vector_div(state->workp, trust_state->diag);
+      gsl_linalg_QR_QTvec(state->W, state->tau, state->workp);
+
+      g0 = gsl_vector_get(state->workp, 0);
+      g1 = gsl_vector_get(state->workp, 1);
+
+      gsl_vector_set(state->subg, 0, g0);
+      gsl_vector_set(state->subg, 1, g1);
+
+      /* compute subB */
+
+      /* compute J D^{-1} */
+      gsl_matrix_memcpy(state->J, trust_state->J);
+
+      for (i = 0; i < p; ++i)
+        {
+          gsl_vector_view c = gsl_matrix_column(state->J, i);
+          double di = gsl_vector_get(trust_state->diag, i);
+          gsl_vector_scale(&c.vector, 1.0 / di);
+        }
+
+      /* compute J D^{-1} Q */
+      gsl_linalg_QR_matQ(state->W, state->tau, state->J);
+
+      /* compute subB = Q^T D^{-1} J^T J D^{-1} Q */
+      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &JW.matrix, 0.0, state->subB);
+
+      B00 = gsl_matrix_get(state->subB, 0, 0);
+      B10 = gsl_matrix_get(state->subB, 1, 0);
+      B11 = gsl_matrix_get(state->subB, 1, 1);
+
+      state->trB = B00 + B11;
+      state->detB = B00*B11 - B10*B10;
+      state->normg = gsl_blas_dnrm2(state->subg);
+
+      /* g^T adj(B)^T adj(B) g */
+      state->term0 = (B10*B10 + B11*B11)*g0*g0 -
+                     2*B10*(B00 + B11)*g0*g1 +
+                     (B00*B00 + B10*B10)*g1*g1;
+
+      /* g^T adj(B)^T g */
+      state->term1 = B11 * g0 * g0 + g1 * (B00*g1 - 2*B10*g0);
+
+#endif
+
     }
+
+#if 0 /*XXX*/
+  fprintf(stdout, "|dx_gn| = %.12e |dx_sd| = %.12e\n", state->norm_Dgn, state->norm_Dsd);
+#endif
 
   return GSL_SUCCESS;
 }
@@ -454,11 +545,11 @@ static int
 subspace2D_step(const void * vtrust_state, const double delta,
                 gsl_vector * dx, void * vstate)
 {
+  const gsl_multifit_nlinear_trust_state *trust_state =
+    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   subspace2D_state_t *state = (subspace2D_state_t *) vstate;
 
-  (void) vtrust_state;
-
-  if (state->norm_gn <= delta)
+  if (state->norm_Dgn <= delta)
     {
       /* Gauss-Newton step is inside trust region, use it as final step
        * since it is the global minimizer of the quadratic model function */
@@ -470,7 +561,7 @@ subspace2D_step(const void * vtrust_state, const double delta,
        * are parallel so we can't form a 2D subspace. Follow the steepest
        * descent direction to the trust region boundary as our step */
       gsl_vector_memcpy(dx, state->dx_sd);
-      gsl_vector_scale(dx, delta / state->norm_sd);
+      gsl_vector_scale(dx, delta / state->norm_Dsd);
     }
   else
     {
@@ -537,6 +628,10 @@ subspace2D_step(const void * vtrust_state, const double delta,
               gsl_vector_set(dx, 0, gsl_vector_get(&x.vector, 0));
               gsl_vector_set(dx, 1, gsl_vector_get(&x.vector, 1));
               gsl_linalg_QR_Qvec(state->W, state->tau, dx);
+
+#if !SCALE_SUB2D
+              gsl_vector_div(dx, trust_state->diag);
+#endif
             }
         }
       else
@@ -544,6 +639,14 @@ subspace2D_step(const void * vtrust_state, const double delta,
           GSL_ERROR ("gsl_poly_complex_solve failed", status);
         }
     }
+
+#if 0
+#if SCALE_SUB2D
+  fprintf(stdout, "|dx| = %.12e\n", gsl_blas_dnrm2(dx));
+#else
+  fprintf(stdout, "|dx| = %.12e\n", scaled_enorm(trust_state->diag, dx));
+#endif
+#endif
 
   return GSL_SUCCESS;
 }

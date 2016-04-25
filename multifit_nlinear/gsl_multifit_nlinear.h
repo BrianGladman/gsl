@@ -130,6 +130,8 @@ typedef struct
   const gsl_multifit_nlinear_scale *scale;    /* scaling method */
   const gsl_multifit_nlinear_solver *solver;  /* solver method */
   gsl_multifit_nlinear_fdtype fdtype;         /* finite difference method */
+  double factor_up;                           /* factor for increasing trust radius */
+  double factor_down;                         /* factor for decreasing trust radius */
   int accel;                                  /* use geodesic acceleration */
   double avmax;                               /* max allowed |a|/|v| */
   double h_df;                                /* step size for finite difference Jacobian */

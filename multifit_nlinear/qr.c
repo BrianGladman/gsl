@@ -42,11 +42,14 @@
 
 typedef struct
 {
+  size_t p;
   gsl_matrix *R;             /* QR factorization of J */
   gsl_vector *tau;           /* Householder scalars */
   gsl_matrix *Q;             /* Householder reflectors for J */
   gsl_permutation *perm;     /* permutation matrix */
   gsl_vector *qtf;           /* Q^T f */
+  gsl_vector *S;             /* balancing scale factors */
+  gsl_vector *diag;          /* diag = D * S */
   gsl_vector *workn;         /* workspace, length n */
   gsl_vector *workp;         /* workspace, length p */
   double mu;                 /* LM parameter */
@@ -105,6 +108,20 @@ qr_alloc (const size_t n, const size_t p)
                       GSL_ENOMEM);
     }
 
+  state->S = gsl_vector_alloc(p);
+  if (state->S == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for S",
+                      GSL_ENOMEM);
+    }
+
+  state->diag = gsl_vector_alloc(p);
+  if (state->diag == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for diag",
+                      GSL_ENOMEM);
+    }
+
   state->workn = gsl_vector_alloc(n);
   if (state->workn == NULL)
     {
@@ -119,6 +136,7 @@ qr_alloc (const size_t n, const size_t p)
                       GSL_ENOMEM);
     }
 
+  state->p = p;
   state->mu = 0.0;
 
   return state;
@@ -144,6 +162,12 @@ qr_free(void *vstate)
   if (state->perm)
     gsl_permutation_free(state->perm);
 
+  if (state->S)
+    gsl_vector_free(state->S);
+
+  if (state->diag)
+    gsl_vector_free(state->diag);
+
   if (state->workn)
     gsl_vector_free(state->workn);
 
@@ -160,9 +184,26 @@ qr_init(const void * vtrust_state, void * vstate)
   const gsl_multifit_nlinear_trust_state *trust_state =
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   qr_state_t *state = (qr_state_t *) vstate;
+  const size_t p = state->p;
+  size_t j;
   int signum;
 
   gsl_matrix_memcpy(state->R, trust_state->J);
+
+  /* scale columns of Jacobian to have unit norm */
+  for (j = 0; j < p; ++j)
+    {
+      gsl_vector_view c = gsl_matrix_column(state->R, j);
+      double sj = 1.0 / GSL_MAX(gsl_blas_dnrm2(&c.vector), 1.0);
+      double dj = gsl_vector_get(trust_state->diag, j);
+
+      sj = 1.0; /* XXX */
+
+      gsl_vector_scale(&c.vector, sj);
+      gsl_vector_set(state->S, j, sj);
+      gsl_vector_set(state->diag, j, dj * sj);
+    }
+
   gsl_linalg_QRPT_decomp(state->R, state->tau, state->perm,
                          &signum, state->workp);
 
@@ -220,12 +261,15 @@ qr_solve(const gsl_vector * f, const gsl_vector * g,
         (const gsl_multifit_nlinear_trust_state *) vtrust_state;
       double sqrt_mu = sqrt(state->mu);
 
-      status = qrsolv(state->R, state->perm, sqrt_mu, trust_state->diag,
+      status = qrsolv(state->R, state->perm, sqrt_mu, state->diag,
                       state->qtf, x, state->workp, state->workn);
     }
 
   /* reverse step to go downhill */
   gsl_vector_scale(x, -1.0);
+
+  /* undo balancing */
+  gsl_vector_mul(x, state->S);
 
   (void)vtrust_state; /* avoid unused parameter warning */
 

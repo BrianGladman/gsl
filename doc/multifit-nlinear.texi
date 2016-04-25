@@ -430,6 +430,8 @@ typedef struct
   const gsl_multifit_nlinear_scale *scale;    /* scaling method */
   const gsl_multifit_nlinear_solver *solver;  /* solver method */
   gsl_multifit_nlinear_fdtype fdtype;         /* finite difference method */
+  double factor_up;                           /* factor for increasing trust region */
+  double factor_down;                         /* factor for decreasing trust region */
   int accel;                                  /* use geodesic acceleration */
   double avmax;                               /* max allowed |a|/|v| */
   double h_df;                                /* J finite difference step */
@@ -619,6 +621,20 @@ See above for a description of @math{\Delta_j}. The accuracy of this
 method is @math{O(h^2)}, but evaluating this
 matrix requires an additional @math{2p} function evaluations.
 @end defvr
+
+@end deftypevr
+
+@deftypevr {Parameter} {double} factor_up
+
+When a step is accepted, the trust region radius will be increased
+by this factor. The default value is @math{3}.
+
+@end deftypevr
+
+@deftypevr {Parameter} {double} factor_down
+
+When a step is rejected, the trust region radius will be decreased
+by this factor. The default value is @math{2}.
 
 @end deftypevr
 

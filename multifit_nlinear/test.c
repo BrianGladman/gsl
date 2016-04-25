@@ -33,12 +33,13 @@
 #include "test_fdf.c"
 
 static const gsl_multifit_nlinear_trs **nlinear_trs[] = {
+#if 1
   &gsl_multifit_nlinear_trs_lm,
   &gsl_multifit_nlinear_trs_dogleg,
-#if 0 /*XXX*/
   &gsl_multifit_nlinear_trs_ddogleg,
-  &gsl_multifit_nlinear_trs_subspace2D,
   &gsl_multifit_nlinear_trs_cgst,
+#else
+  &gsl_multifit_nlinear_trs_subspace2D,
 #endif
 
   NULL
