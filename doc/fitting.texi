@@ -629,7 +629,7 @@ of length @math{p}. The original least squares matrix and observation vector are
 @var{w} must also be supplied.
 @end deftypefun
 
-@deftypefun int gsl_multifit_linear_applyW (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_matrix * @var{WX}, gsl_vector * @var{Wy}, gsl_multifit_linear_workspace * @var{work})
+@deftypefun int gsl_multifit_linear_applyW (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_matrix * @var{WX}, gsl_vector * @var{Wy})
 For weighted least squares systems with @math{L = I}, this function may be used to
 convert the system to standard form by applying the weight matrix @math{W =} diag(@var{w})
 to the least squares matrix @var{X} and observation vector @var{y}. On output, @var{WX}

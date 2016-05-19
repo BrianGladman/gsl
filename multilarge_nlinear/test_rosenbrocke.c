@@ -47,8 +47,8 @@ rosenbrocke_f (const gsl_vector * x, void *params, gsl_vector * f)
 }
 
 static int
-rosenbrocke_df (const gsl_vector * x, const gsl_vector * y, void * params,
-                gsl_vector * JTy, gsl_matrix * JTJ)
+rosenbrocke_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
+                const gsl_vector * u, void * params, gsl_vector * v)
 {
   gsl_matrix_view J = gsl_matrix_view_array(rosenbrocke_J, rosenbrocke_N, rosenbrocke_P);
   size_t i;
@@ -64,11 +64,7 @@ rosenbrocke_df (const gsl_vector * x, const gsl_vector * y, void * params,
       gsl_matrix_set(&J.matrix, 2*i + 1, 2*i, -1.0);
     }
 
-  if (JTJ)
-    gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
-
-  if (JTy)
-    gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, y, 0.0, JTy);
+  gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
 
   (void)params; /* avoid unused parameter warning */
 
@@ -103,7 +99,6 @@ static gsl_multilarge_nlinear_fdf rosenbrocke_func =
   rosenbrocke_N,
   rosenbrocke_P,
   NULL,
-  0,
   0,
   0,
   0

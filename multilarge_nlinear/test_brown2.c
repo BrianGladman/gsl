@@ -80,8 +80,8 @@ brown2_f (const gsl_vector * x, void *params, gsl_vector * f)
 }
 
 static int
-brown2_df (const gsl_vector * x, const gsl_vector * y, void * params,
-           gsl_vector * JTy, gsl_matrix * JTJ)
+brown2_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
+           const gsl_vector * u, void * params, gsl_vector * v)
 {
   gsl_matrix_view J = gsl_matrix_view_array(brown2_J, brown2_N, brown2_P);
   size_t i, j;
@@ -105,11 +105,7 @@ brown2_df (const gsl_vector * x, const gsl_vector * y, void * params,
       gsl_matrix_set(&J.matrix, brown2_N - 1, j, prod);
     }
 
-  if (JTJ)
-    gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
-
-  if (JTy)
-    gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, y, 0.0, JTy);
+  gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
 
   (void)params; /* avoid unused parameter warning */
 
@@ -163,7 +159,6 @@ static gsl_multilarge_nlinear_fdf brown2_func =
   brown2_N,
   brown2_P,
   NULL,
-  0,
   0,
   0,
   0

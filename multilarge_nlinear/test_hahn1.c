@@ -162,8 +162,8 @@ hahn1_f (const gsl_vector * x, void *params, gsl_vector * f)
 }
 
 static int
-hahn1_df (const gsl_vector * x, const gsl_vector * y, void * params,
-          gsl_vector * JTy, gsl_matrix * JTJ)
+hahn1_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
+          const gsl_vector * u, void * params, gsl_vector * v)
 {
   gsl_matrix_view J = gsl_matrix_view_array(hahn1_J, hahn1_N, hahn1_P);
   double b[hahn1_P];
@@ -188,11 +188,7 @@ hahn1_df (const gsl_vector * x, const gsl_vector * y, void * params,
       gsl_matrix_set (&J.matrix, i, 6, t*t*t*u/(v*v));
     }
 
-  if (JTJ)
-    gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
-
-  if (JTy)
-    gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, y, 0.0, JTy);
+  gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
 
   (void)params; /* avoid unused parameter warning */
 
@@ -207,7 +203,6 @@ static gsl_multilarge_nlinear_fdf hahn1_func =
   hahn1_N,
   hahn1_P,
   NULL,
-  0,
   0,
   0,
   0

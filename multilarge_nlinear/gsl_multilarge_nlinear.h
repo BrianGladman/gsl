@@ -1,6 +1,6 @@
-/* gsl_multilarge_nlin.h
+/* multilarge_nlinear/gsl_multilarge_nlinear.h
  * 
- * Copyright (C) 2015 Patrick Alken
+ * Copyright (C) 2015, 2016 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,11 +20,13 @@
 #ifndef __GSL_MULTILARGE_NLINEAR_H__
 #define __GSL_MULTILARGE_NLINEAR_H__
 
+#include <stdlib.h>
+#include <gsl/gsl_types.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
-#include <gsl/gsl_types.h>
-#include <gsl/gsl_multilarge.h>
+#include <gsl/gsl_permutation.h>
+#include <gsl/gsl_blas.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -38,36 +40,74 @@
 
 __BEGIN_DECLS
 
+typedef enum
+{
+  GSL_MULTILARGE_NLINEAR_FWDIFF,
+  GSL_MULTILARGE_NLINEAR_CTRDIFF
+} gsl_multilarge_nlinear_fdtype;
+
+/* Definition of vector-valued functions and gradient with parameters
+   based on gsl_vector */
+
 typedef struct
 {
   int (* f) (const gsl_vector * x, void * params, gsl_vector * f);
-  int (* df) (const gsl_vector * x, const gsl_vector * y, void * params,
-              gsl_vector * JTy, gsl_matrix * JTJ);
-  int (* fvv) (const gsl_vector * x, const gsl_vector * v,
-               void * params, gsl_vector * fvv);
-  size_t n;              /* number of residuals */
-  size_t p;              /* number of independent variables */
-  void * params;         /* user parameters */
-  size_t nevalf;         /* number of evaluations of f */
-  size_t nevaldf;        /* number of evaluations of J^T J */
-  size_t nevaldff;       /* number of evaluations of J^T y */
-  size_t nevalfvv;       /* number of evaluations of J^T y */
+  int (* df) (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
+              const gsl_vector * u, void * params, gsl_vector * v);
+  int (* fvv) (const gsl_vector * x, const gsl_vector * v, void * params,
+               gsl_vector * fvv);
+  size_t n;        /* number of functions */
+  size_t p;        /* number of independent variables */
+  void * params;   /* user parameters */
+  size_t nevalf;   /* number of function evaluations */
+  size_t nevaldf;  /* number of Jacobian evaluations */
+  size_t nevalfvv; /* number of fvv evaluations */
 } gsl_multilarge_nlinear_fdf;
+
+/* trust region subproblem method */
+typedef struct
+{
+  const char *name;
+  void * (*alloc) (const void * params, const size_t n, const size_t p);
+  int (*init) (const void * vtrust_state, void * vstate);
+  int (*preloop) (const void * vtrust_state, void * vstate);
+  int (*step) (const void * vtrust_state, const double delta,
+               gsl_vector * dx, void * vstate);
+  int (*preduction) (const void * vtrust_state, const gsl_vector * dx,
+                     double * pred, void * vstate);
+  void (*free) (void * vstate);
+} gsl_multilarge_nlinear_trs;
+
+/* LM parameter updating method */
+typedef struct
+{
+  const char *name;
+  void * (*alloc) (void);
+  int (*init) (const gsl_matrix * J, const gsl_vector * diag,
+               double * mu, void * vstate);
+  int (*accept) (const double rho, double * mu, void * vstate);
+  int (*reject) (double * mu, void * vstate);
+  void (*free) (void * vstate);
+} gsl_multilarge_nlinear_update;
 
 /* scaling matrix specification */
 typedef struct
 {
   const char *name;
-  int (*init) (const gsl_matrix * J, gsl_vector * dtd);
-  int (*update) (const gsl_matrix * J, gsl_vector * dtd);
+  int (*init) (const gsl_matrix * J, gsl_vector * diag);
+  int (*update) (const gsl_matrix * J, gsl_vector * diag);
 } gsl_multilarge_nlinear_scale;
 
 /* tunable parameters for Levenberg-Marquardt method */
 typedef struct
 {
-  const gsl_multilarge_nlinear_scale *scale;  /* scaling method */
+  const gsl_multilarge_nlinear_trs *trs;      /* trust region subproblem method */
+  gsl_multilarge_nlinear_fdtype fdtype;       /* finite difference method */
+  double factor_up;                           /* factor for increasing trust radius */
+  double factor_down;                         /* factor for decreasing trust radius */
   int accel;                                  /* use geodesic acceleration */
-  double avmax;                               /* maximum |a| / |v| */
+  double avmax;                               /* max allowed |a|/|v| */
+  double h_df;                                /* step size for finite difference Jacobian */
   double h_fvv;                               /* step size for finite difference fvv */
 } gsl_multilarge_nlinear_parameters;
 
@@ -76,66 +116,70 @@ typedef struct
   const char *name;
   void * (*alloc) (const gsl_multilarge_nlinear_parameters * params,
                    const size_t n, const size_t p);
-  int (*init) (gsl_multilarge_nlinear_fdf * fdf,
-               const gsl_vector * x, gsl_vector * f,
-               gsl_vector * g, gsl_matrix * JTJ, void * vstate);
-  int (*iterate) (gsl_multilarge_nlinear_fdf * fdf,
-                  gsl_vector * x, gsl_vector * f,
-                  gsl_matrix * JTJ, gsl_vector * g,
-                  gsl_vector * dx, double * avratio, void * vstate);
-  int (*rcond) (const gsl_matrix * JTJ, double * rcond, void *vstate);
-  void (*free) (void * vstate);
+  int (*init) (void * state, const gsl_vector * wts,
+               gsl_multilarge_nlinear_fdf * fdf, const gsl_vector * x,
+               gsl_vector * f, gsl_vector * g);
+  int (*iterate) (void * state, const gsl_vector * wts,
+                  gsl_multilarge_nlinear_fdf * fdf, gsl_vector * x,
+                  gsl_vector * f, gsl_vector * g, gsl_vector * dx);
+  int (*rcond) (const gsl_matrix * J, double * rcond, void * state);
+  double (*avratio) (void * state);
+  void (*free) (void * state);
 } gsl_multilarge_nlinear_type;
+
+/* current state passed to low-level trust region algorithms */
+typedef struct
+{
+  const gsl_vector * x;             /* parameter values x */
+  const gsl_vector * f;             /* residual vector f(x) */
+  const gsl_vector * g;             /* gradient J^T f */
+  const gsl_vector * diag;          /* scaling matrix D */
+  const gsl_vector * sqrt_wts;      /* sqrt(diag(W)) or NULL for unweighted */
+  const double *mu;                 /* LM parameter */
+  const gsl_multilarge_nlinear_parameters * params;
+  gsl_multilarge_nlinear_fdf * fdf;
+  double *avratio;                  /* |a| / |v| */
+} gsl_multilarge_nlinear_trust_state;
 
 typedef struct
 {
   const gsl_multilarge_nlinear_type * type;
-  gsl_multilarge_nlinear_fdf * fdf;
-  gsl_vector * x;        /* parameter values x */
-  gsl_vector * dx;       /* step dx */
-  gsl_vector * f;        /* residual vector f(x) */
-  gsl_vector * g;        /* gradient vector J^T f */
-  gsl_matrix * JTJ;      /* J^T J */
-  double avratio;        /* |a| / |v| */
-  size_t n;              /* number of residuals */
-  size_t p;              /* number of model parameters */
-  size_t niter;          /* number of iterations performed */
-  void *state;           /* solver workspace */
+  gsl_multilarge_nlinear_fdf * fdf ;
+  gsl_vector * x;             /* parameter values x */
+  gsl_vector * f;             /* residual vector f(x) */
+  gsl_vector * dx;            /* step dx */
+  gsl_vector * g;             /* gradient J^T f */
+  gsl_vector * sqrt_wts_work; /* sqrt(W) */
+  gsl_vector * sqrt_wts;      /* ptr to sqrt_wts_work, or NULL if not using weights */
+  size_t niter;               /* number of iterations performed */
+  gsl_multilarge_nlinear_parameters params;
+  void *state;
 } gsl_multilarge_nlinear_workspace;
-
-/* available solvers */
-GSL_VAR const gsl_multilarge_nlinear_type * gsl_multilarge_nlinear_lm;
 
 gsl_multilarge_nlinear_workspace *
 gsl_multilarge_nlinear_alloc (const gsl_multilarge_nlinear_type * T,
                               const gsl_multilarge_nlinear_parameters * params,
-                              const size_t n, const size_t p);
+                              size_t n, size_t p);
 
 void gsl_multilarge_nlinear_free (gsl_multilarge_nlinear_workspace * w);
 
 gsl_multilarge_nlinear_parameters gsl_multilarge_nlinear_default_parameters(void);
 
-const char *gsl_multilarge_nlinear_name (const gsl_multilarge_nlinear_workspace * w);
-
-size_t gsl_multilarge_nlinear_niter (const gsl_multilarge_nlinear_workspace * w);
-
 int
-gsl_multilarge_nlinear_init (const gsl_vector * x, gsl_multilarge_nlinear_fdf * fdf,
+gsl_multilarge_nlinear_init (const gsl_vector * x,
+                             gsl_multilarge_nlinear_fdf * fdf,
                              gsl_multilarge_nlinear_workspace * w);
 
-int gsl_multilarge_nlinear_iterate (gsl_multilarge_nlinear_workspace * w);
+int gsl_multilarge_nlinear_winit (const gsl_vector * x,
+                                  const gsl_vector * wts,
+                                  gsl_multilarge_nlinear_fdf * fdf,
+                                  gsl_multilarge_nlinear_workspace * w);
 
-int gsl_multilarge_nlinear_rcond (double * rcond, const gsl_multilarge_nlinear_workspace * w);
+int
+gsl_multilarge_nlinear_iterate (gsl_multilarge_nlinear_workspace * w);
 
-gsl_vector *gsl_multilarge_nlinear_position (const gsl_multilarge_nlinear_workspace * w);
-
-gsl_vector *gsl_multilarge_nlinear_residual (const gsl_multilarge_nlinear_workspace * w);
-
-gsl_vector *gsl_multilarge_nlinear_step (const gsl_multilarge_nlinear_workspace * w);
-
-gsl_matrix *gsl_multilarge_nlinear_JTJ (const gsl_multilarge_nlinear_workspace * w);
-
-double gsl_multilarge_nlinear_avratio (const gsl_multilarge_nlinear_workspace * w);
+double
+gsl_multilarge_nlinear_avratio (const gsl_multilarge_nlinear_workspace * w);
 
 int
 gsl_multilarge_nlinear_driver (const size_t maxiter,
@@ -148,92 +192,91 @@ gsl_multilarge_nlinear_driver (const size_t maxiter,
                                int *info,
                                gsl_multilarge_nlinear_workspace * w);
 
-int gsl_multilarge_nlinear_applyW(const gsl_vector * w, gsl_matrix * J, gsl_vector * f);
+const char *
+gsl_multilarge_nlinear_name (const gsl_multilarge_nlinear_workspace * w);
+
+gsl_vector *
+gsl_multilarge_nlinear_position (const gsl_multilarge_nlinear_workspace * w);
+
+gsl_vector *
+gsl_multilarge_nlinear_residual (const gsl_multilarge_nlinear_workspace * w);
+
+size_t
+gsl_multilarge_nlinear_niter (const gsl_multilarge_nlinear_workspace * w);
+
+const char *
+gsl_multilarge_nlinear_trs_name (const gsl_multilarge_nlinear_workspace * w);
+
+int gsl_multilarge_nlinear_eval_f(gsl_multilarge_nlinear_fdf *fdf,
+                                  const gsl_vector *x,
+                                  const gsl_vector *swts,
+                                  gsl_vector *y);
 
 int
-gsl_multilarge_nlinear_eval_f(gsl_multilarge_nlinear_fdf *fdf,
-                              const gsl_vector *x, gsl_vector *f);
+gsl_multilarge_nlinear_eval_df(const CBLAS_TRANSPOSE_t TransJ,
+                               const gsl_vector *x,
+                               const gsl_vector *f,
+                               const gsl_vector *u,
+                               const gsl_vector *swts,
+                               const double h,
+                               const gsl_multilarge_nlinear_fdtype fdtype,
+                               gsl_multilarge_nlinear_fdf *fdf,
+                               gsl_vector *v,
+                               gsl_vector *work);
 
 int
-gsl_multilarge_nlinear_eval_df(gsl_multilarge_nlinear_fdf *fdf,
-                               const gsl_vector *x, const gsl_vector *y,
-                               gsl_vector *JTy, gsl_matrix *JTJ);
-
-int
-gsl_multilarge_nlinear_eval_fvv(const double h, const gsl_vector *x, const gsl_vector *v,
-                                const gsl_vector *g, const gsl_matrix *JTJ,
+gsl_multilarge_nlinear_eval_fvv(const double h,
+                                const gsl_vector *x,
+                                const gsl_vector *v,
+                                const gsl_vector *f,
+                                const gsl_matrix *J,
+                                const gsl_vector *swts,
                                 gsl_multilarge_nlinear_fdf *fdf,
-                                gsl_vector *fvv, gsl_vector *JTfvv, gsl_vector *workp);
+                                gsl_vector *yvv, gsl_vector *work);
 
-int gsl_multilarge_nlinear_test (const double xtol, const double gtol,
-                                 const double ftol, int *info,
-                                 const gsl_multilarge_nlinear_workspace * w);
+/* covar.c */
+int
+gsl_multilarge_nlinear_covar (const gsl_matrix * J, const double epsrel,
+                              gsl_matrix * covar);
+
+/* convergence.c */
+int
+gsl_multilarge_nlinear_test (const double xtol, const double gtol,
+                             const double ftol, int *info,
+                             const gsl_multilarge_nlinear_workspace * w);
+
+/* fdjac.c */
+int
+gsl_multilarge_nlinear_df(const double h, const gsl_multilarge_nlinear_fdtype fdtype,
+                          const gsl_vector *x, const gsl_vector *wts,
+                          gsl_multilarge_nlinear_fdf *fdf,
+                          const gsl_vector *f, gsl_matrix *J, gsl_vector *work);
 
 /* fdfvv.c */
 int
-gsl_multilarge_nlinear_fdJTfvv(const double h, const gsl_vector *x, const gsl_vector *v,
-                               const gsl_vector *g, const gsl_matrix *JTJ,
-                               gsl_multilarge_nlinear_fdf *fdf,
-                               gsl_vector *JTfvv, gsl_vector *workn, gsl_vector *workp);
+gsl_multilarge_nlinear_fdfvv(const double h, const gsl_vector *x, const gsl_vector *v,
+                             const gsl_vector *f, const gsl_matrix *J,
+                             const gsl_vector *swts, gsl_multilarge_nlinear_fdf *fdf,
+                             gsl_vector *fvv, gsl_vector *work);
+
+/* top-level algorithms */
+GSL_VAR const gsl_multilarge_nlinear_type * gsl_multilarge_nlinear_trust;
+
+/* trust region subproblem methods */
+GSL_VAR const gsl_multilarge_nlinear_trs * gsl_multilarge_nlinear_trs_lm;
+GSL_VAR const gsl_multilarge_nlinear_trs * gsl_multilarge_nlinear_trs_dogleg;
+GSL_VAR const gsl_multilarge_nlinear_trs * gsl_multilarge_nlinear_trs_ddogleg;
+GSL_VAR const gsl_multilarge_nlinear_trs * gsl_multilarge_nlinear_trs_subspace2D;
+GSL_VAR const gsl_multilarge_nlinear_trs * gsl_multilarge_nlinear_trs_cgst;
+
+/* parameter update methods */
+GSL_VAR const gsl_multilarge_nlinear_update * gsl_multilarge_nlinear_update_trust;
+GSL_VAR const gsl_multilarge_nlinear_update * gsl_multilarge_nlinear_update_nielsen;
 
 /* scaling matrix strategies */
 GSL_VAR const gsl_multilarge_nlinear_scale * gsl_multilarge_nlinear_scale_levenberg;
 GSL_VAR const gsl_multilarge_nlinear_scale * gsl_multilarge_nlinear_scale_marquardt;
 GSL_VAR const gsl_multilarge_nlinear_scale * gsl_multilarge_nlinear_scale_more;
-
-/* regularized nonlinear least squares */
-
-typedef struct
-{
-  size_t n;                          /* number of residuals of original problem */
-  size_t p;                          /* number of model parameters */
-  size_t m;                          /* number of rows in regularization matrix L */
-  double lambda;                     /* regularization parameter */
-  gsl_vector * diag;                 /* diagonal regularization matrix */
-
-  gsl_multilarge_nlinear_fdf * fdf;  /* user defined fdf */
-  gsl_multilarge_nlinear_fdf fdftik; /* Tikhonov modified fdf */
-
-  gsl_multilarge_nlinear_workspace * multilarge_nlinear_p;
-} gsl_multilarge_regnlinear_workspace;
-
-gsl_multilarge_regnlinear_workspace *
-gsl_multilarge_regnlinear_alloc (const gsl_multilarge_nlinear_type * T,
-                                 const gsl_multilarge_nlinear_parameters * params,
-                                 const size_t n, const size_t p, const size_t m);
-
-void gsl_multilarge_regnlinear_free(gsl_multilarge_regnlinear_workspace *w);
-
-const char * gsl_multilarge_regnlinear_name(const gsl_multilarge_regnlinear_workspace * w);
-
-gsl_vector * gsl_multilarge_regnlinear_position (const gsl_multilarge_regnlinear_workspace * w);
-
-gsl_vector * gsl_multilarge_regnlinear_residual (const gsl_multilarge_regnlinear_workspace * w);
-
-gsl_matrix * gsl_multilarge_regnlinear_JTJ (const gsl_multilarge_regnlinear_workspace * w);
-
-size_t gsl_multilarge_regnlinear_niter (const gsl_multilarge_regnlinear_workspace * w);
-
-int
-gsl_multilarge_regnlinear_init2 (const double lambda,
-                                 const gsl_vector * L,
-                                 const gsl_vector * x,
-                                 gsl_multilarge_nlinear_fdf * f,
-                                 gsl_multilarge_regnlinear_workspace * w);
-
-int
-gsl_multilarge_regnlinear_iterate (gsl_multilarge_regnlinear_workspace * w);
-
-int
-gsl_multilarge_regnlinear_driver (const size_t maxiter,
-                                  const double xtol,
-                                  const double gtol,
-                                  const double ftol,
-                                  void (*callback)(const size_t iter, void *params,
-                                                   const gsl_multilarge_nlinear_workspace *w),
-                                  void *callback_params,
-                                  int *info,
-                                  gsl_multilarge_regnlinear_workspace * w);
 
 __END_DECLS
 

@@ -48,8 +48,8 @@ vardim_f (const gsl_vector * x, void *params, gsl_vector * f)
 }
 
 static int
-vardim_df (const gsl_vector * x, const gsl_vector * y, void * params,
-           gsl_vector * JTy, gsl_matrix * JTJ)
+vardim_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
+           const gsl_vector * u, void * params, gsl_vector * v)
 {
   gsl_matrix_view J = gsl_matrix_view_array(vardim_J, vardim_N, vardim_P);
   size_t i;
@@ -70,11 +70,7 @@ vardim_df (const gsl_vector * x, const gsl_vector * y, void * params,
       gsl_matrix_set(&J.matrix, vardim_P + 1, i, 2*(i + 1.0)*sum);
     }
 
-  if (JTJ)
-    gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
-
-  if (JTy)
-    gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, y, 0.0, JTy);
+  gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
 
   (void)params; /* avoid unused parameter warning */
 
@@ -112,7 +108,6 @@ static gsl_multilarge_nlinear_fdf vardim_func =
   vardim_N,
   vardim_P,
   NULL,
-  0,
   0,
   0,
   0

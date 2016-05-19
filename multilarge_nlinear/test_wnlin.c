@@ -81,8 +81,8 @@ wnlin_f (const gsl_vector *x, void *params, gsl_vector *f)
 }
 
 static int
-wnlin_df (const gsl_vector * x, const gsl_vector * y, void * params,
-          gsl_vector * JTy, gsl_matrix * JTJ)
+wnlin_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
+          const gsl_vector * u, void * params, gsl_vector * v)
 {
   gsl_matrix_view J = gsl_matrix_view_array(wnlin_J, wnlin_N, wnlin_P);
   int *iptr = (int *) params;
@@ -106,11 +106,7 @@ wnlin_df (const gsl_vector * x, const gsl_vector * y, void * params,
         gsl_vector_scale(&v.vector, swi);
     }
 
-  if (JTJ)
-    gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
-
-  if (JTy)
-    gsl_blas_dgemv(CblasTrans, 1.0, &J.matrix, y, 0.0, JTy);
+  gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
 
   return GSL_SUCCESS;
 }
@@ -154,7 +150,6 @@ static gsl_multilarge_nlinear_fdf wnlin_func1 =
   (void *) &wnlin_internal_weight,
   0,
   0,
-  0,
   0
 };
 
@@ -166,7 +161,6 @@ static gsl_multilarge_nlinear_fdf wnlin_func2 =
   wnlin_N,
   wnlin_P,
   NULL,
-  0,
   0,
   0,
   0
