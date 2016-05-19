@@ -70,7 +70,6 @@ typedef struct
 static void * cgst_alloc (const void * params, const size_t n, const size_t p);
 static void cgst_free(void *vstate);
 static int cgst_init(const void *vtrust_state, void *vstate);
-static int cgst_preloop(const void * vtrust_state, void * vstate);
 static int cgst_step(const void * vtrust_state, const double delta,
                      gsl_vector * dx, void * vstate);
 static int cgst_preduction(const void * vtrust_state, const gsl_vector * dx,
@@ -175,46 +174,6 @@ cgst_init(const void *vtrust_state, void *vstate)
 }
 
 /*
-cgst_preloop()
-  Initialize st method prior to iteration loop.
-
-Notes: on output,
-*/
-
-static int
-cgst_preloop(const void * vtrust_state, void * vstate)
-{
-  const gsl_multilarge_nlinear_trust_state *trust_state =
-    (const gsl_multilarge_nlinear_trust_state *) vtrust_state;
-  cgst_state_t *state = (cgst_state_t *) vstate;
-  const size_t p = state->p;
-  size_t i;
-
-  /* Step 1 of [1], section 2; scale gradient as
-   *
-   * g~ = D^{-1} g
-   *
-   * for better numerical stability
-   */
-
-  for (i = 0; i < p; ++i)
-    {
-      double gi = gsl_vector_get(trust_state->g, i);
-      double di = gsl_vector_get(trust_state->diag, i);
-
-      gsl_vector_set(state->z, i, 0.0);
-      gsl_vector_set(state->r, i, -gi / di);
-      gsl_vector_set(state->d, i, -gi / di);
-      gsl_vector_set(state->workp, i, gi / di);
-    }
-
-  /* compute || g~ || */
-  state->norm_g = gsl_blas_dnrm2(state->workp);
-
-  return GSL_SUCCESS;
-}
-
-/*
 cgst_step()
   Calculate a new step vector
 
@@ -242,6 +201,27 @@ cgst_step(const void * vtrust_state, const double delta,
   double norm_r;    /* || r_i || */
   double norm_rp1;  /* || r_{i+1} || */
   size_t i;
+
+  /* Step 1 of [1], section 2; scale gradient as
+   *
+   * g~ = D^{-1} g
+   *
+   * for better numerical stability
+   */
+
+  for (i = 0; i < state->p; ++i)
+    {
+      double gi = gsl_vector_get(trust_state->g, i);
+      double di = gsl_vector_get(trust_state->diag, i);
+
+      gsl_vector_set(state->z, i, 0.0);
+      gsl_vector_set(state->r, i, -gi / di);
+      gsl_vector_set(state->d, i, -gi / di);
+      gsl_vector_set(state->workp, i, gi / di);
+    }
+
+  /* compute || g~ || */
+  state->norm_g = gsl_blas_dnrm2(state->workp);
 
   for (i = 0; i < state->cgmaxit; ++i)
     {
@@ -382,7 +362,6 @@ static const gsl_multilarge_nlinear_trs cgst_type =
   "steihaug-toint",
   cgst_alloc,
   cgst_init,
-  cgst_preloop,
   cgst_step,
   cgst_preduction,
   cgst_free

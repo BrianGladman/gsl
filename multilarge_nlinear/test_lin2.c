@@ -2,7 +2,7 @@
 #define lin2_P         5
 
 static double lin2_x0[lin2_P] = { 1.0, 1.0, 1.0, 1.0, 1.0 };
-static double lin2_epsrel = 1.0e-9;
+static double lin2_epsrel = 1.0e-8;
 
 static double lin2_J[lin2_N * lin2_P];
 

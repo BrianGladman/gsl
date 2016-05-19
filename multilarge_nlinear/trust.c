@@ -299,11 +299,6 @@ trust_iterate(void *vstate, const gsl_vector *swts,
   int foundstep = 0;                          /* found step dx */
   int bad_steps = 0;                          /* consecutive rejected steps */
 
-  /* initialize trust region subproblem with this Jacobian */
-  status = (trs->preloop)(&trust_state, state->trs_state);
-  if (status)
-    return status;
-
   /* loop until we find an acceptable step dx */
   while (!foundstep)
     {
@@ -327,18 +322,6 @@ trust_iterate(void *vstate, const gsl_vector *swts,
           status = trust_eval_step(&trust_state, f_trial, dx, &rho, state);
           if (status == GSL_SUCCESS)
             foundstep = 1;
-
-#if 0 /*XXX*/
-          fprintf(stdout, "delta = %.12e |D dx| = %.12e |dx| = %.12e, dx0 = %.12e dx1 = %.12e |x_trial| = %.12e |f_trial| = %.12e rho = %.12e\n",
-                  state->delta,
-                  1.0,
-                  gsl_blas_dnrm2(dx),
-                  gsl_vector_get(dx, 0),
-                  gsl_vector_get(dx, 1),
-                  gsl_blas_dnrm2(x_trial),
-                  gsl_blas_dnrm2(f_trial),
-                  rho);
-#endif
         }
       else
         {

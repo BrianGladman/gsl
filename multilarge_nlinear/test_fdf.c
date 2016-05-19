@@ -88,10 +88,7 @@ static void test_scale_x0(gsl_vector *x0, const double scale);
  *
  * Method     test-problem
  * ======     ============
- * cgst       brown1
- * dogleg     thurbera
- * dogleg     rat43a
- * all        boxboda
+ * cgst       boxboda
  */
 
 static test_fdf_problem *test_problems[] = {
@@ -115,17 +112,13 @@ static test_fdf_problem *test_problems[] = {
   &watson_problem,     /* 11 */
   &box_problem,        /* 12 */
   &jennrich_problem,   /* 13 */
-#if 0
   &brown1_problem,     /* 14 */
-#endif
   &brown2_problem,     /* 16 */
   &osborne_problem,    /* 17 */
   &exp1_problem,       /* 18 */
   &meyerscal_problem,  /* 20 */
 
-#if 0 /*XXX*/
   &powell2_problem,
-#endif
 
   /*
    * These tests are from
@@ -150,9 +143,7 @@ static test_fdf_problem *test_problems[] = {
   &powell1_problem,      /* 13 */
   &wood_problem,         /* 14 */
   &kowalik_problem,      /* 15 */
-#if 0
   &brown1_problem,       /* 16 */
-#endif
   &osborne_problem,      /* 17 */
   &biggs_problem,        /* 18 */
   &watson_problem,       /* 20 */
@@ -172,7 +163,7 @@ static test_fdf_problem *test_problems[] = {
   &hahn1b_problem,
   &ensoa_problem,
   &ensob_problem,
-  /*&thurbera_problem,*/
+  &thurbera_problem,
   &thurberb_problem,
   /*&boxboda_problem,*/
   &boxbodb_problem,
@@ -180,7 +171,7 @@ static test_fdf_problem *test_problems[] = {
   &rat42b_problem,
   &eckerlea_problem,
   &eckerleb_problem,
-  /*&rat43a_problem,*/
+  &rat43a_problem,
   &rat43b_problem,
 
   NULL
@@ -227,21 +218,16 @@ test_fdf_main(const gsl_multilarge_nlinear_parameters * params)
         }
     }
 
-#if 0 /* XXX */
-
   /* test weighted nonlinear least squares */
 
-  /* XXX FIXME: weighted tests don't work with Cholesky solver */
-  if (params->solver != gsl_multilarge_nlinear_solver_cholesky)
-    {
-      /* internal weighting in _f and _df functions */
-      test_fdf(gsl_multilarge_nlinear_trust, params, xtol, gtol, ftol,
-               wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
+  /* internal weighting in _f and _df functions */
+  test_fdf(gsl_multilarge_nlinear_trust, params, xtol, gtol, ftol,
+           wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
 
-      /* weighting through nlinear_winit */
-      test_fdf(gsl_multilarge_nlinear_trust, params, xtol, gtol, ftol,
-               wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
-    }
+#if 0 /* XXX */
+  /* weighting through nlinear_winit */
+  test_fdf(gsl_multilarge_nlinear_trust, params, xtol, gtol, ftol,
+           wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
 #endif
 }
 

@@ -70,7 +70,6 @@ typedef struct
   const char *name;
   void * (*alloc) (const void * params, const size_t n, const size_t p);
   int (*init) (const void * vtrust_state, void * vstate);
-  int (*preloop) (const void * vtrust_state, void * vstate);
   int (*step) (const void * vtrust_state, const double delta,
                gsl_vector * dx, void * vstate);
   int (*preduction) (const void * vtrust_state, const gsl_vector * dx,
