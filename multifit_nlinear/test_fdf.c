@@ -88,7 +88,6 @@ static void test_scale_x0(gsl_vector *x0, const double scale);
  *
  * Method     test-problem
  * ======     ============
- * cgst       brown1
  * dogleg     thurbera
  * dogleg     rat43a
  * all        boxboda
@@ -102,7 +101,6 @@ static test_fdf_problem *test_problems[] = {
    * IMM Department of Mathematical Modeling, Tech. Report
    * IMM-REP-2000-17, 2000.
    */
-#if 1
   &lin1_problem,       /* 1 */
   &lin2_problem,       /* 2 */
   &lin3_problem,       /* 3 */
@@ -116,18 +114,14 @@ static test_fdf_problem *test_problems[] = {
   &watson_problem,     /* 11 */
   &box_problem,        /* 12 */
   &jennrich_problem,   /* 13 */
-#if 0
   &brown1_problem,     /* 14 */
-#endif
   &brown2_problem,     /* 16 */
   &osborne_problem,    /* 17 */
   &exp1_problem,       /* 18 */
   &meyerscal_problem,  /* 20 */
 
-#endif
   &powell2_problem,
 
-#if 1
   /*
    * These tests are from
    *
@@ -151,9 +145,7 @@ static test_fdf_problem *test_problems[] = {
   &powell1_problem,      /* 13 */
   &wood_problem,         /* 14 */
   &kowalik_problem,      /* 15 */
-#if 0
   &brown1_problem,       /* 16 */
-#endif
   &osborne_problem,      /* 17 */
   &biggs_problem,        /* 18 */
   &watson_problem,       /* 20 */
@@ -183,7 +175,6 @@ static test_fdf_problem *test_problems[] = {
   &eckerleb_problem,
   /*&rat43a_problem,*/
   &rat43b_problem,
-#endif
 
   NULL
 };

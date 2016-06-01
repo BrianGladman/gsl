@@ -1205,12 +1205,13 @@ The large nonlinear least squares @code{gsl_multilarge_nlinear}
 interface requires the user to specify the function
 vector @math{f(x)} as usual, but instead of supplying the full
 Jacobian, the user must supply a routine to compute
-@math{J^T J} and @math{J^T y} for a given arbitrary vector
-@math{y} supplied by the library. This way, only the much
-smaller @math{p}-by-@math{p} matrix @math{J^T J} is stored
-in memory, and the user may efficiently construct this
-matrix taking advantange of any sparse structure for their
-particular problem.
+@math{J u} or @math{J^T u} for a given arbitrary vector
+@math{u} supplied by the library. Computing matrix-vector
+products is much more efficient than factoring the Jacobian
+matrix for large problems. This interface allows the user to
+control how they store the Jacobian, whether as a dense matrix,
+sparse matrix, or even stored on disk to be read in one piece
+at a time when needed.
 
 @noindent
 The header file @file{gsl_multilarge_nlinear.h} contains prototypes for the
@@ -2020,7 +2021,7 @@ levenberg-marquardt  27     36     28     1.9874e+02    3.9789e-01   3.4719e+07 
 dogleg               23     64     23     1.9874e+02    3.9789e-01   inf           (3.14e+00, 2.28e+00)
 double-dogleg        24     69     24     1.9874e+02    3.9789e-01   3.1929e+07    (3.14e+00, 2.27e+00)
 2D-subspace          23     54     24     1.9874e+02    3.9789e-01   5.1824e+07    (3.14e+00, 2.27e+00)
-steihaug-toint       34     86     32     1.9874e+02    3.9789e-01   8.8667e+02    (3.14e+00, 2.28e+00)
+steihaug-toint       23     64     23     1.9874e+02    3.9789e-01   1.9167e+08    (3.14e+00, 2.28e+00)
 @end smallexample
 
 @noindent
