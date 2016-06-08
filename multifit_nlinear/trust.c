@@ -383,6 +383,7 @@ trust_iterate(void *vstate, const gsl_vector *swts,
           /* undo scaling: dx = D^{-1} dx_scaled */
           if (params->scale != gsl_multifit_nlinear_scale_levenberg &&
               trs != gsl_multifit_nlinear_trs_lm &&
+              trs != gsl_multifit_nlinear_trs_lmaccel &&
               trs != gsl_multifit_nlinear_trs_dogleg &&
               trs != gsl_multifit_nlinear_trs_ddogleg &&
 #if !SCALE_SUB2D
@@ -640,7 +641,7 @@ trust_eval_step(const gsl_vector * f, const gsl_vector * f_trial,
   int status = GSL_SUCCESS;
   const gsl_multifit_nlinear_parameters *params = &(state->params);
 
-  if (params->accel)
+  if (params->trs == gsl_multifit_nlinear_trs_lmaccel)
     {
       /* reject step if acceleration is too large compared to velocity */
       if (state->avratio > params->avmax)
@@ -685,6 +686,7 @@ trust_scale_Jg(const int dir, const gsl_vector * diag,
 
   /* no scaling XXX */
   if (trs == gsl_multifit_nlinear_trs_lm ||
+      trs == gsl_multifit_nlinear_trs_lmaccel ||
       trs == gsl_multifit_nlinear_trs_dogleg ||
       trs == gsl_multifit_nlinear_trs_ddogleg ||
       trs == gsl_multifit_nlinear_trs_cgst)

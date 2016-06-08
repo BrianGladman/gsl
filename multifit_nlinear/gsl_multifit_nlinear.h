@@ -132,7 +132,6 @@ typedef struct
   gsl_multifit_nlinear_fdtype fdtype;         /* finite difference method */
   double factor_up;                           /* factor for increasing trust radius */
   double factor_down;                         /* factor for decreasing trust radius */
-  int accel;                                  /* use geodesic acceleration */
   double avmax;                               /* max allowed |a|/|v| */
   double h_df;                                /* step size for finite difference Jacobian */
   double h_fvv;                               /* step size for finite difference fvv */
@@ -297,6 +296,7 @@ GSL_VAR const gsl_multifit_nlinear_type * gsl_multifit_nlinear_trust;
 
 /* trust region subproblem methods */
 GSL_VAR const gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_lm;
+GSL_VAR const gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_lmaccel;
 GSL_VAR const gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_dogleg;
 GSL_VAR const gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_ddogleg;
 GSL_VAR const gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_subspace2D;

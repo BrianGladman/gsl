@@ -9,10 +9,10 @@ final x       = (9.999999974165e-01, 9.999999948328e-01)
 final cond(J) = 5.000079979663e+02
 === Solving system with acceleration ===
 NITER         = 15
-NFEV          = 16
+NFEV          = 17
 NJEV          = 16
-NAEV          = 15
+NAEV          = 16
 initial cost  = 2.250225000000e+04
-final cost    = 1.778587232284e-21
-final x       = (9.999999999578e-01, 9.999999999157e-01)
-final cond(J) = 5.000079999976e+02
+final cost    = 7.518932873279e-19
+final x       = (9.999999991329e-01, 9.999999982657e-01)
+final cond(J) = 5.000079993362e+02

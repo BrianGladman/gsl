@@ -50,7 +50,7 @@ typedef struct
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
 
-  double avratio;            /* current |a| / |v| */
+  int accel;                 /* use geodesic acceleration? */
 
   /* tunable parameters */
   gsl_multifit_nlinear_parameters params;
@@ -58,7 +58,9 @@ typedef struct
 
 #include "common.c"
 
-static void * lm_alloc (const void * params, const size_t n, const size_t p);
+static void *lm_alloc (const int accel, const void * params, const size_t n, const size_t p);
+static void *lm_alloc_noaccel (const void * params, const size_t n, const size_t p);
+static void *lm_alloc_accel (const void * params, const size_t n, const size_t p);
 static void lm_free(void *vstate);
 static int lm_init(const void *vtrust_state, void *vstate);
 static int lm_preloop(const void * vtrust_state, void * vstate);
@@ -68,7 +70,7 @@ static int lm_preduction(const void * vtrust_state, const gsl_vector * dx,
                          double * pred, void * vstate);
 
 static void *
-lm_alloc (const void * params, const size_t n, const size_t p)
+lm_alloc (const int accel, const void * params, const size_t n, const size_t p)
 {
   const gsl_multifit_nlinear_parameters *mparams = (const gsl_multifit_nlinear_parameters *) params;
   lm_state_t *state;
@@ -112,8 +114,21 @@ lm_alloc (const void * params, const size_t n, const size_t p)
   state->n = n;
   state->p = p;
   state->params = *mparams;
+  state->accel = accel;
 
   return state;
+}
+
+static void *
+lm_alloc_noaccel (const void * params, const size_t n, const size_t p)
+{
+  return lm_alloc(0, params, n, p);
+}
+
+static void *
+lm_alloc_accel (const void * params, const size_t n, const size_t p)
+{
+  return lm_alloc(1, params, n, p);
 }
 
 static void
@@ -152,15 +167,14 @@ Return: success/error
 static int
 lm_init(const void *vtrust_state, void *vstate)
 {
+  const gsl_multifit_nlinear_trust_state *trust_state =
+    (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   lm_state_t *state = (lm_state_t *) vstate;
 
   gsl_vector_set_zero(state->vel);
   gsl_vector_set_zero(state->acc);
 
-  /* set default parameters */
-  state->avratio = 0.0;
-
-  (void)vtrust_state;
+  *(trust_state->avratio) = 0.0;
 
   return GSL_SUCCESS;
 }
@@ -227,7 +241,7 @@ lm_step(const void * vtrust_state, const double delta,
   if (status)
     return status;
 
-  if (params->accel)
+  if (state->accel)
     {
       double anorm, vnorm;
 
@@ -308,7 +322,7 @@ lm_preduction(const void * vtrust_state, const gsl_vector * dx,
 static const gsl_multifit_nlinear_trs lm_type =
 {
   "levenberg-marquardt",
-  lm_alloc,
+  lm_alloc_noaccel,
   lm_init,
   lm_preloop,
   lm_step,
@@ -317,3 +331,16 @@ static const gsl_multifit_nlinear_trs lm_type =
 };
 
 const gsl_multifit_nlinear_trs *gsl_multifit_nlinear_trs_lm = &lm_type;
+
+static const gsl_multifit_nlinear_trs lmaccel_type =
+{
+  "levenberg-marquardt+accel",
+  lm_alloc_accel,
+  lm_init,
+  lm_preloop,
+  lm_step,
+  lm_preduction,
+  lm_free
+};
+
+const gsl_multifit_nlinear_trs *gsl_multifit_nlinear_trs_lmaccel = &lmaccel_type;

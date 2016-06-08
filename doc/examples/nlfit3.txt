@@ -40626,7 +40626,7 @@
 -3.141593 12.275000
 
 
-# trust-region/levenberg-marquardt
+# trust-region/levenberg-marquardt+accel
 6.000000 14.500000
 5.434266 14.105210
 4.860709 13.032737

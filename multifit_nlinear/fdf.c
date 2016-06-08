@@ -142,7 +142,6 @@ gsl_multifit_nlinear_default_parameters(void)
   params.fdtype = GSL_MULTIFIT_NLINEAR_FWDIFF;
   params.factor_up = 3.0;
   params.factor_down = 2.0;
-  params.accel = 0;
   params.avmax = 0.75;
   params.h_df = GSL_SQRT_DBL_EPSILON;
   params.h_fvv = 0.01;

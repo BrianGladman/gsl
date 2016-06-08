@@ -166,7 +166,8 @@ cgst_init(const void *vtrust_state, void *vstate)
   cgst_state_t *state = (cgst_state_t *) vstate;
 
   /* set default parameters */
-  state->cgmaxit = 50;
+  /*XXXstate->cgmaxit = 50;*/
+  state->cgmaxit = state->n;
   state->cgtol = 1.0e-6;
 
   (void)vtrust_state;

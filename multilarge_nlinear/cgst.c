@@ -60,9 +60,6 @@ typedef struct
 
   double cgtol;              /* tolerance for CG solution */
   size_t cgmaxit;            /* maximum CG iterations */
-
-  /* tunable parameters */
-  gsl_multilarge_nlinear_parameters params;
 } cgst_state_t;
 
 #include "common.c"
@@ -80,7 +77,7 @@ static double cgst_calc_tau(const gsl_vector * p, const gsl_vector * d,
 static void *
 cgst_alloc (const void * params, const size_t n, const size_t p)
 {
-  const gsl_multilarge_nlinear_parameters *mparams = (const gsl_multilarge_nlinear_parameters *) params;
+  const gsl_multilarge_nlinear_parameters *par = (const gsl_multilarge_nlinear_parameters *) params;
   cgst_state_t *state;
   
   state = calloc(1, sizeof(cgst_state_t));
@@ -121,7 +118,12 @@ cgst_alloc (const void * params, const size_t n, const size_t p)
 
   state->n = n;
   state->p = p;
-  state->params = *mparams;
+
+  state->cgmaxit = par->max_iter;
+  if (state->cgmaxit == 0)
+    state->cgmaxit = n;
+
+  state->cgtol = par->tol;
 
   return state;
 }
@@ -162,13 +164,10 @@ Return: success/error
 static int
 cgst_init(const void *vtrust_state, void *vstate)
 {
-  cgst_state_t *state = (cgst_state_t *) vstate;
-
-  /* set default parameters */
-  state->cgmaxit = 50;
-  state->cgtol = 1.0e-6;
+  /* nothing to do */
 
   (void)vtrust_state;
+  (void)vstate;
 
   return GSL_SUCCESS;
 }

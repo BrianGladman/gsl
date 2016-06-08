@@ -10,10 +10,19 @@ provides the user with
 full access to intermediate steps of the iteration. The user
 also has the ability to tune a number of parameters which affect
 low-level aspects of the algorithm which can help to accelerate
-convergence for the specific problem at hand.
+convergence for the specific problem at hand. GSL provides
+two separate interfaces for nonlinear least squares fitting. The
+first is designed for small to moderate sized problems, and the
+second is designed for very large problems, which may or may not
+have significant sparse structure.
 
 The header file @file{gsl_multifit_nlinear.h} contains prototypes for the
-multidimensional nonlinear fitting functions and related declarations.
+multidimensional nonlinear fitting functions and related declarations
+relating to the small to moderate sized systems.
+
+The header file @file{gsl_multilarge_nlinear.h} contains prototypes for the
+multidimensional nonlinear fitting functions and related declarations
+relating to large systems.
 
 @menu
 * Nonlinear Least-Squares Overview::
@@ -25,9 +34,7 @@ multidimensional nonlinear fitting functions and related declarations.
 * Nonlinear Least-Squares Iteration::
 * Nonlinear Least-Squares Testing for Convergence::
 * Nonlinear Least-Squares High Level Driver::
-* Nonlinear Least-Squares Minimization Algorithms Using Derivatives::
 * Nonlinear Least-Squares Covariance Matrix::
-* Nonlinear Least-Squares Large Systems::
 * Nonlinear Least-Squares Troubleshooting::
 * Nonlinear Least-Squares Examples::
 * Nonlinear Least-Squares References and Further Reading::
@@ -194,6 +201,7 @@ independent variable of any data to be fitted is denoted by @math{t}.
 
 @menu
 * Nonlinear Least-Squares TRS Levenberg-Marquardt::
+* Nonlinear Least-Squares TRS Levenberg-Marquardt with Geodesic Acceleration::
 * Nonlinear Least-Squares TRS Dogleg::
 * Nonlinear Least-Squares TRS Double Dogleg::
 * Nonlinear Least-Squares TRS 2D Subspace::
@@ -204,7 +212,16 @@ Below we describe the methods available for solving the trust region
 subproblem. The methods available provide either exact or approximate
 solutions to the trust region subproblem. In all algorithms below,
 the Hessian matrix @math{B_k} is approximated as @math{B_k \approx J_k^T J_k},
-where @math{J_k = J(x_k)}.
+where @math{J_k = J(x_k)}. In all methods, the solution of the TRS
+involves solving a linear least squares system involving the Jacobian
+matrix. For small to moderate sized problems (@code{gsl_multifit_nlinear} interface),
+this is accomplished by factoring the full Jacobian matrix, which is provided
+by the user, with the Cholesky, QR, or SVD decompositions. For large systems
+(@code{gsl_multilarge_nlinear} interface), this is done iteratively without needing
+to store the full Jacobian matrix in memory.  Instead, the user must provide a routine
+to calculate the matrix-vector products @math{J u} or @math{J^T u} for a given vector @math{u}.
+This allows the user to take advantage of any sparse structure which may be present
+in the Jacobian for speed improvements.
 
 @node Nonlinear Least-Squares TRS Levenberg-Marquardt
 @subsection Levenberg-Marquardt
@@ -278,6 +295,60 @@ typically has a higher computational cost per iteration
 than the approximate methods discussed below, since it
 may need to solve the least squares system above several
 times for different values of @math{\mu_k}.
+
+@node Nonlinear Least-Squares TRS Levenberg-Marquardt with Geodesic Acceleration
+@subsection Levenberg-Marquardt with Geodesic Acceleration
+@cindex Levenberg-Marquardt algorithm, geodesic acceleration
+@cindex nonlinear least squares, levenberg-marquardt, geodesic acceleration
+
+This method applies a so-called geodesic acceleration correction to
+the standard Levenberg-Marquardt step @math{\delta_k} (Transtrum et al...).
+By interpreting @math{\delta_k} as a first order step along a geodesic in the
+model parameter space (ie: a velocity @math{\delta_k = v_k}), the geodesic
+acceleration @math{a_k} is a second order correction along the
+geodesic which is determined by solving the linear least squares system
+@tex
+\beforedisplay
+$$
+\left[
+\matrix{
+J_k \cr
+\sqrt{\mu_k} D_k
+}
+\right]
+a_k =
+-
+\left[
+\matrix{
+f_{vv}(x_k) \cr
+0
+}
+\right]
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+[J_k; sqrt(mu_k) D_k] a_k = - [f_vv(x_k); 0]
+@end example
+
+@end ifinfo
+@noindent
+where @math{f_{vv}} is the second directional derivative of
+the residual vector in the velocity direction @math{v},
+@math{f_{vv}(x) = D_v^2 f = \sum_{\alpha\beta} v_{\alpha} v_{\beta} \partial_{\alpha} \partial_{\beta} f(x)},
+where @math{\alpha} and @math{\beta} are summed over the @math{p}
+parameters. The new total step is then @math{\delta_k' = v_k + {1 \over 2}a_k}.
+The second order correction @math{a_k} can be calculated with a modest additional
+cost, and has been shown to dramatically reduce the number of iterations
+(and expensive Jacobian evaluations) required to reach convergence on a variety
+of different problems. In order to utilize the geodesic acceleration, the user must supply a
+function which provides the second directional derivative vector
+@math{f_{vv}(x)}, or alternatively the library can use a finite
+difference method to estimate this vector with one additional function
+evaluation of @math{f(x + h v)} where @math{h} is a tunable step size
+(see the @code{h_fvv} parameter description).
 
 @node Nonlinear Least-Squares TRS Dogleg
 @subsection Dogleg
@@ -420,29 +491,86 @@ J~_ij = 1 / \sigma_i df_i/dx_j
 @section Tunable Parameters
 
 @noindent
-The user can tune nearly all aspects of the iteration by using the
-@code{gsl_multifit_nlinear_parameters} structure, which is
+The user can tune nearly all aspects of the iteration at allocation
+time. For the @code{gsl_multifit_nlinear} interface, the user may
+modify the @code{gsl_multifit_nlinear_parameters} structure, which is
 defined as follows:
 
 @example
 typedef struct
 @{
+  const gsl_multifit_nlinear_trs *trs;        /* trust region subproblem method */
+  const gsl_multifit_nlinear_update *update;  /* LM parameter update method */
   const gsl_multifit_nlinear_scale *scale;    /* scaling method */
   const gsl_multifit_nlinear_solver *solver;  /* solver method */
   gsl_multifit_nlinear_fdtype fdtype;         /* finite difference method */
-  double factor_up;                           /* factor for increasing trust region */
-  double factor_down;                         /* factor for decreasing trust region */
+  double factor_up;                           /* factor for increasing trust radius */
+  double factor_down;                         /* factor for decreasing trust radius */
+  double avmax;                               /* max allowed |a|/|v| */
+  double h_df;                                /* step size for finite difference Jacobian */
+  double h_fvv;                               /* step size for finite difference fvv */
+@} gsl_multifit_nlinear_parameters;
+@end example
+
+@noindent
+For the @code{gsl_multilarge_nlinear} interface, the user may
+modify the @code{gsl_multilarge_nlinear_parameters} structure, which is
+defined as follows:
+
+@example
+typedef struct
+@{
+  const gsl_multilarge_nlinear_trs *trs;      /* trust region subproblem method */
+  gsl_multilarge_nlinear_fdtype fdtype;       /* finite difference method */
+  double factor_up;                           /* factor for increasing trust radius */
+  double factor_down;                         /* factor for decreasing trust radius */
   int accel;                                  /* use geodesic acceleration */
   double avmax;                               /* max allowed |a|/|v| */
-  double h_df;                                /* J finite difference step */
-  double h_fvv;                               /* fvv finite difference step */
-@} gsl_multifit_nlinear_parameters;
+  double h_df;                                /* step size for finite difference Jacobian */
+  double h_fvv;                               /* step size for finite difference fvv */
+  size_t max_iter;                            /* maximum iterations for trs method */
+  double tol;                                 /* tolerance for solving trs */
+@} gsl_multilarge_nlinear_parameters;
 @end example
 
 @noindent
 Each of these parameters is discussed in further detail below.
 
-@deftypevr {Parameter} {gsl_multifit_nlinear_scale *} scale
+@deftypevr {Parameter} {const gsl_multifit_nlinear_trs *} trs
+@deftypevrx {Parameter} {const gsl_multilarge_nlinear_trs *} trs
+
+This parameter determines the method used to solve the trust region
+subproblem, and may be selected from the following choices,
+
+@defvr {Default} gsl_multifit_nlinear_trs_lm
+This selects the Levenberg-Marquardt algorithm.
+@end defvr
+
+@defvr {Default} gsl_multifit_nlinear_trs_lmaccel
+This selects the Levenberg-Marquardt algorithm with geodesic
+acceleration.
+@end defvr
+
+@defvr {Default} gsl_multifit_nlinear_trs_dogleg
+This selects the dogleg algorithm.
+@end defvr
+
+@defvr {Default} gsl_multifit_nlinear_trs_ddogleg
+This selects the double dogleg algorithm.
+@end defvr
+
+@defvr {Default} gsl_multifit_nlinear_trs_subspace2D
+This selects the 2D subspace algorithm.
+@end defvr
+
+@defvr {Default} gsl_multilarge_nlinear_trs_cgst
+This selects the Steihaug-Toint conjugate gradient algorithm. This
+method is available only for large systems.
+@end defvr
+
+@end deftypevr
+
+@deftypevr {Parameter} {const gsl_multifit_nlinear_scale *} scale
 
 This parameter determines the diagonal scaling matrix @math{D} and
 may be selected from the following choices,
@@ -638,62 +766,6 @@ by this factor. The default value is @math{2}.
 
 @end deftypevr
 
-@deftypevr {Parameter} {int} accel
-
-This parameter toggles the use of the so-called geodesic
-acceleration correction to the standard Levenberg-Marquardt
-step @math{\delta} (Transtrum et al...). By interpreting
-@math{\delta} as a first order step along a geodesic in the
-model parameter space (ie: a velocity @math{\delta = v}), the geodesic
-acceleration @math{a} is a second order correction along the
-geodesic which is determined by solving the linear least squares system
-@tex
-\beforedisplay
-$$
-\left[
-\matrix{
-J \cr
-\sqrt{\mu} D
-}
-\right]
-a =
--
-\left[
-\matrix{
-f_{vv} \cr
-0
-}
-\right]
-$$
-\afterdisplay
-@end tex
-@ifinfo
-
-@example
-[J; sqrt(mu) D] \delta = - [f_vv; 0]
-@end example
-
-@end ifinfo
-
-where @math{f_{vv}} is the second directional derivative of
-the residual vector in the velocity direction @math{v},
-@math{f_{vv}(x) = D_v^2 f = \sum_{\alpha\beta} v_{\alpha} v_{\beta} \partial_{\alpha} \partial_{\beta} f(x)},
-where @math{\alpha} and @math{\beta} are summed over the @math{p}
-parameters. The new total step is then @math{\delta' = v + {1 \over 2}a}.
-The second order correction @math{a} can be calculated with a modest additional
-cost, and has been shown to dramatically reduce the number of iterations
-(and expensive Jacobian evaluations) required to reach convergence on a variety
-of different problems. In order to utilize the geodesic acceleration, the user must supply a
-function which provides the second directional derivative vector
-@math{f_{vv}(x)}, or alternatively the library can use a finite
-difference method to estimate this vector with one additional function
-evaluation of @math{f(x + h v)} where @math{h} is a tunable step size
-(see the @code{h_fvv} parameter description). The user may enable
-geodesic acceleration by setting @code{accel} to 1. It is disabled
-by default.
-
-@end deftypevr
-
 @deftypevr {Parameter} {double} avmax
 
 When using geodesic acceleration to solve a nonlinear least squares problem,
@@ -755,15 +827,17 @@ default.
 @section Initializing the Solver
 
 @deftypefun {gsl_multifit_nlinear_workspace *} gsl_multifit_nlinear_alloc (const gsl_multifit_nlinear_type * @var{T}, const gsl_multifit_nlinear_parameters * @var{params}, const size_t @var{n}, const size_t @var{p})
+@deftypefunx {gsl_multilarge_nlinear_workspace *} gsl_multilarge_nlinear_alloc (const gsl_multilarge_nlinear_type * @var{T}, const gsl_multilarge_nlinear_parameters * @var{params}, const size_t @var{n}, const size_t @var{p})
 @tindex gsl_multifit_nlinear_alloc
 @tindex gsl_multifit_nlinear_type
-This function returns a pointer to a newly allocated instance of a
+These functions return a pointer to a newly allocated instance of a
 derivative solver of type @var{T} for @var{n} observations and @var{p}
 parameters. The @var{params} input specifies a tunable set of
 parameters which will affect important details in each iteration
-of the Levenberg-Marquardt algorithm. It is recommended to start
+of the trust region subproblem algorithm. It is recommended to start
 with the suggested default parameters (see
-@code{gsl_multifit_nlinear_default_parameters}) and then tune
+@code{gsl_multifit_nlinear_default_parameters} and
+@code{gsl_multilarge_nlinear_default_parameters}) and then tune
 the parameters once the code is working correctly. See
 @ref{Nonlinear Least-Squares Tunable Parameters}
 for descriptions of the various parameters.
@@ -790,7 +864,8 @@ code of @code{GSL_ENOMEM}.
 @end deftypefun
 
 @deftypefun gsl_multifit_nlinear_parameters gsl_multifit_nlinear_default_parameters (void)
-This function returns a set of recommended default parameters
+@deftypefunx gsl_multilarge_nlinear_parameters gsl_multilarge_nlinear_default_parameters (void)
+These functions return a set of recommended default parameters
 for use in solving nonlinear least squares problems. The user
 can tune each parameter to improve the performance on their
 particular problem, see
@@ -799,6 +874,8 @@ particular problem, see
 
 @deftypefun int gsl_multifit_nlinear_init (const gsl_vector * @var{x}, gsl_multifit_nlinear_fdf * @var{fdf}, gsl_multifit_nlinear_workspace * @var{w})
 @deftypefunx int gsl_multifit_nlinear_winit (const gsl_vector * @var{x}, const gsl_vector * @var{wts}, gsl_multifit_nlinear_fdf * @var{fdf}, gsl_multifit_nlinear_workspace * @var{w})
+@deftypefunx int gsl_multilarge_nlinear_init (const gsl_vector * @var{x}, gsl_multilarge_nlinear_fdf * @var{fdf}, gsl_multilarge_nlinear_workspace * @var{w})
+@deftypefunx int gsl_multilarge_nlinear_winit (const gsl_vector * @var{x}, const gsl_vector * @var{wts}, gsl_multilarge_nlinear_fdf * @var{fdf}, gsl_multilarge_nlinear_workspace * @var{w})
 These functions initialize, or reinitialize, an existing workspace @var{w}
 to use the system @var{fdf} and the initial guess
 @var{x}. See @ref{Nonlinear Least-Squares Function Definition}
@@ -810,11 +887,13 @@ a weighted nonlinear regression. Here, the weighting matrix is
 @end deftypefun
 
 @deftypefun void gsl_multifit_nlinear_free (gsl_multifit_nlinear_workspace * @var{w})
-This function frees all the memory associated with the workspace @var{w}.
+@deftypefunx void gsl_multilarge_nlinear_free (gsl_multilarge_nlinear_workspace * @var{w})
+These functions free all the memory associated with the workspace @var{w}.
 @end deftypefun
 
 @deftypefun {const char *} gsl_multifit_nlinear_name (const gsl_multifit_nlinear_workspace * @var{w})
-This function returns a pointer to the name of the solver.  For example,
+@deftypefunx {const char *} gsl_multilarge_nlinear_name (const gsl_multilarge_nlinear_workspace * @var{w})
+These functions return a pointer to the name of the solver.  For example,
 
 @example
 printf ("w is a '%s' solver\n", 
@@ -822,7 +901,21 @@ printf ("w is a '%s' solver\n",
 @end example
 
 @noindent
-would print something like @code{w is a 'lm' solver}.
+would print something like @code{w is a 'trust-region' solver}.
+@end deftypefun
+
+@deftypefun {const char *} gsl_multifit_nlinear_trs_name (const gsl_multifit_nlinear_workspace * @var{w})
+@deftypefunx {const char *} gsl_multilarge_nlinear_trs_name (const gsl_multilarge_nlinear_workspace * @var{w})
+These functions return a pointer to the name of the trust region subproblem
+method.  For example,
+
+@example
+printf ("w is a '%s' solver\n", 
+        gsl_multifit_nlinear_trs_name (w));
+@end example
+
+@noindent
+would print something like @code{w is a 'levenberg-marquardt' solver}.
 @end deftypefun
 
 @node Nonlinear Least-Squares Function Definition
@@ -836,7 +929,7 @@ types:
 @deftp {Data Type} gsl_multifit_nlinear_fdf
 This data type defines a general system of functions with arbitrary parameters,
 the corresponding Jacobian matrix of derivatives, and optionally the
-second directional derivative of the functions for geodesic acceleration
+second directional derivative of the functions for geodesic acceleration.
 
 @table @code
 @item int (* f) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f})
@@ -893,6 +986,63 @@ This does not need to be set by the user. It counts the number of
 @end table
 @end deftp
 
+@deftp {Data Type} gsl_multilarge_nlinear_fdf
+This data type defines a general system of functions with arbitrary parameters,
+a function to compute @math{J u} or @math{J^T u} for a given vector @math{u},
+and optionally the second directional derivative of the functions for geodesic acceleration.
+
+@table @code
+@item int (* f) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f})
+This function should store the @math{n} components of the vector
+@c{$f(x)$}
+@math{f(x)} in @var{f} for argument @var{x} and arbitrary parameters @var{params},
+returning an appropriate error code if the function cannot be computed.
+
+@item int (* df) (CBLAS_TRANSPOSE_t @var{TransJ}, const gsl_vector * @var{x}, const gsl_vector * @var{u}, void * @var{params}, gsl_vector * @var{v})
+If @var{TransJ} is equal to @code{CblasNoTrans}, then this function should
+compute the matrix-vector product @math{J u} and store the result in @var{v}.
+If @var{TransJ} is equal to @code{CblasTrans}, then this function should
+compute the matrix-vector product @math{J^T u} and store the result in @var{v}.
+The input @var{params} contains the arbitrary parameters.
+
+@item int (* fvv) (const gsl_vector * @var{x}, const gsl_vector * @var{v}, void * @var{params}, gsl_vector * @var{fvv})
+When geodesic acceleration is enabled, this function should store the
+@math{n} components of the vector
+@math{f_{vv}(x) = \sum_{\alpha\beta} v_{\alpha} v_{\beta} {\partial \over \partial x_{\alpha}} {\partial \over \partial x_{\beta}} f(x)},
+representing second directional derivatives of the function to be minimized,
+into the output @var{fvv}. The parameter vector is provided in @var{x} and
+the velocity vector is provided in @var{v}, both of which have @math{p}
+components. The arbitrary parameters are given in @var{params}. If
+analytic expressions for @math{f_{vv}(x)} are unavailable or too difficult
+to compute, this function pointer may be set to NULL, in which case
+@math{f_{vv}(x)} will be computed internally using a finite difference
+approximation.
+
+@item size_t n
+the number of functions, i.e. the number of components of the
+vector @var{f}.
+
+@item size_t p
+the number of independent variables, i.e. the number of components of
+the vector @var{x}.
+
+@item void * params
+a pointer to the arbitrary parameters of the function.
+
+@item size_t nevalf
+This does not need to be set by the user. It counts the number of
+function evaluations and is initialized by the @code{_init} function.
+
+@item size_t nevaldf
+This does not need to be set by the user. It counts the number of
+Jacobian evaluations and is initialized by the @code{_init} function.
+
+@item size_t nevalfvv
+This does not need to be set by the user. It counts the number of
+@math{f_{vv}(x)} evaluations and is initialized by the @code{_init} function.
+@end table
+@end deftp
+
 @noindent
 Note that when fitting a non-linear model against experimental data,
 the data is passed to the functions above using the
@@ -903,16 +1053,15 @@ the data is passed to the functions above using the
 @section Iteration
 
 The following functions drive the iteration of each algorithm.  Each
-function performs one iteration to update the state of any solver of the
-corresponding type.  The same functions work for all solvers so that
-different methods can be substituted at runtime without modifications to
-the code.
+function performs one iteration of the trust region method and updates
+the state of the solver.
 
 @deftypefun int gsl_multifit_nlinear_iterate (gsl_multifit_nlinear_workspace * @var{w})
-This function performs a single iteration of the solver @var{w}.  If
+@deftypefunx int gsl_multilarge_nlinear_iterate (gsl_multilarge_nlinear_workspace * @var{w})
+These functions perform a single iteration of the solver @var{w}.  If
 the iteration encounters an unexpected problem then an error code will
 be returned.  The solver workspace maintains a current estimate of the
-best-fit parameters at all times. 
+best-fit parameters at all times.
 @end deftypefun
 
 @noindent
@@ -929,7 +1078,7 @@ The function residual vector at the current position @math{f(x)}, length
 
 @item gsl_matrix * J
 The Jacobian matrix at the current position @math{J(x)}, size
-@math{n}-by-@math{p}.
+@math{n}-by-@math{p} (only for @code{gsl_multifit_nlinear} interface).
 
 @item gsl_vector * dx
 The difference between the current position and the previous position,
@@ -941,23 +1090,27 @@ i.e. the last step @math{\delta}, taken as a vector, length @math{p}.
 These quantities can be accessed with the following functions,
 
 @deftypefun {gsl_vector *} gsl_multifit_nlinear_position (const gsl_multifit_nlinear_workspace * @var{w})
-This function returns the current position @math{x} (i.e. best-fit
+@deftypefunx {gsl_vector *} gsl_multilarge_nlinear_position (const gsl_multilarge_nlinear_workspace * @var{w})
+These functions return the current position @math{x} (i.e. best-fit
 parameters) of the solver @var{w}.
 @end deftypefun
 
 @deftypefun {gsl_vector *} gsl_multifit_nlinear_residual (const gsl_multifit_nlinear_workspace * @var{w})
-This function returns the current residual vector @math{f(x)} of the
+@deftypefunx {gsl_vector *} gsl_multilarge_nlinear_residual (const gsl_multilarge_nlinear_workspace * @var{w})
+These functions return the current residual vector @math{f(x)} of the
 solver @var{w}.  For weighted systems, the residual vector includes the
 weighting factor @math{\sqrt{W}}.
 @end deftypefun
 
 @deftypefun {gsl_matrix *} gsl_multifit_nlinear_jac (const gsl_multifit_nlinear_workspace * @var{w})
 This function returns a pointer to the @math{n}-by-@math{p} Jacobian matrix for the
-current iteration of the solver @var{w}.
+current iteration of the solver @var{w}. This function is available only for the
+@code{gsl_multifit_nlinear} interface.
 @end deftypefun
 
 @deftypefun size_t gsl_multifit_nlinear_niter (const gsl_multifit_nlinear_workspace * @var{w})
-This function returns the number of iterations performed so far.
+@deftypefunx size_t gsl_multilarge_nlinear_niter (const gsl_multilarge_nlinear_workspace * @var{w})
+These functions return the number of iterations performed so far.
 The iteration counter is updated on each call to the
 @code{_iterate} functions above, and reset to 0 in the
 @code{_init} functions.
@@ -996,7 +1149,8 @@ below allow the user to test the current estimate of the best-fit
 parameters in several standard ways.
 
 @deftypefun int gsl_multifit_nlinear_test (const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, int * @var{info}, const gsl_multifit_nlinear_workspace * @var{w})
-This function tests for convergence of the minimization method
+@deftypefunx int gsl_multilarge_nlinear_test (const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, int * @var{info}, const gsl_multilarge_nlinear_workspace * @var{w})
+These functions test for convergence of the minimization method
 using the following criteria:
 
 @itemize @bullet
@@ -1065,11 +1219,12 @@ are required.
 @node Nonlinear Least-Squares High Level Driver
 @section High Level Driver
 
-This routine provides a high level wrapper that combines the iteration
+These routines provide a high level wrapper that combines the iteration
 and convergence testing for easy use.
 
 @deftypefun int gsl_multifit_nlinear_driver (const size_t @var{maxiter}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, void (* @var{callback})(const size_t @var{iter}, void * @var{params}, const gsl_multifit_linear_workspace * @var{w}), void * @var{callback_params}, int * @var{info}, gsl_multifit_nlinear_workspace * @var{w})
-This function iterates the nonlinear least squares solver @var{w} for a
+@deftypefunx int gsl_multilarge_nlinear_driver (const size_t @var{maxiter}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, void (* @var{callback})(const size_t @var{iter}, void * @var{params}, const gsl_multilarge_linear_workspace * @var{w}), void * @var{callback_params}, int * @var{info}, gsl_multilarge_nlinear_workspace * @var{w})
+These functions iterate the nonlinear least squares solver @var{w} for a
 maximum of @var{maxiter} iterations. After each iteration, the system is
 tested for convergence with the error tolerances @var{xtol}, @var{gtol} and @var{ftol}.
 Additionally, the user may supply a callback function @var{callback}
@@ -1087,26 +1242,6 @@ this case, @code{GSL_ENOPROG} is returned indicating no further
 progress can be made. If your problem is having difficulty converging,
 see @ref{Nonlinear Least-Squares Troubleshooting} for further guidance.
 @end deftypefun
-
-@node Nonlinear Least-Squares Minimization Algorithms Using Derivatives
-@section Minimization Algorithms using Derivatives
-
-The minimization algorithms described in this section make use of both
-the function and its derivative.  They require an initial guess for the
-location of the minimum. There is no absolute guarantee of
-convergence---the function must be suitable for this technique and the
-initial guess must be sufficiently close to the minimum for it to work.
-
-@comment ============================================================
-@cindex Levenberg-Marquardt algorithm
-
-@deffn {Derivative Solver} gsl_multifit_nlinear_lm
-@cindex minimization algorithms
-
-This specifies the Levenberg-Marquardt algorithm and is currently
-the only nonlinear least squares solver available.
-
-@end deffn
 
 @node Nonlinear Least-Squares Covariance Matrix
 @section Covariance matrix of best fit parameters
@@ -1191,447 +1326,6 @@ best-fit parameters from the scatter of the underlying data.
 
 For more information about covariance matrices see @ref{Fitting Overview}.
 @end deftypefun
-
-@node Nonlinear Least-Squares Large Systems
-@section Large Nonlinear Least-Squares Systems
-
-This section describes functions available for solving
-large nonlinear least squares systems (ie: @math{n >> p}).
-Such systems may be too large to store the full Jacobian
-matrix in memory. Additionally, large systems often have
-significant sparse structure in the Jacobian which will
-not be exploited by the @code{gsl_multifit_nlinear} interface.
-The large nonlinear least squares @code{gsl_multilarge_nlinear}
-interface requires the user to specify the function
-vector @math{f(x)} as usual, but instead of supplying the full
-Jacobian, the user must supply a routine to compute
-@math{J u} or @math{J^T u} for a given arbitrary vector
-@math{u} supplied by the library. Computing matrix-vector
-products is much more efficient than factoring the Jacobian
-matrix for large problems. This interface allows the user to
-control how they store the Jacobian, whether as a dense matrix,
-sparse matrix, or even stored on disk to be read in one piece
-at a time when needed.
-
-@noindent
-The header file @file{gsl_multilarge_nlinear.h} contains prototypes for the
-multidimensional large nonlinear fitting functions and related declarations.
-
-@menu
-* Nonlinear Least-Squares Large Systems Overview::
-* Nonlinear Least-Squares Large Systems Tunable Parameters::
-* Nonlinear Least-Squares Large Systems Initialization::
-* Nonlinear Least-Squares Large Systems Function Definition::
-* Nonlinear Least-Squares Large Systems Iteration::
-* Nonlinear Least-Squares Large Systems Testing for Convergence::
-* Nonlinear Least-Squares Large Systems High Level Driver::
-* Nonlinear Least-Squares Large Systems Minimization Algorithms Using Derivatives::
-@end menu
-
-@node Nonlinear Least-Squares Large Systems Overview
-@subsection Overview
-
-@noindent
-The algorithm for solving the large nonlinear least squares
-problem is the same as before, however the new proposed
-step is computed using only the normal equations method:
-@tex
-\beforedisplay
-$$
-\left( J^T J + \mu D^T D \right) \delta = -J^T f
-$$
-\afterdisplay
-@end tex
-@ifinfo
-
-@example
-( J^T J + \mu D^T D ) \delta = -J^T f
-@end example
-
-@end ifinfo
-The QR approach for computing @math{\delta} is not available,
-since the full Jacobian matrix @math{J} is never constructed
-explicitly. The user will directly provide the @math{J^T J}
-matrix at each step of the iteration.
-
-@node Nonlinear Least-Squares Large Systems Tunable Parameters
-@subsection Tunable Parameters
-
-@noindent
-The user can tune nearly all aspects of the iteration by using the
-@code{gsl_multilarge_nlinear_parameters} structure, which is
-defined as follows:
-
-@example
-typedef struct
-@{
-  const gsl_multilarge_nlinear_scale *scale;  /* scaling method */
-  int accel;                                  /* use geodesic acceleration */
-  double avmax;                               /* max allowed |a|/|v| */
-  double h_fvv;                               /* fvv finite difference step */
-@} gsl_multilarge_nlinear_parameters;
-@end example
-
-@noindent
-These parameters operate identically as the @code{gsl_multifit_nlinear}
-interface except the linear solver parameter, which is not available
-since only the normal equations appraoch is used. See
-@ref{Nonlinear Least-Squares Tunable Parameters} for complete
-details of each parameter.
-
-@deftypevr {Parameter} {gsl_multilarge_nlinear_scale *} scale
-
-This parameter determines the diagonal scaling matrix @math{D} and
-may be selected from the following choices,
-
-@defvr {Default} gsl_multilarge_nlinear_scale_more
-@end defvr
-
-@defvr {Option} gsl_multilarge_nlinear_scale_levenberg
-@end defvr
-
-@defvr {Option} gsl_multilarge_nlinear_scale_marquardt
-@end defvr
-
-@end deftypevr
-
-@deftypevr {Parameter} {int} accel
-This parameter toggles the use of geodesic acceleration.
-It is set to 0 by default.
-@end deftypevr
-
-@deftypevr {Parameter} {double} avmax
-This parameter specifies the maximum allowed ratio
-of @math{||a|| / ||v||} during the iteration. It is
-set to 0.75 by default.
-@end deftypevr
-
-@deftypevr {Parameter} {double} h_fvv
-This parameter specifies the size of the step when
-computing the finite difference approximation to the second
-directional derivative @math{f_{vv}(x)}. It is set
-to 0.01 by default.
-@end deftypevr
-
-@node Nonlinear Least-Squares Large Systems Initialization
-@subsection Initializing the Solver
-
-@deftypefun {gsl_multilarge_nlinear_workspace *} gsl_multilarge_nlinear_alloc (const gsl_multilarge_nlinear_type * @var{T}, const gsl_multilarge_nlinear_parameters * @var{params}, const size_t @var{n}, const size_t @var{p})
-@tindex gsl_multilarge_nlinear_alloc
-@tindex gsl_multilarge_nlinear_type
-This function returns a pointer to a newly allocated instance of a
-derivative solver of type @var{T} for @var{n} observations and @var{p}
-parameters. The @var{params} input specifies a tunable set of
-parameters which will affect important details in each iteration
-of the Levenberg-Marquardt algorithm. It is recommended to start
-with the suggested default parameters (see
-@code{gsl_multilarge_nlinear_default_parameters}) and then tune
-the parameters once the code is working correctly. See
-@ref{Nonlinear Least-Squares Large Systems Tunable Parameters}
-for descriptions of the various parameters.
-The number of observations @var{n} must be greater than or equal to
-parameters @var{p}.
-
-If there is insufficient memory to create the solver then the function
-returns a null pointer and the error handler is invoked with an error
-code of @code{GSL_ENOMEM}.
-@end deftypefun
-
-@deftypefun gsl_multilarge_nlinear_parameters gsl_multilarge_nlinear_default_parameters (void)
-This function returns a set of recommended default parameters
-for use in solving large nonlinear least squares problems. The user
-can tune each parameter to improve the performance on their
-particular problem, see
-@ref{Nonlinear Least-Squares Large Systems Tunable Parameters}.
-@end deftypefun
-
-@deftypefun int gsl_multilarge_nlinear_init (const gsl_vector * @var{x}, gsl_multilarge_nlinear_fdf * @var{fdf}, gsl_multilarge_nlinear_workspace * @var{w})
-These functions initialize, or reinitialize, an existing workspace @var{w}
-to use the system @var{fdf} and the initial guess
-@var{x}. See @ref{Nonlinear Least-Squares Large Systems Function Definition}
-for a description of the @var{fdf} structure.
-
-Optionally, a weight vector @var{wts} can be given to perform
-a weighted nonlinear regression. Here, the weighting matrix is
-@math{W = diag(w_1,w_2,...,w_n)}.
-@end deftypefun
-
-@deftypefun void gsl_multilarge_nlinear_free (gsl_multilarge_nlinear_workspace * @var{w})
-This function frees all the memory associated with the workspace @var{w}.
-@end deftypefun
-
-@deftypefun {const char *} gsl_multilarge_nlinear_name (const gsl_multilarge_nlinear_workspace * @var{w})
-This function returns a pointer to the name of the solver.
-@end deftypefun
-
-@node Nonlinear Least-Squares Large Systems Function Definition
-@subsection Providing the Function to be Minimized
-
-The user must provide @math{n} functions of @math{p} variables for the
-minimization algorithm to operate on.  In order to allow for
-arbitrary parameters the functions are defined by the following data
-types:
-
-@deftp {Data Type} gsl_multilarge_nlinear_fdf
-This data type defines a general system of functions with arbitrary parameters,
-the corresponding normal Jacobian matrix of derivatives @math{J^T J}, and optionally the
-second directional derivative of the functions for geodesic acceleration
-
-@table @code
-@item int (* f) (const gsl_vector * @var{x}, void * @var{params}, gsl_vector * @var{f})
-This function should store the @math{n} components of the vector
-@c{$f(x)$}
-@math{f(x)} in @var{f} for argument @var{x} and arbitrary parameters @var{params},
-returning an appropriate error code if the function cannot be computed.
-
-@item int (* df) (const gsl_vector * @var{x}, const gsl_vector * @var{y}, void * @var{params}, gsl_vector * @var{JTy}, gsl_matrix * @var{JTJ})
-This function should store the @var{p}-by-@var{p} matrix
-@math{J(x)^T J(x)} in @var{JTJ} for argument @var{x}
-and arbitrary parameters @var{params}, returning an appropriate error code if the
-matrix cannot be computed. Additionally, the library will provide
-an @math{n}-by-1 vector @var{y}, and the user must store the result
-@math{J(x)^T y} in @math{JTy} on output. The
-library may occasionally need to compute @math{J^T y} without
-needing a full update of @math{J^T J}, in which case the pointer
-@var{JTJ} will be set to NULL, so the user should check for this
-prior to computing the full matrix.
-
-@item int (* fvv) (const gsl_vector * @var{x}, const gsl_vector * @var{v}, void * @var{params}, gsl_vector * @var{fvv})
-When geodesic acceleration is enabled, this function should store the
-@math{n} components of the vector
-@math{f_{vv}(x) = \sum_{\alpha\beta} v_{\alpha} v_{\beta} {\partial \over \partial x_{\alpha}} {\partial \over \partial x_{\beta}} f(x)},
-representing second directional derivatives of the function to be minimized,
-into the output @var{fvv}. The parameter vector is provided in @var{x} and
-the velocity vector is provided in @var{v}, both of which have @math{p}
-components. The arbitrary parameters are given in @var{params}. If
-analytic expressions for @math{f_{vv}(x)} are unavailable or too difficult
-to compute, this function pointer may be set to NULL, in which case
-@math{f_{vv}(x)} will be computed internally using a finite difference
-approximation.
-
-@item size_t n
-the number of functions, i.e. the number of components of the
-vector @var{f}.
-
-@item size_t p
-the number of independent variables, i.e. the number of components of
-the vector @var{x}.
-
-@item void * params
-a pointer to the arbitrary parameters of the function.
-
-@item size_t nevalf
-This does not need to be set by the user. It counts the number of
-function evaluations and is initialized by the @code{_init} function.
-
-@item size_t nevaldf
-This does not need to be set by the user. It counts the number of
-evaluations of @math{J^T J} and is initialized by the @code{_init} function.
-
-@item size_t nevaldff
-This does not need to be set by the user. It counts the number of
-evaluations of @math{J^T y} and is initialized by the @code{_init} function.
-
-@item size_t nevalfvv
-This does not need to be set by the user. It counts the number of
-@math{f_{vv}(x)} evaluations and is initialized by the @code{_init} function.
-@end table
-@end deftp
-
-@noindent
-Note that when fitting a non-linear model against experimental data,
-the data is passed to the functions above using the
-@var{params} argument and the trial best-fit parameters through the
-@var{x} argument.
-
-@node Nonlinear Least-Squares Large Systems Iteration
-@subsection Iteration
-
-The following functions drive the iteration of the large nonlinear
-least squares solver.
-
-@deftypefun int gsl_multilarge_nlinear_iterate (gsl_multilarge_nlinear_workspace * @var{w})
-This function performs a single iteration of the solver @var{w}.  If
-the iteration encounters an unexpected problem then an error code will
-be returned.  The solver workspace maintains a current estimate of the
-best-fit parameters at all times. 
-@end deftypefun
-
-@noindent
-The solver workspace @var{w} contains the following entries, which can
-be used to track the progress of the solution:
-
-@table @code
-@item gsl_vector * x
-The current position, length @math{p}.
-
-@item gsl_vector * f
-The function residual vector at the current position @math{f(x)}, length
-@math{n}.
-
-@item gsl_matrix * JTJ
-The normal matrix @math{J^T J} at the current position @math{x}, size
-@math{p}-by-@math{p}.
-
-@item gsl_vector * dx
-The difference between the current position and the previous position,
-i.e. the last step @math{\delta}, taken as a vector, length @math{p}.
-
-@end table
-
-@noindent
-These quantities can be accessed with the following functions,
-
-@deftypefun {gsl_vector *} gsl_multilarge_nlinear_position (const gsl_multilarge_nlinear_workspace * @var{w})
-This function returns the current position @math{x} (i.e. best-fit
-parameters) of the solver @var{w}.
-@end deftypefun
-
-@deftypefun {gsl_vector *} gsl_multilarge_nlinear_step (const gsl_multilarge_nlinear_workspace * @var{w})
-This function returns the last step taken @math{\delta}.
-@end deftypefun
-
-@deftypefun {gsl_vector *} gsl_multilarge_nlinear_residual (const gsl_multilarge_nlinear_workspace * @var{w})
-This function returns the current residual vector @math{f(x)} of the
-solver @var{w}.  For weighted systems, the residual vector includes the
-weighting factor @math{\sqrt{W}}.
-@end deftypefun
-
-@deftypefun {gsl_matrix *} gsl_multilarge_nlinear_JTJ (const gsl_multilarge_nlinear_workspace * @var{w})
-This function returns a pointer to the @math{p}-by-@math{p} matrix
-@math{J^T J} for the current iteration of the solver @var{w}.
-@end deftypefun
-
-@deftypefun size_t gsl_multilarge_nlinear_niter (const gsl_multilarge_nlinear_workspace * @var{w})
-This function returns the number of iterations performed so far.
-The iteration counter is updated on each call to the
-@code{_iterate} functions above, and reset to 0 in the
-@code{_init} functions.
-@end deftypefun
-
-@deftypefun int gsl_multilarge_nlinear_rcond (double * @var{rcond}, gsl_multilarge_nlinear_workspace * @var{w})
-This function computes the reciprocal condition number
-of the Jacobian @math{J} at the current position @math{x} and
-stores it in @var{rcond}. It is computed by calculating
-the eigenvalues @math{\gamma} of @math{J(x)^T J(x)} and setting
-@var{rcond} = @math{\sqrt{\gamma_{min} / \gamma_{max}}}. If
-the eigenvalue decomposition fails, an error is returned.
-@end deftypefun
-
-@node Nonlinear Least-Squares Large Systems Testing for Convergence
-@subsection Testing for Convergence
-
-@deftypefun int gsl_multilarge_nlinear_test (const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, int * @var{info}, const gsl_multilarge_nlinear_workspace * @var{w})
-This function tests for convergence of the minimization method
-using the following criteria:
-
-@itemize @bullet
-@item
-Testing for a small step size relative to the current parameter vector
-@tex
-\beforedisplay
-$$
-|\delta_i| \le xtol (|x_i| + xtol)
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-|\delta_i| <= xtol (|x_i| + xtol)
-@end example
-@end ifinfo
-for each @math{0 <= i < p}. Each element of the step vector @math{\delta}
-is tested individually in case the different parameters have widely
-different scales. Adding @var{xtol} to @math{|x_i|} helps the test avoid
-breaking down in situations where the true solution value @math{x_i = 0}.
-If this test succeeds, @var{info} is set to 1 and the function
-returns @code{GSL_SUCCESS}.
-
-A general guideline for selecting the step tolerance is to choose
-@math{xtol = 10^{-d}} where @math{d} is the number of accurate
-decimal digits desired in the solution @math{x}. See Dennis and
-Schnabel for more information.
-
-@item
-Testing for a small gradient (@math{g = \nabla \Phi(x) = J^T f})
-indicating a local function minimum:
-@tex
-\beforedisplay
-$$
-max_i |g_i \times max(x_i, 1)| \le gtol \times max(\Phi(x), 1)
-$$
-\afterdisplay
-@end tex
-@ifinfo
-@example
-||g||_inf <= gtol
-@end example
-@end ifinfo
-This expression tests whether the ratio
-@math{(\nabla \Phi)_i x_i / \Phi} is small. Testing this scaled gradient
-is a better than @math{\nabla \Phi} alone since it is a dimensionless
-quantity and so independent of the scale of the problem. The
-@code{max} arguments help ensure the test doesn't break down in
-regions where @math{x_i} or @math{\Phi(x)} are close to 0.
-If this test succeeds, @var{info} is set to 2 and the function
-returns @code{GSL_SUCCESS}.
-
-A general guideline for choosing the gradient tolerance is to set
-@code{gtol = GSL_DBL_EPSILON^(1/3)}. See Dennis and Schnabel for
-more information.
-
-@end itemize
-
-If none of the tests succeed, @var{info} is set to 0 and the
-function returns @code{GSL_CONTINUE}, indicating further iterations
-are required.
-
-@end deftypefun
-
-@node Nonlinear Least-Squares Large Systems High Level Driver
-@subsection High Level Driver
-
-This routine provides a high level wrapper that combines the iteration
-and convergence testing for easy use.
-
-@deftypefun int gsl_multilarge_nlinear_driver (const size_t @var{maxiter}, const double @var{xtol}, const double @var{gtol}, const double @var{ftol}, void (* @var{callback})(const size_t @var{iter}, void * @var{params}, const gsl_multilarge_linear_workspace * @var{w}), void * @var{callback_params}, int * @var{info}, gsl_multilarge_nlinear_workspace * @var{w})
-This function iterates the large nonlinear least squares solver @var{w} for a
-maximum of @var{maxiter} iterations. After each iteration, the system is
-tested for convergence with the error tolerances @var{xtol}, @var{gtol} and @var{ftol}.
-Additionally, the user may supply a callback function @var{callback}
-which is called after each iteration, so that the user may save or print
-relevant quantities for each iteration. The parameter @var{callback_params}
-is passed to the @var{callback} function. The parameters @var{callback}
-and @var{callback_params} may be set to NULL to disable this feature.
-Upon successful convergence, the function returns @code{GSL_SUCCESS}
-and sets @var{info} to the reason for convergence (see
-@code{gsl_multilarge_nlinear_test}). If the function has not
-converged after @var{maxiter} iterations, @code{GSL_EMAXITER} is
-returned. In rare cases, during an iteration the algorithm may
-be unable to find a new acceptable step @math{\delta} to take. In
-this case, @code{GSL_ENOPROG} is returned indicating no further
-progress can be made. If your problem is having difficulty converging,
-see @ref{Nonlinear Least-Squares Troubleshooting} for further guidance.
-@end deftypefun
-
-@node Nonlinear Least-Squares Large Systems Minimization Algorithms Using Derivatives
-@subsection Minimization Algorithms Using Derivatives
-
-The minimization algorithms described in this section make use of both
-the function and its derivative.  They require an initial guess for the
-location of the minimum. There is no absolute guarantee of
-convergence---the function must be suitable for this technique and the
-initial guess must be sufficiently close to the minimum for it to work.
-
-@cindex Levenberg-Marquardt algorithm
-
-@deffn {Derivative Solver} gsl_multilarge_nlinear_lm
-@cindex minimization algorithms
-
-This specifies the Levenberg-Marquardt algorithm and is currently
-the only large nonlinear least squares solver available.
-
-@end deffn
 
 @node Nonlinear Least-Squares Troubleshooting
 @section Troubleshooting

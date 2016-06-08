@@ -210,7 +210,7 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
 
       problem->fdf->df = fdf.df;
 
-      if (params->accel == 1 && problem->fdf->fvv != NULL)
+      if (params->trs == gsl_multifit_nlinear_trs_lmaccel && problem->fdf->fvv != NULL)
         {
           /* test finite difference second directional derivative */
           fdf.fvv = problem->fdf->fvv;
@@ -282,11 +282,10 @@ test_fdf(const gsl_multifit_nlinear_type * T,
   char sname[2048];
   int status, info;
 
-  sprintf(buf, "%s/%s/scale=%s/solver=%s/scale=%g/accel=%d%s%s",
+  sprintf(buf, "%s/%s/scale=%s/solver=%s/scale=%g%s%s",
     gsl_multifit_nlinear_name(w),
     params->trs->name,
     params->scale->name, params->solver->name, x0_scale,
-    params->accel,
     problem->fdf->df ? "" : "/fdjac",
     problem->fdf->fvv ? "" : "/fdfvv");
 

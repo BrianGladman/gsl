@@ -27,8 +27,8 @@
 
 gsl_multilarge_nlinear_workspace *
 gsl_multilarge_nlinear_alloc (const gsl_multilarge_nlinear_type * T, 
-                            const gsl_multilarge_nlinear_parameters * params,
-                            const size_t n, const size_t p)
+                              const gsl_multilarge_nlinear_parameters * params,
+                              const size_t n, const size_t p)
 {
   gsl_multilarge_nlinear_workspace * w;
 
@@ -133,23 +133,25 @@ gsl_multilarge_nlinear_default_parameters(void)
   params.avmax = 0.75;
   params.h_df = GSL_SQRT_DBL_EPSILON;
   params.h_fvv = 0.01;
+  params.max_iter = 0;
+  params.tol = 1.0e-6;
 
   return params;
 }
 
 int
 gsl_multilarge_nlinear_init (const gsl_vector * x,
-                           gsl_multilarge_nlinear_fdf * fdf,
-                           gsl_multilarge_nlinear_workspace * w)
+                             gsl_multilarge_nlinear_fdf * fdf,
+                             gsl_multilarge_nlinear_workspace * w)
 {
   return gsl_multilarge_nlinear_winit(x, NULL, fdf, w);
 }
 
 int
 gsl_multilarge_nlinear_winit (const gsl_vector * x,
-                            const gsl_vector * wts,
-                            gsl_multilarge_nlinear_fdf * fdf, 
-                            gsl_multilarge_nlinear_workspace * w)
+                              const gsl_vector * wts,
+                              gsl_multilarge_nlinear_fdf * fdf, 
+                              gsl_multilarge_nlinear_workspace * w)
 {
   const size_t n = w->f->size;
 
@@ -246,14 +248,14 @@ GSL_ENOPROG if no accepted step found on first iteration
 
 int
 gsl_multilarge_nlinear_driver (const size_t maxiter,
-                             const double xtol,
-                             const double gtol,
-                             const double ftol,
-                             void (*callback)(const size_t iter, void *params,
-                                              const gsl_multilarge_nlinear_workspace *w),
-                             void *callback_params,
-                             int *info,
-                             gsl_multilarge_nlinear_workspace * w)
+                               const double xtol,
+                               const double gtol,
+                               const double ftol,
+                               void (*callback)(const size_t iter, void *params,
+                                                const gsl_multilarge_nlinear_workspace *w),
+                               void *callback_params,
+                               int *info,
+                               gsl_multilarge_nlinear_workspace * w)
 {
   int status;
   size_t iter = 0;
@@ -327,6 +329,12 @@ gsl_vector *
 gsl_multilarge_nlinear_residual (const gsl_multilarge_nlinear_workspace * w)
 {
   return w->f;
+}
+
+gsl_vector *
+gsl_multilarge_nlinear_step (const gsl_multilarge_nlinear_workspace * w)
+{
+  return w->dx;
 }
 
 size_t

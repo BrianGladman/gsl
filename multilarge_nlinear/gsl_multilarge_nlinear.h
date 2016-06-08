@@ -108,6 +108,8 @@ typedef struct
   double avmax;                               /* max allowed |a|/|v| */
   double h_df;                                /* step size for finite difference Jacobian */
   double h_fvv;                               /* step size for finite difference fvv */
+  size_t max_iter;                            /* maximum iterations for trs method */
+  double tol;                                 /* tolerance for solving trs */
 } gsl_multilarge_nlinear_parameters;
 
 typedef struct
@@ -199,6 +201,9 @@ gsl_multilarge_nlinear_position (const gsl_multilarge_nlinear_workspace * w);
 
 gsl_vector *
 gsl_multilarge_nlinear_residual (const gsl_multilarge_nlinear_workspace * w);
+
+gsl_vector *
+gsl_multilarge_nlinear_step (const gsl_multilarge_nlinear_workspace * w);
 
 size_t
 gsl_multilarge_nlinear_niter (const gsl_multilarge_nlinear_workspace * w);

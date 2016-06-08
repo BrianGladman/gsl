@@ -151,10 +151,11 @@ main (void)
   gsl_vector_set(x, 1, 1.75);
 
   fprintf(stderr, "=== Solving system without acceleration ===\n");
+  fdf_params.trs = gsl_multifit_nlinear_trs_lm;
   solve_system(x, &fdf, &fdf_params);
 
   fprintf(stderr, "=== Solving system with acceleration ===\n");
-  fdf_params.accel = 1;
+  fdf_params.trs = gsl_multifit_nlinear_trs_lmaccel;
   solve_system(x, &fdf, &fdf_params);
 
   gsl_vector_free(f);

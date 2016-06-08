@@ -35,6 +35,7 @@
 static const gsl_multifit_nlinear_trs **nlinear_trs[] = {
 #if 1
   &gsl_multifit_nlinear_trs_lm,
+  &gsl_multifit_nlinear_trs_lmaccel,
   &gsl_multifit_nlinear_trs_dogleg,
   &gsl_multifit_nlinear_trs_ddogleg,
   &gsl_multifit_nlinear_trs_cgst,
@@ -65,7 +66,7 @@ static void
 test_proc(const gsl_multifit_nlinear_trs *trs,
           const gsl_multifit_nlinear_scale *scale,
           const gsl_multifit_nlinear_solver *solver,
-          const int fdtype, const int accel)
+          const int fdtype)
 {
   gsl_multifit_nlinear_parameters fdf_params =
     gsl_multifit_nlinear_default_parameters();
@@ -74,7 +75,6 @@ test_proc(const gsl_multifit_nlinear_trs *trs,
   fdf_params.scale = scale;
   fdf_params.solver = solver;
   fdf_params.fdtype = fdtype;
-  fdf_params.accel = accel;
 
   test_fdf_main(&fdf_params);
 }
@@ -106,13 +106,7 @@ main (void)
               for (fdtype = GSL_MULTIFIT_NLINEAR_FWDIFF;
                    fdtype <= GSL_MULTIFIT_NLINEAR_CTRDIFF; ++fdtype)
                 {
-                  test_proc(*trs, *scale, *solver, fdtype, 0);
-
-                  if (*trs == gsl_multifit_nlinear_trs_lm)
-                    {
-                      /* test LM with geodesic acceleration */
-                      test_proc(*trs, *scale, *solver, fdtype, 1);
-                    }
+                  test_proc(*trs, *scale, *solver, fdtype);
                 }
             }
         }
