@@ -234,7 +234,6 @@ lm_step(const void * vtrust_state, const double delta,
    *        [ sqrt(mu)*D ]       [ 0 ]
    */
   status = (params->solver->solve)(trust_state->f,
-                                   trust_state->g,
                                    state->vel,
                                    trust_state,
                                    trust_state->solver_state);
@@ -263,7 +262,6 @@ lm_step(const void * vtrust_state, const double delta,
        *        [ sqrt(mu)*D ]       [  0  ]
        */
       status = (params->solver->solve)(state->fvv,
-                                       NULL,
                                        state->acc,
                                        trust_state,
                                        trust_state->solver_state);

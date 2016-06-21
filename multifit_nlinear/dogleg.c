@@ -190,7 +190,6 @@ dogleg_preloop(const void * vtrust_state, void * vstate)
 
   /* solve: J dx_gn = -f for Gauss-Newton step */
   status = (params->solver->solve)(trust_state->f,
-                                   trust_state->g,
                                    state->dx_gn,
                                    trust_state,
                                    trust_state->solver_state);

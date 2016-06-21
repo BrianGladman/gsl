@@ -21,10 +21,18 @@
  * This module handles the solution of the linear least squares
  * system:
  *
- * [     J      ] v = - [ f ]
- * [ sqrt(mu)*D ]       [ 0 ]
+ * [     J~      ] p~ = - [ f ]
+ * [ sqrt(mu)*D~ ]        [ 0 ]
  *
- * using a QR approach.
+ * using a QR approach. Quantities are scaled according to:
+ *
+ * J~ = J S
+ * D~ = D S
+ * p~ = S^{-1} p
+ *
+ * where S is a diagonal matrix and S_jj = || J_j || and J_j is column
+ * j of the Jacobian. This balancing transformation seems to be more
+ * numerically stable for some Jacobians.
  */
 
 #include <config.h>
@@ -36,15 +44,18 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_permute_vector.h>
+#include <gsl/gsl_permute_matrix.h>
 
 #include "common.c"
 #include "qrsolv.c"
+#include "oct.h"
 
 typedef struct
 {
   size_t p;
   gsl_matrix *R;             /* QR factorization of J */
-  gsl_vector *tau;           /* Householder scalars */
+  gsl_vector *tau_Q;         /* Householder scalars for Q */
+  gsl_vector *tau_Z;         /* Householder scalars for Z */
   gsl_matrix *Q;             /* Householder reflectors for J */
   gsl_permutation *perm;     /* permutation matrix */
   gsl_vector *qtf;           /* Q^T f */
@@ -57,8 +68,8 @@ typedef struct
 
 static int qr_init(const void * vtrust_state, void * vstate);
 static int qr_presolve(const double mu, const void * vtrust_state, void * vstate);
-static int qr_solve(const gsl_vector * f, const gsl_vector * g,
-                    gsl_vector *x, const void * vtrust_state, void *vstate);
+static int qr_solve(const gsl_vector * f, gsl_vector *x,
+                    const void * vtrust_state, void *vstate);
 static int qr_newton (const gsl_matrix * r, const gsl_permutation * perm,
                       const gsl_vector * qtf, gsl_vector * x);
 
@@ -87,10 +98,17 @@ qr_alloc (const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for Q", GSL_ENOMEM);
     }
 
-  state->tau = gsl_vector_alloc(p);
-  if (state->tau == NULL)
+  state->tau_Q = gsl_vector_alloc(p);
+  if (state->tau_Q == NULL)
     {
-      GSL_ERROR_NULL ("failed to allocate space for tau",
+      GSL_ERROR_NULL ("failed to allocate space for tau_Q",
+                      GSL_ENOMEM);
+    }
+
+  state->tau_Z = gsl_vector_alloc(p);
+  if (state->tau_Z == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for tau_Z",
                       GSL_ENOMEM);
     }
 
@@ -153,8 +171,11 @@ qr_free(void *vstate)
   if (state->Q)
     gsl_matrix_free(state->Q);
 
-  if (state->tau)
-    gsl_vector_free(state->tau);
+  if (state->tau_Q)
+    gsl_vector_free(state->tau_Q);
+
+  if (state->tau_Z)
+    gsl_vector_free(state->tau_Z);
 
   if (state->qtf)
     gsl_vector_free(state->qtf);
@@ -184,28 +205,57 @@ qr_init(const void * vtrust_state, void * vstate)
   const gsl_multifit_nlinear_trust_state *trust_state =
     (const gsl_multifit_nlinear_trust_state *) vtrust_state;
   qr_state_t *state = (qr_state_t *) vstate;
-  const size_t p = state->p;
-  size_t j;
   int signum;
 
+  /* compute J~ = J S */
+#if 0 /* XXX */
+  balance_jacobian(trust_state->J, state->R, state->S);
+#else
   gsl_matrix_memcpy(state->R, trust_state->J);
+  gsl_vector_set_all(state->S, 1.0);
+#endif
 
-  /* scale columns of Jacobian to have unit norm */
-  for (j = 0; j < p; ++j)
-    {
-      gsl_vector_view c = gsl_matrix_column(state->R, j);
-      double sj = 1.0 / GSL_MAX(gsl_blas_dnrm2(&c.vector), 1.0);
-      double dj = gsl_vector_get(trust_state->diag, j);
+  /* compute D~ = D S */
+  gsl_vector_memcpy(state->diag, trust_state->diag);
+  gsl_vector_mul(state->diag, state->S);
 
-      sj = 1.0; /* XXX */
-
-      gsl_vector_scale(&c.vector, sj);
-      gsl_vector_set(state->S, j, sj);
-      gsl_vector_set(state->diag, j, dj * sj);
-    }
-
-  gsl_linalg_QRPT_decomp(state->R, state->tau, state->perm,
+  /* perform QR decomposition of J~ */
+#if 0 /* XXX */
+  gsl_linalg_QRPT_decomp(state->R, state->tau_Q, state->perm,
                          &signum, state->workp);
+#else
+  {
+    size_t n = state->R->size1;
+    size_t p = state->R->size2;
+    size_t rank;
+    gsl_matrix *Q = gsl_matrix_alloc(n, n);
+    gsl_matrix *R = gsl_matrix_alloc(n, p);
+    gsl_matrix *Z = gsl_matrix_alloc(p, p);
+    gsl_matrix *JP = gsl_matrix_alloc(n, p);
+    gsl_linalg_COD_decomp(state->R, state->tau_Q, state->tau_Z,
+                          state->perm, &rank, state->workp);
+    fprintf(stderr, "rank = %zu\n", rank);
+
+    gsl_linalg_COD_unpack(state->R, state->tau_Q, state->tau_Z,
+                          rank, Q, R, Z);
+    
+    gsl_matrix_memcpy(JP, trust_state->J);
+    gsl_permute_matrix(state->perm, JP);
+
+    print_octave(trust_state->J, "J");
+    print_octave(Q, "Q");
+    print_octave(R, "R");
+    print_octave(Z, "Z");
+    print_octave(JP, "JP");
+    gsl_permutation_fprintf(stdout, state->perm, "%d\n");
+    exit(1);
+
+    gsl_matrix_free(Q);
+    gsl_matrix_free(R);
+    gsl_matrix_free(Z);
+    gsl_matrix_free(JP);
+  }
+#endif
 
   /* save Householder part of R matrix which is destroyed by qrsolv() */
   gsl_matrix_memcpy(state->Q, state->R);
@@ -226,17 +276,15 @@ qr_presolve(const double mu, const void * vtrust_state, void * vstate)
 }
 
 static int
-qr_solve(const gsl_vector * f, const gsl_vector * g,
-         gsl_vector *x, const void * vtrust_state, void *vstate)
+qr_solve(const gsl_vector * f, gsl_vector *x,
+         const void * vtrust_state, void *vstate)
 {
   qr_state_t *state = (qr_state_t *) vstate;
   int status;
 
-  (void)g;
-
   /* compute qtf = Q^T f */
   gsl_vector_memcpy(state->qtf, f);
-  gsl_linalg_QR_QTvec(state->Q, state->tau, state->qtf);
+  gsl_linalg_QR_QTvec(state->Q, state->tau_Q, state->qtf);
 
   if (state->mu == 0.0)
     {
@@ -257,8 +305,6 @@ qr_solve(const gsl_vector * f, const gsl_vector * g,
        * using QRPT factorization of J
        */
 
-      const gsl_multifit_nlinear_trust_state *trust_state =
-        (const gsl_multifit_nlinear_trust_state *) vtrust_state;
       double sqrt_mu = sqrt(state->mu);
 
       status = qrsolv(state->R, state->perm, sqrt_mu, state->diag,

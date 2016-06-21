@@ -30,7 +30,7 @@
 
 static int create_random_vector(gsl_vector * v, gsl_rng * r);
 static int create_posdef_matrix(gsl_matrix * m, gsl_rng * r);
-static int create_hilbert_matrix(gsl_matrix * m);
+static int create_hilbert_matrix2(gsl_matrix * m);
 
 static int test_cholesky_decomp_eps(const int scale, const gsl_matrix * m,
                                     const double eps, const char * desc);
@@ -100,7 +100,7 @@ create_posdef_matrix(gsl_matrix * m, gsl_rng * r)
 }
 
 static int
-create_hilbert_matrix(gsl_matrix * m)
+create_hilbert_matrix2(gsl_matrix * m)
 {
   const size_t N = m->size1;
   size_t i, j;
@@ -203,7 +203,7 @@ test_cholesky_decomp(gsl_rng * r)
 
       if (N <= 12)
         {
-          create_hilbert_matrix(m);
+          create_hilbert_matrix2(m);
           test_cholesky_decomp_eps(0, m, GSL_DBL_EPSILON, "cholesky_decomp unscaled hilbert");
           test_cholesky_decomp_eps(1, m, N * GSL_DBL_EPSILON, "cholesky_decomp scaled hilbert");
         }
@@ -376,7 +376,7 @@ test_mcholesky_decomp(gsl_rng * r)
 
       if (N <= 8)
         {
-          create_hilbert_matrix(m);
+          create_hilbert_matrix2(m);
           test_mcholesky_decomp_eps(1, 0, m, N * GSL_DBL_EPSILON, "mcholesky_decomp unscaled hilbert");
         }
 
@@ -443,7 +443,7 @@ test_mcholesky_solve(gsl_rng * r)
 
       if (N <= 3)
         {
-          create_hilbert_matrix(m);
+          create_hilbert_matrix2(m);
           gsl_blas_dsymv(CblasLower, 1.0, m, sol, 0.0, rhs);
           test_mcholesky_solve_eps(0, m, rhs, sol, 512.0 * N * GSL_DBL_EPSILON, "mcholesky_solve unscaled hilbert");
           test_mcholesky_solve_eps(1, m, rhs, sol, 512.0 * N * GSL_DBL_EPSILON, "mcholesky_solve scaled hilbert");
@@ -598,7 +598,7 @@ test_pcholesky_decomp(gsl_rng * r)
 
       if (N <= 12)
         {
-          create_hilbert_matrix(m);
+          create_hilbert_matrix2(m);
           test_pcholesky_decomp_eps(0, m, N * GSL_DBL_EPSILON, "pcholesky_decomp unscaled hilbert");
           test_pcholesky_decomp_eps(1, m, N * GSL_DBL_EPSILON, "pcholesky_decomp scaled hilbert");
         }
@@ -674,7 +674,7 @@ test_pcholesky_solve(gsl_rng * r)
 
       if (N <= 4)
         {
-          create_hilbert_matrix(m);
+          create_hilbert_matrix2(m);
           gsl_blas_dsymv(CblasLower, 1.0, m, sol, 0.0, rhs);
           test_pcholesky_solve_eps(0, m, rhs, sol, 512.0 * N * GSL_DBL_EPSILON, "pcholesky_solve unscaled hilbert");
           test_pcholesky_solve_eps(1, m, rhs, sol, 1024.0 * N * GSL_DBL_EPSILON, "pcholesky_solve scaled hilbert");
@@ -686,22 +686,4 @@ test_pcholesky_solve(gsl_rng * r)
     }
 
   return s;
-}
-
-int
-main(void)
-{
-  gsl_rng *r = gsl_rng_alloc(gsl_rng_default);
-
-  gsl_ieee_env_setup ();
-
-  gsl_test(test_cholesky_decomp(r),       "Cholesky Decomposition");
-  gsl_test(test_pcholesky_decomp(r),      "Pivoted Cholesky Decomposition");
-  gsl_test(test_pcholesky_solve(r),       "Pivoted Cholesky Solve");
-  gsl_test(test_mcholesky_decomp(r),      "Modified Cholesky Decomposition");
-  gsl_test(test_mcholesky_solve(r),       "Modified Cholesky Solve");
-
-  gsl_rng_free(r);
-
-  exit (gsl_test_summary());
 }

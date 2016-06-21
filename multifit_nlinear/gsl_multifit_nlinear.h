@@ -116,8 +116,8 @@ typedef struct
   void * (*alloc) (const size_t n, const size_t p);
   int (*init) (const void * vtrust_state, void * vstate);
   int (*presolve) (const double mu, const void * vtrust_state, void * vstate);
-  int (*solve) (const gsl_vector * f, const gsl_vector * g,
-                gsl_vector * x, const void * vtrust_state, void * vstate);
+  int (*solve) (const gsl_vector * f, gsl_vector * x,
+                const void * vtrust_state, void * vstate);
   int (*rcond) (double * rcond, void * vstate);
   void (*free) (void * vstate);
 } gsl_multifit_nlinear_solver;

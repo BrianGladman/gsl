@@ -128,3 +128,51 @@ qr_nonsing (const gsl_matrix * r)
 
   return i;
 }
+
+/*
+balance_jacobian()
+  Scale Jacobian matrix so each column has unit norm:
+
+J <- J*S
+
+where
+
+S_j = 1 / ||J_j||, and J_j is the jth column of the Jacobian
+
+Inputs: J  - (input) Jacobian matrix J
+        JS - (output) J*S
+        S  - (output) scale factors used for scaling Jacobian
+
+Return: success
+*/
+
+static int
+balance_jacobian(const gsl_matrix * J, gsl_matrix * JS, gsl_vector * S)
+{
+  const size_t p = J->size2;
+  size_t j;
+
+  for (j = 0; j < p; ++j)
+    {
+      gsl_vector_const_view cj = gsl_matrix_const_column(J, j);
+      gsl_vector_view dj = gsl_matrix_column(JS, j);
+      double norm = gsl_blas_dnrm2(&cj.vector);
+      double sj;
+
+      gsl_vector_memcpy(&dj.vector, &cj.vector);
+
+      if (norm == 0.0)
+        {
+          sj = 1.0;
+        }
+      else
+        {
+          sj = 1.0 / norm;
+          gsl_vector_scale(&dj.vector, sj);
+        }
+
+      gsl_vector_set(S, j, sj);
+    }
+
+  return GSL_SUCCESS;
+}

@@ -101,8 +101,11 @@ static test_fdf_problem *test_problems[] = {
    * IMM Department of Mathematical Modeling, Tech. Report
    * IMM-REP-2000-17, 2000.
    */
+#if 0
   &lin1_problem,       /* 1 */
+#endif
   &lin2_problem,       /* 2 */
+#if 0
   &lin3_problem,       /* 3 */
   &rosenbrock_problem, /* 4 */
   &helical_problem,    /* 5 */
@@ -175,6 +178,7 @@ static test_fdf_problem *test_problems[] = {
   &eckerleb_problem,
   /*&rat43a_problem,*/
   &rat43b_problem,
+#endif
 
   NULL
 };
@@ -193,14 +197,17 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
       double epsrel = *(problem->epsrel);
       gsl_multifit_nlinear_fdf fdf;
 
+#if 0 /* XXX */
       /* XXX FIXME: lin2 problem doesn't work with Cholesky solver */
       if (params->solver == gsl_multifit_nlinear_solver_cholesky &&
           problem == &lin2_problem)
         continue;
+#endif
 
       test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
                epsrel, 1.0, problem, NULL);
 
+#if 0 /* XXX */
       /* test finite difference Jacobian */
       fdf.df = problem->fdf->df;
       problem->fdf->df = NULL;
@@ -221,6 +228,7 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
 
           problem->fdf->fvv = fdf.fvv;
         }
+#endif
     }
 
 #if 0 /* XXX */

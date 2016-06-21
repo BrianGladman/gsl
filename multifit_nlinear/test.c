@@ -33,7 +33,7 @@
 #include "test_fdf.c"
 
 static const gsl_multifit_nlinear_trs **nlinear_trs[] = {
-#if 1
+#if 0
   &gsl_multifit_nlinear_trs_lm,
   &gsl_multifit_nlinear_trs_lmaccel,
   &gsl_multifit_nlinear_trs_dogleg,
@@ -47,9 +47,11 @@ static const gsl_multifit_nlinear_trs **nlinear_trs[] = {
 };
 
 static const gsl_multifit_nlinear_solver **nlinear_solvers[] = {
+#if 0
   &gsl_multifit_nlinear_solver_cholesky,
-  &gsl_multifit_nlinear_solver_qr,
   &gsl_multifit_nlinear_solver_svd,
+#endif
+  &gsl_multifit_nlinear_solver_qr,
 
   NULL
 };

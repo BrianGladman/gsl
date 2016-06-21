@@ -61,8 +61,8 @@ typedef struct
 
 static int svd_init(const void * vtrust_state, void * vstate);
 static int svd_presolve(const double mu, const void * vtrust_state, void * vstate);
-static int svd_solve(const gsl_vector * f, const gsl_vector * g,
-                     gsl_vector *x, const void * vtrust_state, void *vstate);
+static int svd_solve(const gsl_vector * f, gsl_vector *x,
+                     const void * vtrust_state, void *vstate);
 static int svd_rcond(double * rcond, void * vstate);
 
 static void *
@@ -171,8 +171,8 @@ svd_presolve(const double mu, const void * vtrust_state, void * vstate)
 }
 
 static int
-svd_solve(const gsl_vector * f, const gsl_vector * g,
-          gsl_vector *x, const void * vtrust_state, void *vstate)
+svd_solve(const gsl_vector * f, gsl_vector *x,
+          const void * vtrust_state, void *vstate)
 {
   int status = GSL_SUCCESS;
   const gsl_multifit_nlinear_trust_state *trust_state =
@@ -238,8 +238,6 @@ svd_solve(const gsl_vector * f, const gsl_vector * g,
 
   /* compute D^{-1} x */
   gsl_vector_div(x, trust_state->diag);
-
-  (void)g;
 
   return status;
 }

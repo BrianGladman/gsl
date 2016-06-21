@@ -157,7 +157,7 @@ static double subspace2D_objective(const gsl_vector * x, subspace2D_state_t * st
 static void *
 subspace2D_alloc (const void * params, const size_t n, const size_t p)
 {
-  const gsl_multifit_nlinear_parameters *mparams = (const gsl_multifit_nlinear_parameters *) params;
+  const gsl_multifit_nlinear_parameters *par = (const gsl_multifit_nlinear_parameters *) params;
   subspace2D_state_t *state;
   
   state = calloc(1, sizeof(subspace2D_state_t));
@@ -235,7 +235,7 @@ subspace2D_alloc (const void * params, const size_t n, const size_t p)
   state->n = n;
   state->p = p;
   state->rank = 0;
-  state->params = *mparams;
+  state->params = *par;
 
   return state;
 }
@@ -335,9 +335,11 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
   gsl_vector_view work = gsl_vector_view_array(work_data, 2);
   int signum;
 
+#if 1 /* XXX */
   print_octave(trust_state->J, "J");
   printv_octave(trust_state->f, "f");
   printv_octave(trust_state->diag, "d");
+#endif
 
   /* initialize linear least squares solver */
   status = (params->solver->init)(trust_state, trust_state->solver_state);
@@ -351,7 +353,6 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
 
   /* solve: J dx_gn = -f for Gauss-Newton step */
   status = (params->solver->solve)(trust_state->f,
-                                   trust_state->g,
                                    state->dx_gn,
                                    trust_state,
                                    trust_state->solver_state);

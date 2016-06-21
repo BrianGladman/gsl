@@ -351,6 +351,21 @@ int gsl_linalg_QRPT_update (gsl_matrix * Q,
                             gsl_vector * u,
                             const gsl_vector * v);
 
+/* COD decomposition */
+
+int gsl_linalg_COD_decomp(gsl_matrix * A, gsl_vector * tau_Q, gsl_vector * tau_Z,
+                          gsl_permutation * p, size_t * rank, gsl_vector * work);
+
+int gsl_linalg_COD_decomp_e(gsl_matrix * A, gsl_vector * tau_Q, gsl_vector * tau_Z,
+                            gsl_permutation * p, double tol, size_t * rank, gsl_vector * work);
+
+int gsl_linalg_COD_unpack(const gsl_matrix * QRZT, const gsl_vector * tau_Q,
+                          const gsl_vector * tau_Z, const size_t rank, gsl_matrix * Q,
+                          gsl_matrix * R, gsl_matrix * Z);
+
+int gsl_linalg_COD_matZ(const gsl_matrix * QRZT, const gsl_vector * tau_Z, const size_t rank,
+                        gsl_matrix * A, gsl_vector * work);
+
 /* LQ decomposition */
 
 int gsl_linalg_LQ_decomp (gsl_matrix * A, gsl_vector * tau);
