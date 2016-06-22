@@ -279,34 +279,34 @@ gsl_linalg_COD_unpack(const gsl_matrix * QRZT, const gsl_vector * tau_Q,
 
 /*
 gsl_linalg_COD_matZ
-  Multiply a matrix on the right by Z
+  Multiply an M-by-N matrix A on the right by Z (N-by-N)
 
 Inputs: QRZT  - encoded COD matrix
         tau_Z - Householder scalars for Z
         rank  - matrix rank
-        A     - on input, matrix with N columns
+        A     - on input, M-by-N matrix
                 on output, A * Z
-        work  - workspace of length N
+        work  - workspace of length M
 */
 
 int
 gsl_linalg_COD_matZ(const gsl_matrix * QRZT, const gsl_vector * tau_Z, const size_t rank,
                     gsl_matrix * A, gsl_vector * work)
 {
-  const size_t M = QRZT->size1;
-  const size_t N = QRZT->size2;
+  const size_t M = A->size1;
+  const size_t N = A->size2;
 
-  if (tau_Z->size != GSL_MIN (M, N))
+  if (tau_Z->size != GSL_MIN (QRZT->size1, QRZT->size2))
     {
       GSL_ERROR("tau_Z must be GSL_MIN(M,N)", GSL_EBADLEN);
     }
-  else if (A->size2 != N)
+  else if (QRZT->size2 != N)
     {
-      GSL_ERROR("A must have N columns", GSL_EBADLEN);
+      GSL_ERROR("QRZT must have N columns", GSL_EBADLEN);
     }
-  else if (work->size != N)
+  else if (work->size != M)
     {
-      GSL_ERROR("workspace must be size N", GSL_EBADLEN);
+      GSL_ERROR("workspace must be size M", GSL_EBADLEN);
     }
   else if (rank >= N)
     {
@@ -320,7 +320,7 @@ gsl_linalg_COD_matZ(const gsl_matrix * QRZT, const gsl_vector * tau_Z, const siz
       for (i = 0; i < rank; ++i)
         {
           gsl_vector_const_view h = gsl_matrix_const_subrow (QRZT, i, rank, N - rank);
-          gsl_matrix_view m = gsl_matrix_submatrix (A, 0, i, N, N - i);
+          gsl_matrix_view m = gsl_matrix_submatrix (A, 0, i, M, N - i);
           double ti = gsl_vector_get (tau_Z, i);
           cod_householder_mh (ti, &h.vector, &m.matrix, work);
         }

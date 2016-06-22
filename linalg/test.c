@@ -1631,12 +1631,7 @@ test_COD_decomp_dim(const gsl_matrix * m, double eps)
 
   /* compute rhs = Q R Z */
   gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, Q, R, 0.0, QR);
-#if 1 /* XXX */
   gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, QR, Z, 0.0, rhs);
-#else
-  gsl_matrix_memcpy(rhs, QR);
-  gsl_linalg_COD_matZ(QRZT, tau_Z, rank, rhs, work);
-#endif
 
   for (i = 0; i < M; i++)
     {

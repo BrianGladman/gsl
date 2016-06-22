@@ -16,7 +16,8 @@ The functions described in this chapter are declared in the header file
 @menu
 * LU Decomposition::            
 * QR Decomposition::            
-* QR Decomposition with Column Pivoting::  
+* QR Decomposition with Column Pivoting::
+* Complete Orthogonal Decomposition::
 * Singular Value Decomposition::  
 * Cholesky Decomposition::      
 * Pivoted Cholesky Decomposition::      
@@ -393,6 +394,65 @@ for the @math{N}-by-@math{N} matrix @math{R} contained in @var{QR}. On
 input @var{x} should contain the right-hand side @math{b}, which is
 replaced by the solution on output.
 @end deftypefun
+
+@node Complete Orthogonal Decomposition
+@section Complete Orthogonal Decomposition
+
+The complete orthogonal decomposition of a @math{M}-by-@math{N} matrix
+@math{A} is a generalization of the QR decomposition with column pivoting, given by
+@tex
+\beforedisplay
+$$
+A P = Q
+\left(
+\matrix{
+R_{11} & 0 \cr
+0 & 0 \cr
+}
+\right) Z
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+A P = Q [ R11 0 ] Z
+        [  0  0 ]
+@end example
+
+@end ifinfo
+@noindent
+where @math{P} is a @math{N}-by-@math{N} permutation matrix,
+@math{Q} is @math{M}-by-@math{M} orthogonal, @math{R_{11}} is
+@math{r}-by-@math{r} upper triangular, with @math{r = rank(A)},
+and @math{Z} is @math{N}-by-@math{N} orthogonal. If @math{A}
+has full rank, then @math{R_{11} = R}, @math{Z = I} and this reduces to the
+QR decomposition with column pivoting. The advantage of using
+the complete orthogonal decomposition for rank deficient matrices
+is the ability to compute the minimum norm solution to the linear
+least squares problem @math{Ax = b}, which is given by
+@tex
+\beforedisplay
+$$
+x = P Z^T
+\left(
+\matrix{
+R_{11}^{-1} c \cr
+0 \cr
+}
+\right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+x = P Z^T [ R11^-1 c ]
+          [    0     ]
+@end example
+
+@end ifinfo
+and the vector @math{c} is the first @math{r} elements of @math{Q^T b}.
 
 @node Singular Value Decomposition
 @section Singular Value Decomposition
