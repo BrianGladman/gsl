@@ -27,8 +27,6 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_poly.h>
 
-#include "oct.c"
-
 #define SCALE_SUB2D     1
 
 /*
@@ -335,7 +333,7 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
   gsl_vector_view work = gsl_vector_view_array(work_data, 2);
   int signum;
 
-#if 1 /* XXX */
+#if 0 /* XXX */
   print_octave(trust_state->J, "J");
   printv_octave(trust_state->f, "f");
   printv_octave(trust_state->diag, "d");
@@ -426,7 +424,7 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
   gsl_linalg_QRPT_decomp(state->W, state->tau, state->perm, &signum, &work.vector);
 
   /* check for parallel dx_sd, dx_gn, in which case rank will be 1 */
-  state->rank = qr_nonsing(state->W);
+  state->rank = gsl_linalg_QRPT_rank(state->W, -1.0);
 
   if (state->rank == 2)
     {

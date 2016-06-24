@@ -325,7 +325,58 @@ decomposition can also be used to convert the linear system @math{A x =
 b} into the triangular system @math{R y = Q^T b, x = P y}, which can be
 solved by back-substitution and permutation.  We denote the @math{QR}
 decomposition with column pivoting by @math{QRP^T} since @math{A = Q R
-P^T}.
+P^T}. When @math{A} is rank deficient with @math{r = rank(A)}, the matrix
+@math{R} can be partitioned as
+@tex
+\beforedisplay
+$$
+R = \left(
+\matrix{
+R_{11} & R_{12} \cr
+0 & R_{22} \cr
+}
+\right) \approx
+\left(
+\matrix{
+R_{11} & R_{12} \cr
+0 & 0 \cr
+}
+\right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+R = [ R11 R12; 0 R22 ] =~ [ R11 R12; 0 0 ]
+@end example
+
+@end ifinfo
+where @math{R_{11}} is @math{r}-by-@math{r} and nonsingular. In this case,
+a ``basic'' least squares solution for the overdetermined system @math{A x = b}
+can be obtained as
+@tex
+\beforedisplay
+$$
+x = P \left(
+\matrix{
+R_{11}^{-1} c_1 \cr
+0 \cr
+}
+\right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+x = P [ R11^-1 c1 ; 0 ]
+@end example
+
+@end ifinfo
+where @math{c_1} consists of the first @math{r} elements of @math{Q^T b}.
+This basic solution is not guaranteed to be the minimum norm solution unless
+@math{R_{12} = 0} (see @ref{Complete Orthogonal Decomposition}).
 
 @deftypefun int gsl_linalg_QRPT_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau}, gsl_permutation * @var{p}, int * @var{signum}, gsl_vector * @var{norm})
 This function factorizes the @math{M}-by-@math{N} matrix @var{A} into
@@ -369,6 +420,30 @@ This function solves the square system @math{A x = b} in-place using the
 right-hand side @math{b}, which is replaced by the solution on output.
 @end deftypefun
 
+@deftypefun int gsl_linalg_QRPT_lssolve (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual})
+This function finds the least squares solution to the overdetermined
+system @math{A x = b} where the matrix @var{A} has more rows than
+columns and is assumed to have full rank. The least squares solution minimizes
+the Euclidean norm of the residual, @math{||b - A x||}. The routine requires as input 
+the @math{QR} decomposition of @math{A} into (@var{QR}, @var{tau}, @var{p}) given by
+@code{gsl_linalg_QRPT_decomp}.  The solution is returned in @var{x}.  The
+residual is computed as a by-product and stored in @var{residual}. For rank
+deficient matrices, @code{gsl_linalg_QRPT_lssolve2} should be used instead.
+@end deftypefun
+
+@deftypefun int gsl_linalg_QRPT_lssolve2 (const gsl_matrix * @var{QR}, const gsl_vector * @var{tau}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, const size_t @var{rank}, gsl_vector * @var{x}, gsl_vector * @var{residual})
+This function finds the least squares solution to the overdetermined
+system @math{A x = b} where the matrix @var{A} has more rows than
+columns and has rank given by the input @var{rank}. If the user does not
+know the rank of @math{A}, the routine @code{gsl_linalg_QRPT_rank} can be
+called to estimate it. The least squares solution is
+the so-called ``basic'' solution discussed above and may not be the minimum
+norm solution. The routine requires as input 
+the @math{QR} decomposition of @math{A} into (@var{QR}, @var{tau}, @var{p}) given by
+@code{gsl_linalg_QRPT_decomp}.  The solution is returned in @var{x}.  The
+residual is computed as a by-product and stored in @var{residual}.
+@end deftypefun
+
 @deftypefun int gsl_linalg_QRPT_QRsolve (const gsl_matrix * @var{Q}, const gsl_matrix * @var{R}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
 This function solves the square system @math{R P^T x = Q^T b} for
 @var{x}. It can be used when the @math{QR} decomposition of a matrix is
@@ -393,6 +468,13 @@ This function solves the triangular system @math{R P^T x = b} in-place
 for the @math{N}-by-@math{N} matrix @math{R} contained in @var{QR}. On
 input @var{x} should contain the right-hand side @math{b}, which is
 replaced by the solution on output.
+@end deftypefun
+
+@deftypefun size_t gsl_linalg_QRPT_rank (const gsl_matrix * @var{QR}, const double @var{tol})
+This function estimates the rank of the triangular matrix @math{R} contained in @var{QR}.
+The algorithm simply counts the number of diagonal elements of @math{R} whose absolute value
+is greater than the specified tolerance @var{tol}. If the input @var{tol} is negative,
+a default value of @math{20 (M + N) eps(max(|diag(R)|))} is used.
 @end deftypefun
 
 @node Complete Orthogonal Decomposition
@@ -437,7 +519,7 @@ $$
 x = P Z^T
 \left(
 \matrix{
-R_{11}^{-1} c \cr
+R_{11}^{-1} c_1 \cr
 0 \cr
 }
 \right)
@@ -447,12 +529,48 @@ $$
 @ifinfo
 
 @example
-x = P Z^T [ R11^-1 c ]
-          [    0     ]
+x = P Z^T [ R11^-1 c1 ]
+          [    0      ]
 @end example
 
 @end ifinfo
-and the vector @math{c} is the first @math{r} elements of @math{Q^T b}.
+and the vector @math{c_1} is the first @math{r} elements of @math{Q^T b}.
+
+@deftypefun int gsl_linalg_COD_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau_Q}, gsl_vector * @var{tau_Z}, gsl_permutation * @var{p}, size_t * @var{rank}, gsl_vector * @var{work})
+@deftypefunx int gsl_linalg_COD_decomp_e (gsl_matrix * @var{A}, gsl_vector * @var{tau_Q}, gsl_vector * @var{tau_Z}, gsl_permutation * @var{p}, double @var{tol}, size_t * @var{rank}, gsl_vector * @var{work})
+These functions factor the @math{M}-by-@math{N} matrix @var{A} into the decomposition @math{A = Q R Z P^T}. The rank of @var{A}
+is computed as the number of diagonal elements of @math{R} greater than the tolerance @var{tol} and output in @var{rank}.
+If @var{tol} is not specified, a default value is used (see @code{gsl_linalg_QRPT_rank}). On output, the permutation
+matrix @math{P} is stored in @var{p}. The matrix @math{R_{11}} is stored in the upper @var{rank}-by-@var{rank} block of @var{A}.
+The matrices @math{Q} and @math{Z} are encoded in packed storage in @var{A} on output. The vectors @var{tau_Q} and @var{tau_Z}
+contain the Householder scalars corresponding to the matrices @math{Q} and @math{Z} respectively and must be
+of length @math{k = \min(M,N)}. The vector @var{work} is additional workspace of length @math{N}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_COD_lssolve (const gsl_matrix * @var{QRZ}, const gsl_vector * @var{tau_Q}, const gsl_vector * @var{tau_Z}, const gsl_permutation * @var{p}, const size_t @var{rank}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual})
+This function finds the least squares solution to the overdetermined
+system @math{A x = b} where the matrix @var{A} has more rows than
+columns.  The least squares solution minimizes the Euclidean norm of the
+residual, @math{||b - A x||}.  The routine requires as input 
+the @math{QRZ} decomposition of @math{A} into (@var{QRZ}, @var{tau_Q}, @var{tau_Z}, @var{p}, @var{rank})
+given by @code{gsl_linalg_COD_decomp}.  The solution is returned in @var{x}.  The
+residual is computed as a by-product and stored in @var{residual}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_COD_unpack (const gsl_matrix * @var{QRZ}, const gsl_vector * @var{tau_Q}, const gsl_vector * @var{tau_Z}, const size_t @var{rank}, gsl_matrix * @var{Q}, gsl_matrix * @var{R}, gsl_matrix * @var{Z})
+This function unpacks the encoded @math{QRZ} decomposition
+(@var{QRZ}, @var{tau_Q}, @var{tau_Z}, @var{rank}) into the matrices
+@var{Q}, @var{R}, and @var{Z}, where @var{Q} is @math{M}-by-@math{M},
+@var{R} is @math{M}-by-@math{N}, and @var{Z} is @math{N}-by-@math{N}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_COD_matZ (const gsl_matrix * @var{QRZ}, const gsl_vector * @var{tau_Z}, const size_t @var{rank}, gsl_matrix * @var{A}, gsl_vector * @var{work})
+This function multiplies the input matrix @var{A} on the right by @var{Z},
+@math{A' = A Z} using the encoded @math{QRZ} decomposition
+(@var{QRZ}, @var{tau_Z}, @var{rank}). @var{A} must have @math{N} columns but may
+have any number of rows. Additional workspace of length @math{M} is provided
+in @var{work}.
+@end deftypefun
 
 @node Singular Value Decomposition
 @section Singular Value Decomposition

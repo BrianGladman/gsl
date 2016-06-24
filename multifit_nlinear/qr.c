@@ -48,16 +48,17 @@
 
 #include "common.c"
 #include "qrsolv.c"
-#include "oct.h"
 
 typedef struct
 {
   size_t p;
-  gsl_matrix *R;             /* QR factorization of J */
+  gsl_matrix *QR;            /* QR factorization of J */
   gsl_vector *tau_Q;         /* Householder scalars for Q */
   gsl_vector *tau_Z;         /* Householder scalars for Z */
   gsl_matrix *Q;             /* Householder reflectors for J */
   gsl_permutation *perm;     /* permutation matrix */
+  size_t rank;               /* rank of J */
+  gsl_vector *residual;      /* residual of LS problem [ J; sqrt(mu) D ] p = - [ f; 0 ] */
   gsl_vector *qtf;           /* Q^T f */
   gsl_vector *S;             /* balancing scale factors */
   gsl_vector *diag;          /* diag = D * S */
@@ -70,8 +71,6 @@ static int qr_init(const void * vtrust_state, void * vstate);
 static int qr_presolve(const double mu, const void * vtrust_state, void * vstate);
 static int qr_solve(const gsl_vector * f, gsl_vector *x,
                     const void * vtrust_state, void *vstate);
-static int qr_newton (const gsl_matrix * r, const gsl_permutation * perm,
-                      const gsl_vector * qtf, gsl_vector * x);
 
 static void *
 qr_alloc (const size_t n, const size_t p)
@@ -86,10 +85,10 @@ qr_alloc (const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate qr state", GSL_ENOMEM);
     }
 
-  state->R = gsl_matrix_alloc(n, p);
-  if (state->R == NULL)
+  state->QR = gsl_matrix_alloc(n, p);
+  if (state->QR == NULL)
     {
-      GSL_ERROR_NULL ("failed to allocate space for R", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for QR", GSL_ENOMEM);
     }
 
   state->Q = gsl_matrix_alloc(n, p);
@@ -116,6 +115,13 @@ qr_alloc (const size_t n, const size_t p)
   if (state->qtf == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for qtf",
+                      GSL_ENOMEM);
+    }
+
+  state->residual = gsl_vector_alloc(n);
+  if (state->residual == NULL)
+    {
+      GSL_ERROR_NULL ("failed to allocate space for residual",
                       GSL_ENOMEM);
     }
 
@@ -156,6 +162,7 @@ qr_alloc (const size_t n, const size_t p)
 
   state->p = p;
   state->mu = 0.0;
+  state->rank = 0;
 
   return state;
 }
@@ -165,8 +172,8 @@ qr_free(void *vstate)
 {
   qr_state_t *state = (qr_state_t *) vstate;
 
-  if (state->R)
-    gsl_matrix_free(state->R);
+  if (state->QR)
+    gsl_matrix_free(state->QR);
 
   if (state->Q)
     gsl_matrix_free(state->Q);
@@ -179,6 +186,9 @@ qr_free(void *vstate)
 
   if (state->qtf)
     gsl_vector_free(state->qtf);
+
+  if (state->residual)
+    gsl_vector_free(state->residual);
 
   if (state->perm)
     gsl_permutation_free(state->perm);
@@ -209,9 +219,9 @@ qr_init(const void * vtrust_state, void * vstate)
 
   /* compute J~ = J S */
 #if 0 /* XXX */
-  balance_jacobian(trust_state->J, state->R, state->S);
+  balance_jacobian(trust_state->J, state->QR, state->S);
 #else
-  gsl_matrix_memcpy(state->R, trust_state->J);
+  gsl_matrix_memcpy(state->QR, trust_state->J);
   gsl_vector_set_all(state->S, 1.0);
 #endif
 
@@ -220,45 +230,11 @@ qr_init(const void * vtrust_state, void * vstate)
   gsl_vector_mul(state->diag, state->S);
 
   /* perform QR decomposition of J~ */
-#if 0 /* XXX */
-  gsl_linalg_QRPT_decomp(state->R, state->tau_Q, state->perm,
+  gsl_linalg_QRPT_decomp(state->QR, state->tau_Q, state->perm,
                          &signum, state->workp);
-#else
-  {
-    size_t n = state->R->size1;
-    size_t p = state->R->size2;
-    size_t rank;
-    gsl_matrix *Q = gsl_matrix_alloc(n, n);
-    gsl_matrix *R = gsl_matrix_alloc(n, p);
-    gsl_matrix *Z = gsl_matrix_alloc(p, p);
-    gsl_matrix *JP = gsl_matrix_alloc(n, p);
-    gsl_linalg_COD_decomp(state->R, state->tau_Q, state->tau_Z,
-                          state->perm, &rank, state->workp);
-    fprintf(stderr, "rank = %zu\n", rank);
-
-    gsl_linalg_COD_unpack(state->R, state->tau_Q, state->tau_Z,
-                          rank, Q, R, Z);
-    
-    gsl_matrix_memcpy(JP, trust_state->J);
-    gsl_permute_matrix(state->perm, JP);
-
-    print_octave(trust_state->J, "J");
-    print_octave(Q, "Q");
-    print_octave(R, "R");
-    print_octave(Z, "Z");
-    print_octave(JP, "JP");
-    gsl_permutation_fprintf(stdout, state->perm, "%d\n");
-    exit(1);
-
-    gsl_matrix_free(Q);
-    gsl_matrix_free(R);
-    gsl_matrix_free(Z);
-    gsl_matrix_free(JP);
-  }
-#endif
 
   /* save Householder part of R matrix which is destroyed by qrsolv() */
-  gsl_matrix_memcpy(state->Q, state->R);
+  gsl_matrix_memcpy(state->Q, state->QR);
 
   return GSL_SUCCESS;
 }
@@ -282,17 +258,16 @@ qr_solve(const gsl_vector * f, gsl_vector *x,
   qr_state_t *state = (qr_state_t *) vstate;
   int status;
 
-  /* compute qtf = Q^T f */
-  gsl_vector_memcpy(state->qtf, f);
-  gsl_linalg_QR_QTvec(state->Q, state->tau_Q, state->qtf);
-
   if (state->mu == 0.0)
     {
       /*
        * compute Gauss-Newton direction by solving
        * J x = f
+       * with an attempt to identify rank deficiency in J
        */
-      status = qr_newton(state->R, state->perm, state->qtf, x);
+      size_t rank = gsl_linalg_QRPT_rank(state->QR, -1.0);
+      status = gsl_linalg_QRPT_lssolve2(state->QR, state->tau_Q, state->perm,
+                                        f, rank, x, state->residual);
     }
   else
     {
@@ -307,7 +282,11 @@ qr_solve(const gsl_vector * f, gsl_vector *x,
 
       double sqrt_mu = sqrt(state->mu);
 
-      status = qrsolv(state->R, state->perm, sqrt_mu, state->diag,
+      /* compute qtf = Q^T f */
+      gsl_vector_memcpy(state->qtf, f);
+      gsl_linalg_QR_QTvec(state->Q, state->tau_Q, state->qtf);
+
+      status = qrsolv(state->QR, state->perm, sqrt_mu, state->diag,
                       state->qtf, x, state->workp, state->workn);
     }
 
@@ -320,55 +299,6 @@ qr_solve(const gsl_vector * f, gsl_vector *x,
   (void)vtrust_state; /* avoid unused parameter warning */
 
   return status;
-}
-
-/* compute Gauss-Newton direction */
-static int
-qr_newton (const gsl_matrix * r, const gsl_permutation * perm,
-           const gsl_vector * qtf, gsl_vector * x)
-{
-
-  /* Compute and store in x the Gauss-Newton direction. If the
-     Jacobian is rank-deficient then obtain a least squares
-     solution. */
-
-  const size_t n = r->size2;
-  size_t i, j, nsing;
-
-  for (i = 0; i < n; i++)
-    {
-      double qtfi = gsl_vector_get (qtf, i);
-      gsl_vector_set (x, i,  qtfi);
-    }
-
-  nsing = qr_nonsing (r);
-
-  for (i = nsing; i < n; i++)
-    {
-      gsl_vector_set (x, i, 0.0);
-    }
-
-  if (nsing > 0)
-    {
-      for (j = nsing; j > 0 && j--;)
-        {
-          double rjj = gsl_matrix_get (r, j, j);
-          double temp = gsl_vector_get (x, j) / rjj;
-          
-          gsl_vector_set (x, j, temp);
-          
-          for (i = 0; i < j; i++)
-            {
-              double rij = gsl_matrix_get (r, i, j);
-              double xi = gsl_vector_get (x, i);
-              gsl_vector_set (x, i, xi - rij * temp);
-            }
-        }
-    }
-
-  gsl_permute_vector_inverse (perm, x);
-
-  return GSL_SUCCESS;
 }
 
 static const gsl_multifit_nlinear_solver qr_type =

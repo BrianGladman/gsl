@@ -417,7 +417,7 @@ trust_iterate(void *vstate, const gsl_vector *swts,
           if (status == GSL_SUCCESS)
             foundstep = 1;
 
-#if 1 /*XXX*/
+#if 0 /*XXX*/
           fprintf(stdout, "delta = %.12e |D dx| = %.12e |dx| = %.12e, dx0 = %.12e dx1 = %.12e |x_trial| = %.12e |f_trial| = %.12e rho = %.12e\n",
                   state->delta,
                   scaled_enorm(state->diag, dx),

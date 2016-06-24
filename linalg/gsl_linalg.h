@@ -324,6 +324,20 @@ int gsl_linalg_QRPT_solve (const gsl_matrix * QR,
                            const gsl_vector * b,
                            gsl_vector * x);
 
+int gsl_linalg_QRPT_lssolve (const gsl_matrix * QR,
+                             const gsl_vector * tau,
+                             const gsl_permutation * p,
+                             const gsl_vector * b,
+                             gsl_vector * x,
+                             gsl_vector * residual);
+
+int gsl_linalg_QRPT_lssolve2 (const gsl_matrix * QR,
+                              const gsl_vector * tau,
+                              const gsl_permutation * p,
+                              const gsl_vector * b,
+                              const size_t rank,
+                              gsl_vector * x,
+                              gsl_vector * residual);
 
 int gsl_linalg_QRPT_svx (const gsl_matrix * QR,
                          const gsl_vector * tau,
@@ -351,6 +365,8 @@ int gsl_linalg_QRPT_update (gsl_matrix * Q,
                             gsl_vector * u,
                             const gsl_vector * v);
 
+size_t gsl_linalg_QRPT_rank (const gsl_matrix * QR, const double tol);
+
 /* COD decomposition */
 
 int gsl_linalg_COD_decomp(gsl_matrix * A, gsl_vector * tau_Q, gsl_vector * tau_Z,
@@ -359,11 +375,15 @@ int gsl_linalg_COD_decomp(gsl_matrix * A, gsl_vector * tau_Q, gsl_vector * tau_Z
 int gsl_linalg_COD_decomp_e(gsl_matrix * A, gsl_vector * tau_Q, gsl_vector * tau_Z,
                             gsl_permutation * p, double tol, size_t * rank, gsl_vector * work);
 
-int gsl_linalg_COD_unpack(const gsl_matrix * QRZT, const gsl_vector * tau_Q,
+int gsl_linalg_COD_lssolve (const gsl_matrix * QRZ, const gsl_vector * tau_Q, const gsl_vector * tau_Z,
+                            const gsl_permutation * perm, const size_t rank, const gsl_vector * b,
+                            gsl_vector * x, gsl_vector * residual);
+
+int gsl_linalg_COD_unpack(const gsl_matrix * QRZ, const gsl_vector * tau_Q,
                           const gsl_vector * tau_Z, const size_t rank, gsl_matrix * Q,
                           gsl_matrix * R, gsl_matrix * Z);
 
-int gsl_linalg_COD_matZ(const gsl_matrix * QRZT, const gsl_vector * tau_Z, const size_t rank,
+int gsl_linalg_COD_matZ(const gsl_matrix * QRZ, const gsl_vector * tau_Z, const size_t rank,
                         gsl_matrix * A, gsl_vector * work);
 
 /* LQ decomposition */

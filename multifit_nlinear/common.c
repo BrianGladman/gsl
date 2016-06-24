@@ -23,7 +23,6 @@ static void scaled_addition (const double alpha, const gsl_vector * x,
                              gsl_vector * z);
 static double quadratic_preduction(const gsl_vector *f, const gsl_matrix * J,
                                    const gsl_vector * dx, gsl_vector * work);
-static size_t qr_nonsing (const gsl_matrix * r);
 
 /* compute || diag(d) f || */
 static double
@@ -105,28 +104,6 @@ quadratic_preduction(const gsl_vector * f, const gsl_matrix * J,
     }
 
   return pred_reduction;
-}
-
-static size_t
-qr_nonsing (const gsl_matrix * r)
-{
-  /* Count the number of nonsingular entries. Returns the index of the
-     first entry which is singular. */
-
-  size_t n = r->size2;
-  size_t i;
-
-  for (i = 0; i < n; i++)
-    {
-      double rii = gsl_matrix_get (r, i, i);
-
-      if (rii == 0)
-        {
-          break;
-        }
-    }
-
-  return i;
 }
 
 /*

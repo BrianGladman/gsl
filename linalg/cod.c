@@ -46,14 +46,13 @@
  *     [  0  0 ]
  */
 
-static size_t cod_rank(const gsl_matrix * A, const double tol);
 static int cod_RZ(gsl_matrix * A, gsl_vector * tau);
 static double cod_householder_transform(double *alpha, gsl_vector * v);
 static int cod_householder_mh(const double tau, const gsl_vector * v,
                               gsl_matrix * A, gsl_vector * work);
 static int cod_householder_hv(const double tau, const gsl_vector * v, gsl_vector * w);
-static int cod_householder_Zvec(const gsl_matrix * QRZT, const gsl_vector * tau_Z, const size_t rank,
-                                gsl_vector * v);
+static int cod_householder_ZTvec(const gsl_matrix * QRZ, const gsl_vector * tau_Z, const size_t rank,
+                                 gsl_vector * v);
 
 int
 gsl_linalg_COD_decomp_e(gsl_matrix * A, gsl_vector * tau_Q, gsl_vector * tau_Z,
@@ -88,21 +87,8 @@ gsl_linalg_COD_decomp_e(gsl_matrix * A, gsl_vector * tau_Q, gsl_vector * tau_Z,
       if (status)
         return status;
 
-      if (tol < 0.0)
-        {
-          gsl_vector_view d = gsl_matrix_diagonal(A);
-          double min, max, absmax;
-          int ee;
-
-          gsl_vector_minmax(&d.vector, &min, &max);
-          absmax = GSL_MAX(fabs(min), fabs(max));
-          ee = (int) log2(absmax);
-
-          tol = 20.0 * (M + N) * pow(2.0, (double) ee) * GSL_DBL_EPSILON;
-        }
-
-      /* estimate rank of R */
-      r = cod_rank(A, tol);
+      /* estimate rank of A */
+      r = gsl_linalg_QRPT_rank(A, tol);
 
       if (r < N)
         {
@@ -140,20 +126,29 @@ gsl_linalg_COD_lssolve()
 
    A x = b 
 
-for M >= N using the COD factorization A P = Q R Z^T
+for M >= N using the COD factorization A P = Q R Z
+
+Inputs: QRZ      - matrix A, in COD compressed format, M-by-N
+        tau_Q    - Householder scalars for Q, length min(M,N)
+        tau_Z    - Householder scalars for Z, length min(M,N)
+        perm     - permutation matrix
+        rank     - rank of A
+        b        - rhs vector, length M
+        x        - (output) solution vector, length N
+        residual - (output) residual vector, b - A x, length M
 */
 
 int
-gsl_linalg_COD_lssolve (const gsl_matrix * QRZT, const gsl_vector * tau_Q, const gsl_vector * tau_Z,
+gsl_linalg_COD_lssolve (const gsl_matrix * QRZ, const gsl_vector * tau_Q, const gsl_vector * tau_Z,
                         const gsl_permutation * perm, const size_t rank, const gsl_vector * b,
                         gsl_vector * x, gsl_vector * residual)
 {
-  const size_t M = QRZT->size1;
-  const size_t N = QRZT->size2;
+  const size_t M = QRZ->size1;
+  const size_t N = QRZ->size2;
 
   if (M < N)
     {
-      GSL_ERROR ("QRZT matrix must have M>=N", GSL_EBADLEN);
+      GSL_ERROR ("QRZ matrix must have M>=N", GSL_EBADLEN);
     }
   else if (M != b->size)
     {
@@ -173,23 +168,29 @@ gsl_linalg_COD_lssolve (const gsl_matrix * QRZT, const gsl_vector * tau_Q, const
     }
   else
     {
-      gsl_matrix_const_view R11 = gsl_matrix_const_submatrix (QRZT, 0, 0, rank, rank);
-      gsl_vector_view c = gsl_vector_subvector(residual, 0, N);
-      gsl_vector_view r1 = gsl_vector_subvector(residual, 0, rank);
-      gsl_vector_view c1 = gsl_vector_subvector(x, 0, rank);
+      gsl_matrix_const_view R11 = gsl_matrix_const_submatrix (QRZ, 0, 0, rank, rank);
+      gsl_vector_view QTb1 = gsl_vector_subvector(residual, 0, rank);
+      gsl_vector_view x1 = gsl_vector_subvector(x, 0, rank);
 
       gsl_vector_set_zero(x);
 
       /* compute residual = Q^T b */
       gsl_vector_memcpy(residual, b);
-      gsl_linalg_QR_QTvec (QRZT, tau_Q, residual);
+      gsl_linalg_QR_QTvec (QRZ, tau_Q, residual);
 
-      /* solve c1 := R11^{-1} (Q^T b)(1:r) */
-      gsl_vector_memcpy(&(c1.vector), &(r1.vector));
-      gsl_blas_dtrsv(CblasUpper, CblasNoTrans, CblasNonUnit, &(R11.matrix), &(c1.vector));
+      /* solve x1 := R11^{-1} (Q^T b)(1:r) */
+      gsl_vector_memcpy(&(x1.vector), &(QTb1.vector));
+      gsl_blas_dtrsv(CblasUpper, CblasNoTrans, CblasNonUnit, &(R11.matrix), &(x1.vector));
 
-      /* compute Z ( R11^{-1} c1; 0 ) */
-      cod_householder_Zvec(QRZT, tau_Z, rank, x);
+      /* compute Z^T ( R11^{-1} x1; 0 ) */
+      cod_householder_ZTvec(QRZ, tau_Z, rank, x);
+
+      /* compute x = P Z^T ( R11^{-1} x1; 0 ) */
+      gsl_permute_vector_inverse(perm, x);
+
+      /* compute residual = b - A x = Q (Q^T b - R [ R11^{-1} x1; 0 ]) */
+      gsl_vector_set_zero(&(QTb1.vector));
+      gsl_linalg_QR_Qvec(QRZ, tau_Q, residual);
 
       return GSL_SUCCESS;
     }
@@ -199,7 +200,7 @@ gsl_linalg_COD_lssolve (const gsl_matrix * QRZT, const gsl_vector * tau_Q, const
 gsl_linalg_COD_unpack()
   Unpack encoded COD decomposition into the matrices Q,R,Z,P
 
-Inputs: QRZT  - encoded COD decomposition
+Inputs: QRZ   - encoded COD decomposition
         tau_Q - Householder scalars for Q
         tau_Z - Householder scalars for Z
         rank  - rank of matrix (as determined from gsl_linalg_COD_decomp)
@@ -209,12 +210,12 @@ Inputs: QRZT  - encoded COD decomposition
 */
 
 int
-gsl_linalg_COD_unpack(const gsl_matrix * QRZT, const gsl_vector * tau_Q,
+gsl_linalg_COD_unpack(const gsl_matrix * QRZ, const gsl_vector * tau_Q,
                       const gsl_vector * tau_Z, const size_t rank, gsl_matrix * Q,
                       gsl_matrix * R, gsl_matrix * Z)
 {
-  const size_t M = QRZT->size1;
-  const size_t N = QRZT->size2;
+  const size_t M = QRZ->size1;
+  const size_t N = QRZ->size2;
 
   if (tau_Q->size != GSL_MIN (M, N))
     {
@@ -244,7 +245,7 @@ gsl_linalg_COD_unpack(const gsl_matrix * QRZT, const gsl_vector * tau_Q,
     {
       size_t i;
       gsl_matrix_view R11 = gsl_matrix_submatrix(R, 0, 0, rank, rank);
-      gsl_matrix_const_view QRZT11 = gsl_matrix_const_submatrix(QRZT, 0, 0, rank, rank);
+      gsl_matrix_const_view QRZ11 = gsl_matrix_const_submatrix(QRZ, 0, 0, rank, rank);
 
       /* form Q matrix */
 
@@ -252,7 +253,7 @@ gsl_linalg_COD_unpack(const gsl_matrix * QRZT, const gsl_vector * tau_Q,
 
       for (i = GSL_MIN (M, N); i-- > 0;)
         {
-          gsl_vector_const_view h = gsl_matrix_const_subcolumn (QRZT, i, i, M - i);
+          gsl_vector_const_view h = gsl_matrix_const_subcolumn (QRZ, i, i, M - i);
           gsl_matrix_view m = gsl_matrix_submatrix (Q, i, i, M - i, M - i);
           double ti = gsl_vector_get (tau_Q, i);
           gsl_linalg_householder_hm (ti, &h.vector, &m.matrix);
@@ -266,12 +267,12 @@ gsl_linalg_COD_unpack(const gsl_matrix * QRZT, const gsl_vector * tau_Q,
           gsl_vector_view work = gsl_matrix_row(R, 0); /* temporary workspace, size N */
 
           /* multiply I by Z from the right */
-          gsl_linalg_COD_matZ(QRZT, tau_Z, rank, Z, &work.vector);
+          gsl_linalg_COD_matZ(QRZ, tau_Z, rank, Z, &work.vector);
         }
 
-      /* copy rank-by-rank upper triangle of QRZT into R and zero the rest */
+      /* copy rank-by-rank upper triangle of QRZ into R and zero the rest */
       gsl_matrix_set_zero(R);
-      gsl_matrix_tricpy('U', 1, &R11.matrix, &QRZT11.matrix);
+      gsl_matrix_tricpy('U', 1, &R11.matrix, &QRZ11.matrix);
 
       return GSL_SUCCESS;
     }
@@ -281,7 +282,7 @@ gsl_linalg_COD_unpack(const gsl_matrix * QRZT, const gsl_vector * tau_Q,
 gsl_linalg_COD_matZ
   Multiply an M-by-N matrix A on the right by Z (N-by-N)
 
-Inputs: QRZT  - encoded COD matrix
+Inputs: QRZ   - encoded COD matrix
         tau_Z - Householder scalars for Z
         rank  - matrix rank
         A     - on input, M-by-N matrix
@@ -290,39 +291,38 @@ Inputs: QRZT  - encoded COD matrix
 */
 
 int
-gsl_linalg_COD_matZ(const gsl_matrix * QRZT, const gsl_vector * tau_Z, const size_t rank,
+gsl_linalg_COD_matZ(const gsl_matrix * QRZ, const gsl_vector * tau_Z, const size_t rank,
                     gsl_matrix * A, gsl_vector * work)
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
 
-  if (tau_Z->size != GSL_MIN (QRZT->size1, QRZT->size2))
+  if (tau_Z->size != GSL_MIN (QRZ->size1, QRZ->size2))
     {
       GSL_ERROR("tau_Z must be GSL_MIN(M,N)", GSL_EBADLEN);
     }
-  else if (QRZT->size2 != N)
+  else if (QRZ->size2 != N)
     {
-      GSL_ERROR("QRZT must have N columns", GSL_EBADLEN);
+      GSL_ERROR("QRZ must have N columns", GSL_EBADLEN);
     }
   else if (work->size != M)
     {
-      GSL_ERROR("workspace must be size M", GSL_EBADLEN);
-    }
-  else if (rank >= N)
-    {
-      /* Z = I, nothing to do */
-      return GSL_SUCCESS;
+      GSL_ERROR("workspace must be length M", GSL_EBADLEN);
     }
   else
     {
-      size_t i;
-
-      for (i = 0; i < rank; ++i)
+      /* if rank == N, then Z = I and there is nothing to do */
+      if (rank < N)
         {
-          gsl_vector_const_view h = gsl_matrix_const_subrow (QRZT, i, rank, N - rank);
-          gsl_matrix_view m = gsl_matrix_submatrix (A, 0, i, M, N - i);
-          double ti = gsl_vector_get (tau_Z, i);
-          cod_householder_mh (ti, &h.vector, &m.matrix, work);
+          size_t i;
+
+          for (i = 0; i < rank; ++i)
+            {
+              gsl_vector_const_view h = gsl_matrix_const_subrow (QRZ, i, rank, N - rank);
+              gsl_matrix_view m = gsl_matrix_submatrix (A, 0, i, M, N - i);
+              double ti = gsl_vector_get (tau_Z, i);
+              cod_householder_mh (ti, &h.vector, &m.matrix, work);
+            }
         }
 
       return GSL_SUCCESS;
@@ -333,30 +333,6 @@ gsl_linalg_COD_matZ(const gsl_matrix * QRZT, const gsl_vector * tau_Z, const siz
 /*********************************************
  * INTERNAL ROUTINES                         *
  *********************************************/
-
-/*
-cod_rank()
-  Cheap estimate of rank of triangular matrix, using only diagonal values.
-Rank is defined as number of diagonal entries larger than tol.
-*/
-
-static size_t
-cod_rank(const gsl_matrix * A, const double tol)
-{
-  size_t r = 0;
-  gsl_vector_const_view diag = gsl_matrix_const_diagonal(A);
-  size_t n = diag.vector.size;
-  size_t i;
-
-  for (i = 0; i < n; ++i)
-    {
-      double di = gsl_vector_get(&diag.vector, i);
-      if (fabs(di) > tol)
-        ++r;
-    }
-
-  return r;
-}
 
 /*
 cod_RZ()
@@ -549,22 +525,22 @@ cod_householder_mh(const double tau, const gsl_vector * v, gsl_matrix * A,
 }
 
 /*
-cod_householder_Zvec
-  Multiply a vector by Z
+cod_householder_ZTvec
+  Multiply a vector by Z^T
 
-Inputs: QRZT  - encoded COD matrix
+Inputs: QRZ   - encoded COD matrix
         tau_Z - Householder scalars for Z
         rank  - matrix rank
         v     - on input, vector of length N
-                on output, Z * v
+                on output, Z^T * v
 */
 
 static int
-cod_householder_Zvec(const gsl_matrix * QRZT, const gsl_vector * tau_Z, const size_t rank,
-                     gsl_vector * v)
+cod_householder_ZTvec(const gsl_matrix * QRZ, const gsl_vector * tau_Z, const size_t rank,
+                      gsl_vector * v)
 {
-  const size_t M = QRZT->size1;
-  const size_t N = QRZT->size2;
+  const size_t M = QRZ->size1;
+  const size_t N = QRZ->size2;
 
   if (tau_Z->size != GSL_MIN (M, N))
     {
@@ -576,14 +552,17 @@ cod_householder_Zvec(const gsl_matrix * QRZT, const gsl_vector * tau_Z, const si
     }
   else
     {
-      size_t i;
-
-      for (i = 0; i < rank; ++i)
+      if (rank < N)
         {
-          gsl_vector_const_view h = gsl_matrix_const_subrow (QRZT, i, rank, N - rank);
-          gsl_vector_view w = gsl_vector_subvector (v, 0, N - rank);
-          double ti = gsl_vector_get (tau_Z, i);
-          cod_householder_hv(ti, &h.vector, &w.vector);
+          size_t i;
+
+          for (i = 0; i < rank; ++i)
+            {
+              gsl_vector_const_view h = gsl_matrix_const_subrow (QRZ, i, rank, N - rank);
+              gsl_vector_view w = gsl_vector_subvector (v, i, N - i);
+              double ti = gsl_vector_get (tau_Z, i);
+              cod_householder_hv(ti, &h.vector, &w.vector);
+            }
         }
 
       return GSL_SUCCESS;

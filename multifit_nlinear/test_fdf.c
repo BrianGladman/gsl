@@ -101,16 +101,16 @@ static test_fdf_problem *test_problems[] = {
    * IMM Department of Mathematical Modeling, Tech. Report
    * IMM-REP-2000-17, 2000.
    */
-#if 0
+#if 1
   &lin1_problem,       /* 1 */
-#endif
   &lin2_problem,       /* 2 */
-#if 0
   &lin3_problem,       /* 3 */
   &rosenbrock_problem, /* 4 */
   &helical_problem,    /* 5 */
   &powell1_problem,    /* 6 */
+#endif
   &roth_problem,       /* 7 */
+#if 1
   &bard_problem,       /* 8 */
   &kowalik_problem,    /* 9 */
   &meyer_problem,      /* 10 */
