@@ -1,6 +1,6 @@
 /* multifit_nlinear/qr.c
  * 
- * Copyright (C) 2015 Patrick Alken
+ * Copyright (C) 2015, 2016 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,8 +54,7 @@ typedef struct
   size_t p;
   gsl_matrix *QR;            /* QR factorization of J */
   gsl_vector *tau_Q;         /* Householder scalars for Q */
-  gsl_vector *tau_Z;         /* Householder scalars for Z */
-  gsl_matrix *Q;             /* Householder reflectors for J */
+  gsl_matrix *T;             /* workspace matrix for qrsolv, p-by-p */
   gsl_permutation *perm;     /* permutation matrix */
   size_t rank;               /* rank of J */
   gsl_vector *residual;      /* residual of LS problem [ J; sqrt(mu) D ] p = - [ f; 0 ] */
@@ -91,12 +90,6 @@ qr_alloc (const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for QR", GSL_ENOMEM);
     }
 
-  state->Q = gsl_matrix_alloc(n, p);
-  if (state->Q == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for Q", GSL_ENOMEM);
-    }
-
   state->tau_Q = gsl_vector_alloc(p);
   if (state->tau_Q == NULL)
     {
@@ -104,11 +97,10 @@ qr_alloc (const size_t n, const size_t p)
                       GSL_ENOMEM);
     }
 
-  state->tau_Z = gsl_vector_alloc(p);
-  if (state->tau_Z == NULL)
+  state->T = gsl_matrix_alloc(p, p);
+  if (state->T == NULL)
     {
-      GSL_ERROR_NULL ("failed to allocate space for tau_Z",
-                      GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for T", GSL_ENOMEM);
     }
 
   state->qtf = gsl_vector_alloc(n);
@@ -175,14 +167,11 @@ qr_free(void *vstate)
   if (state->QR)
     gsl_matrix_free(state->QR);
 
-  if (state->Q)
-    gsl_matrix_free(state->Q);
-
   if (state->tau_Q)
     gsl_vector_free(state->tau_Q);
 
-  if (state->tau_Z)
-    gsl_vector_free(state->tau_Z);
+  if (state->T)
+    gsl_matrix_free(state->T);
 
   if (state->qtf)
     gsl_vector_free(state->qtf);
@@ -233,9 +222,6 @@ qr_init(const void * vtrust_state, void * vstate)
   gsl_linalg_QRPT_decomp(state->QR, state->tau_Q, state->perm,
                          &signum, state->workp);
 
-  /* save Householder part of R matrix which is destroyed by qrsolv() */
-  gsl_matrix_memcpy(state->Q, state->QR);
-
   return GSL_SUCCESS;
 }
 
@@ -284,10 +270,10 @@ qr_solve(const gsl_vector * f, gsl_vector *x,
 
       /* compute qtf = Q^T f */
       gsl_vector_memcpy(state->qtf, f);
-      gsl_linalg_QR_QTvec(state->Q, state->tau_Q, state->qtf);
+      gsl_linalg_QR_QTvec(state->QR, state->tau_Q, state->qtf);
 
       status = qrsolv(state->QR, state->perm, sqrt_mu, state->diag,
-                      state->qtf, x, state->workp, state->workn);
+                      state->qtf, state->T, x, state->workn);
     }
 
   /* reverse step to go downhill */

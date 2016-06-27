@@ -108,12 +108,12 @@ static test_fdf_problem *test_problems[] = {
   &rosenbrock_problem, /* 4 */
   &helical_problem,    /* 5 */
   &powell1_problem,    /* 6 */
-#endif
   &roth_problem,       /* 7 */
-#if 1
   &bard_problem,       /* 8 */
+#endif
   &kowalik_problem,    /* 9 */
   &meyer_problem,      /* 10 */
+#if 1
   &watson_problem,     /* 11 */
   &box_problem,        /* 12 */
   &jennrich_problem,   /* 13 */
