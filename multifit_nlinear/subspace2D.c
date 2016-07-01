@@ -27,6 +27,8 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_poly.h>
 
+#include "oct.c"
+
 #define SCALE_SUB2D     1
 
 /*
@@ -118,7 +120,7 @@ typedef struct
   gsl_vector *workp;         /* workspace, length p */
   gsl_vector *workn;         /* workspace, length n */
   gsl_matrix *W;             /* orthonormal basis for 2D subspace, p-by-2 */
-  gsl_matrix *J;             /* copy of Jacobian matrix, n-by-p */
+  gsl_matrix *JQ;            /* J * Q, n-by-p */
   gsl_vector *tau;           /* Householder scalars */
   gsl_vector *subg;          /* subspace gradient = W^T g, 2-by-1 */
   gsl_matrix *subB;          /* subspace Hessian = W^T B W, 2-by-2 */
@@ -194,10 +196,10 @@ subspace2D_alloc (const void * params, const size_t n, const size_t p)
       GSL_ERROR_NULL ("failed to allocate space for W", GSL_ENOMEM);
     }
 
-  state->J = gsl_matrix_alloc(n, p);
-  if (state->J == NULL)
+  state->JQ = gsl_matrix_alloc(n, p);
+  if (state->JQ == NULL)
     {
-      GSL_ERROR_NULL ("failed to allocate space for J", GSL_ENOMEM);
+      GSL_ERROR_NULL ("failed to allocate space for JQ", GSL_ENOMEM);
     }
 
   state->tau = gsl_vector_alloc(2);
@@ -258,8 +260,8 @@ subspace2D_free(void *vstate)
   if (state->W)
     gsl_matrix_free(state->W);
 
-  if (state->J)
-    gsl_matrix_free(state->J);
+  if (state->JQ)
+    gsl_matrix_free(state->JQ);
 
   if (state->tau)
     gsl_vector_free(state->tau);
@@ -415,16 +417,30 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
 
   v = gsl_matrix_column(state->W, 0);
   gsl_vector_memcpy(&v.vector, state->dx_sd);
+  u = gsl_blas_dnrm2(state->dx_sd);
+  if (u != 0)
+    gsl_vector_scale(&v.vector, 1.0 / u);
 
   v = gsl_matrix_column(state->W, 1);
   gsl_vector_memcpy(&v.vector, state->dx_gn);
+  u = gsl_blas_dnrm2(state->dx_gn);
+  if (u != 0)
+    gsl_vector_scale(&v.vector, 1.0 / u);
+
+#if 0
+  print_octave(state->W, "W");
+#endif
 
   /* use a rank revealing QR decomposition in case dx_sd and dx_gn
    * are parallel */
   gsl_linalg_QRPT_decomp(state->W, state->tau, state->perm, &signum, &work.vector);
 
   /* check for parallel dx_sd, dx_gn, in which case rank will be 1 */
+#if 1 /*XXX*/
   state->rank = gsl_linalg_QRPT_rank(state->W, -1.0);
+#else
+  state->rank = gsl_linalg_QRPT_rank(state->W, GSL_DBL_EPSILON);
+#endif
 
   if (state->rank == 2)
     {
@@ -435,7 +451,7 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
        */
       const size_t p = state->p;
       size_t i;
-      gsl_matrix_view JW = gsl_matrix_submatrix(state->J, 0, 0, state->n, GSL_MIN(2, p));
+      gsl_matrix_view JQ = gsl_matrix_submatrix(state->JQ, 0, 0, state->n, GSL_MIN(2, p));
       double B00, B10, B11, g0, g1;
 
 #if SCALE_SUB2D
@@ -451,9 +467,12 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
           gsl_vector_set(state->subg, i, gi);
         }
 
-      gsl_matrix_memcpy(state->J, trust_state->J);
-      gsl_linalg_QR_matQ(state->W, state->tau, state->J);
-      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &JW.matrix, 0.0, state->subB);
+      /* JQ = J * Q */
+      gsl_matrix_memcpy(state->JQ, trust_state->J);
+      gsl_linalg_QR_matQ(state->W, state->tau, state->JQ);
+
+      /* subB = (JQ)' (JQ) = Q' J' J Q = Q' B Q */
+      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &JQ.matrix, 0.0, state->subB);
 
       B00 = gsl_matrix_get(state->subB, 0, 0);
       B10 = gsl_matrix_get(state->subB, 1, 0);
@@ -490,20 +509,20 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
       /* compute subB */
 
       /* compute J D^{-1} */
-      gsl_matrix_memcpy(state->J, trust_state->J);
+      gsl_matrix_memcpy(state->JQ, trust_state->J);
 
       for (i = 0; i < p; ++i)
         {
-          gsl_vector_view c = gsl_matrix_column(state->J, i);
+          gsl_vector_view c = gsl_matrix_column(state->JQ, i);
           double di = gsl_vector_get(trust_state->diag, i);
           gsl_vector_scale(&c.vector, 1.0 / di);
         }
 
       /* compute J D^{-1} Q */
-      gsl_linalg_QR_matQ(state->W, state->tau, state->J);
+      gsl_linalg_QR_matQ(state->W, state->tau, state->JQ);
 
       /* compute subB = Q^T D^{-1} J^T J D^{-1} Q */
-      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &JW.matrix, 0.0, state->subB);
+      gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &JQ.matrix, 0.0, state->subB);
 
       B00 = gsl_matrix_get(state->subB, 0, 0);
       B10 = gsl_matrix_get(state->subB, 1, 0);
@@ -527,6 +546,13 @@ subspace2D_preloop(const void * vtrust_state, void * vstate)
 
 #if 0 /*XXX*/
   fprintf(stdout, "|dx_gn| = %.12e |dx_sd| = %.12e\n", state->norm_Dgn, state->norm_Dsd);
+#endif
+
+#if 0
+  printv_octave(state->dx_gn, "dx_gn");
+  printv_octave(state->dx_sd, "dx_sd");
+  print_octave(state->subB, "B");
+  printv_octave(state->subg, "g");
 #endif
 
   return GSL_SUCCESS;
@@ -566,15 +592,26 @@ subspace2D_step(const void * vtrust_state, const double delta,
     {
       int status;
       const double delta_sq = delta * delta;
+      double TrB_D = state->trB * delta;
+      double detB_D = state->detB * delta;
+      double normg_sq = state->normg * state->normg;
       double u = state->normg / delta;
       double a[5];
       double z[8];
 
+#if 0
       a[0] = state->detB * state->detB - state->term0 / delta_sq;
       a[1] = 2 * state->detB * state->trB - 2 * state->term1 / delta_sq;
       a[2] = state->trB * state->trB + 2 * state->detB - u * u;
       a[3] = 2 * state->trB;
       a[4] = 1.0;
+#else
+      a[0] = detB_D * detB_D - state->term0;
+      a[1] = 2 * state->detB * state->trB * delta_sq - 2 * state->term1;
+      a[2] = TrB_D * TrB_D + 2 * state->detB * delta_sq - normg_sq;
+      a[3] = 2 * state->trB * delta_sq;
+      a[4] = delta_sq;
+#endif
 
       status = gsl_poly_complex_solve(a, 5, state->poly_p, z);
       if (status == GSL_SUCCESS)
@@ -587,35 +624,43 @@ subspace2D_step(const void * vtrust_state, const double delta,
 
           /*
            * loop through all four values of the Lagrange multiplier
-           * lambda, searching for real roots. For each real lambda, evaluate
-           * the objective function to determine which lambda minimizes the
+           * lambda. For each lambda, evaluate the objective function
+           * with Re(lambda) to determine which lambda minimizes the
            * function
            */
           for (i = 0; i < 4; ++i)
             {
+              double cost, normx;
+
               /*fprintf(stderr, "root: %.12e + %.12e i\n",
                       z[2*i], z[2*i+1]);*/
 
-              if (fabs(z[2*i + 1]) < GSL_DBL_EPSILON)
+              status = subspace2D_solution(z[2*i], &x.vector, state);
+              if (status != GSL_SUCCESS)
+                continue; /* singular matrix system */
+
+              /* ensure ||x|| = delta */
+              normx = gsl_blas_dnrm2(&x.vector);
+              if (normx == 0.0)
+                continue;
+
+              gsl_vector_scale(&x.vector, delta / normx);
+
+              /* evaluate objective function to determine minimizer */
+              cost = subspace2D_objective(&x.vector, state);
+              if (mini < 0 || cost < min)
                 {
-                  double cost;
-
-                  subspace2D_solution(z[2*i], &x.vector, state);
-                  /*fprintf(stderr, "|x| = %.12e (%.12e)\n", gsl_blas_dnrm2(&x.vector), delta);*/
-
-                  /* evaluate objective function to determine minimizer */
-                  cost = subspace2D_objective(&x.vector, state);
-                  if (mini < 0 || cost < min)
-                    {
-                      mini = (int) i;
-                      min = cost;
-                    }
+                  mini = (int) i;
+                  min = cost;
                 }
+
+              /*fprintf(stderr, "|x| = %.12e (%.12e) cost = %.12e\n", gsl_blas_dnrm2(&x.vector), delta, cost);*/
             }
 
           if (mini < 0)
             {
-              fprintf(stderr, "ERROR: did not find minimizer\n");
+              /*XXXfprintf(stderr, "ERROR: did not find minimizer\n");*/
+              return GSL_FAILURE;
             }
           else
             {
@@ -670,11 +715,7 @@ subspace2D_solution(const double lambda, gsl_vector * x,
 {
   int status = GSL_SUCCESS;
   double C_data[4];
-  double tau_data[2];
-  double work_data[2];
   gsl_matrix_view C = gsl_matrix_view_array(C_data, 2, 2);
-  gsl_vector_view tau = gsl_vector_view_array(tau_data, 2);
-  gsl_vector_view work = gsl_vector_view_array(work_data, 2);
   double B00 = gsl_matrix_get(state->subB, 0, 0);
   double B10 = gsl_matrix_get(state->subB, 1, 0);
   double B11 = gsl_matrix_get(state->subB, 1, 1);
@@ -686,8 +727,64 @@ subspace2D_solution(const double lambda, gsl_vector * x,
   gsl_matrix_set(&C.matrix, 0, 1, B10);
   gsl_matrix_set(&C.matrix, 1, 1, B11 + lambda);
 
-  gsl_linalg_QRPT_decomp(&C.matrix, &tau.vector, state->perm, &signum, &work.vector);
-  gsl_linalg_QRPT_solve(&C.matrix, &tau.vector, state->perm, state->subg, x);
+#if 0
+  gsl_linalg_mcholesky_decomp(&C.matrix, state->perm, NULL);
+  gsl_linalg_mcholesky_solve(&C.matrix, state->perm, state->subg, x);
+#elif 1
+  {
+    double D_data[4];
+    double V_data[4];
+    double S_data[2];
+    double work_data[2];
+    gsl_matrix_view V = gsl_matrix_view_array(V_data, 2, 2);
+    gsl_matrix_view D = gsl_matrix_view_array(D_data, 2, 2);
+    gsl_vector_view S = gsl_vector_view_array(S_data, 2);
+    gsl_vector_view work = gsl_vector_view_array(work_data, 2);
+    double tol;
+    double S0, S1;
+    double r;
+
+    gsl_matrix_memcpy(&D.matrix, &C.matrix);
+
+#if 0
+    gsl_linalg_SV_decomp(&C.matrix, &V.matrix, &S.vector, &work.vector);
+#else
+    gsl_linalg_SV_decomp_jacobi(&C.matrix, &V.matrix, &S.vector);
+#endif
+
+    S0 = S_data[0];
+    S1 = S_data[1];
+    tol = 2 * S0 * GSL_DBL_EPSILON;
+
+    if (S1 < tol)
+      {
+        /* matrix is near-singular, don't try to compute solution */
+        return GSL_ESING;
+      }
+
+    gsl_linalg_SV_solve(&C.matrix, &V.matrix, &S.vector, state->subg, x);
+
+    gsl_vector_memcpy(&work.vector, state->subg);
+    gsl_blas_dsymv(CblasUpper, -1.0, &D.matrix, x, 1.0, &work.vector);
+
+    r = gsl_blas_dnrm2(&work.vector);
+
+    if (S1 < tol && r > 1.0e3)
+      {
+        fprintf(stderr, "residual = %.12e\n", r);
+        print_octave(&D.matrix, "C");
+        printv_octave(state->subg, "g");
+        printv_octave(x, "y");
+
+        gsl_linalg_mcholesky_decomp(&C.matrix, state->perm, NULL);
+        gsl_linalg_mcholesky_solve(&C.matrix, state->perm, state->subg, x);
+        printv_octave(x, "y_chol");
+
+        exit(1);
+      }
+  }
+#endif
+
   gsl_vector_scale(x, -1.0);
 
   return status;
@@ -697,20 +794,18 @@ subspace2D_solution(const double lambda, gsl_vector * x,
 static double
 subspace2D_objective(const gsl_vector * x, subspace2D_state_t * state)
 {
-  double u, v;
+  double f;
   double y_data[2];
   gsl_vector_view y = gsl_vector_view_array(y_data, 2);
 
-  /* compute: u = g . x */
-  gsl_blas_ddot(state->subg, x, &u);
+  /* compute: y = g + 1/2 B x */
+  gsl_vector_memcpy(&y.vector, state->subg);
+  gsl_blas_dsymv(CblasLower, 0.5, state->subB, x, 1.0, &y.vector);
 
-  /* compute: 1/2 B x */
-  gsl_blas_dsymv(CblasLower, 0.5, state->subB, x, 0.0, &y.vector);
+  /* compute: f = x^T ( g + 1/2 B x ) */
+  gsl_blas_ddot(x, &y.vector, &f);
 
-  /* compute: v = 1/2 x^T B x */
-  gsl_blas_ddot(x, &y.vector, &v);
-
-  return u + v;
+  return f;
 }
 
 static const gsl_multifit_nlinear_trs subspace2D_type =

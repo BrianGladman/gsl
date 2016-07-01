@@ -38,7 +38,6 @@ static const gsl_multifit_nlinear_trs **nlinear_trs[] = {
   &gsl_multifit_nlinear_trs_lmaccel,
   &gsl_multifit_nlinear_trs_dogleg,
   &gsl_multifit_nlinear_trs_ddogleg,
-  &gsl_multifit_nlinear_trs_cgst,
 #else
   &gsl_multifit_nlinear_trs_subspace2D,
 #endif

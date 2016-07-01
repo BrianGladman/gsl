@@ -20,7 +20,7 @@ two-parameter regression and multiple-parameter fits.
 * Multi-parameter regression::
 * Regularized regression::
 * Robust linear regression::
-* Large Linear Systems::
+* Large Dense Linear Systems::
 * Troubleshooting::
 * Fitting Examples::
 * Fitting References and Further Reading::  
@@ -1066,9 +1066,9 @@ in a reasonable way.
 @end itemize
 @end deftypefun
 
-@node Large Linear Systems
-@section Large linear systems
-@cindex large linear least squares
+@node Large Dense Linear Systems
+@section Large dense linear systems
+@cindex large dense linear least squares
 @cindex linear least squares, large
 
 This module is concerned with solving large dense least squares systems
@@ -1164,13 +1164,13 @@ this partitioned system. The functions are declared in
 the header file @file{gsl_multilarge.h}.
 
 @menu
-* Large Linear Systems Normal Equations::
-* Large Linear Systems TSQR::
-* Large Linear Systems Solution Steps::
-* Large Linear Systems Routines::
+* Large Dense Linear Systems Normal Equations::
+* Large Dense Linear Systems TSQR::
+* Large Dense Linear Systems Solution Steps::
+* Large Dense Linear Systems Routines::
 @end menu
 
-@node Large Linear Systems Normal Equations
+@node Large Dense Linear Systems Normal Equations
 @subsection Normal Equations Approach
 @cindex large linear least squares, normal equations
 
@@ -1224,7 +1224,7 @@ the case for large systems, this method can suffer from numerical
 instabilities (see Trefethen and Bau, 1997).  The number of operations
 for this method is @math{O(np^2 + {1 \over 3}p^3)}.
 
-@node Large Linear Systems TSQR
+@node Large Dense Linear Systems TSQR
 @subsection Tall Skinny QR (TSQR) Approach
 @cindex large linear least squares, TSQR
 
@@ -1321,8 +1321,8 @@ the sparse structure of @math{R_{i-1}}. See Demmel et al, 2008 for
 more details on how this is accomplished. The number
 of operations for this method is @math{O(2np^2 - {2 \over 3}p^3)}.
 
-@node Large Linear Systems Solution Steps
-@subsection Large Linear Systems Solution Steps
+@node Large Dense Linear Systems Solution Steps
+@subsection Large Dense Linear Systems Solution Steps
 @cindex large linear least squares, steps
 The typical steps required to solve large regularized linear least
 squares problems are as follows:
@@ -1353,8 +1353,8 @@ original solution vector @math{c}.
 
 @end enumerate
 
-@node Large Linear Systems Routines
-@subsection Large Linear Least Squares Routines
+@node Large Dense Linear Systems Routines
+@subsection Large Dense Linear Least Squares Routines
 @cindex large linear least squares, routines
 
 @deftypefun {gsl_multilarge_linear_workspace *} gsl_multilarge_linear_alloc (const gsl_multilarge_linear_type * @var{T}, const size_t @var{p})
@@ -1733,9 +1733,9 @@ The output from the program is shown in the following plot.
 @end iftex
 
 @node Fitting large linear systems example
-@subsection Large Linear Regression Example
+@subsection Large Dense Linear Regression Example
 
-The following program demostrates the large linear least squares
+The following program demostrates the large dense linear least squares
 solvers. This example is adapted from Trefethen and Bau,
 and fits the function @math{f(t) = \exp{(\sin^3{(10t)}})} on
 the interval @math{[0,1]} with a degree 15 polynomial. The
@@ -1745,7 +1745,7 @@ and adds random noise to determine the observation value
 @math{y_i}. The entries of the least squares matrix are
 @math{X_{ij} = t_i^j}, representing a polynomial fit. The
 matrix is highly ill-conditioned, with a condition number
-of about 1.4e11. The program accumulates the
+of about @math{1.4 \cdot 10^{11}}. The program accumulates the
 matrix into the least squares system in 5 blocks, each with
 10000 rows. This way the full matrix @math{X} is never
 stored in memory. We solve the system with both the

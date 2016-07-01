@@ -101,7 +101,6 @@ static test_fdf_problem *test_problems[] = {
    * IMM Department of Mathematical Modeling, Tech. Report
    * IMM-REP-2000-17, 2000.
    */
-#if 1
   &lin1_problem,       /* 1 */
   &lin2_problem,       /* 2 */
   &lin3_problem,       /* 3 */
@@ -110,10 +109,8 @@ static test_fdf_problem *test_problems[] = {
   &powell1_problem,    /* 6 */
   &roth_problem,       /* 7 */
   &bard_problem,       /* 8 */
-#endif
   &kowalik_problem,    /* 9 */
   &meyer_problem,      /* 10 */
-#if 1
   &watson_problem,     /* 11 */
   &box_problem,        /* 12 */
   &jennrich_problem,   /* 13 */
@@ -178,7 +175,6 @@ static test_fdf_problem *test_problems[] = {
   &eckerleb_problem,
   /*&rat43a_problem,*/
   &rat43b_problem,
-#endif
 
   NULL
 };
@@ -207,7 +203,6 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
       test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
                epsrel, 1.0, problem, NULL);
 
-#if 0 /* XXX */
       /* test finite difference Jacobian */
       fdf.df = problem->fdf->df;
       problem->fdf->df = NULL;
@@ -228,15 +223,14 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
 
           problem->fdf->fvv = fdf.fvv;
         }
-#endif
     }
 
-#if 0 /* XXX */
+#if 1 /* XXX */
 
   /* test weighted nonlinear least squares */
 
   /* XXX FIXME: weighted tests don't work with Cholesky solver */
-  if (params->solver != gsl_multifit_nlinear_solver_cholesky)
+  /*if (params->solver != gsl_multifit_nlinear_solver_cholesky)*/
     {
       /* internal weighting in _f and _df functions */
       test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,

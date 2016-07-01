@@ -1,1 +1,6 @@
 1. different mu update methods
+2. cleanup trust.c (scale_Jg)
+3. remove _cgst method
+4. dogleg/qr weighted LS test problem fails
+5. rewrite qrsolv
+6. add Transtrum reference to linear leats squares docs

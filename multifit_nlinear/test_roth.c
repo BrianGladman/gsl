@@ -2,7 +2,7 @@
 #define roth_P         2
 
 static double roth_x0[roth_P] = { 0.5, -2.0 };
-static double roth_epsrel = 1.0e-7;
+static double roth_epsrel = 1.0e-6;
 
 static void
 roth_checksol(const double x[], const double sumsq,
