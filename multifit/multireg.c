@@ -101,8 +101,11 @@ gsl_multifit_linear_applyW(const gsl_matrix * X,
     {
       size_t i;
 
-      gsl_matrix_memcpy(WX, X);
-      gsl_vector_memcpy(Wy, y);
+      /* copy WX = X; Wy = y if distinct pointers */
+      if (WX != X)
+        gsl_matrix_memcpy(WX, X);
+      if (Wy != y)
+        gsl_vector_memcpy(Wy, y);
 
       if (w != NULL)
         {

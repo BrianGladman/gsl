@@ -24,6 +24,8 @@
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
+#include <gsl/gsl_eigen.h>
+#include <gsl/gsl_multifit.h>
 #include <gsl/gsl_multilarge.h>
 
 typedef struct
@@ -35,6 +37,11 @@ typedef struct
   gsl_matrix *work_ATA; /* workspace for chol(ATA), p-by-p */
   gsl_vector *workp;    /* workspace size p */
   gsl_vector *D;        /* scale factors for ATA, size p */
+  gsl_vector *c;        /* solution vector for L-curve */
+  int eigen;            /* 1 if eigenvalues computed */
+  double eval_min;      /* minimum eigenvalue */
+  double eval_max;      /* maximum eigenvalue */
+  gsl_eigen_symm_workspace *eigen_p;
 } normal_state_t;
 
 static void *normal_alloc(const size_t p);
@@ -54,8 +61,9 @@ static int normal_solve_cholesky(gsl_matrix * ATA, const gsl_vector * ATb,
                                  gsl_vector * x, normal_state_t *state);
 static int normal_solve_QR(gsl_matrix * ATA, const gsl_vector * ATb,
                            gsl_vector * x, normal_state_t *state);
-static int normal_copy_lower(gsl_matrix * dest, const gsl_matrix * src);
-static int normal_copy_lowup(gsl_matrix * A);
+static int normal_calc_norms(const gsl_vector *x, double *rnorm,
+                             double *snorm, normal_state_t *state);
+static int normal_eigen(normal_state_t *state);
 
 /*
 normal_alloc()
@@ -121,6 +129,20 @@ normal_alloc(const size_t p)
       GSL_ERROR_NULL("failed to allocate temporary ATb vector", GSL_ENOMEM);
     }
 
+  state->c = gsl_vector_alloc(p);
+  if (state->c == NULL)
+    {
+      normal_free(state);
+      GSL_ERROR_NULL("failed to allocate c vector", GSL_ENOMEM);
+    }
+
+  state->eigen_p = gsl_eigen_symm_alloc(p);
+  if (state->eigen_p == NULL)
+    {
+      normal_free(state);
+      GSL_ERROR_NULL("failed to allocate eigen workspace", GSL_ENOMEM);
+    }
+
   return state;
 }
 
@@ -144,6 +166,12 @@ normal_free(void *vstate)
   if (state->workp)
     gsl_vector_free(state->workp);
 
+  if (state->c)
+    gsl_vector_free(state->c);
+
+  if (state->eigen_p)
+    gsl_eigen_symm_free(state->eigen_p);
+
   free(state);
 }
 
@@ -155,6 +183,9 @@ normal_reset(void *vstate)
   gsl_matrix_set_zero(state->ATA);
   gsl_vector_set_zero(state->ATb);
   state->normb = 0.0;
+  state->eigen = 0;
+  state->eval_min = 0.0;
+  state->eval_max = 0.0;
 
   return GSL_SUCCESS;
 }
@@ -236,7 +267,6 @@ normal_solve(const double lambda, gsl_vector * x,
   else
     {
       int status;
-      double r2;
 
       /* solve system (A^T A) x = A^T b */
       status = normal_solve_system(lambda, x, state);
@@ -245,22 +275,8 @@ normal_solve(const double lambda, gsl_vector * x,
           GSL_ERROR("failed to solve normal equations", status);
         }
 
-      /* compute solution norm ||x|| */
-      *snorm = gsl_blas_dnrm2(x);
-
-      /* compute residual norm ||b - Ax|| */
-
-      /* compute: A^T A x - 2 A^T b */
-      gsl_vector_memcpy(state->workp, state->ATb);
-      gsl_blas_dsymv(CblasLower, 1.0, state->ATA, x, -2.0, state->workp);
-
-      /* compute: x^T A^T A x - 2 x^T A^T b */
-      gsl_blas_ddot(x, state->workp, &r2);
-
-      /* add b^T b */
-      r2 += state->normb * state->normb;
-
-      *rnorm = sqrt(r2);
+      /* compute residual norm ||y - X c|| and solution norm ||x|| */
+      normal_calc_norms(x, rnorm, snorm, state);
 
       return GSL_SUCCESS;
     }
@@ -269,7 +285,30 @@ normal_solve(const double lambda, gsl_vector * x,
 static int
 normal_rcond(double * rcond, void * vstate)
 {
-  *rcond = 0.0;
+  normal_state_t *state = (normal_state_t *) vstate;
+  int status;
+
+  /* compute eigenvalues of A^T A */
+  if (state->eigen == 0)
+    {
+      status = normal_eigen(state);
+      if (status)
+        return status;
+    }
+
+  if (state->eval_max > 0.0 && state->eval_min > 0.0)
+    {
+      *rcond = sqrt(state->eval_min / state->eval_max);
+    }
+  else
+    {
+      /*
+       * computed eigenvalues are not accurate, probably due
+       * to rounding errors in forming A^T A
+       */
+      *rcond = 0.0;
+    }
+
   return GSL_SUCCESS;
 }
 
@@ -289,6 +328,50 @@ static int
 normal_lcurve(gsl_vector * reg_param, gsl_vector * rho,
               gsl_vector * eta, void * vstate)
 {
+  normal_state_t *state = (normal_state_t *) vstate;
+  int status;
+  double smin, smax; /* minimum/maximum singular values */
+  size_t i;
+
+  if (state->eigen == 0)
+    {
+      status = normal_eigen(state);
+      if (status)
+        return status;
+    }
+
+  if (state->eval_max < 0.0)
+    {
+      GSL_ERROR("matrix is not positive definite", GSL_EDOM);
+    }
+
+  /* compute singular values which are sqrts of eigenvalues */
+  smax = sqrt(state->eval_max);
+  if (state->eval_min > 0.0)
+    smin = sqrt(state->eval_min);
+  else
+    smin = 0.0;
+
+  /* compute vector of regularization parameters */
+  gsl_multifit_linear_lreg(smin, smax, reg_param);
+
+  /* solve normal equations for each regularization parameter */
+  for (i = 0; i < reg_param->size; ++i)
+    {
+      double lambda = gsl_vector_get(reg_param, i);
+      double rnorm, snorm;
+
+      status = normal_solve_system(lambda, state->c, state);
+      if (status)
+        return status;
+
+      /* compute ||y - X c|| and ||c|| */
+      normal_calc_norms(state->c, &rnorm, &snorm, state);
+
+      gsl_vector_set(rho, i, rnorm);
+      gsl_vector_set(eta, i, snorm);
+    }
+
   return GSL_SUCCESS;
 }
 
@@ -316,7 +399,7 @@ normal_solve_system(const double lambda, gsl_vector * x, normal_state_t *state)
   gsl_error_handler_t *err_handler;
 
   /* copy ATA matrix to temporary workspace and regularize */
-  normal_copy_lower(state->work_ATA, state->ATA);
+  gsl_matrix_tricpy('L', 1, state->work_ATA, state->ATA);
   gsl_vector_add_constant(&d.vector, lambda_sq);
 
   /* turn off error handler in case Cholesky fails */
@@ -327,7 +410,7 @@ normal_solve_system(const double lambda, gsl_vector * x, normal_state_t *state)
   if (status)
     {
       /* restore ATA matrix and try QR decomposition */
-      normal_copy_lower(state->work_ATA, state->ATA);
+      gsl_matrix_tricpy('L', 1, state->work_ATA, state->ATA);
       gsl_vector_add_constant(&d.vector, lambda_sq);
 
       status = normal_solve_QR(state->work_ATA, state->ATb, x, state);
@@ -369,7 +452,7 @@ normal_solve_QR(gsl_matrix * ATA, const gsl_vector * ATb,
     return status;
 
   /* copy lower triangle of ATA to upper */
-  normal_copy_lowup(ATA);
+  gsl_matrix_transpose_tricpy('L', 0, ATA, ATA);
 
   status = gsl_linalg_QR_decomp(ATA, state->workp);
   if (status)
@@ -390,44 +473,67 @@ normal_solve_QR(gsl_matrix * ATA, const gsl_vector * ATb,
   return GSL_SUCCESS;
 }
 
-/* copy lower triangle of src to dest, including diagonal */
-static int
-normal_copy_lower(gsl_matrix * dest, const gsl_matrix * src)
-{
-  const size_t src_size1 = src->size1;
-  const size_t src_tda = src->tda;
-  const size_t dest_tda = dest->tda;
-  size_t i, j;
+/*
+normal_calc_norms()
+  Compute residual norm ||y - X c|| and solution
+norm ||c||
 
-  for (i = 0; i < src_size1 ; i++)
-    {
-      for (j = 0; j <= i; j++)
-        {
-          dest->data[dest_tda * i + j] 
-            = src->data[src_tda * i + j];
-        }
-    }
+Inputs: x     - solution vector
+        rnorm - (output) residual norm ||y - X c||
+        snorm - (output) solution norm ||c||
+        state - workspace
+*/
+
+static int
+normal_calc_norms(const gsl_vector *x, double *rnorm,
+                  double *snorm, normal_state_t *state)
+{
+  double r2;
+
+  /* compute solution norm ||x|| */
+  *snorm = gsl_blas_dnrm2(x);
+
+  /* compute residual norm ||b - Ax|| */
+
+  /* compute: A^T A x - 2 A^T b */
+  gsl_vector_memcpy(state->workp, state->ATb);
+  gsl_blas_dsymv(CblasLower, 1.0, state->ATA, x, -2.0, state->workp);
+
+  /* compute: x^T A^T A x - 2 x^T A^T b */
+  gsl_blas_ddot(x, state->workp, &r2);
+
+  /* add b^T b */
+  r2 += state->normb * state->normb;
+
+  *rnorm = sqrt(r2);
 
   return GSL_SUCCESS;
 }
 
-/* copy lower triangular part of matrix to upper */
-static int
-normal_copy_lowup(gsl_matrix * A)
-{
-  const size_t size1 = A->size1;
-  const size_t size2 = A->size2;
-  const size_t tda = A->tda;
-  size_t i, j;
+/*
+normal_eigen()
+  Compute eigenvalues of A^T A matrix, which
+are stored in state->workp on output. Also,
+state->eval_min and state->eval_max are set
+to the minimum/maximum eigenvalues
+*/
 
-  for (i = 0; i < size1; ++i)
-    {
-      for (j = i + 1; j < size2; ++j)
-        {
-          A->data[tda * i + j] 
-            = A->data[tda * j + i];
-        }
-    }
+static int
+normal_eigen(normal_state_t *state)
+{
+  int status;
+
+  /* copy lower triangle of ATA to temporary workspace */
+  gsl_matrix_tricpy('L', 1, state->work_ATA, state->ATA);
+
+  /* compute eigenvalues of ATA */
+  status = gsl_eigen_symm(state->work_ATA, state->workp, state->eigen_p);
+  if (status)
+    return status;
+
+  gsl_vector_minmax(state->workp, &state->eval_min, &state->eval_max);
+
+  state->eigen = 1;
 
   return GSL_SUCCESS;
 }

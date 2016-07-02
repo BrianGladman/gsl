@@ -1,5 +1,34 @@
 * What is new in gsl-2.2:
 
+** added functions gsl_linalg_QRPT_{lssolve,lssolve2} to
+   compute least squares solutions with the QRPT decomposition
+
+** added function gsl_permute_matrix()
+
+** added modified Cholesky factorization (gsl_linalg_mcholesky)
+   to handle symmetric indefinite matrices
+
+** added pivoted Cholesky factorization (gsl_linalg_pcholesky)
+   for ill-conditioned matrices
+
+** rewrote (real) Cholesky decomposition to use
+   a Level-2 blas algorithm instead of Level-1. Flop
+   count is about the same but the code is much simpler
+   and easier to follow
+
+** completely rewritten nonlinear least squares module,
+   including support for large problems; the user may
+   now control the linear solver used, the trust region
+   updating strategy, and the scaling method. In addition,
+   support has been added for the geodesic acceleration
+   step (Transtrum 2011) which can speed up convergence
+   on a wide class of problems.
+
+** added gsl_rstat_rms() for root mean square
+
+** optimized lmniel nonlinear least squares solver
+   (bug #46369)
+
 ** improved precision in Bessel K0/K1 near x = 2
    (Pavel Holoborodko, bug #47401)
 
@@ -9,13 +38,14 @@
 ** bug fix in convergence check of hypergeometric 2F1
    function (bug #45926)
 
+** added gsl_multilarge_linear_lcurve() to compute
+   the L-curve for large linear systems
+
 ** updated multilarge normal equations method to use
    new Cholesky scaling for better numerical stability
 
-** added new Cholesky routines
-   _decomp2, _solve2, _svx2, _scale
-   to attempt to reduce the condition number of
-   the matrix prior to factorization
+** added scaling to Cholesky routines to reduce the
+   condition number prior to factorization
 
 * What was new in gsl-2.1:
 

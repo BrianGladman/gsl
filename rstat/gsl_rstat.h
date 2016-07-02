@@ -68,6 +68,7 @@ double gsl_rstat_max(gsl_rstat_workspace *w);
 double gsl_rstat_mean(gsl_rstat_workspace *w);
 double gsl_rstat_variance(gsl_rstat_workspace *w);
 double gsl_rstat_sd(gsl_rstat_workspace *w);
+double gsl_rstat_rms(gsl_rstat_workspace *w);
 double gsl_rstat_sd_mean(gsl_rstat_workspace *w);
 double gsl_rstat_median(gsl_rstat_workspace *w);
 double gsl_rstat_skew(gsl_rstat_workspace *w);
