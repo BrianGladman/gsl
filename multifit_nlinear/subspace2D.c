@@ -27,8 +27,6 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_poly.h>
 
-#include "oct.c"
-
 #define SCALE_SUB2D     1
 
 /*
@@ -769,6 +767,7 @@ subspace2D_solution(const double lambda, gsl_vector * x,
 
     r = gsl_blas_dnrm2(&work.vector);
 
+#if 0 /* XXX */
     if (S1 < tol && r > 1.0e3)
       {
         fprintf(stderr, "residual = %.12e\n", r);
@@ -782,6 +781,7 @@ subspace2D_solution(const double lambda, gsl_vector * x,
 
         exit(1);
       }
+#endif
   }
 #endif
 
