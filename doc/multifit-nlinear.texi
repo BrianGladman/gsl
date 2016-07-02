@@ -302,7 +302,7 @@ times for different values of @math{\mu_k}.
 @cindex nonlinear least squares, levenberg-marquardt, geodesic acceleration
 
 This method applies a so-called geodesic acceleration correction to
-the standard Levenberg-Marquardt step @math{\delta_k} (Transtrum et al...).
+the standard Levenberg-Marquardt step @math{\delta_k} (Transtrum et al, 2011).
 By interpreting @math{\delta_k} as a first order step along a geodesic in the
 model parameter space (ie: a velocity @math{\delta_k = v_k}), the geodesic
 acceleration @math{a_k} is a second order correction along the
@@ -1709,13 +1709,12 @@ and calculates the solution with all available nonlinear
 least squares TRS methods. The program output is shown below.
 
 @smallexample
-Method               NITER  NFEV   NJEV   Initial Cost  Final cost   Final cond(J) Final x        
-levenberg-marquardt  20     27     21     1.9874e+02    3.9789e-01   1.4844e+08    (-3.14e+00, 1.23e+01)
-levenberg-marquardt  27     36     28     1.9874e+02    3.9789e-01   3.4719e+07    (3.14e+00, 2.27e+00)
-dogleg               23     64     23     1.9874e+02    3.9789e-01   inf           (3.14e+00, 2.28e+00)
-double-dogleg        24     69     24     1.9874e+02    3.9789e-01   3.1929e+07    (3.14e+00, 2.27e+00)
-2D-subspace          23     54     24     1.9874e+02    3.9789e-01   5.1824e+07    (3.14e+00, 2.27e+00)
-steihaug-toint       23     64     23     1.9874e+02    3.9789e-01   1.9167e+08    (3.14e+00, 2.28e+00)
+Method                    NITER  NFEV   NJEV   Initial Cost  Final cost   Final cond(J) Final x        
+levenberg-marquardt       20     27     21     1.9874e+02    3.9789e-01   1.4844e+08    (-3.14e+00, 1.23e+01)
+levenberg-marquardt+accel 27     36     28     1.9874e+02    3.9789e-01   3.4719e+07    (3.14e+00, 2.27e+00)
+dogleg                    23     64     23     1.9874e+02    3.9789e-01   inf           (3.14e+00, 2.28e+00)
+double-dogleg             24     69     24     1.9874e+02    3.9789e-01   3.1929e+07    (3.14e+00, 2.27e+00)
+2D-subspace               23     54     24     1.9874e+02    3.9789e-01   5.1824e+07    (3.14e+00, 2.27e+00)
 @end smallexample
 
 @noindent
@@ -1747,18 +1746,15 @@ The program is given below.
 @node Nonlinear Least-Squares References and Further Reading
 @section References and Further Reading
 
-The @sc{minpack} algorithm is described in the following article,
+@noindent
+The following publications are relevant to the algorithms described
+in this section,
 
 @itemize @w{}
 @item
 J.J. Mor@'e, @cite{The Levenberg-Marquardt Algorithm: Implementation and
 Theory}, Lecture Notes in Mathematics, v630 (1978), ed G. Watson.
-@end itemize
 
-@noindent
-The @code{lmniel} algorithm closely follows the following publications,
-
-@itemize @w{}
 @item
 H. B. Nielsen, ``Damping Parameter in Marquardt's Method'',
 IMM Department of Mathematical Modeling, DTU, Tech. Report IMM-REP-1999-05
@@ -1767,16 +1763,15 @@ IMM Department of Mathematical Modeling, DTU, Tech. Report IMM-REP-1999-05
 @item
 K. Madsen and H. B. Nielsen, ``Introduction to Optimization and Data
 Fitting'', IMM Department of Mathematical Modeling, DTU, 2010.
-@end itemize
 
-@noindent
-The following publications are also relevant to the algorithms described
-in this section,
-
-@itemize @w{}
 @item
 J. E. Dennis and R. B. Schnabel, Numerical Methods for Unconstrained
 Optimization and Nonlinear Equations, SIAM, 1996.
+
+@item
+M. K. Transtrum, B. B. Machta, and J. P. Sethna,
+Geometry of nonlinear least squares with applications to sloppy models and optimization,
+Phys. Rev. E 83, 036701
 
 @item 
 J.J. Mor@'e, B.S. Garbow, K.E. Hillstrom, ``Testing Unconstrained
@@ -1788,4 +1783,3 @@ H. B. Nielsen, ``UCTP Test Problems for Unconstrained Optimization'',
 IMM Department of Mathematical Modeling, DTU, Tech. Report IMM-REP-2000-17
 (2000).
 @end itemize
-

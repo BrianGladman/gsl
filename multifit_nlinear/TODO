@@ -1,4 +1,5 @@
 1. different mu update methods
 2. cleanup trust.c (scale_Jg)
 3. rewrite qrsolv
-4. add Transtrum reference to linear leats squares docs
+4. add Transtrum and Sethna 2012 reference to linear leats squares docs
+5. More/Sorensen method for mu calculation
