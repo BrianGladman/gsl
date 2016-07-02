@@ -23,6 +23,7 @@
 #include <config.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_poly.h>
 #include <gsl/gsl_sf_exp.h>
 #include <gsl/gsl_sf_bessel.h>
 
@@ -33,77 +34,61 @@
 
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
-/* based on SLATEC besk1(), besk1e() */
-
-/* chebyshev expansions 
-
- series for bk1        on the interval  0.          to  4.00000d+00
-                                        with weighted error   7.02e-18
-                                         log weighted error  17.15
-                               significant figures required  16.73
-                                    decimal places required  17.67
-
- series for ak1        on the interval  1.25000d-01 to  5.00000d-01
-                                        with weighted error   6.06e-17
-                                         log weighted error  16.22
-                               significant figures required  15.41
-                                    decimal places required  16.83
-
- series for ak12       on the interval  0.          to  1.25000d-01
-                                        with weighted error   2.58e-17
-                                         log weighted error  16.59
-                               significant figures required  15.22
-                                    decimal places required  17.16
+/*
+ Minimax rational approximation for [0,1), peak relative error = 1.83*GSL_DBL_EPSILON.
+ Source: http://www.advanpix.com/?p=3987
 */
-
-/* from SLATEC dbesk1.f */
-static double bk1_data[11] = {
-  +.2530022733894777053E-1,
-  -.3531559607765448757E+0,
-  -.1226111808226571482E+0,
-  -.6975723859639864350E-2,
-  -.1730288957513052063E-3,
-  -.2433406141565968235E-5,
-  -.2213387630734725856E-7,
-  -.1411488392633527761E-9,
-  -.6666901694199329006E-12,
-  -.2427449850519365934E-14,
-  -.7023863479386287597E-17
+static double k1_poly[9] = {
+  -3.0796575782920622440538935e-01,
+  -8.5370719728650778045782736e-02,
+  -4.6421827664715603298154971e-03,
+  -1.1253607036630425931072996e-04,
+  -1.5592887702110907110292728e-06,
+  -1.4030163679125934402498239e-08,
+  -8.8718998640336832196558868e-11,
+  -4.1614323580221539328960335e-13,
+  -1.5261293392975541707230366e-15
 };
 
-static cheb_series bk1_cs = {
-  bk1_data,
-  10,
-  -1, 1,
-  8
+static double i1_poly[7] = {
+  8.3333333333333325191635191e-02,
+  6.9444444444467956461838830e-03,
+  3.4722222211230452695165215e-04,
+  1.1574075952009842696580084e-05,
+  2.7555870002088181016676934e-07,
+  4.9724386164128529514040614e-09
 };
 
+/*
+ Chebyshev expansion for [1,8], peak relative error = 1.28*GSL_DBL_EPSILON. 
+ Source: Pavel Holoborodko.
+*/
 static double ak1_data[25] = {
-  +2.07996868001418246152e-01,
-  +1.62581565017881475959e-01,
-  -5.87070423518863640171e-03,
-  +4.95021520115789501462e-04,
-  -5.78958347598556986444e-05,
-  +8.18614610209334725538e-06,
-  -1.31604832009487277149e-06,
-  +2.32546031520101213185e-07,
-  -4.42206518311557986572e-08,
-  +8.92163994883100360555e-09,
-  -1.89046270526983427490e-09,
-  +4.17568808108504701844e-10,
-  -9.55912361791375793677e-11,
-  +2.25769353153867757611e-11,
-  -5.48128000211158482030e-12,
-  +1.36386122546441925778e-12,
-  -3.46936690565986409232e-13,
-  +9.00354564415705941638e-14,
-  -2.37950577776254431920e-14,
-  +6.39447503964025335916e-15,
-  -1.74498363492322044105e-15,
-  +4.82994547989290473028e-16,
-  -1.35460927805445605587e-16,
-  +3.84604274446777234121e-17,
-  -1.10456856122581316056e-17
+  +2.07996868001418246e-01,
+  +1.62581565017881476e-01,
+  -5.87070423518863640e-03,
+  +4.95021520115789501e-04,
+  -5.78958347598556986e-05,
+  +8.18614610209334726e-06,
+  -1.31604832009487277e-06,
+  +2.32546031520101213e-07,
+  -4.42206518311557987e-08,
+  +8.92163994883100361e-09,
+  -1.89046270526983427e-09,
+  +4.17568808108504702e-10,
+  -9.55912361791375794e-11,
+  +2.25769353153867758e-11,
+  -5.48128000211158482e-12,
+  +1.36386122546441926e-12,
+  -3.46936690565986409e-13,
+  +9.00354564415705942e-14,
+  -2.37950577776254432e-14,
+  +6.39447503964025336e-15,
+  -1.74498363492322044e-15,
+  +4.82994547989290473e-16,
+  -1.35460927805445606e-16,
+  +3.84604274446777234e-17,
+  -1.10456856122581316e-17
 };
 
 static cheb_series ak1_cs = {
@@ -113,7 +98,10 @@ static cheb_series ak1_cs = {
   9
 };
 
-/* from SLATEC dbsk1e.f */
+/* 
+ Chebyshev expansion for [8,inf), peak relative error = 1.25*GSL_DBL_EPSILON.
+ Source: SLATEC/dbsk1e.f
+*/
 static double ak12_data[14] = {
   +.637930834373900104E-1,
   +.283288781304972094E-1,
@@ -141,20 +129,7 @@ static cheb_series ak12_cs = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-/*
-gsl_sf_bessel_K1_scaled_e()
-  Computed scaled K1 Bessel function
-
-Notes:
-1) On [0,1] a Chebyshev expansion from SLATEC is used
-
-2) On [1,8] a new Chebyshev series from Pavel Holoborodko is used
-
-3) On [8,inf] a Chebyshev series from SLATEC is used
-*/
-
-int
-gsl_sf_bessel_K1_scaled_e(const double x, gsl_sf_result * result)
+int gsl_sf_bessel_K1_scaled_e(const double x, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 
@@ -164,24 +139,22 @@ gsl_sf_bessel_K1_scaled_e(const double x, gsl_sf_result * result)
   else if(x < 2.0*GSL_DBL_MIN) {
     OVERFLOW_ERROR(result);
   }
-  else if(x <= 1.0) {
+  else if(x < 1.0) {
     const double lx = log(x);
     const double ex = exp(x);
-    int stat_I1;
-    gsl_sf_result I1;
-    gsl_sf_result c;
-    cheb_eval_e(&bk1_cs, 0.5*x*x-1.0, &c);
-    stat_I1 = gsl_sf_bessel_I1_e(x, &I1);
-    result->val  = ex * (log(0.5*x)*I1.val + (0.75 + c.val)/x);
-    result->err  = ex * (c.err/x + fabs(lx)*I1.err);
+    const double x2 = x*x;
+    const double t  = 0.25*x2;    
+    const double i1 = 0.5 * x * (1.0 + t * (0.5 + t * gsl_poly_eval(i1_poly,6,t)));
+    result->val  = ex * (x2 * gsl_poly_eval(k1_poly,9,x2) + x * lx * i1 + 1) / x;
+    result->err  = ex * (1.6+fabs(lx)*0.6) * GSL_DBL_EPSILON;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return stat_I1;
+    return GSL_SUCCESS;
   }
   else if(x <= 8.0) {
     const double sx = sqrt(x);
     gsl_sf_result c;
     cheb_eval_e(&ak1_cs, (16.0/x-9.0)/7.0, &c);
-    result->val  = (1.375 + c.val) / sx;
+    result->val  = (1.375 + c.val) / sx; /* 1.375 = 11/8 */
     result->err  = c.err / sx;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
@@ -208,17 +181,15 @@ int gsl_sf_bessel_K1_e(const double x, gsl_sf_result * result)
   else if(x < 2.0*GSL_DBL_MIN) {
     OVERFLOW_ERROR(result);
   }
-  else if(x <= 2.0) {
+  else if(x < 1.0) {
     const double lx = log(x);
-    int stat_I1;
-    gsl_sf_result I1;
-    gsl_sf_result c;
-    cheb_eval_e(&bk1_cs, 0.5*x*x-1.0, &c);
-    stat_I1 = gsl_sf_bessel_I1_e(x, &I1);
-    result->val  = log(0.5*x)*I1.val + (0.75 + c.val)/x;
-    result->err  = c.err/x + fabs(lx)*I1.err;
+    const double x2 = x*x;
+    const double t  = 0.25*x2;    
+    const double i1 = 0.5 * x * (1.0 + t * (0.5 + t * gsl_poly_eval(i1_poly,6,t)));
+    result->val  = (x2 * gsl_poly_eval(k1_poly,9,x2) + x * lx * i1 + 1) / x;
+    result->err  = (1.6+fabs(lx)*0.6) * GSL_DBL_EPSILON;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
-    return stat_I1;
+    return GSL_SUCCESS;      
   }
   else {
     gsl_sf_result K1_scaled;

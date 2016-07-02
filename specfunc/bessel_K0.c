@@ -35,7 +35,7 @@
 /*-*-*-*-*-*-*-*-*-*-*-* Private Section *-*-*-*-*-*-*-*-*-*-*-*/
 
 /*
- Minimax rational approximation for [0,1), peak relative error = 1.6*GSL_DBL_EPSILON.
+ Minimax rational approximation for [0,1), peak relative error = 2.04*GSL_DBL_EPSILON.
  Source: http://www.advanpix.com/?p=3812
 */
 static double k0_poly[8] = {
@@ -60,34 +60,34 @@ static double i0_poly[7] = {
 };
 
 /*
- Chebyshev expansion for [1,8], peak relative error = 1.3*GSL_DBL_EPSILON.
+ Chebyshev expansion for [1,8], peak relative error = 1.28*GSL_DBL_EPSILON. 
  Source: Pavel Holoborodko.
 */
 static double ak0_data[24] = {
-   -1.26623786709465010054e-01,
-   -4.49369057710236879694e-02,
-   +2.98149992004308094718e-03,
-   -3.03693649396187919971e-04,
-   +3.91085569307646836345e-05,
-   -5.86872422399215952130e-06,
-   +9.82873709937322008693e-07,
-   -1.78978645055651171083e-07,
-   +3.48332306845240956625e-08,
-   -7.15909210462546599338e-09,
-   +1.54019930048919494164e-09,
-   -3.44555485579194210447e-10,
-   +7.97356101783753035249e-11,
-   -1.90090968913069750269e-11,
-   +4.65295609304114801504e-12,
-   -1.16614287433470984283e-12,
-   +2.98554375218599103982e-13,
-   -7.79276979512315360449e-14,
-   +2.07027467168971951795e-14,
-   -5.58987860394057232281e-15,
-   +1.53202965950868210061e-15,
-   -4.25737536714227681839e-16,
-   +1.19840238503161452270e-16,
-   -3.41407346777640561583e-17
+  -3.28737867094650101e-02,
+  -4.49369057710236880e-02,
+  +2.98149992004308095e-03,
+  -3.03693649396187920e-04,
+  +3.91085569307646836e-05,
+  -5.86872422399215952e-06,
+  +9.82873709937322009e-07,
+  -1.78978645055651171e-07,
+  +3.48332306845240957e-08,
+  -7.15909210462546599e-09,
+  +1.54019930048919494e-09,
+  -3.44555485579194210e-10,
+  +7.97356101783753023e-11,
+  -1.90090968913069735e-11,
+  +4.65295609304114621e-12,
+  -1.16614287433470780e-12,
+  +2.98554375218596891e-13,
+  -7.79276979512292169e-14,
+  +2.07027467168948402e-14,
+  -5.58987860393825313e-15,
+  +1.53202965950646914e-15,
+  -4.25737536712188186e-16,
+  +1.19840238501357389e-16,
+  -3.41407346762502397e-17
 };
 
 static cheb_series ak0_cs = {
@@ -98,7 +98,7 @@ static cheb_series ak0_cs = {
 };
 
 /* 
- Chebyshev expansion for [8,inf], peak relative error = 1.2*GSL_DBL_EPSILON. 
+ Chebyshev expansion for [8,inf), peak relative error = 1.25*GSL_DBL_EPSILON.
  Source: SLATEC/dbsk0e.f
 */
 static double ak02_data[14] = {
@@ -148,7 +148,7 @@ int gsl_sf_bessel_K0_scaled_e(const double x, gsl_sf_result * result)
     const double sx = sqrt(x);
     gsl_sf_result c;
     cheb_eval_e(&ak0_cs, (16.0/x-9.0)/7.0, &c);
-    result->val  = (1.25 + c.val) / sx;
+    result->val  = (1.203125 + c.val) / sx; /* 1.203125 = 77/64 */
     result->err  = c.err / sx;
     result->err += 2.0 * GSL_DBL_EPSILON * fabs(result->val);
     return GSL_SUCCESS;
