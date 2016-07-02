@@ -1,6 +1,6 @@
 /* multifit_nlinear/test_fdf.c
  * 
- * Copyright (C) 2007, 2013, 2014, 2015 Brian Gough, Patrick Alken
+ * Copyright (C) 2007, 2013, 2014, 2015, 2016 Brian Gough, Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -225,22 +225,15 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
         }
     }
 
-#if 0 /* XXX */
-
   /* test weighted nonlinear least squares */
 
-  /* XXX FIXME: weighted tests don't work with Cholesky solver */
-  /*if (params->solver != gsl_multifit_nlinear_solver_cholesky)*/
-    {
-      /* internal weighting in _f and _df functions */
-      test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
-               wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
+  /* internal weighting in _f and _df functions */
+  test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
+           wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
 
-      /* weighting through nlinear_winit */
-      test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
-               wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
-    }
-#endif
+  /* weighting through nlinear_winit */
+  test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
+           wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
 }
 
 /*

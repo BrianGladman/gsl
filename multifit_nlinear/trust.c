@@ -380,16 +380,10 @@ trust_iterate(void *vstate, const gsl_vector *swts,
 
       if (status == GSL_SUCCESS)
         {
+#if SCALE_SUB2D
           /* undo scaling: dx = D^{-1} dx_scaled */
           if (params->scale != gsl_multifit_nlinear_scale_levenberg &&
-              trs != gsl_multifit_nlinear_trs_lm &&
-              trs != gsl_multifit_nlinear_trs_lmaccel &&
-              trs != gsl_multifit_nlinear_trs_dogleg &&
-              trs != gsl_multifit_nlinear_trs_ddogleg &&
-#if !SCALE_SUB2D
-              trs != gsl_multifit_nlinear_trs_subspace2D &&
-#endif
-              1)
+              trs == gsl_multifit_nlinear_trs_subspace2D)
             {
               for (i = 0; i < state->p; ++i)
                 {
@@ -399,6 +393,7 @@ trust_iterate(void *vstate, const gsl_vector *swts,
                 }
             }
           else
+#endif
             {
               gsl_vector_memcpy(dx, dx_scaled);
             }
@@ -683,16 +678,11 @@ trust_scale_Jg(const int dir, const gsl_vector * diag,
   size_t i;
   const gsl_multifit_nlinear_trs *trs = state->params.trs;
 
-  /* no scaling XXX */
-  if (trs == gsl_multifit_nlinear_trs_lm ||
-      trs == gsl_multifit_nlinear_trs_lmaccel ||
-      trs == gsl_multifit_nlinear_trs_dogleg ||
-      trs == gsl_multifit_nlinear_trs_ddogleg)
+  if (trs != gsl_multifit_nlinear_trs_subspace2D)
     return GSL_SUCCESS;
 
 #if !SCALE_SUB2D
-  if (trs == gsl_multifit_nlinear_trs_subspace2D)
-    return GSL_SUCCESS;
+  return GSL_SUCCESS;
 #endif
 
   /* quick return if D = I */
