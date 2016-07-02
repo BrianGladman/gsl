@@ -225,7 +225,7 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
         }
     }
 
-#if 1 /* XXX */
+#if 0 /* XXX */
 
   /* test weighted nonlinear least squares */
 

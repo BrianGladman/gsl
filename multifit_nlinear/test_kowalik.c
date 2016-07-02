@@ -1,9 +1,7 @@
 #define kowalik_N         11
 #define kowalik_P         4
 
-/* cgst needs a slightly closer x0 point than recommended value */
-/*static double kowalik_x0[kowalik_P] = { 0.25, 0.39, 0.415, 0.39 };*/
-static double kowalik_x0[kowalik_P] = { 0.25, 0.39, 0.415, 0.29 };
+static double kowalik_x0[kowalik_P] = { 0.25, 0.39, 0.415, 0.39 };
 static double kowalik_epsrel = 1.0e-7;
 
 static double kowalik_Y[kowalik_N] = {

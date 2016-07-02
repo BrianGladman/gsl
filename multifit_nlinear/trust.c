@@ -389,7 +389,6 @@ trust_iterate(void *vstate, const gsl_vector *swts,
 #if !SCALE_SUB2D
               trs != gsl_multifit_nlinear_trs_subspace2D &&
 #endif
-              trs != gsl_multifit_nlinear_trs_cgst &&
               1)
             {
               for (i = 0; i < state->p; ++i)
@@ -688,8 +687,7 @@ trust_scale_Jg(const int dir, const gsl_vector * diag,
   if (trs == gsl_multifit_nlinear_trs_lm ||
       trs == gsl_multifit_nlinear_trs_lmaccel ||
       trs == gsl_multifit_nlinear_trs_dogleg ||
-      trs == gsl_multifit_nlinear_trs_ddogleg ||
-      trs == gsl_multifit_nlinear_trs_cgst)
+      trs == gsl_multifit_nlinear_trs_ddogleg)
     return GSL_SUCCESS;
 
 #if !SCALE_SUB2D
