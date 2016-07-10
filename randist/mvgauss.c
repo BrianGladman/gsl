@@ -52,6 +52,10 @@ gsl_ran_multivariate_gaussian (const gsl_rng * r,
     {
       GSL_ERROR("multivariate Gaussian requires compatible dimensions for mean vector and variance-covariance matrix", GSL_EBADLEN);
     }
+  else if (result->size != M)
+    {
+      GSL_ERROR("result vector does not match variance-covariance matrix", GSL_EBADLEN);
+    }
   else
     {
       size_t i;
@@ -96,7 +100,7 @@ gsl_ran_multivariate_gaussian_pdf (const gsl_vector * x,
     {
       size_t i;
       double quadform;        /* (x - mu)' Sigma^{-1} (x - mu) */
-      double logSqrtDetSigma; /* ln [ sqrt(|Sigma|) ] */
+      double logSqrtDetSigma; /* log [ sqrt(|Sigma|) ] */
 
       /* compute: work = x - mu */
       for (i = 0; i < M; ++i)
@@ -112,7 +116,7 @@ gsl_ran_multivariate_gaussian_pdf (const gsl_vector * x,
       /* compute: quadform = (x - mu)' Sigma^{-1} (x - mu) */
       gsl_blas_ddot(work, work, &quadform);
 
-      /* compute ln [ sqrt(|Sigma|) ] = sum_i ln L_{ii} */
+      /* compute log [ sqrt(|Sigma|) ] = sum_i log(L_{ii}) */
       logSqrtDetSigma = 0.0;
       for (i = 0; i < M; ++i)
         {
