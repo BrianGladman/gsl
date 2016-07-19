@@ -28,8 +28,6 @@
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_statistics.h>
 
-static int multivar_mean (const double data[], size_t d, size_t tda, size_t n,
-                          double mean[], size_t stride);
 static int multivar_vcov (const double data[], size_t d, size_t tda, size_t n,
                           double vcov[], size_t tda2);
 
@@ -166,42 +164,57 @@ gsl_ran_multivariate_gaussian_pdf (const gsl_vector * x,
 
 /* Compute the maximum-likelihood estimate of the mean vector of samples
  * from a multivariate Gaussian distribution.
+ *
+ * Example from R (GPL): http://www.r-project.org/
+ * (samples <- matrix(c(4.348817, 2.995049, -3.793431, 4.711934, 1.190864, -1.357363), nrow=3, ncol=2))
+ * colMeans(samples) # 1.183478 1.515145
  */
 int
-gsl_ran_multivariate_gaussian_mean (const gsl_matrix * samples,
-                                    gsl_vector * mean){
-  return multivar_mean (samples->data, samples->size2, samples->tda,
-                        samples->size1,
-                        mean->data, mean->stride);
+gsl_ran_multivariate_gaussian_mean (const gsl_matrix * X, gsl_vector * mu_hat)
+{
+  const size_t M = X->size1;
+  const size_t N = X->size2;
+
+  if (N != mu_hat->size)
+    {
+      GSL_ERROR("mu_hat vector has wrong size", GSL_EBADLEN);
+    }
+  else
+    {
+      size_t j;
+
+      for (j = 0; j < N; ++j)
+        {
+          gsl_vector_const_view c = gsl_matrix_const_column(X, j);
+          double mean = gsl_stats_mean(c.vector.data, c.vector.stride, M);
+          gsl_vector_set(mu_hat, j, mean);
+        }
+
+      return GSL_SUCCESS;
+    }
 }
 
 /* Compute the maximum-likelihood estimate of the variance-covariance matrix
  * of samples from a multivariate Gaussian distribution.
  */
 int
-gsl_ran_multivariate_gaussian_vcov (const gsl_matrix * samples,
-                                    gsl_matrix * vcov){
-  return multivar_vcov (samples->data, samples->size2, samples->tda,
-                        samples->size1,
-                        vcov->data, vcov->tda);
-}
-
-/* Example from R (GPL): http://www.r-project.org/
- * (samples <- matrix(c(4.348817, 2.995049, -3.793431, 4.711934, 1.190864, -1.357363), nrow=3, ncol=2))
- * colMeans(samples) # 1.183478 1.515145
- */
-static int
-multivar_mean (const double data[], size_t d, size_t tda, size_t n,
-               double mean[], size_t stride)
+gsl_ran_multivariate_gaussian_vcov (const gsl_matrix * X, gsl_matrix * sigma_hat)
 {
-  size_t j = 0;
+  const size_t M = X->size1;
+  const size_t N = X->size2;
 
-  for (j = 0; j < d; ++j)
+  if (sigma_hat->size1 != sigma_hat->size2)
     {
-      mean[j * stride] = gsl_stats_mean(&(data[j]), tda, n);
+      GSL_ERROR("sigma_hat must be a square matrix", GSL_ENOTSQR);
     }
-
-  return GSL_SUCCESS;
+  else if (N != sigma_hat->size1)
+    {
+      GSL_ERROR("sigma_hat does not match X matrix dimensions", GSL_EBADLEN);
+    }
+  else
+    {
+      return multivar_vcov (X->data, N, X->tda, M, sigma_hat->data, sigma_hat->tda);
+    }
 }
 
 /* Example from R (GPL): http://www.r-project.org/
