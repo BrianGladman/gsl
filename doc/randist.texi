@@ -374,13 +374,13 @@ deviations @var{sigma_x}, @var{sigma_y} and correlation coefficient
 @cindex Bivariate Gaussian distribution
 @cindex two dimensional Gaussian distribution
 @cindex Gaussian distribution, bivariate
-This function generates a random @math{k}-vector satisfying the multivariate Gaussian
+This function generates a random vector satisfying the @math{k}-dimensional multivariate Gaussian
 distribution with mean @math{\mu} and variance-covariance matrix
 @math{\Sigma}. On input, the @math{k}-vector @math{\mu} is given in @var{mu}, and
 the Cholesky factor of the @math{k}-by-@math{k} matrix @math{\Sigma = L L^T} is
 given in the lower triangle of @var{L}, as output from @code{gsl_linalg_cholesky_decomp}.
 The random vector is stored in @var{result} on output. The probability distribution
-for multivariate Gaussian random variates is,
+for multivariate Gaussian random variates is
 @tex
 \beforedisplay
 $$
