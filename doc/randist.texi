@@ -426,7 +426,7 @@ likelihood estimate of the mean is stored in @var{mu_hat} on output.
 @end deftypefun
 
 @deftypefun int gsl_ran_multivariate_gaussian_vcov (const gsl_matrix * @var{X}, gsl_matrix * @var{sigma_hat})
-Given a set of @math{n} samples @math{X_i} from a @math{k}-dimensional multivariate Gaussian distribution,
+Given a set of @math{n} samples @math{X_j} from a @math{k}-dimensional multivariate Gaussian distribution,
 this function computes the maximum likelihood estimate of the variance-covariance matrix of the distribution,
 given by
 @tex
@@ -444,7 +444,7 @@ $$
 
 @end ifinfo
 The samples @math{X_1,X_2,\dots,X_n} are given in the @math{n}-by-@math{k} matrix @var{X} and the maximum
-likelihood estimate of @math{\Hat{\Sigma}} is stored in @var{sigma_hat} on output.
+likelihood estimate of the variance-covariance matrix is stored in @var{sigma_hat} on output.
 @end deftypefun
 
 @page
