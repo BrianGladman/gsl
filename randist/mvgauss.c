@@ -26,6 +26,12 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
+#include <gsl/gsl_statistics.h>
+
+static int multivar_mean (const double data[], size_t d, size_t tda, size_t n,
+                          double mean[], size_t stride);
+static int multivar_vcov (const double data[], size_t d, size_t tda, size_t n,
+                          double vcov[], size_t tda2);
 
 /* Generate a random vector from a multivariate Gaussian distribution using
  * the Cholesky decomposition of the variance-covariance matrix, following
@@ -156,4 +162,68 @@ gsl_ran_multivariate_gaussian_pdf (const gsl_vector * x,
     *result = exp(logpdf);
 
   return status;
+}
+
+/* Compute the maximum-likelihood estimate of the mean vector of samples
+ * from a multivariate Gaussian distribution.
+ */
+int
+gsl_ran_multivariate_gaussian_mean (const gsl_matrix * samples,
+                                    gsl_vector * mean){
+  return multivar_mean (samples->data, samples->size2, samples->tda,
+                        samples->size1,
+                        mean->data, mean->stride);
+}
+
+/* Compute the maximum-likelihood estimate of the variance-covariance matrix
+ * of samples from a multivariate Gaussian distribution.
+ */
+int
+gsl_ran_multivariate_gaussian_vcov (const gsl_matrix * samples,
+                                    gsl_matrix * vcov){
+  return multivar_vcov (samples->data, samples->size2, samples->tda,
+                        samples->size1,
+                        vcov->data, vcov->tda);
+}
+
+/* Example from R (GPL): http://www.r-project.org/
+ * (samples <- matrix(c(4.348817, 2.995049, -3.793431, 4.711934, 1.190864, -1.357363), nrow=3, ncol=2))
+ * colMeans(samples) # 1.183478 1.515145
+ */
+static int
+multivar_mean (const double data[], size_t d, size_t tda, size_t n,
+               double mean[], size_t stride)
+{
+  size_t j = 0;
+
+  for (j = 0; j < d; ++j)
+    {
+      mean[j * stride] = gsl_stats_mean(&(data[j]), tda, n);
+    }
+
+  return GSL_SUCCESS;
+}
+
+/* Example from R (GPL): http://www.r-project.org/
+ * (samples <- matrix(c(4.348817, 2.995049, -3.793431, 4.711934, 1.190864, -1.357363), nrow=3, ncol=2))
+ * cov(samples) # 19.03539 11.91384 \n 11.91384  9.28796
+ */
+static int
+multivar_vcov (const double data[], size_t d, size_t tda, size_t n,
+               double vcov[], size_t tda2)
+{
+  size_t j1 = 0, j2 = 0;
+
+  for (j1 = 0; j1 < d; ++j1)
+    {
+      vcov[j1 * tda2 + j1] = gsl_stats_variance(&(data[j1]), tda, n);
+      for (j2 = j1 + 1; j2 < d; ++j2)
+        {
+          vcov[j1 * tda2 + j2] = gsl_stats_covariance(&(data[j1]), tda,
+                                                      &(data[j2]), tda, n);
+          vcov[j2 * tda2 + j1] = vcov[j1 * tda2 + j2];
+        }
+      }
+  
+  return GSL_SUCCESS;
 }

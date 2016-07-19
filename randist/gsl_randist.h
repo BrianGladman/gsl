@@ -106,6 +106,10 @@ int gsl_ran_multivariate_gaussian_pdf (const gsl_vector * x,
                                        const gsl_matrix * L,
                                        double * result,
                                        gsl_vector * work);
+int gsl_ran_multivariate_gaussian_mean (const gsl_matrix * samples,
+                                        gsl_vector * mean);
+int gsl_ran_multivariate_gaussian_vcov (const gsl_matrix * samples,
+                                        gsl_matrix * vcov);
 
 double gsl_ran_landau (const gsl_rng * r);
 double gsl_ran_landau_pdf (const double x);

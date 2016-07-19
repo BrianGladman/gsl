@@ -32,7 +32,6 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_cdf.h>
-#include <gsl/gsl_statistics.h>
 
 #define N 100000
 
@@ -254,11 +253,6 @@ double test_weibull (void);
 double test_weibull_pdf (double x);
 double test_weibull1 (void);
 double test_weibull1_pdf (double x);
-
-int multivar_mean (const double data[], size_t d, size_t tda, size_t n,
-                   double mean[], size_t stride);
-int multivar_vcov (const double data[], size_t d, size_t tda, size_t n,
-                   double vcov[], size_t tda2);
 
 gsl_rng *r_global;
 
@@ -1818,11 +1812,9 @@ test_multivariate_gaussian (void)
     gsl_matrix_set_row(samples, i, sample);
   }
 
-  /* compute the maximum-likelihood estimator of the mean */
-  multivar_mean(samples->data, d, samples->tda, N, mu_hat->data, mu_hat->stride);
-
-  /* compute the maximum-likelihood estimator of the var-covar */
-  multivar_vcov(samples->data, d, samples->tda, N, Sigma_hat->data, Sigma_hat->tda);
+  /* compute the maximum-likelihood estimates */
+  gsl_ran_multivariate_gaussian_mean (samples, mu_hat);
+  gsl_ran_multivariate_gaussian_vcov (samples, Sigma_hat);
 
   /* compute Hotelling's test statistic:
      T^2 = n (hat{mu} - mu)' hat{Sigma}^-1 (hat{mu} - mu) */
@@ -2354,46 +2346,4 @@ double
 test_weibull1_pdf (double x)
 {
   return gsl_ran_weibull_pdf (x, 2.97, 1.0);
-}
-
-/* Example from R (GPL): http://www.r-project.org/
- * (samples <- matrix(c(4.348817, 2.995049, -3.793431, 4.711934, 1.190864, -1.357363), nrow=3, ncol=2))
- * colMeans(samples) # 1.183478 1.515145
- */
-int
-multivar_mean (const double data[], size_t d, size_t tda, size_t n,
-               double mean[], size_t stride)
-{
-  size_t j = 0;
-
-  for (j = 0; j < d; ++j)
-  {
-    mean[j * stride] = gsl_stats_mean(&(data[j]), tda, n);
-  }
-
-  return GSL_SUCCESS;
-}
-
-/* Example from R (GPL): http://www.r-project.org/
- * (samples <- matrix(c(4.348817, 2.995049, -3.793431, 4.711934, 1.190864, -1.357363), nrow=3, ncol=2))
- * cov(samples) # 19.03539 11.91384 \n 11.91384  9.28796
- */
-int
-multivar_vcov (const double data[], size_t d, size_t tda, size_t n,
-               double vcov[], size_t tda2)
-{
-  size_t j1 = 0, j2 = 0;
-
-  for (j1 = 0; j1 < d; ++j1)
-  {
-    vcov[j1 * tda2 + j1] = gsl_stats_variance(&(data[j1]), tda, n);
-    for (j2 = j1 + 1; j2 < d; ++j2)
-    {
-      vcov[j1 * tda2 + j2] = gsl_stats_covariance(&(data[j1]), tda,
-                                                 &(data[j2]), tda, n);
-      vcov[j2 * tda2 + j1] = vcov[j1 * tda2 + j2];
-    }
-  }
-  
-  return GSL_SUCCESS;
 }
