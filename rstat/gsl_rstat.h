@@ -44,6 +44,7 @@ typedef struct
 
 gsl_rstat_quantile_workspace *gsl_rstat_quantile_alloc(const double p);
 void gsl_rstat_quantile_free(gsl_rstat_quantile_workspace *w);
+int gsl_rstat_quantile_reset(gsl_rstat_quantile_workspace *w);
 int gsl_rstat_quantile_add(const double x, gsl_rstat_quantile_workspace *w);
 double gsl_rstat_quantile_get(gsl_rstat_quantile_workspace *w);
 

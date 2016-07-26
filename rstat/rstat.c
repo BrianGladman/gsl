@@ -145,7 +145,7 @@ gsl_rstat_rms(gsl_rstat_workspace *w)
 {
   double mean = gsl_rstat_mean(w);
   double sigma = gsl_rstat_sd(w);
-  double ratio, rms;
+  double rms;
 
   if (w->n > 0)
     {
@@ -207,6 +207,8 @@ gsl_rstat_kurtosis(gsl_rstat_workspace *w)
 int
 gsl_rstat_reset(gsl_rstat_workspace *w)
 {
+  int status;
+
   w->min = 0.0;
   w->max = 0.0;
   w->mean = 0.0;
@@ -215,5 +217,7 @@ gsl_rstat_reset(gsl_rstat_workspace *w)
   w->M4 = 0.0;
   w->n = 0;
 
-  return GSL_SUCCESS;
+  status = gsl_rstat_quantile_reset(w->median_workspace_p);
+
+  return status;
 } /* gsl_rstat_reset() */
