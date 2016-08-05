@@ -198,6 +198,11 @@ is @math{O(1)}.
 This function frees the memory associated with the workspace @var{w}.
 @end deftypefun
 
+@deftypefun int gsl_rstat_quantile_reset (gsl_rstat_quantile_workspace * @var{w})
+This function resets the workspace @var{w} to its initial state,
+so it can begin working on a new set of data.
+@end deftypefun
+
 @deftypefun int gsl_rstat_quantile_add (const double @var{x}, gsl_rstat_quantile_workspace * @var{w})
 This function updates the estimate of the @math{p}-quantile with
 the new data point @var{x}.

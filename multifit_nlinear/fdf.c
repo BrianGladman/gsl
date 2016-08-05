@@ -144,7 +144,7 @@ gsl_multifit_nlinear_default_parameters(void)
   params.factor_down = 2.0;
   params.avmax = 0.75;
   params.h_df = GSL_SQRT_DBL_EPSILON;
-  params.h_fvv = 0.01;
+  params.h_fvv = 0.02;
 
   return params;
 }
