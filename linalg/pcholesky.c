@@ -37,16 +37,29 @@
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_permute_vector.h>
 
-static int pcholesky_swap_rowcol(gsl_matrix * m, const size_t i, const size_t j);
+#include "cholesky_common.c"
+
+static double cholesky_LDLT_norm1(const gsl_matrix * LDLT, const gsl_permutation * p,
+                                  gsl_vector * work);
+static int cholesky_LDLT_Ainv(CBLAS_TRANSPOSE_t TransA, gsl_vector * x, void * params);
+
+typedef struct
+{
+  const gsl_matrix * LDLT;
+  const gsl_permutation * perm;
+} pcholesky_params;
 
 /*
-gsl_linalg_pcholesky_decomp()
+pcholesky_decomp()
   Perform Pivoted Cholesky LDLT decomposition of a symmetric positive
 semidefinite matrix
 
-Inputs: A - (input) symmetric, positive semidefinite matrix,
+Inputs: copy_uplo - copy lower triangle to upper to save original matrix
+                    for rcond calculation later
+        A         - (input) symmetric, positive semidefinite matrix,
                     stored in lower triangle
-            (output) lower triangle contains L; diagonal contains D
+                    (output) lower triangle contains L; diagonal contains D
+        p         - permutation vector
 
 Return: success/error
 
@@ -55,8 +68,8 @@ Notes:
 Golub and Van Loan, Matrix Computations (4th ed).
 */
 
-int
-gsl_linalg_pcholesky_decomp (gsl_matrix * A, gsl_permutation * p)
+static int
+pcholesky_decomp (const int copy_uplo, gsl_matrix * A, gsl_permutation * p)
 {
   const size_t N = A->size1;
 
@@ -73,6 +86,12 @@ gsl_linalg_pcholesky_decomp (gsl_matrix * A, gsl_permutation * p)
       gsl_vector_view diag = gsl_matrix_diagonal(A);
       size_t k;
 
+      if (copy_uplo)
+        {
+          /* save a copy of A in upper triangle (for later rcond calculation) */
+          gsl_matrix_transpose_tricpy('L', 0, A, A);
+        }
+
       gsl_permutation_init(p);
 
       for (k = 0; k < N; ++k)
@@ -85,7 +104,7 @@ gsl_linalg_pcholesky_decomp (gsl_matrix * A, gsl_permutation * p)
           j = gsl_vector_max_index(&w.vector) + k;
           gsl_permutation_swap(p, k, j);
 
-          pcholesky_swap_rowcol(A, k, j);
+          cholesky_swap_rowcol(A, k, j);
 
           if (k < N - 1)
             {
@@ -106,11 +125,32 @@ gsl_linalg_pcholesky_decomp (gsl_matrix * A, gsl_permutation * p)
             }
         }
 
-      /* copy the transposed (strictly) lower triangle to the upper triangle */
-      gsl_matrix_transpose_tricpy('L', 0, A, A);
-      
       return GSL_SUCCESS;
     }
+}
+
+/*
+gsl_linalg_pcholesky_decomp()
+  Perform Pivoted Cholesky LDLT decomposition of a symmetric positive
+semidefinite matrix
+
+Inputs: A - (input) symmetric, positive semidefinite matrix,
+                    stored in lower triangle
+            (output) lower triangle contains L; diagonal contains D
+        p - permutation vector
+
+Return: success/error
+
+Notes:
+1) Based on algorithm 4.2.2 (Outer Product LDLT with Pivoting) of
+Golub and Van Loan, Matrix Computations (4th ed).
+*/
+
+int
+gsl_linalg_pcholesky_decomp (gsl_matrix * A, gsl_permutation * p)
+{
+  int status = pcholesky_decomp(1, A, p);
+  return status;
 }
 
 int
@@ -210,6 +250,9 @@ gsl_linalg_pcholesky_decomp2(gsl_matrix * A, gsl_permutation * p,
     {
       int status;
 
+      /* save a copy of A in upper triangle (for later rcond calculation) */
+      gsl_matrix_transpose_tricpy('L', 0, A, A);
+
       /* compute scaling factors to reduce cond(A) */
       status = gsl_linalg_cholesky_scale(A, S);
       if (status)
@@ -221,7 +264,7 @@ gsl_linalg_pcholesky_decomp2(gsl_matrix * A, gsl_permutation * p,
         return status;
 
       /* compute Cholesky decomposition of diag(S) A diag(S) */
-      status = gsl_linalg_pcholesky_decomp(A, p);
+      status = pcholesky_decomp(0, A, p);
       if (status)
         return status;
 
@@ -310,50 +353,242 @@ gsl_linalg_pcholesky_svx2(const gsl_matrix * LDLT,
 }
 
 /*
-pcholesky_swap_rowcol()
-  Swap rows and columns i and j of matrix m, assuming only the
-lower triangle of m is up to date.
+gsl_linalg_pcholesky_invert()
+  Compute the inverse of a symmetric positive definite matrix in
+Cholesky form.
+
+Inputs: LDLT - matrix in cholesky form
+        p    - permutation
+        Ainv - (output) A^{-1}
+
+Return: success or error
 */
 
-static int
-pcholesky_swap_rowcol(gsl_matrix * m, const size_t i, const size_t j)
+int
+gsl_linalg_pcholesky_invert(const gsl_matrix * LDLT, const gsl_permutation * p,
+                            gsl_matrix * Ainv)
 {
-  if (i != j)
+  const size_t M = LDLT->size1;
+  const size_t N = LDLT->size2;
+
+  if (M != N)
     {
-      const size_t N = m->size1;
-      size_t k;
+      GSL_ERROR ("LDLT matrix must be square", GSL_ENOTSQR);
+    }
+  else if (LDLT->size1 != p->size)
+    {
+      GSL_ERROR ("matrix size must match permutation size", GSL_EBADLEN);
+    }
+  else if (Ainv->size1 != Ainv->size2)
+    {
+      GSL_ERROR ("Ainv matrix must be square", GSL_ENOTSQR);
+    }
+  else if (Ainv->size1 != M)
+    {
+      GSL_ERROR ("Ainv matrix has wrong dimensions", GSL_EBADLEN);
+    }
+  else
+    {
+      size_t i, j;
+      gsl_vector_view v1, v2;
 
-      /* fill in column i above diagonal using lower triangle */
-      for (k = 0; k < i; ++k)
+      /* invert the lower triangle of LDLT */
+      gsl_matrix_memcpy(Ainv, LDLT);
+      gsl_linalg_tri_lower_unit_invert(Ainv);
+
+      /* compute sqrt(D^{-1}) L^{-1} in the lower triangle of Ainv */
+      for (i = 0; i < N; ++i)
         {
-          double mki = gsl_matrix_get(m, i, k);
-          gsl_matrix_set(m, k, i, mki);
+          double di = gsl_matrix_get(LDLT, i, i);
+          double sqrt_di = sqrt(di);
+
+          for (j = 0; j < i; ++j)
+            {
+              double *Lij = gsl_matrix_ptr(Ainv, i, j);
+              *Lij /= sqrt_di;
+            }
+
+          gsl_matrix_set(Ainv, i, i, 1.0 / sqrt_di);
         }
 
-      /* fill in row i above diagonal using lower triangle */
-      for (k = i + 1; k < N; ++k)
+      /*
+       * The lower triangle of Ainv now contains D^{-1/2} L^{-1}. Now compute
+       * A^{-1} = L^{-T} D^{-1} L^{-1}
+       */
+
+      for (i = 0; i < N; ++i)
         {
-          double mik = gsl_matrix_get(m, k, i);
-          gsl_matrix_set(m, i, k, mik);
+          double aii = gsl_matrix_get(Ainv, i, i);
+
+          if (i < N - 1)
+            {
+              double tmp;
+
+              v1 = gsl_matrix_subcolumn(Ainv, i, i, N - i);
+              gsl_blas_ddot(&v1.vector, &v1.vector, &tmp);
+              gsl_matrix_set(Ainv, i, i, tmp);
+
+              if (i > 0)
+                {
+                  gsl_matrix_view m = gsl_matrix_submatrix(Ainv, i + 1, 0, N - i - 1, i);
+
+                  v1 = gsl_matrix_subcolumn(Ainv, i, i + 1, N - i - 1);
+                  v2 = gsl_matrix_subrow(Ainv, i, 0, i);
+
+                  gsl_blas_dgemv(CblasTrans, 1.0, &m.matrix, &v1.vector, aii, &v2.vector);
+                }
+            }
+          else
+            {
+              v1 = gsl_matrix_row(Ainv, N - 1);
+              gsl_blas_dscal(aii, &v1.vector);
+            }
         }
 
-      /* fill in column j above diagonal using lower triangle */
-      for (k = 0; k < j; ++k)
+      /* copy lower triangle to upper */
+      gsl_matrix_transpose_tricpy('L', 0, Ainv, Ainv);
+
+      /* now apply permutation p to the matrix */
+
+      /* compute L^{-T} D^{-1} L^{-1} P^T */
+      for (i = 0; i < N; ++i)
         {
-          double mkj = gsl_matrix_get(m, j, k);
-          gsl_matrix_set(m, k, j, mkj);
+          v1 = gsl_matrix_row(Ainv, i);
+          gsl_permute_vector_inverse(p, &v1.vector);
         }
 
-      /* fill in row j above diagonal using lower triangle */
-      for (k = j + 1; k < N; ++k)
+      /* compute P L^{-T} D^{-1} L^{-1} P^T */
+      for (i = 0; i < N; ++i)
         {
-          double mjk = gsl_matrix_get(m, k, j);
-          gsl_matrix_set(m, j, k, mjk);
+          v1 = gsl_matrix_column(Ainv, i);
+          gsl_permute_vector_inverse(p, &v1.vector);
         }
 
-      gsl_matrix_swap_rows(m, i, j);
-      gsl_matrix_swap_columns(m, i, j);
+      return GSL_SUCCESS;
+    }
+}
+
+int
+gsl_linalg_pcholesky_rcond (const gsl_matrix * LDLT, const gsl_permutation * p,
+                            double * rcond, gsl_vector * work)
+{
+  const size_t M = LDLT->size1;
+  const size_t N = LDLT->size2;
+
+  if (M != N)
+    {
+      GSL_ERROR ("cholesky matrix must be square", GSL_ENOTSQR);
+    }
+  else if (work->size != 3 * N)
+    {
+      GSL_ERROR ("work vector must have length 3*N", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+      double Anorm = cholesky_LDLT_norm1(LDLT, p, work); /* ||A||_1 */
+      double Ainvnorm;                                   /* ||A^{-1}||_1 */
+      pcholesky_params params;
+
+      *rcond = 0.0;
+
+      /* don't continue if matrix is singular */
+      if (Anorm == 0.0)
+        return GSL_SUCCESS;
+
+      params.LDLT = LDLT;
+      params.perm = p;
+
+      /* estimate ||A^{-1}||_1 */
+      status = gsl_linalg_invnorm1(N, cholesky_LDLT_Ainv, &params, &Ainvnorm, work);
+
+      if (status)
+        return status;
+
+      if (Ainvnorm != 0.0)
+        *rcond = (1.0 / Anorm) / Ainvnorm;
+
+      return GSL_SUCCESS;
+    }
+}
+
+/*
+cholesky_LDLT_norm1
+  Compute 1-norm of original matrix A, stored in upper triangle of LDLT;
+diagonal entries have to be reconstructed
+
+Inputs: LDLT - Cholesky L D L^T decomposition (lower triangle) with
+               original matrix in upper triangle
+        p    - permutation vector
+        work - workspace, length 2*N
+*/
+
+static double
+cholesky_LDLT_norm1(const gsl_matrix * LDLT, const gsl_permutation * p, gsl_vector * work)
+{
+  const size_t N = LDLT->size1;
+  gsl_vector_const_view D = gsl_matrix_const_diagonal(LDLT);
+  gsl_vector_view diagA = gsl_vector_subvector(work, N, N);
+  double max = 0.0;
+  size_t i, j;
+
+  /* reconstruct diagonal entries of original matrix A */
+  for (j = 0; j < N; ++j)
+    {
+      double Ajj;
+
+      /* compute diagonal (j,j) entry of A */
+      Ajj = gsl_vector_get(&D.vector, j);
+      for (i = 0; i < j; ++i)
+        {
+          double Di = gsl_vector_get(&D.vector, i);
+          double Lji = gsl_matrix_get(LDLT, j, i);
+
+          Ajj += Di * Lji * Lji;
+        }
+
+      gsl_vector_set(&diagA.vector, j, Ajj);
     }
 
-  return GSL_SUCCESS;
+  gsl_permute_vector_inverse(p, &diagA.vector);
+
+  for (j = 0; j < N; ++j)
+    {
+      double sum = 0.0;
+      double Ajj = gsl_vector_get(&diagA.vector, j);
+
+      for (i = 0; i < j; ++i)
+        {
+          double *wi = gsl_vector_ptr(work, i);
+          double Aij = gsl_matrix_get(LDLT, i, j);
+          double absAij = fabs(Aij);
+
+          sum += absAij;
+          *wi += absAij;
+        }
+
+      gsl_vector_set(work, j, sum + fabs(Ajj));
+    }
+
+  for (i = 0; i < N; ++i)
+    {
+      double wi = gsl_vector_get(work, i);
+      max = GSL_MAX(max, wi);
+    }
+
+  return max;
+}
+
+/* x := A^{-1} x = A^{-t} x, A = L D L^T */
+static int
+cholesky_LDLT_Ainv(CBLAS_TRANSPOSE_t TransA, gsl_vector * x, void * params)
+{
+  int status;
+  pcholesky_params *par = (pcholesky_params *) params;
+
+  (void) TransA; /* unused parameter warning */
+
+  status = gsl_linalg_pcholesky_svx(par->LDLT, par->perm, x);
+
+  return status;
 }

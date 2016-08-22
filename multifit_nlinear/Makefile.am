@@ -4,10 +4,11 @@ pkginclude_HEADERS = gsl_multifit_nlinear.h
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
-libgslmultifit_nlinear_la_SOURCES = cholesky.c convergence.c covar.c dogleg.c fdf.c fdfvv.c fdjac.c lm.c nielsen.c qr.c scaling.c subspace2D.c svd.c trust.c
+libgslmultifit_nlinear_la_SOURCES = cholesky.c convergence.c covar.c dogleg.c fdf.c fdfvv.c fdjac.c lm.c qr.c scaling.c subspace2D.c svd.c trust.c
 
 noinst_HEADERS =        \
 common.c                \
+nielsen.c               \
 qrsolv.c                \
 test_bard.c             \
 test_beale.c            \

@@ -1,9 +1,1 @@
-1. covariance matrix
-2. different mu update methods
-3. Change interface to allow both iterative and normal eqs methods:
-
-user_df(multilarge_type *type, gsl_vector * u, void *params, ...)
-  if (type->JTJ != NULL) build_JTJ(type->JTJ);
-  if (type->TransJ == Trans) type->v = JT*u
-  else type->v = J*u;
-  ...
+1. finite difference J and fvv for cholesky solver

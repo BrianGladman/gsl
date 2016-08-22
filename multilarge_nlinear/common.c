@@ -17,11 +17,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+static double scaled_enorm (const gsl_vector * d, const gsl_vector * f);
 static void scaled_addition (const double alpha, const gsl_vector * x,
                              const double beta, const gsl_vector * y,
                              gsl_vector * z);
 static double quadratic_preduction(const gsl_multilarge_nlinear_trust_state * trust_state,
                                    const gsl_vector * dx, gsl_vector * work);
+
+/* compute || diag(d) f || */
+static double
+scaled_enorm (const gsl_vector * d, const gsl_vector * f)
+{
+  double e2 = 0;
+  size_t i, n = f->size;
+  for (i = 0; i < n; i++)
+    {
+      double fi = gsl_vector_get (f, i);
+      double di = gsl_vector_get (d, i);
+      double u = di * fi;
+      e2 += u * u;
+    }
+  return sqrt (e2);
+}
 
 /* compute z = alpha*x + beta*y */
 static void
@@ -63,41 +80,51 @@ static double
 quadratic_preduction(const gsl_multilarge_nlinear_trust_state * trust_state,
                      const gsl_vector * dx, gsl_vector * work)
 {
-  int status;
-  const gsl_vector * x = trust_state->x;
   const gsl_vector * f = trust_state->f;
-  const gsl_vector * swts = trust_state->sqrt_wts;
   const gsl_multilarge_nlinear_parameters * params = trust_state->params;
-  const size_t n = f->size;
   const double normf = gsl_blas_dnrm2(f);
+  double gTdx;      /* g^T dx */
   gsl_multilarge_nlinear_fdf * fdf = trust_state->fdf;
-  double pred_reduction;
-  double norm_beta; /* ||J*dx|| / ||f|| */
-  size_t i;
+  double pred_reduction, u;
 
-  /* compute work = J*dx */
-  status = gsl_multilarge_nlinear_eval_df(CblasNoTrans, x, f, dx,
-                                          swts, params->h_df, params->fdtype,
-                                          fdf, work, NULL);
-  if (status)
+  /* compute g^T dx */
+  gsl_blas_ddot(trust_state->g, dx, &gTdx);
+
+  /* first term: -2 g^T dx / ||f||^2 */
+  pred_reduction = -2.0 * gTdx / (normf * normf);
+
+  if (params->solver == gsl_multilarge_nlinear_solver_cholesky)
     {
-      GSL_ERROR_VAL("error computing preduction", status, 0.0);
+      const size_t p = fdf->p;
+      gsl_vector_view workp = gsl_vector_subvector(work, 0, p);
+
+      /* compute workp = J^T J dx */
+      gsl_blas_dsymv(CblasLower, 1.0, trust_state->JTJ, dx, 0.0, &workp.vector);
+
+      /* compute u = dx^T J^T J dx = ||J dx||^2 */
+      gsl_blas_ddot(&workp.vector, dx, &u);
+
+      pred_reduction -= u / (normf * normf);
     }
-
-  /* compute beta = J*dx / ||f|| */
-  gsl_vector_scale(work, 1.0 / normf);
-  norm_beta = gsl_blas_dnrm2(work);
-
-  /* initialize to ( ||J*dx|| / ||f|| )^2 */
-  pred_reduction = -norm_beta * norm_beta;
-
-  /* subtract 2*fhat.beta */
-  for (i = 0; i < n; ++i)
+  else
     {
-      double fi = gsl_vector_get(f, i);
-      double betai = gsl_vector_get(work, i);
+      int status;
+      const gsl_vector * x = trust_state->x;
+      const gsl_vector * swts = trust_state->sqrt_wts;
 
-      pred_reduction -= 2.0 * (fi / normf) * betai;
+      /* compute work = J*dx */
+      status = gsl_multilarge_nlinear_eval_df(CblasNoTrans, x, f, dx,
+                                              swts, params->h_df, params->fdtype,
+                                              fdf, work, NULL, NULL);
+      if (status)
+        {
+          GSL_ERROR_VAL("error computing preduction", status, 0.0);
+        }
+
+      /* compute u = ||J*dx|| / ||f|| */
+      u = gsl_blas_dnrm2(work) / normf;
+
+      pred_reduction -= u * u;
     }
 
   return pred_reduction;

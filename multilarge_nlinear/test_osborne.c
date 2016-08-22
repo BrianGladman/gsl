@@ -56,7 +56,8 @@ osborne_f (const gsl_vector * x, void *params, gsl_vector * f)
 
 static int
 osborne_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
-            const gsl_vector * u, void * params, gsl_vector * v)
+            const gsl_vector * u, void * params, gsl_vector * v,
+            gsl_matrix * JTJ)
 {
   gsl_matrix_view J = gsl_matrix_view_array(osborne_J, osborne_N, osborne_P);
   double x2 = gsl_vector_get(x, 1);
@@ -78,7 +79,11 @@ osborne_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
       gsl_matrix_set(&J.matrix, i, 4, ti*x3*term2);
     }
 
-  gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+  if (v)
+    gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+
+  if (JTJ)
+    gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
 
   (void)params; /* avoid unused parameter warning */
 
@@ -124,6 +129,7 @@ static gsl_multilarge_nlinear_fdf osborne_func =
   osborne_N,
   osborne_P,
   NULL,
+  0,
   0,
   0,
   0

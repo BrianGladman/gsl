@@ -136,7 +136,6 @@ gsl_multifit_nlinear_default_parameters(void)
   gsl_multifit_nlinear_parameters params;
 
   params.trs = gsl_multifit_nlinear_trs_lm;
-  params.update = gsl_multifit_nlinear_update_nielsen;
   params.scale = gsl_multifit_nlinear_scale_more;
   params.solver = gsl_multifit_nlinear_solver_qr;
   params.fdtype = GSL_MULTIFIT_NLINEAR_FWDIFF;
@@ -356,7 +355,7 @@ gsl_multifit_nlinear_niter (const gsl_multifit_nlinear_workspace * w)
 int
 gsl_multifit_nlinear_rcond (double *rcond, const gsl_multifit_nlinear_workspace * w)
 {
-  int status = (w->type->rcond) (w->J, rcond, w->state);
+  int status = (w->type->rcond) (rcond, w->state);
   return status;
 }
 

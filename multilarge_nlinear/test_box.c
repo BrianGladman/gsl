@@ -1,7 +1,10 @@
 #define box_N         10 /* can be >= p */
 #define box_P         3
 
-static double box_x0[box_P] = { 0.0, 10.0, 20.0 };
+/* dogleg method fails with recommended starting point, so use
+ * a slightly easier x0 */
+/*static double box_x0[box_P] = { 0.0, 10.0, 20.0 };*/
+static double box_x0[box_P] = { 5.0, 10.0, 2.0 };
 static double box_epsrel = 1.0e-12;
 
 static double box_J[box_N * box_P];
@@ -11,17 +14,41 @@ box_checksol(const double x[], const double sumsq,
               const double epsrel, const char *sname,
               const char *pname)
 {
-  size_t i;
   const double sumsq_exact = 0.0;
-  const double box_x[box_P] = { 1.0, 10.0, 1.0 };
+  const double eps = 1.0e-6;
 
   gsl_test_rel(sumsq, sumsq_exact, epsrel, "%s/%s sumsq",
                sname, pname);
 
-  for (i = 0; i < box_P; ++i)
+  /* there are 3 possible solution vectors */
+
+  if (fabs(x[2] - 1.0) < eps)
     {
-      gsl_test_rel(x[i], box_x[i], epsrel, "%s/%s i=%zu",
-                   sname, pname, i);
+      /* case 1: x* = [ 1; 10; 1 ] */
+      gsl_test_rel(x[0], 1.0, epsrel, "%s/%s i=0",
+                   sname, pname);
+      gsl_test_rel(x[1], 10.0, epsrel, "%s/%s i=1",
+                   sname, pname);
+      gsl_test_rel(x[2], 1.0, epsrel, "%s/%s i=2",
+                   sname, pname);
+    }
+  else if (fabs(x[2] + 1.0) < eps)
+    {
+      /* case 2: x* = [ 10; 1; -1 ] */
+      gsl_test_rel(x[0], 10.0, epsrel, "%s/%s i=0",
+                   sname, pname);
+      gsl_test_rel(x[1], 1.0, epsrel, "%s/%s i=1",
+                   sname, pname);
+      gsl_test_rel(x[2], -1.0, epsrel, "%s/%s i=2",
+                   sname, pname);
+    }
+  else
+    {
+      /* case 3: x* = [ a; a; 0 ] for any a */
+      gsl_test_rel(x[0], x[1], epsrel, "%s/%s i=0,1",
+                   sname, pname);
+      gsl_test_rel(x[2], 0.0, epsrel, "%s/%s i=2",
+                   sname, pname);
     }
 }
 
@@ -47,7 +74,8 @@ box_f (const gsl_vector * x, void *params, gsl_vector * f)
 
 static int
 box_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
-        const gsl_vector * u, void * params, gsl_vector * v)
+        const gsl_vector * u, void * params, gsl_vector * v,
+        gsl_matrix * JTJ)
 {
   gsl_matrix_view J = gsl_matrix_view_array(box_J, box_N, box_P);
   double x1 = gsl_vector_get(x, 0);
@@ -66,7 +94,11 @@ box_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
       gsl_matrix_set(&J.matrix, i, 2, term3);
     }
 
-  gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+  if (v)
+    gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+
+  if (JTJ)
+    gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
 
   (void)params; /* avoid unused parameter warning */
 
@@ -105,6 +137,7 @@ static gsl_multilarge_nlinear_fdf box_func =
   box_N,
   box_P,
   NULL,
+  0,
   0,
   0,
   0

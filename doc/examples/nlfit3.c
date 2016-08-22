@@ -121,7 +121,7 @@ solve_system(gsl_vector *x0, gsl_multifit_nlinear_fdf *fdf,
   gsl_multifit_nlinear_rcond(&rcond, work);
 
   /* print summary */
-  fprintf(stderr, "%-25s %-6zu %-6zu %-6zu %-13.4e %-12.4e %-13.4e (%.2e, %.2e)\n",
+  fprintf(stderr, "%-25s %-6zu %-5zu %-5zu %-13.4e %-12.4e %-13.4e (%.2e, %.2e)\n",
           gsl_multifit_nlinear_trs_name(work),
           gsl_multifit_nlinear_niter(work),
           fdf->nevalf,
@@ -188,7 +188,7 @@ main (void)
   gsl_vector_set(x, 0, 6.0);
   gsl_vector_set(x, 1, 14.5);
 
-  fprintf(stderr, "%-25s %-6s %-6s %-6s %-13s %-12s %-13s %-15s\n",
+  fprintf(stderr, "%-25s %-6s %-5s %-5s %-13s %-12s %-13s %-15s\n",
           "Method", "NITER", "NFEV", "NJEV", "Initial Cost",
           "Final cost", "Final cond(J)", "Final x");
   

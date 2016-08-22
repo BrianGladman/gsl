@@ -37,7 +37,7 @@ solve_system(const int print_data, const gsl_multilarge_linear_type * T,
              const double lambda, const size_t n, const size_t p,
              gsl_vector * c)
 {
-  const size_t nblock = 1;         /* number of blocks to accumulate */
+  const size_t nblock = 5;         /* number of blocks to accumulate */
   const size_t nrows = n / nblock; /* number of rows per block */
   gsl_multilarge_linear_workspace * w =
     gsl_multilarge_linear_alloc(T, p);
@@ -100,10 +100,9 @@ solve_system(const int print_data, const gsl_multilarge_linear_type * T,
   gsl_multilarge_linear_rcond(&rcond, w);
 
   fprintf(stderr, "=== Method %s ===\n", gsl_multilarge_linear_name(w));
-  if (rcond != 0.0)
-    fprintf(stderr, "matrix condition number = %e\n", 1.0 / rcond);
-  fprintf(stderr, "residual norm  = %e\n", rnorm);
-  fprintf(stderr, "solution norm  = %e\n", snorm);
+  fprintf(stderr, "condition number = %e\n", 1.0 / rcond);
+  fprintf(stderr, "residual norm    = %e\n", rnorm);
+  fprintf(stderr, "solution norm    = %e\n", snorm);
 
   /* output L-curve */
   {

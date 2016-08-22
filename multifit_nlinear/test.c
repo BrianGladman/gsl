@@ -33,7 +33,7 @@
 #include "test_fdf.c"
 
 static const gsl_multifit_nlinear_trs **nlinear_trs[] = {
-#if 1
+#if 1 /*XXX*/
   &gsl_multifit_nlinear_trs_lm,
   &gsl_multifit_nlinear_trs_lmaccel,
   &gsl_multifit_nlinear_trs_dogleg,
@@ -94,6 +94,7 @@ main (void)
   for (trs = nlinear_trs[i]; trs != NULL; trs = nlinear_trs[++i])
     {
       size_t j = 0;
+
       fprintf(stderr, "trs = %s\n", (*trs)->name);
 
       for (solver = nlinear_solvers[j]; solver != NULL; solver = nlinear_solvers[++j])

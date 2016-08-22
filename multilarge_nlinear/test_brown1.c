@@ -52,7 +52,8 @@ brown1_f (const gsl_vector * x, void *params, gsl_vector * f)
 
 static int
 brown1_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
-           const gsl_vector * u, void * params, gsl_vector * v)
+           const gsl_vector * u, void * params, gsl_vector * v,
+           gsl_matrix * JTJ)
 {
   gsl_matrix_view J = gsl_matrix_view_array(brown1_J, brown1_N, brown1_P);
   double x0 = gsl_vector_get (x, 0);
@@ -74,7 +75,11 @@ brown1_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
 
     }
 
-  gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+  if (v)
+    gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+
+  if (JTJ)
+    gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
 
   (void)params; /* avoid unused parameter warning */
 
@@ -115,6 +120,7 @@ static gsl_multilarge_nlinear_fdf brown1_func =
   brown1_N,
   brown1_P,
   NULL,
+  0,
   0,
   0,
   0

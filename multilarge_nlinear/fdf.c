@@ -44,6 +44,19 @@ gsl_multilarge_nlinear_alloc (const gsl_multilarge_nlinear_type * T,
                      GSL_ENOMEM, 0);
     }
 
+  w->n = n;
+  w->p = p;
+  w->type = T;
+  w->fdf = NULL;
+  w->niter = 0;
+  w->params = *params;
+
+  /* the cgst method uses its own built-in linear solver */
+  if (w->params.trs == gsl_multilarge_nlinear_trs_cgst)
+    {
+      w->params.solver = gsl_multilarge_nlinear_solver_none;
+    }
+
   w->x = gsl_vector_calloc (p);
   if (w->x == 0) 
     {
@@ -72,6 +85,16 @@ gsl_multilarge_nlinear_alloc (const gsl_multilarge_nlinear_type * T,
       GSL_ERROR_VAL ("failed to allocate space for g", GSL_ENOMEM, 0);
     }
 
+  if (w->params.solver == gsl_multilarge_nlinear_solver_cholesky)
+    {
+      w->JTJ = gsl_matrix_alloc (p, p);
+      if (w->JTJ == 0) 
+        {
+          gsl_multilarge_nlinear_free (w);
+          GSL_ERROR_VAL ("failed to allocate space for JTJ", GSL_ENOMEM, 0);
+        }
+    }
+
   w->sqrt_wts_work = gsl_vector_calloc (n);
   if (w->sqrt_wts_work == 0)
     {
@@ -79,17 +102,12 @@ gsl_multilarge_nlinear_alloc (const gsl_multilarge_nlinear_type * T,
       GSL_ERROR_VAL ("failed to allocate space for weights", GSL_ENOMEM, 0);
     }
 
-  w->state = (T->alloc)(params, n, p);
+  w->state = (T->alloc)(&(w->params), n, p);
   if (w->state == 0)
     {
       gsl_multilarge_nlinear_free (w);
       GSL_ERROR_VAL ("failed to allocate space for multifit state", GSL_ENOMEM, 0);
     }
-
-  w->type = T;
-  w->fdf = NULL;
-  w->niter = 0;
-  w->params = *params;
 
   return w;
 }
@@ -117,6 +135,9 @@ gsl_multilarge_nlinear_free (gsl_multilarge_nlinear_workspace * w)
   if (w->g)
     gsl_vector_free (w->g);
 
+  if (w->JTJ)
+    gsl_matrix_free (w->JTJ);
+
   free (w);
 }
 
@@ -125,11 +146,12 @@ gsl_multilarge_nlinear_default_parameters(void)
 {
   gsl_multilarge_nlinear_parameters params;
 
-  params.trs = gsl_multilarge_nlinear_trs_cgst;
+  params.trs = gsl_multilarge_nlinear_trs_lm;
+  params.scale = gsl_multilarge_nlinear_scale_more;
+  params.solver = gsl_multilarge_nlinear_solver_cholesky;
   params.fdtype = GSL_MULTILARGE_NLINEAR_FWDIFF;
   params.factor_up = 3.0;
   params.factor_down = 2.0;
-  params.accel = 0;
   params.avmax = 0.75;
   params.h_df = GSL_SQRT_DBL_EPSILON;
   params.h_fvv = 0.01;
@@ -173,7 +195,8 @@ gsl_multilarge_nlinear_winit (const gsl_vector * x,
 
       /* initialize counters for function and Jacobian evaluations */
       fdf->nevalf = 0;
-      fdf->nevaldf = 0;
+      fdf->nevaldfu = 0;
+      fdf->nevaldf2 = 0;
       fdf->nevalfvv = 0;
 
       w->fdf = fdf;
@@ -196,7 +219,7 @@ gsl_multilarge_nlinear_winit (const gsl_vector * x,
         }
   
       return (w->type->init) (w->state, w->sqrt_wts, w->fdf,
-                              w->x, w->f, w->g);
+                              w->x, w->f, w->g, w->JTJ);
     }
 }
 
@@ -205,7 +228,7 @@ gsl_multilarge_nlinear_iterate (gsl_multilarge_nlinear_workspace * w)
 {
   int status =
     (w->type->iterate) (w->state, w->sqrt_wts, w->fdf,
-                        w->x, w->f, w->g, w->dx);
+                        w->x, w->f, w->g, w->JTJ, w->dx);
 
   w->niter++;
 
@@ -216,6 +239,31 @@ double
 gsl_multilarge_nlinear_avratio (const gsl_multilarge_nlinear_workspace * w)
 {
   return (w->type->avratio) (w->state);
+}
+
+int
+gsl_multilarge_nlinear_rcond (double * rcond, const gsl_multilarge_nlinear_workspace * w)
+{
+  int status = (w->type->rcond) (rcond, w->JTJ, w->state);
+  return status;
+}
+
+int
+gsl_multilarge_nlinear_covar (gsl_matrix * covar, gsl_multilarge_nlinear_workspace * w)
+{
+  if (covar->size1 != covar->size2)
+    {
+      GSL_ERROR ("covariance matrix must be square", GSL_ENOTSQR);
+    }
+  else if (covar->size1 != w->p)
+    {
+      GSL_ERROR ("covariance matrix does not match workspace", GSL_EBADLEN);
+    }
+  else
+    {
+      int status = (w->type->covar) (w->JTJ, covar, w->state);
+      return status;
+    }
 }
 
 /*
@@ -401,6 +449,7 @@ Inputs: TransJ - use J or J^T
         fdtype - finite difference method
         fdf    - callback function
         v      - (output) vector v
+        JTJ    - (output) matrix J^T J
         work   - workspace for finite difference, size n
 */
 
@@ -414,20 +463,25 @@ gsl_multilarge_nlinear_eval_df(const CBLAS_TRANSPOSE_t TransJ,
                                const gsl_multilarge_nlinear_fdtype fdtype,
                                gsl_multilarge_nlinear_fdf *fdf,
                                gsl_vector *v,
+                               gsl_matrix *JTJ,
                                gsl_vector *work)
 {
   const size_t n = fdf->n;
   const size_t p = fdf->p;
 
-  if ((TransJ == CblasNoTrans && u->size != p) ||
-      (TransJ == CblasTrans && u->size != n))
+  if (u != NULL && ((TransJ == CblasNoTrans && u->size != p) ||
+                    (TransJ == CblasTrans && u->size != n)))
     {
       GSL_ERROR("u vector has wrong size", GSL_EBADLEN);
     }
-  else if ((TransJ == CblasNoTrans && v->size != n) ||
-           (TransJ == CblasTrans && v->size != p))
+  else if (v != NULL && ((TransJ == CblasNoTrans && v->size != n) ||
+                         (TransJ == CblasTrans && v->size != p)))
     {
       GSL_ERROR("v vector has wrong size", GSL_EBADLEN);
+    }
+  else if (JTJ != NULL && ((JTJ->size1 != p) || (JTJ->size2 != p)))
+    {
+      GSL_ERROR("JTJ matrix has wrong size", GSL_EBADLEN);
     }
   else
     {
@@ -436,8 +490,13 @@ gsl_multilarge_nlinear_eval_df(const CBLAS_TRANSPOSE_t TransJ,
       if (fdf->df)
         {
           /* call user-supplied function */
-          status = ((*((fdf)->df)) (TransJ, x, u, fdf->params, v));
-          ++(fdf->nevaldf);
+          status = ((*((fdf)->df)) (TransJ, x, u, fdf->params, v, JTJ));
+
+          if (v)
+            ++(fdf->nevaldfu);
+
+          if (JTJ)
+            ++(fdf->nevaldf2);
         }
       else
         {
@@ -449,4 +508,57 @@ gsl_multilarge_nlinear_eval_df(const CBLAS_TRANSPOSE_t TransJ,
 
       return status;
     }
+}
+
+/*
+gsl_multilarge_nlinear_eval_fvv()
+  Compute second direction derivative vector yvv with user
+callback function, and apply weighting transform if given:
+
+yvv~ = sqrt(W) yvv
+
+Inputs: h    - step size for finite difference, if needed
+        x    - model parameters, size p
+        v    - unscaled geodesic velocity vector, size p
+        f    - residual vector f(x), size n
+        swts - weight matrix sqrt(W) = sqrt(diag(w1,w2,...,wn))
+               set to NULL for unweighted fit
+        fdf  - callback function
+        yvv  - (output) (weighted) second directional derivative vector
+               yvv_i = sqrt(w_i) fvv_i where f_i is unweighted
+        work - workspace, size p
+*/
+
+int
+gsl_multilarge_nlinear_eval_fvv(const double h,
+                                const gsl_vector *x,
+                                const gsl_vector *v,
+                                const gsl_vector *f,
+                                const gsl_vector *swts,
+                                gsl_multilarge_nlinear_fdf *fdf,
+                                gsl_vector *yvv,
+                                gsl_vector *work)
+{
+  int status;
+  
+  if (fdf->fvv != NULL)
+    {
+      /* call user-supplied function */
+      status = ((*((fdf)->fvv)) (x, v, fdf->params, yvv));
+      ++(fdf->nevalfvv);
+    }
+  else
+    {
+#if 0
+      /* use finite difference approximation */
+      status = gsl_multilarge_nlinear_fdfvv(h, x, v, f, J,
+                                          swts, fdf, yvv, work);
+#endif
+    }
+
+  /* yvv <- sqrt(W) yvv */
+  if (swts)
+    gsl_vector_mul(yvv, swts);
+
+  return status;
 }

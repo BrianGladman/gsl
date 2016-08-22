@@ -1,4 +1,4 @@
-/* multifit_nlinear/lmnielsen.c
+/* multifit_nlinear/nielsen.c
  * 
  * Copyright (C) 2016 Patrick Alken
  * 
@@ -27,11 +27,9 @@
  *
  * 5 routines are needed to implement the update procedure:
  *
- * 1. alloc  - allocate workspace state
- * 2. init   - initialize parameter prior to iteration
- * 3. accept - update parameter after a step has been accepted
- * 4. reject - update parameter after a step has been rejected
- * 5. free   - free workspace state
+ * 1. accept - update parameter after a step has been accepted
+ * 2. reject - update parameter after a step has been rejected
+ * 3. free   - free workspace state
  */
 
 #include <config.h>
@@ -45,52 +43,21 @@
 
 #define LM_ONE_THIRD         (0.333333333333333)
 
-typedef struct
-{
-  double mu0;  /* initial scale factor for mu */
-  long nu;
-} nielsen_state_t;
-
-static void *nielsen_alloc(void);
-static void nielsen_free(void *vstate);
 static int nielsen_init(const gsl_matrix * J, const gsl_vector * diag,
-                        double * mu, void * vstate);
-static int nielsen_accept(const double rho, double * mu, void * vstate);
-static int nielsen_reject(double * mu, void * vstate);
-
-static void *
-nielsen_alloc(void)
-{
-  nielsen_state_t *state;
-
-  state = calloc(1, sizeof(nielsen_state_t));
-  if (state == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate nielsen state", GSL_ENOMEM);
-    }
-
-  state->mu0 = 1.0e-3;
-
-  return state;
-}
-
-static void
-nielsen_free(void *vstate)
-{
-  nielsen_state_t *state = (nielsen_state_t *) vstate;
-  free(state);
-}
+                        double * mu, long * nu);
+static int nielsen_accept(const double rho, double * mu, long * nu);
+static int nielsen_reject(double * mu, long * nu);
 
 static int
 nielsen_init(const gsl_matrix * J, const gsl_vector * diag,
-             double * mu, void * vstate)
+             double * mu, long * nu)
 {
-  nielsen_state_t *state = (nielsen_state_t *) vstate;
+  const double mu0 = 1.0e-3;
   const size_t p = J->size2;
   size_t j;
   double max = -1.0;
 
-  state->nu = 2;
+  *nu = 2;
 
   /* set mu = mu0 * max(diag(J~^T J~)), with J~ = J D^{-1} */
 
@@ -102,19 +69,18 @@ nielsen_init(const gsl_matrix * J, const gsl_vector * diag,
       max = GSL_MAX(max, norm);
     }
 
-  *mu = state->mu0 * max * max;
+  *mu = mu0 * max * max;
 
   return GSL_SUCCESS;
 }
 
 static int
-nielsen_accept(const double rho, double * mu, void * vstate)
+nielsen_accept(const double rho, double * mu, long * nu)
 {
-  nielsen_state_t *state = (nielsen_state_t *) vstate;
   double  b;
   
   /* reset nu */
-  state->nu = 2;
+  *nu = 2;
 
   b = 2.0 * rho - 1.0;
   b = 1.0 - b*b*b;
@@ -124,26 +90,12 @@ nielsen_accept(const double rho, double * mu, void * vstate)
 }
 
 static int
-nielsen_reject(double * mu, void * vstate)
+nielsen_reject(double * mu, long * nu)
 {
-  nielsen_state_t *state = (nielsen_state_t *) vstate;
-
-  *mu *= (double) state->nu;
+  *mu *= (double) *nu;
 
   /* nu := 2*nu */
-  state->nu <<= 1;
+  *nu <<= 1;
 
   return GSL_SUCCESS;
 }
-
-static const gsl_multifit_nlinear_update nielsen_type =
-{
-  "nielsen",
-  nielsen_alloc,
-  nielsen_init,
-  nielsen_accept,
-  nielsen_reject,
-  nielsen_free
-};
-
-const gsl_multifit_nlinear_update *gsl_multifit_nlinear_update_nielsen = &nielsen_type;

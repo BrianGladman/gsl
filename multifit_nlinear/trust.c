@@ -26,9 +26,9 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_permutation.h>
-#include <gsl/gsl_eigen.h>
 
 #include "common.c"
+#include "nielsen.c"
 
 #define SCALE_SUB2D           1
 
@@ -50,6 +50,7 @@ typedef struct
   size_t p;                  /* number of parameters */
   double delta;              /* trust region radius */
   double mu;                 /* LM parameter */
+  long nu;                   /* for updating LM parameter */
   gsl_vector *diag;          /* D = diag(J^T J) */
   gsl_vector *dx_scaled;     /* scaled step vector: dx_scaled = D*dx */
   gsl_vector *x_trial;       /* trial parameter vector */
@@ -58,16 +59,12 @@ typedef struct
   gsl_vector *workn;         /* workspace, length n */
 
   void *trs_state;           /* workspace for trust region subproblem */
-  void *update_state;        /* workspace for trust region update method */
   void *solver_state;        /* workspace for linear least squares solver */
 
   double avratio;            /* current |a| / |v| */
 
   /* tunable parameters */
   gsl_multifit_nlinear_parameters params;
-
-  gsl_matrix *JTJ;           /* J^T J for rcond calculation */
-  gsl_eigen_symm_workspace *eigen_p;
 } trust_state_t;
 
 static void * trust_alloc (const gsl_multifit_nlinear_parameters * params,
@@ -80,7 +77,7 @@ static int trust_iterate(void *vstate, const gsl_vector *swts,
                          gsl_multifit_nlinear_fdf *fdf,
                          gsl_vector *x, gsl_vector *f, gsl_matrix *J,
                          gsl_vector *g, gsl_vector *dx);
-static int trust_rcond(const gsl_matrix *J, double *rcond, void *vstate);
+static int trust_rcond(double *rcond, void *vstate);
 static double trust_avratio(void *vstate);
 static void trust_trial_step(const gsl_vector * x, const gsl_vector * dx,
                              gsl_vector * x_trial);
@@ -149,28 +146,10 @@ trust_alloc (const gsl_multifit_nlinear_parameters * params,
       GSL_ERROR_NULL ("failed to allocate space for trs state", GSL_ENOMEM);
     }
 
-  state->update_state = (params->update->alloc)();
-  if (state->update_state == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for update state", GSL_ENOMEM);
-    }
-
   state->solver_state = (params->solver->alloc)(n, p);
   if (state->solver_state == NULL)
     {
       GSL_ERROR_NULL ("failed to allocate space for solver state", GSL_ENOMEM);
-    }
-
-  state->JTJ = gsl_matrix_alloc(p, p);
-  if (state->JTJ == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for JTJ", GSL_ENOMEM);
-    }
-
-  state->eigen_p = gsl_eigen_symm_alloc(p);
-  if (state->eigen_p == NULL)
-    {
-      GSL_ERROR_NULL ("failed to allocate space for eigen workspace", GSL_ENOMEM);
     }
 
   state->n = n;
@@ -208,17 +187,8 @@ trust_free(void *vstate)
   if (state->trs_state)
     (params->trs->free)(state->trs_state);
 
-  if (state->update_state)
-    (params->update->free)(state->update_state);
-
   if (state->solver_state)
     (params->solver->free)(state->solver_state);
-
-  if (state->JTJ)
-    gsl_matrix_free(state->JTJ);
-
-  if (state->eigen_p)
-    gsl_eigen_symm_free(state->eigen_p);
 
   free(state);
 }
@@ -269,8 +239,7 @@ trust_init(void *vstate, const gsl_vector *swts,
   state->delta = 0.3 * GSL_MAX(1.0, Dx);
 
   /* initialize LM parameter */
-  status = (params->update->init)(J, state->diag, &(state->mu),
-                                  state->update_state);
+  status = nielsen_init(J, state->diag, &(state->mu), &(state->nu));
   if (status)
     return status;
 
@@ -466,7 +435,7 @@ trust_iterate(void *vstate, const gsl_vector *swts,
           (params->scale->update)(J, diag);
 
           /* step accepted, decrease LM parameter */
-          status = (params->update->accept)(rho, &(state->mu), state->update_state);
+          status = nielsen_accept(rho, &(state->mu), &(state->nu));
           if (status)
             return status;
 
@@ -475,7 +444,7 @@ trust_iterate(void *vstate, const gsl_vector *swts,
       else
         {
           /* step rejected, increase LM parameter */
-          status = (params->update->reject)(&(state->mu), state->update_state);
+          status = nielsen_reject(&(state->mu), &(state->nu));
           if (status)
             return status;
 
@@ -493,42 +462,15 @@ trust_iterate(void *vstate, const gsl_vector *swts,
 } /* trust_iterate() */
 
 static int
-trust_rcond(const gsl_matrix *J, double *rcond, void *vstate)
+trust_rcond(double *rcond, void *vstate)
 {
   int status;
   trust_state_t *state = (trust_state_t *) vstate;
-
-#if 0
   const gsl_multifit_nlinear_parameters *params = &(state->params);
+  
   status = (params->solver->rcond)(rcond, state->solver_state);
+
   return status;
-#else
-  gsl_vector *eval = state->workp;
-  double eval_min, eval_max;
-
-  /* compute J^T J */
-  gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, J, 0.0, state->JTJ);
-
-  /* compute eigenvalues of J^T J */
-  status = gsl_eigen_symm(state->JTJ, eval, state->eigen_p);
-  if (status)
-    return status;
-
-  gsl_vector_minmax(eval, &eval_min, &eval_max);
-
-  if (eval_max > 0.0 && eval_min > 0.0)
-    {
-      *rcond = sqrt(eval_min / eval_max);
-    }
-  else
-    {
-      /* compute eigenvalues are not accurate; possibly due
-       * to rounding errors in forming J^T J */
-      *rcond = 0.0;
-    }
-
-  return GSL_SUCCESS;
-#endif
 }
 
 static double

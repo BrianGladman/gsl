@@ -27,6 +27,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_inline.h>
+#include <gsl/gsl_blas.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -367,6 +368,8 @@ int gsl_linalg_QRPT_update (gsl_matrix * Q,
 
 size_t gsl_linalg_QRPT_rank (const gsl_matrix * QR, const double tol);
 
+int gsl_linalg_QRPT_rcond(const gsl_matrix * QR, double * rcond, gsl_vector * work);
+
 /* COD decomposition */
 
 int gsl_linalg_COD_decomp(gsl_matrix * A, gsl_vector * tau_Q, gsl_vector * tau_Z,
@@ -498,6 +501,9 @@ int gsl_linalg_cholesky_solve2 (const gsl_matrix * LLT,
                                 const gsl_vector * b,
                                 gsl_vector * x);
 
+int gsl_linalg_cholesky_rcond (const gsl_matrix * LLT, double * rcond,
+                               gsl_vector * work);
+
 /* Complex Cholesky Decomposition */
 
 int gsl_linalg_complex_cholesky_decomp (gsl_matrix_complex * A);
@@ -538,6 +544,12 @@ int gsl_linalg_pcholesky_svx2(const gsl_matrix * LDLT,
                               const gsl_vector * S,
                               gsl_vector * x);
 
+int gsl_linalg_pcholesky_invert(const gsl_matrix * LDLT, const gsl_permutation * p,
+                                gsl_matrix * Ainv);
+
+int gsl_linalg_pcholesky_rcond (const gsl_matrix * LDLT, const gsl_permutation * p,
+                                double * rcond, gsl_vector * work);
+
 /* Modified Cholesky decomposition */
 
 int gsl_linalg_mcholesky_decomp (gsl_matrix * A, gsl_permutation * p,
@@ -551,6 +563,12 @@ int gsl_linalg_mcholesky_solve(const gsl_matrix * LDLT,
 int gsl_linalg_mcholesky_svx(const gsl_matrix * LDLT,
                              const gsl_permutation * p,
                              gsl_vector * x);
+
+int gsl_linalg_mcholesky_rcond (const gsl_matrix * LDLT, const gsl_permutation * p,
+                                double * rcond, gsl_vector * work);
+
+int gsl_linalg_mcholesky_invert(const gsl_matrix * LDLT, const gsl_permutation * p,
+                                gsl_matrix * Ainv);
 
 /* Symmetric to symmetric tridiagonal decomposition */
 
@@ -684,6 +702,21 @@ int gsl_linalg_bidiag_unpack_B (const gsl_matrix * A,
 int gsl_linalg_balance_matrix (gsl_matrix * A, gsl_vector * D);
 int gsl_linalg_balance_accum (gsl_matrix * A, gsl_vector * D);
 int gsl_linalg_balance_columns (gsl_matrix * A, gsl_vector * D);
+
+/* condition estimation */
+
+int gsl_linalg_tri_upper_rcond(const gsl_matrix * A, double * rcond, gsl_vector * work);
+int gsl_linalg_tri_lower_rcond(const gsl_matrix * A, double * rcond, gsl_vector * work);
+int gsl_linalg_invnorm1(const size_t N,
+                        int (* Ainvx)(CBLAS_TRANSPOSE_t TransA, gsl_vector * x, void * params),
+                        void * params, double * Ainvnorm, gsl_vector * work);
+
+/* triangular matrices */
+
+int gsl_linalg_tri_upper_invert(gsl_matrix * T);
+int gsl_linalg_tri_lower_invert(gsl_matrix * T);
+int gsl_linalg_tri_upper_unit_invert(gsl_matrix * T);
+int gsl_linalg_tri_lower_unit_invert(gsl_matrix * T);
 
 INLINE_DECL void gsl_linalg_givens (const double a, const double b,
                                     double *c, double *s);

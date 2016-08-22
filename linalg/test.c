@@ -64,7 +64,7 @@ int test_QRPT_solve_dim(const gsl_matrix * m, const double * actual, double eps)
 int test_QRPT_solve(void);
 int test_QRPT_QRsolve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_QRPT_QRsolve(void);
-int test_QRPT_decomp_dim(const gsl_matrix * m, double eps);
+int test_QRPT_decomp_dim(const gsl_matrix * m, const double expected_rcond, double eps);
 int test_QRPT_decomp(void);
 int test_QRPT_lssolve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_QRPT_lssolve(void);
@@ -104,12 +104,6 @@ int test_SV_decomp_jacobi_dim(const gsl_matrix * m, double eps);
 int test_SV_decomp_jacobi(void);
 int test_cholesky_solve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_cholesky_solve(void);
-#if 0
-int test_cholesky_decomp_dim(const gsl_matrix * m, double eps);
-int test_cholesky_decomp(void);
-#endif
-int test_cholesky_invert_dim(const gsl_matrix * m, double eps);
-int test_cholesky_invert(void);
 int test_HH_solve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_HH_solve(void);
 int test_TDS_solve_dim(unsigned long dim, double d, double od, const double * actual, double eps);
@@ -320,6 +314,36 @@ create_sparse_matrix(unsigned long m, unsigned long n) {
   return A;
 }
 
+static int
+create_tri_matrix(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_matrix * m, gsl_rng * r)
+{
+  const size_t N = m->size1;
+  size_t i, j;
+
+  gsl_matrix_set_zero(m);
+
+  for (i = 0; i < N; ++i)
+    {
+      for (j = 0; j <= i; ++j)
+        {
+          double mij = gsl_rng_uniform(r);
+
+          /* put lower bound on diagonal entries to ensure invertibility */
+          if (i == j)
+            mij = GSL_MAX(mij, 0.3);
+
+          if (Uplo == CblasLower)
+            gsl_matrix_set(m, i, j, mij);
+          else
+            gsl_matrix_set(m, j, i, mij);
+
+          if (Diag == CblasUnit && i == j)
+            gsl_matrix_set(m, i, j, 1.0);
+        }
+    }
+
+  return GSL_SUCCESS;
+}
 
 
 gsl_matrix * m11;
@@ -1422,55 +1446,71 @@ int test_QRPT_QRsolve(void)
 }
 
 int
-test_QRPT_decomp_dim(const gsl_matrix * m, double eps)
+test_QRPT_decomp_dim(const gsl_matrix * m, const double expected_rcond, double eps)
 {
   int s = 0, signum;
   unsigned long i,j, M = m->size1, N = m->size2;
 
-  gsl_matrix * qr = gsl_matrix_alloc(M,N);
-  gsl_matrix * a  = gsl_matrix_alloc(M,N);
-  gsl_matrix * q  = gsl_matrix_alloc(M,M);
-  gsl_matrix * r  = gsl_matrix_alloc(M,N);
-  gsl_vector * d = gsl_vector_alloc(GSL_MIN(M,N));
+  gsl_matrix * QR = gsl_matrix_alloc(M, N);
+  gsl_matrix * A  = gsl_matrix_alloc(M, N);
+  gsl_matrix * Q  = gsl_matrix_alloc(M, M);
+  gsl_matrix * R  = gsl_matrix_alloc(M, N);
+  gsl_vector * tau = gsl_vector_alloc(GSL_MIN(M, N));
   gsl_vector * norm = gsl_vector_alloc(N);
 
   gsl_permutation * perm = gsl_permutation_alloc(N);
 
-  gsl_matrix_memcpy(qr,m);
+  gsl_matrix_memcpy(QR, m);
+  s += gsl_linalg_QRPT_decomp(QR, tau, perm, &signum, norm);
+  s += gsl_linalg_QR_unpack(QR, tau, Q, R);
 
-  s += gsl_linalg_QRPT_decomp(qr, d, perm, &signum, norm);
-  s += gsl_linalg_QR_unpack(qr, d, q, r);
-
-  /* compute a = q r */
-  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, q, r, 0.0, a);
-
+  /* compute A = Q R */
+  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, Q, R, 0.0, A);
 
   /* Compute QR P^T by permuting the elements of the rows of QR */
 
-  for (i = 0; i < M; i++) {
-    gsl_vector_view row = gsl_matrix_row (a, i);
-    gsl_permute_vector_inverse (perm, &row.vector);
-  }
-
-  for(i=0; i<M; i++) {
-    for(j=0; j<N; j++) {
-      double aij = gsl_matrix_get(a, i, j);
-      double mij = gsl_matrix_get(m, i, j);
-      int foo = check(aij, mij, eps);
-      if(foo) {
-        printf("(%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", M, N, i,j, aij, mij);
-      }
-      s += foo;
+  for (i = 0; i < M; i++)
+    {
+      gsl_vector_view row = gsl_matrix_row (A, i);
+      gsl_permute_vector_inverse (perm, &row.vector);
     }
-  }
+
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          double aij = gsl_matrix_get(A, i, j);
+          double mij = gsl_matrix_get(m, i, j);
+          int foo = check(aij, mij, eps);
+          if(foo)
+            printf("(%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", M, N, i,j, aij, mij);
+          s += foo;
+        }
+    }
+
+  if (expected_rcond > 0.0)
+    {
+      double rcond;
+      int foo;
+      gsl_vector * work = gsl_vector_alloc(3 * N);
+
+      gsl_linalg_QRPT_rcond(QR, &rcond, work);
+      foo = check(rcond, expected_rcond, 1.0e-10);
+      if (foo)
+        printf("QRPT_rcond (%3lu,%3lu): %22.18g   %22.18g\n", M, N, rcond, expected_rcond);
+
+      s += foo;
+
+      gsl_vector_free(work);
+    }
 
   gsl_permutation_free (perm);
   gsl_vector_free(norm);
-  gsl_vector_free(d);
-  gsl_matrix_free(qr);
-  gsl_matrix_free(a);
-  gsl_matrix_free(q);
-  gsl_matrix_free(r);
+  gsl_vector_free(tau);
+  gsl_matrix_free(QR);
+  gsl_matrix_free(A);
+  gsl_matrix_free(Q);
+  gsl_matrix_free(R);
 
   return s;
 }
@@ -1480,51 +1520,52 @@ int test_QRPT_decomp(void)
   int f;
   int s = 0;
 
-  f = test_QRPT_decomp_dim(m35, 2 * 8.0 * GSL_DBL_EPSILON);
+  f = test_QRPT_decomp_dim(m35, -1.0, 2 * 8.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QRPT_decomp m(3,5)");
   s += f;
 
-  f = test_QRPT_decomp_dim(m53, 2 * 8.0 * GSL_DBL_EPSILON);
+  /* rcond value from LAPACK DTRCON */
+  f = test_QRPT_decomp_dim(m53, 2.915362697820e-03, 2 * 8.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QRPT_decomp m(5,3)");
   s += f;
 
-  f = test_QRPT_decomp_dim(s35, 2 * 8.0 * GSL_DBL_EPSILON);
+  f = test_QRPT_decomp_dim(s35, -1.0, 2 * 8.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QRPT_decomp s(3,5)");
   s += f;
 
-  f = test_QRPT_decomp_dim(s53, 2 * 8.0 * GSL_DBL_EPSILON);
+  f = test_QRPT_decomp_dim(s53, 1.002045825443827e-03, 2 * 8.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QRPT_decomp s(5,3)");
   s += f;
 
-  f = test_QRPT_decomp_dim(hilb2, 2 * 8.0 * GSL_DBL_EPSILON);
+  f = test_QRPT_decomp_dim(hilb2, 4.347826086956522e-02, 2 * 8.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QRPT_decomp hilbert(2)");
   s += f;
 
-  f = test_QRPT_decomp_dim(hilb3, 2 * 64.0 * GSL_DBL_EPSILON);
+  f = test_QRPT_decomp_dim(hilb3, 1.505488055305100e-03, 2 * 64.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QRPT_decomp hilbert(3)");
   s += f;
 
-  f = test_QRPT_decomp_dim(hilb4, 2 * 1024.0 * GSL_DBL_EPSILON);
+  f = test_QRPT_decomp_dim(hilb4, 4.872100915910022e-05, 2 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QRPT_decomp hilbert(4)");
   s += f;
 
-  f = test_QRPT_decomp_dim(hilb12, 2 * 1024.0 * GSL_DBL_EPSILON);
+  f = test_QRPT_decomp_dim(hilb12, -1.0, 2 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QRPT_decomp hilbert(12)");
   s += f;
 
-  f = test_QRPT_decomp_dim(vander2, 8.0 * GSL_DBL_EPSILON);
+  f = test_QRPT_decomp_dim(vander2, 1.249999999999999e-01, 8.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QRPT_decomp vander(2)");
   s += f;
 
-  f = test_QRPT_decomp_dim(vander3, 64.0 * GSL_DBL_EPSILON);
+  f = test_QRPT_decomp_dim(vander3, 9.708737864077667e-03, 64.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QRPT_decomp vander(3)");
   s += f;
 
-  f = test_QRPT_decomp_dim(vander4, 1024.0 * GSL_DBL_EPSILON);
+  f = test_QRPT_decomp_dim(vander4, 5.255631229339451e-04, 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QRPT_decomp vander(4)");
   s += f;
 
-  f = test_QRPT_decomp_dim(vander12, 0.0005); /* FIXME: bad accuracy */
+  f = test_QRPT_decomp_dim(vander12, -1.0, 0.0005); /* FIXME: bad accuracy */
   gsl_test(f, "  QRPT_decomp vander(12)");
   s += f;
 
@@ -3783,152 +3824,6 @@ test_cholesky_solve(void)
   return s;
 }
 
-#if 0
-
-int
-test_cholesky_decomp_dim(const gsl_matrix * m, double eps)
-{
-  int s = 0;
-  unsigned long i,j, M = m->size1, N = m->size2;
-
-  gsl_matrix * v  = gsl_matrix_alloc(M,N);
-  gsl_matrix * a  = gsl_matrix_alloc(M,N);
-  gsl_matrix * l  = gsl_matrix_alloc(M,N);
-  gsl_matrix * lt  = gsl_matrix_alloc(N,N);
-
-  gsl_matrix_memcpy(v,m);
-
-  s += gsl_linalg_cholesky_decomp(v);
-  
-  /* Compute L LT */
-  
-  for (i = 0; i < N ; i++)
-    {
-      for (j = 0; j < N; j++)
-        {
-          double vij = gsl_matrix_get(v, i, j);
-          gsl_matrix_set (l, i, j, i>=j ? vij : 0);
-          gsl_matrix_set (lt, i, j, i<=j ? vij : 0);
-        }
-    }
-            
-  /* compute a = l lt */
-  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, l, lt, 0.0, a);
-
-  for(i=0; i<M; i++) {
-    for(j=0; j<N; j++) {
-      double aij = gsl_matrix_get(a, i, j);
-      double mij = gsl_matrix_get(m, i, j);
-      int foo = check(aij, mij, eps);
-      if(foo) {
-        printf("(%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", M, N, i,j, aij, mij);
-      }
-      s += foo;
-    }
-  }
-
-  gsl_matrix_free(v);
-  gsl_matrix_free(a);
-  gsl_matrix_free(l);
-  gsl_matrix_free(lt);
-
-  return s;
-}
-
-int test_cholesky_decomp(void)
-{
-  int f;
-  int s = 0;
-
-  f = test_cholesky_decomp_dim(hilb2, 2 * 8.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  cholesky_decomp hilbert(2)");
-  s += f;
-
-  f = test_cholesky_decomp_dim(hilb3, 2 * 64.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  cholesky_decomp hilbert(3)");
-  s += f;
-
-  f = test_cholesky_decomp_dim(hilb4, 2 * 1024.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  cholesky_decomp hilbert(4)");
-  s += f;
-
-  f = test_cholesky_decomp_dim(hilb12, 2 * 1024.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  cholesky_decomp hilbert(12)");
-  s += f;
-
-  return s;
-}
-
-#endif
-
-int
-test_cholesky_invert_dim(const gsl_matrix * m, double eps)
-{
-  int s = 0;
-  unsigned long i, j, N = m->size1;
-
-  gsl_matrix * v  = gsl_matrix_alloc(N, N);
-  gsl_matrix * c  = gsl_matrix_alloc(N, N);
-
-  gsl_matrix_memcpy(v,m);
-
-  s += gsl_linalg_cholesky_decomp(v);
-  s += gsl_linalg_cholesky_invert(v);
-
-  gsl_blas_dsymm(CblasLeft, CblasUpper, 1.0, m, v, 0.0, c);
-
-  /* c should be the identity matrix */
-
-  for (i = 0; i < N; ++i)
-    {
-      for (j = 0; j < N; ++j)
-        {
-          int foo;
-          double cij = gsl_matrix_get(c, i, j);
-          double expected;
-
-          if (i == j)
-            expected = 1.0;
-          else
-            expected = 0.0;
-
-          foo = check(cij, expected, eps);
-
-          if (foo)
-            printf("(%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", N, N, i,j, cij, expected);
-
-          s += foo;
-        }
-    }
-
-  gsl_matrix_free(v);
-  gsl_matrix_free(c);
-
-  return s;
-}
-
-int
-test_cholesky_invert(void)
-{
-  int f;
-  int s = 0;
-
-  f = test_cholesky_invert_dim(hilb2, 2 * 8.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  cholesky_invert hilbert(2)");
-  s += f;
-
-  f = test_cholesky_invert_dim(hilb3, 2 * 64.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  cholesky_invert hilbert(3)");
-  s += f;
-
-  f = test_cholesky_invert_dim(hilb4, 2 * 1024.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  cholesky_invert hilbert(4)");
-  s += f;
-
-  return s;
-}
-
-
 int
 test_cholesky_decomp_unit_dim(const gsl_matrix * m, double eps)
 {
@@ -4771,6 +4666,74 @@ int test_bidiag_decomp(void)
   return s;
 }
 
+int
+test_tri_invert2(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_rng * r, const double tol)
+{
+  const size_t N_max = 30;
+  int s = 0;
+  size_t n, i, j;
+  int (*invert_func) (gsl_matrix * T) = NULL;
+
+  if (Uplo == CblasUpper && Diag == CblasNonUnit)
+    invert_func = gsl_linalg_tri_upper_invert;
+  else if (Uplo == CblasLower && Diag == CblasNonUnit)
+    invert_func = gsl_linalg_tri_lower_invert;
+  else if (Uplo == CblasUpper && Diag == CblasUnit)
+    invert_func = gsl_linalg_tri_upper_unit_invert;
+  else if (Uplo == CblasLower && Diag == CblasUnit)
+    invert_func = gsl_linalg_tri_lower_unit_invert;
+
+  for (n = 1; n <= N_max; ++n)
+    {
+      gsl_matrix *T = gsl_matrix_alloc(n, n);
+      gsl_matrix *B = gsl_matrix_alloc(n, n);
+
+      /* generate random triangular matrix */
+      create_tri_matrix(Uplo, Diag, T, r);
+
+      /* compute B = T^{-1} */
+      gsl_matrix_memcpy(B, T);
+      (invert_func)(B);
+
+      /* compute B = T * T^{-1} */
+      gsl_blas_dtrmm(CblasLeft, Uplo, CblasNoTrans, Diag, 1.0, T, B);
+
+      /* test B = I */
+      for (i = 0; i < n; ++i)
+        {
+          for (j = 0; j < n; ++j)
+            {
+              double Bij = gsl_matrix_get(B, i, j);
+              double expected = (i == j) ? 1.0 : 0.0;
+
+              gsl_test_rel(Bij, expected, tol, "tri_invert N=%zu %s %s",
+                           n,
+                           (Uplo == CblasUpper) ? "Upper" : "Lower",
+                           (Diag == CblasNonUnit) ? "NonUnit" : "Unit");
+            }
+        }
+
+      gsl_matrix_free(T);
+      gsl_matrix_free(B);
+    }
+
+  return s;
+}
+
+int
+test_tri_invert(gsl_rng * r)
+{
+  int s = 0;
+
+  s += test_tri_invert2(CblasLower, CblasNonUnit, r, 1.0e-10);
+  s += test_tri_invert2(CblasLower, CblasUnit, r, 1.0e-10);
+
+  s += test_tri_invert2(CblasUpper, CblasNonUnit, r, 1.0e-10);
+  s += test_tri_invert2(CblasUpper, CblasUnit, r, 1.0e-10);
+
+  return s;
+}
+
 void
 my_error_handler (const char *reason, const char *file, int line, int err)
 {
@@ -4841,6 +4804,9 @@ main(void)
   gsl_test(test_matmult(),               "Matrix Multiply"); 
   gsl_test(test_matmult_mod(),           "Matrix Multiply with Modification"); 
 #endif
+
+  gsl_test(test_tri_invert(r),           "Triangular Inverse");
+
   gsl_test(test_bidiag_decomp(),         "Bidiagonal Decomposition");
   gsl_test(test_LU_solve(),              "LU Decomposition and Solve");
   gsl_test(test_LUc_solve(),             "Complex LU Decomposition and Solve");
@@ -4874,16 +4840,17 @@ main(void)
   gsl_test(test_SV_decomp_mod(),         "Singular Value Decomposition (Mod)");
   gsl_test(test_SV_solve(),              "SVD Solve");
 
-  /*gsl_test(test_cholesky_decomp(),       "Cholesky Decomposition");*/
   gsl_test(test_cholesky_decomp_unit(),  "Cholesky Decomposition [unit triangular]");
   gsl_test(test_cholesky_solve(),        "Cholesky Solve");
-  gsl_test(test_cholesky_invert(),       "Cholesky Inverse");
 
   gsl_test(test_cholesky_decomp(r),      "Cholesky Decomposition");
+  gsl_test(test_cholesky_invert(r),      "Cholesky Inverse");
   gsl_test(test_pcholesky_decomp(r),     "Pivoted Cholesky Decomposition");
   gsl_test(test_pcholesky_solve(r),      "Pivoted Cholesky Solve");
+  gsl_test(test_pcholesky_invert(r),     "Pivoted Cholesky Inverse");
   gsl_test(test_mcholesky_decomp(r),     "Modified Cholesky Decomposition");
   gsl_test(test_mcholesky_solve(r),      "Modified Cholesky Solve");
+  gsl_test(test_mcholesky_invert(r),     "Modified Cholesky Inverse");
 
   gsl_test(test_choleskyc_decomp(),      "Complex Cholesky Decomposition");
   gsl_test(test_choleskyc_solve(),       "Complex Cholesky Solve");

@@ -67,6 +67,7 @@ typedef struct
 static void * cgst_alloc (const void * params, const size_t n, const size_t p);
 static void cgst_free(void *vstate);
 static int cgst_init(const void *vtrust_state, void *vstate);
+static int cgst_preloop(const void * vtrust_state, void * vstate);
 static int cgst_step(const void * vtrust_state, const double delta,
                      gsl_vector * dx, void * vstate);
 static int cgst_preduction(const void * vtrust_state, const gsl_vector * dx,
@@ -172,6 +173,17 @@ cgst_init(const void *vtrust_state, void *vstate)
   return GSL_SUCCESS;
 }
 
+static int
+cgst_preloop(const void * vtrust_state, void * vstate)
+{
+  /* nothing to do */
+
+  (void)vtrust_state;
+  (void)vstate;
+
+  return GSL_SUCCESS;
+}
+
 /*
 cgst_step()
   Calculate a new step vector
@@ -231,7 +243,7 @@ cgst_step(const void * vtrust_state, const double delta,
       /* workn := J D^{-1} d_i */
       status = gsl_multilarge_nlinear_eval_df(CblasNoTrans, x, f, state->workp,
                                               swts, params->h_df, params->fdtype,
-                                              fdf, state->workn, NULL);
+                                              fdf, state->workn, NULL, NULL);
       if (status)
         return status;
 
@@ -280,7 +292,7 @@ cgst_step(const void * vtrust_state, const double delta,
        * where J D^{-1} d_i is already stored in workn */
       status = gsl_multilarge_nlinear_eval_df(CblasTrans, x, f, state->workn,
                                               swts, params->h_df, params->fdtype,
-                                              fdf, state->workp, NULL);
+                                              fdf, state->workp, NULL, NULL);
       if (status)
         return status;
 
@@ -361,6 +373,7 @@ static const gsl_multilarge_nlinear_trs cgst_type =
   "steihaug-toint",
   cgst_alloc,
   cgst_init,
+  cgst_preloop,
   cgst_step,
   cgst_preduction,
   cgst_free

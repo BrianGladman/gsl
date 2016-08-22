@@ -1800,6 +1800,30 @@
     <ClCompile Include="..\..\randist\mvgauss.c">
       <Filter>randist</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\linalg\condest.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\linalg\invtri.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\multilarge_nlinear\cholesky.c">
+      <Filter>multilarge_nlinear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\multilarge_nlinear\dogleg.c">
+      <Filter>multilarge_nlinear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\multilarge_nlinear\dummy.c">
+      <Filter>multilarge_nlinear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\multilarge_nlinear\lm.c">
+      <Filter>multilarge_nlinear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\multilarge_nlinear\nielsen.c">
+      <Filter>multilarge_nlinear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\multilarge_nlinear\scaling.c">
+      <Filter>multilarge_nlinear</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\histogram\gsl_histogram.h">

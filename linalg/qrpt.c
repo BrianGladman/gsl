@@ -28,8 +28,6 @@
 
 #include <gsl/gsl_linalg.h>
 
-#define REAL double
-
 #include "apply_givens.c"
 
 /* Factorise a general M x N matrix A into
@@ -617,4 +615,29 @@ gsl_linalg_QRPT_rank (const gsl_matrix * QR, const double tol)
     }
 
   return r;
+}
+
+int
+gsl_linalg_QRPT_rcond(const gsl_matrix * QR, double * rcond, gsl_vector * work)
+{
+  const size_t M = QR->size1;
+  const size_t N = QR->size2;
+
+  if (M < N)
+    {
+      GSL_ERROR ("M must be >= N", GSL_EBADLEN);
+    }
+  else if (work->size != 3 * N)
+    {
+      GSL_ERROR ("work vector must have length 3*N", GSL_EBADLEN);
+    }
+  else
+    {
+      gsl_matrix_const_view R = gsl_matrix_const_submatrix (QR, 0, 0, N, N);
+      int status;
+
+      status = gsl_linalg_tri_upper_rcond(&R.matrix, rcond, work);
+
+      return status;
+    }
 }

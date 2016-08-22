@@ -85,7 +85,8 @@ kowalik_f (const gsl_vector * x, void *params, gsl_vector * f)
 
 static int
 kowalik_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
-            const gsl_vector * u, void * params, gsl_vector * v)
+            const gsl_vector * u, void * params, gsl_vector * v,
+            gsl_matrix * JTJ)
 {
   gsl_matrix_view J = gsl_matrix_view_array(kowalik_J, kowalik_N, kowalik_P);
   double x1 = gsl_vector_get(x, 0);
@@ -106,7 +107,11 @@ kowalik_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
       gsl_matrix_set(&J.matrix, i, 3, term1*x1 / (term2*term2));
     }
 
-  gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+  if (v)
+    gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+
+  if (JTJ)
+    gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
 
   (void)params; /* avoid unused parameter warning */
 
@@ -152,6 +157,7 @@ static gsl_multilarge_nlinear_fdf kowalik_func =
   kowalik_N,
   kowalik_P,
   NULL,
+  0,
   0,
   0,
   0

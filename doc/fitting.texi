@@ -704,8 +704,8 @@ operator of order @math{k}. This regularization norm can be useful in applicatio
 it is necessary to smooth several derivatives of the solution. @var{p} is the number of
 model parameters, @var{kmax} is the highest derivative to include in the summation above, and
 @var{alpha} is the vector of weights of size @var{kmax} + 1, where @var{alpha}[k] = @math{\alpha_k}
-is the weight assigned to the derivative of order @math{k}.  The output matrix @var{L} is of size
-@var{p}-by-@var{p}.
+is the weight assigned to the derivative of order @math{k}.  The output matrix @var{L} is size
+@var{p}-by-@var{p} and upper triangular.
 @end deftypefun
 
 @deftypefun double gsl_multifit_linear_rcond (const gsl_multifit_linear_workspace * @var{work})

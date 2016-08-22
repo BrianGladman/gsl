@@ -60,7 +60,8 @@ penalty2_f (const gsl_vector * x, void *params, gsl_vector * f)
 
 static int
 penalty2_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
-             const gsl_vector * u, void * params, gsl_vector * v)
+             const gsl_vector * u, void * params, gsl_vector * v,
+             gsl_matrix * JTJ)
 {
   gsl_matrix_view J = gsl_matrix_view_array(penalty2_J, penalty2_N, penalty2_P);
   const double alpha = 1.0e-5;
@@ -107,7 +108,11 @@ penalty2_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
         }
     }
 
-  gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+  if (v)
+    gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+
+  if (JTJ)
+    gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
 
   (void)params; /* avoid unused parameter warning */
 
@@ -168,6 +173,7 @@ static gsl_multilarge_nlinear_fdf penalty2_func =
   penalty2_N,
   penalty2_P,
   NULL,
+  0,
   0,
   0,
   0

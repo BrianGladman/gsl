@@ -1,6 +1,6 @@
 /* normal.c
  * 
- * Copyright (C) 2015 Patrick Alken
+ * Copyright (C) 2015, 2016 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,20 +27,23 @@
 #include <gsl/gsl_eigen.h>
 #include <gsl/gsl_multifit.h>
 #include <gsl/gsl_multilarge.h>
+#include <gsl/gsl_permutation.h>
 
 typedef struct
 {
-  size_t p;             /* number of columns of LS matrix */
-  gsl_matrix *ATA;      /* A^T A, p-by-p */
-  gsl_vector *ATb;      /* A^T b, p-by-1 */
-  double normb;         /* || b || */
-  gsl_matrix *work_ATA; /* workspace for chol(ATA), p-by-p */
-  gsl_vector *workp;    /* workspace size p */
-  gsl_vector *D;        /* scale factors for ATA, size p */
-  gsl_vector *c;        /* solution vector for L-curve */
-  int eigen;            /* 1 if eigenvalues computed */
-  double eval_min;      /* minimum eigenvalue */
-  double eval_max;      /* maximum eigenvalue */
+  size_t p;              /* number of columns of LS matrix */
+  gsl_matrix *ATA;       /* A^T A, p-by-p */
+  gsl_vector *ATb;       /* A^T b, p-by-1 */
+  double normb;          /* || b || */
+  gsl_matrix *work_ATA;  /* workspace for chol(ATA), p-by-p */
+  gsl_permutation *perm; /* permutation vector */
+  gsl_vector *workp;     /* workspace size p */
+  gsl_vector *work3p;    /* workspace size 3*p */
+  gsl_vector *D;         /* scale factors for ATA, size p */
+  gsl_vector *c;         /* solution vector for L-curve */
+  int eigen;             /* 1 if eigenvalues computed */
+  double eval_min;       /* minimum eigenvalue */
+  double eval_max;       /* maximum eigenvalue */
   gsl_eigen_symm_workspace *eigen_p;
 } normal_state_t;
 
@@ -59,8 +62,6 @@ static int normal_solve_system(const double lambda, gsl_vector * x,
                                normal_state_t *state);
 static int normal_solve_cholesky(gsl_matrix * ATA, const gsl_vector * ATb,
                                  gsl_vector * x, normal_state_t *state);
-static int normal_solve_QR(gsl_matrix * ATA, const gsl_vector * ATb,
-                           gsl_vector * x, normal_state_t *state);
 static int normal_calc_norms(const gsl_vector *x, double *rnorm,
                              double *snorm, normal_state_t *state);
 static int normal_eigen(normal_state_t *state);
@@ -115,6 +116,13 @@ normal_alloc(const size_t p)
       GSL_ERROR_NULL("failed to allocate ATb vector", GSL_ENOMEM);
     }
 
+  state->perm = gsl_permutation_alloc(p);
+  if (state->perm == NULL)
+    {
+      normal_free(state);
+      GSL_ERROR_NULL("failed to allocate perm", GSL_ENOMEM);
+    }
+
   state->D = gsl_vector_alloc(p);
   if (state->D == NULL)
     {
@@ -127,6 +135,13 @@ normal_alloc(const size_t p)
     {
       normal_free(state);
       GSL_ERROR_NULL("failed to allocate temporary ATb vector", GSL_ENOMEM);
+    }
+
+  state->work3p = gsl_vector_alloc(3 * p);
+  if (state->work3p == NULL)
+    {
+      normal_free(state);
+      GSL_ERROR_NULL("failed to allocate work3p", GSL_ENOMEM);
     }
 
   state->c = gsl_vector_alloc(p);
@@ -142,6 +157,8 @@ normal_alloc(const size_t p)
       normal_free(state);
       GSL_ERROR_NULL("failed to allocate eigen workspace", GSL_ENOMEM);
     }
+
+  normal_reset(state);
 
   return state;
 }
@@ -160,11 +177,17 @@ normal_free(void *vstate)
   if (state->ATb)
     gsl_vector_free(state->ATb);
 
+  if (state->perm)
+    gsl_permutation_free(state->perm);
+
   if (state->D)
     gsl_vector_free(state->D);
 
   if (state->workp)
     gsl_vector_free(state->workp);
+
+  if (state->work3p)
+    gsl_vector_free(state->work3p);
 
   if (state->c)
     gsl_vector_free(state->c);
@@ -286,30 +309,14 @@ static int
 normal_rcond(double * rcond, void * vstate)
 {
   normal_state_t *state = (normal_state_t *) vstate;
-  int status;
+  int status = GSL_SUCCESS;
+  double rcond_ATA;
 
-  /* compute eigenvalues of A^T A */
-  if (state->eigen == 0)
-    {
-      status = normal_eigen(state);
-      if (status)
-        return status;
-    }
+  status = gsl_linalg_pcholesky_rcond(state->work_ATA, state->perm, &rcond_ATA, state->work3p);
+  if (status == GSL_SUCCESS)
+    *rcond = sqrt(rcond_ATA);
 
-  if (state->eval_max > 0.0 && state->eval_min > 0.0)
-    {
-      *rcond = sqrt(state->eval_min / state->eval_max);
-    }
-  else
-    {
-      /*
-       * computed eigenvalues are not accurate, probably due
-       * to rounding errors in forming A^T A
-       */
-      *rcond = 0.0;
-    }
-
-  return GSL_SUCCESS;
+  return status;
 }
 
 /*
@@ -381,8 +388,7 @@ normal_solve_system()
 
 (A^T A + lambda^2*I) x = A^T b
 
-First we try Cholesky decomposition. If that
-fails, try QR
+using LDL decomposition.
 
 Inputs: x     - (output) solution vector
         state - workspace
@@ -396,28 +402,15 @@ normal_solve_system(const double lambda, gsl_vector * x, normal_state_t *state)
   int status;
   const double lambda_sq = lambda * lambda;
   gsl_vector_view d = gsl_matrix_diagonal(state->work_ATA);
-  gsl_error_handler_t *err_handler;
 
   /* copy ATA matrix to temporary workspace and regularize */
   gsl_matrix_tricpy('L', 1, state->work_ATA, state->ATA);
   gsl_vector_add_constant(&d.vector, lambda_sq);
 
-  /* turn off error handler in case Cholesky fails */
-  err_handler = gsl_set_error_handler_off();
-
-  /* try Cholesky decomposition first */
+  /* solve with LDL decomposition */
   status = normal_solve_cholesky(state->work_ATA, state->ATb, x, state);
   if (status)
-    {
-      /* restore ATA matrix and try QR decomposition */
-      gsl_matrix_tricpy('L', 1, state->work_ATA, state->ATA);
-      gsl_vector_add_constant(&d.vector, lambda_sq);
-
-      status = normal_solve_QR(state->work_ATA, state->ATb, x, state);
-    }
-
-  /* restore error handler */
-  gsl_set_error_handler(err_handler);
+    return status;
 
   return status;
 }
@@ -428,47 +421,13 @@ normal_solve_cholesky(gsl_matrix * ATA, const gsl_vector * ATb,
 {
   int status;
 
-  /* compute Cholesky decomposition of A^T A with scaling */
-  status = gsl_linalg_cholesky_decomp2(ATA, state->D);
+  status = gsl_linalg_pcholesky_decomp2(ATA, state->perm, state->D);
   if (status)
     return status;
 
-  status = gsl_linalg_cholesky_solve2(ATA, state->D, ATb, x);
+  status = gsl_linalg_pcholesky_solve2(ATA, state->perm, state->D, ATb, x);
   if (status)
     return status;
-
-  return GSL_SUCCESS;
-}
-
-static int
-normal_solve_QR(gsl_matrix * ATA, const gsl_vector * ATb,
-                gsl_vector * x, normal_state_t *state)
-{
-  int status;
-
-  /* scale: ATA <- diag(D) ATA diag(D) to try to reduce cond(ATA) */
-  status = gsl_linalg_cholesky_scale(ATA, state->D);
-  if (status)
-    return status;
-
-  /* copy lower triangle of ATA to upper */
-  gsl_matrix_transpose_tricpy('L', 0, ATA, ATA);
-
-  status = gsl_linalg_QR_decomp(ATA, state->workp);
-  if (status)
-    return status;
-
-  /* scale rhs vector: ATb <- diag(D) ATb */
-  gsl_vector_memcpy(x, ATb);
-  gsl_vector_mul(x, state->D);
-
-  /* solve system */
-  status = gsl_linalg_QR_svx(ATA, state->workp, x);
-  if (status)
-    return status;
-
-  /* undo scaling */
-  gsl_vector_mul(x, state->D);
 
   return GSL_SUCCESS;
 }

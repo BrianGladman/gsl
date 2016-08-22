@@ -44,7 +44,8 @@ powell1_f (const gsl_vector * x, void *params, gsl_vector * f)
 
 static int
 powell1_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
-            const gsl_vector * u, void * params, gsl_vector * v)
+            const gsl_vector * u, void * params, gsl_vector * v,
+            gsl_matrix * JTJ)
 {
   gsl_matrix_view J = gsl_matrix_view_array(powell1_J, powell1_N, powell1_P);
   double x1 = gsl_vector_get (x, 0);
@@ -74,7 +75,11 @@ powell1_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
   gsl_matrix_set(&J.matrix, 3, 2, 0.0);
   gsl_matrix_set(&J.matrix, 3, 3, -2.0*sqrt(10.0)*term2);
 
-  gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+  if (v)
+    gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+
+  if (JTJ)
+    gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
 
   (void)params; /* avoid unused parameter warning */
 
@@ -109,6 +114,7 @@ static gsl_multilarge_nlinear_fdf powell1_func =
   powell1_N,
   powell1_P,
   NULL,
+  0,
   0,
   0,
   0

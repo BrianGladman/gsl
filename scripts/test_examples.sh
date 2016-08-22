@@ -87,6 +87,8 @@ dotest multiset multiset.txt "" ""
 dotest nlfit nlfit.txt nlfit.err ""
 dotest nlfit2 nlfit2.txt nlfit2.err ""
 dotest nlfit3 nlfit3.txt nlfit3.err ""
+# Times will be different for nlfit4
+#dotest nlfit4 nlfit4.txt nlfit4.err ""
 dotest ode-initval ode-initval.txt "" ""
 dotest permseq permseq.txt "" ""
 dotest permshuffle permshuffle.txt "" ""

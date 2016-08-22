@@ -1,5 +1,6 @@
-1. different mu update methods
-2. cleanup trust.c (scale_Jg)
-3. rewrite qrsolv
-4. add Transtrum and Sethna 2012 reference to linear leats squares docs
-5. More/Sorensen method for mu calculation
+1. cleanup trust.c (scale_Jg)
+2. rewrite qrsolv
+3. More/Sorensen method for mu calculation
+4. better condition estimate for svd
+5. fix subspace2D
+6. Revisit h_fvv = 0.01 vs 0.02 (originally 0.01)

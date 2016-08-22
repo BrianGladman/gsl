@@ -1,7 +1,8 @@
 === Method tsqr ===
-matrix condition number = 1.421672e+11
-residual norm  = 3.441976e+01
-solution norm  = 6.578760e+09
+condition number = 1.421672e+11
+residual norm    = 3.441976e+01
+solution norm    = 6.578759e+09
 === Method normal ===
-residual norm  = 5.175067e+01
-solution norm  = 2.143031e+06
+condition number = 9.150519e+09
+residual norm    = 5.186040e+01
+solution norm    = 1.853208e+06

@@ -76,7 +76,7 @@ callback(const size_t iter, void *params,
   /* compute reciprocal condition number of J(x) */
   gsl_multifit_nlinear_rcond(&rcond, w);
 
-  fprintf(stderr, "iter %zu: A = %.4f, lambda = %.4f, b = %.4f, cond(J) = %.4f, |f(x)| = %.4f\n",
+  fprintf(stderr, "iter %2zu: A = %.4f, lambda = %.4f, b = %.4f, cond(J) = %8.4f, |f(x)| = %.4f\n",
           iter,
           gsl_vector_get(x, 0),
           gsl_vector_get(x, 1),

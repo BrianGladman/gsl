@@ -1,11 +1,28 @@
 * What is new in gsl-2.2:
 
+** updated gsl_linalg_cholesky_invert to use Level-2 BLAS
+   and added function gsl_linalg_pcholesky_invert
+
+** added function gsl_linalg_invtri for inverting
+   triangular matrices
+
+** fix GSL_EIGEN_SORT_VAL_{ASC,DESC} for nonsymmetric
+   eigensystems (Victor Zverovich)
+
+** added complete orthogonal decomposition routines
+   (gsl_linalg_COD)
+
 ** bug fix where median calculation wasn't reset in
    gsl_rstat_reset(); added gsl_rstat_quantile_reset() function
    (reported by Pedro Donato)
 
 ** added multivariate Gaussian random distribution
    gsl_ran_multivariate_gaussian (Timothée Flutre)
+
+** added functions to estimate the 1-norm reciprocal condition
+   number for various matrix factorizations:
+     * gsl_linalg_cholesky_rcond
+     * gsl_linalg_QRPT_rcond
 
 ** added functions gsl_linalg_QRPT_{lssolve,lssolve2} to
    compute least squares solutions with the QRPT decomposition

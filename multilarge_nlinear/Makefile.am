@@ -2,12 +2,13 @@ noinst_LTLIBRARIES = libgslmultilarge_nlinear.la
 
 pkginclude_HEADERS = gsl_multilarge_nlinear.h
 
-libgslmultilarge_nlinear_la_SOURCES = cgst.c convergence.c fdf.c trust.c
+libgslmultilarge_nlinear_la_SOURCES = cgst.c cholesky.c convergence.c dogleg.c dummy.c fdf.c lm.c scaling.c trust.c
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
 noinst_HEADERS =     \
 common.c             \
+nielsen.c            \
 test_fdf.c           \
 test_bard.c          \
 test_beale.c         \
@@ -53,4 +54,4 @@ check_PROGRAMS = test
 TESTS = $(check_PROGRAMS)
 
 test_SOURCES = test.c
-test_LDADD = libgslmultilarge_nlinear.la ../test/libgsltest.la ../multilarge/libgslmultilarge.la ../multifit/libgslmultifit.la ../eigen/libgsleigen.la ../linalg/libgsllinalg.la ../blas/libgslblas.la ../cblas/libgslcblas.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la  ../sys/libgslsys.la ../utils/libutils.la ../rng/libgslrng.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../complex/libgslcomplex.la
+test_LDADD = libgslmultilarge_nlinear.la ../test/libgsltest.la ../multilarge/libgslmultilarge.la ../multifit/libgslmultifit.la ../eigen/libgsleigen.la ../linalg/libgsllinalg.la ../permutation/libgslpermutation.la ../blas/libgslblas.la ../cblas/libgslcblas.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la  ../sys/libgslsys.la ../utils/libutils.la ../rng/libgslrng.la ../ieee-utils/libgslieeeutils.la ../err/libgslerr.la ../complex/libgslcomplex.la

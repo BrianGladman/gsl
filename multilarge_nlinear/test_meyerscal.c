@@ -56,7 +56,8 @@ meyerscal_f (const gsl_vector * x, void *params, gsl_vector * f)
 
 static int
 meyerscal_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
-              const gsl_vector * u, void * params, gsl_vector * v)
+              const gsl_vector * u, void * params, gsl_vector * v,
+              gsl_matrix * JTJ)
 {
   gsl_matrix_view J = gsl_matrix_view_array(meyerscal_J, meyerscal_N, meyerscal_P);
   double x1 = gsl_vector_get(x, 0);
@@ -75,7 +76,11 @@ meyerscal_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
       gsl_matrix_set(&J.matrix, i, 2, -10.0*x1*x2*term2/(term1*term1));
     }
 
-  gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+  if (v)
+    gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+
+  if (JTJ)
+    gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
 
   (void)params; /* avoid unused parameter warning */
 
@@ -121,6 +126,7 @@ static gsl_multilarge_nlinear_fdf meyerscal_func =
   meyerscal_N,
   meyerscal_P,
   NULL,
+  0,
   0,
   0,
   0

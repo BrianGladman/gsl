@@ -73,14 +73,13 @@ static void test_fdf(const gsl_multifit_nlinear_type * T,
                      const gsl_multifit_nlinear_parameters * params,
                      const double xtol, const double gtol,
                      const double ftol,
-                     const double epsrel, const double x0_scale,
+                     const double epsrel,
                      test_fdf_problem *problem,
                      const double *wts);
 static void test_fdf_checksol(const char *sname, const char *pname,
                               const double epsrel,
                               gsl_multifit_nlinear_workspace *s,
                               test_fdf_problem *problem);
-static void test_scale_x0(gsl_vector *x0, const double scale);
 
 /*
  * FIXME: some test problems are disabled since they fail on certain
@@ -193,24 +192,21 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
       double epsrel = *(problem->epsrel);
       gsl_multifit_nlinear_fdf fdf;
 
-#if 0 /* XXX */
-      /* XXX FIXME: lin2 problem doesn't work with Cholesky solver */
-      if (params->solver == gsl_multifit_nlinear_solver_cholesky &&
-          problem == &lin2_problem)
-        continue;
-#endif
-
       test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
-               epsrel, 1.0, problem, NULL);
+               epsrel, problem, NULL);
 
-      /* test finite difference Jacobian */
-      fdf.df = problem->fdf->df;
-      problem->fdf->df = NULL;
+      /* test finite difference Jacobian
+       * XXX: watson problem doesn't work with forward differences */
+      if (problem != &watson_problem)
+        {
+          fdf.df = problem->fdf->df;
+          problem->fdf->df = NULL;
 
-      test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
-               1.0e3 * epsrel, 1.0, problem, NULL);
+          test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
+                   1.0e3 * epsrel, problem, NULL);
 
-      problem->fdf->df = fdf.df;
+          problem->fdf->df = fdf.df;
+        }
 
       if (params->trs == gsl_multifit_nlinear_trs_lmaccel && problem->fdf->fvv != NULL)
         {
@@ -219,7 +215,7 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
           problem->fdf->fvv = NULL;
 
           test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
-                   epsrel / params->h_fvv, 1.0, problem, NULL);
+                   epsrel / params->h_fvv, problem, NULL);
 
           problem->fdf->fvv = fdf.fvv;
         }
@@ -229,11 +225,11 @@ test_fdf_main(const gsl_multifit_nlinear_parameters * params)
 
   /* internal weighting in _f and _df functions */
   test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
-           wnlin_epsrel, 1.0, &wnlin_problem1, NULL);
+           wnlin_epsrel, &wnlin_problem1, NULL);
 
   /* weighting through nlinear_winit */
   test_fdf(gsl_multifit_nlinear_trust, params, xtol, gtol, ftol,
-           wnlin_epsrel, 1.0, &wnlin_problem2, wnlin_W);
+           wnlin_epsrel, &wnlin_problem2, wnlin_W);
 }
 
 /*
@@ -246,12 +242,6 @@ Inputs: T        - solver to use
         gtol     - tolerance in gradient
         ftol     - tolerance in residual vector
         epsrel   - relative error tolerance in solution
-        x0_scale - to test robustness against starting points,
-                   the standard starting point in 'problem' is
-                   multiplied by this scale factor:
-                   x0 <- x0 * x0_scale
-                   If x0 = 0, then all components of x0 are set to
-                   x0_scale
         problem  - contains the nonlinear problem and solution point
         wts      - weight vector (NULL for unweighted)
 */
@@ -260,7 +250,7 @@ static void
 test_fdf(const gsl_multifit_nlinear_type * T,
          const gsl_multifit_nlinear_parameters * params,
          const double xtol, const double gtol, const double ftol,
-         const double epsrel, const double x0_scale,
+         const double epsrel,
          test_fdf_problem *problem,
          const double *wts)
 {
@@ -277,18 +267,28 @@ test_fdf(const gsl_multifit_nlinear_type * T,
   char sname[2048];
   int status, info;
 
-  sprintf(buf, "%s/%s/scale=%s/solver=%s/scale=%g%s%s",
+  sprintf(buf, "%s/%s/scale=%s/solver=%s",
     gsl_multifit_nlinear_name(w),
     params->trs->name,
-    params->scale->name, params->solver->name, x0_scale,
-    problem->fdf->df ? "" : "/fdjac",
-    problem->fdf->fvv ? "" : "/fdfvv");
+    params->scale->name,
+    params->solver->name);
+
+  if (problem->fdf->df == NULL)
+    {
+      if (params->fdtype == GSL_MULTIFIT_NLINEAR_FWDIFF)
+        strcat(buf, "/fdjac,forward");
+      else
+        strcat(buf, "/fdjac,center");
+    }
+
+  if (problem->fdf->fvv == NULL)
+    {
+      strcat(buf, "/fdfvv");
+    }
 
   strcpy(sname, buf);
 
-  /* scale starting point x0 */
   gsl_vector_memcpy(x0, &x0v.vector);
-  test_scale_x0(x0, x0_scale);
 
   if (wts)
     {
@@ -314,7 +314,6 @@ test_fdf(const gsl_multifit_nlinear_type * T,
       sprintf(sname, "%s/weighted", buf);
 
       gsl_vector_memcpy(x0, &x0v.vector);
-      test_scale_x0(x0, x0_scale);
 
       gsl_vector_set_all(wv, 1.0);
       gsl_multifit_nlinear_winit(x0, wv, fdf, w);
@@ -370,14 +369,3 @@ test_fdf_checksol(const char *sname, const char *pname,
       gsl_matrix_free (covar);
     }
 }
-
-static void
-test_scale_x0(gsl_vector *x0, const double scale)
-{
-  double nx = gsl_blas_dnrm2(x0);
-
-  if (nx == 0.0)
-    gsl_vector_set_all(x0, scale);
-  else
-    gsl_vector_scale(x0, scale);
-} /* test_scale_x0() */

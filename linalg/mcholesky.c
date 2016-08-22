@@ -24,6 +24,8 @@
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_permute_vector.h>
 
+#include "cholesky_common.c"
+
 /*
  * This module contains routines related to the Modified Cholesky
  * Decomposition, which factors a symmetric indefinite matrix A as
@@ -46,7 +48,6 @@
  */
 
 static size_t mcholesky_maxabs(const gsl_vector * v, double *maxabs);
-static int mcholesky_swap_rowcol(gsl_matrix * m, const size_t i, const size_t j);
 
 /*
 gsl_linalg_mcholesky_decomp()
@@ -94,6 +95,9 @@ gsl_linalg_mcholesky_decomp (gsl_matrix * A, gsl_permutation * p,
       gsl_vector_view diag = gsl_matrix_diagonal(A);
       size_t i, j;
 
+      /* save a copy of A in upper triangle (for later rcond calculation) */
+      gsl_matrix_transpose_tricpy('L', 0, A, A);
+
       gsl_permutation_init(p);
 
       /* compute:
@@ -140,7 +144,7 @@ gsl_linalg_mcholesky_decomp (gsl_matrix * A, gsl_permutation * p,
           q = mcholesky_maxabs(&w.vector, NULL) + j;
 
           gsl_permutation_swap(p, q, j);
-          mcholesky_swap_rowcol(A, q, j);
+          cholesky_swap_rowcol(A, q, j);
 
           /* theta_j = max_{j+1 <= i <= n} |A_{ij}| */
           if (j < N - 1)
@@ -189,9 +193,6 @@ gsl_linalg_mcholesky_decomp (gsl_matrix * A, gsl_permutation * p,
           gsl_permute_vector_inverse(p, E);
         }
 
-      /* copy the transposed (strictly) lower triangle to the upper triangle */
-      gsl_matrix_transpose_tricpy('L', 0, A, A);
-      
       return GSL_SUCCESS;
     }
 }
@@ -212,6 +213,22 @@ gsl_linalg_mcholesky_svx(const gsl_matrix * LDLT,
                          gsl_vector * x)
 {
   int status = gsl_linalg_pcholesky_svx(LDLT, p, x);
+  return status;
+}
+
+int
+gsl_linalg_mcholesky_rcond (const gsl_matrix * LDLT, const gsl_permutation * p,
+                            double * rcond, gsl_vector * work)
+{
+  int status = gsl_linalg_pcholesky_rcond(LDLT, p, rcond, work);
+  return status;
+}
+
+int
+gsl_linalg_mcholesky_invert(const gsl_matrix * LDLT, const gsl_permutation * p,
+                            gsl_matrix * Ainv)
+{
+  int status = gsl_linalg_pcholesky_invert(LDLT, p, Ainv);
   return status;
 }
 
@@ -251,53 +268,4 @@ mcholesky_maxabs(const gsl_vector * v, double *maxabs)
     *maxabs = max;
 
   return idx;
-}
-
-/*
-mcholesky_swap_rowcol()
-  Swap rows and columns i and j of matrix m, assuming only the
-lower triangle of m is up to date.
-*/
-
-static int
-mcholesky_swap_rowcol(gsl_matrix * m, const size_t i, const size_t j)
-{
-  if (i != j)
-    {
-      const size_t N = m->size1;
-      size_t k;
-
-      /* fill in column i above diagonal using lower triangle */
-      for (k = 0; k < i; ++k)
-        {
-          double mki = gsl_matrix_get(m, i, k);
-          gsl_matrix_set(m, k, i, mki);
-        }
-
-      /* fill in row i above diagonal using lower triangle */
-      for (k = i + 1; k < N; ++k)
-        {
-          double mik = gsl_matrix_get(m, k, i);
-          gsl_matrix_set(m, i, k, mik);
-        }
-
-      /* fill in column j above diagonal using lower triangle */
-      for (k = 0; k < j; ++k)
-        {
-          double mkj = gsl_matrix_get(m, j, k);
-          gsl_matrix_set(m, k, j, mkj);
-        }
-
-      /* fill in row j above diagonal using lower triangle */
-      for (k = j + 1; k < N; ++k)
-        {
-          double mjk = gsl_matrix_get(m, k, j);
-          gsl_matrix_set(m, j, k, mjk);
-        }
-
-      gsl_matrix_swap_rows(m, i, j);
-      gsl_matrix_swap_columns(m, i, j);
-    }
-
-  return GSL_SUCCESS;
 }

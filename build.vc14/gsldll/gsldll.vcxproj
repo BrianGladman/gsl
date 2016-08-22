@@ -293,6 +293,8 @@
     <ClCompile Include="..\..\interpolation\spline2d.c" />
     <ClCompile Include="..\..\interpolation\steffen.c" />
     <ClCompile Include="..\..\linalg\cod.c" />
+    <ClCompile Include="..\..\linalg\condest.c" />
+    <ClCompile Include="..\..\linalg\invtri.c" />
     <ClCompile Include="..\..\linalg\mcholesky.c" />
     <ClCompile Include="..\..\linalg\pcholesky.c" />
     <ClCompile Include="..\..\multifit\fdfridge.c" />
@@ -396,18 +398,24 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)multilarge_nlinear\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)multilarge_nlinear\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="..\..\multilarge_nlinear\cholesky.c" />
     <ClCompile Include="..\..\multilarge_nlinear\convergence.c">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)multilarge_nlinear\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)multilarge_nlinear\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)multilarge_nlinear\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)multilarge_nlinear\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="..\..\multilarge_nlinear\dogleg.c" />
+    <ClCompile Include="..\..\multilarge_nlinear\dummy.c" />
     <ClCompile Include="..\..\multilarge_nlinear\fdf.c">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)multilarge_nlinear\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)multilarge_nlinear\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)multilarge_nlinear\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)multilarge_nlinear\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="..\..\multilarge_nlinear\lm.c" />
+    <ClCompile Include="..\..\multilarge_nlinear\nielsen.c" />
+    <ClCompile Include="..\..\multilarge_nlinear\scaling.c" />
     <ClCompile Include="..\..\multilarge_nlinear\trust.c">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)multilarge_nlinear\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)multilarge_nlinear\</ObjectFileName>

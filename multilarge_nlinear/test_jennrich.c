@@ -47,7 +47,8 @@ jennrich_f (const gsl_vector * x, void *params, gsl_vector * f)
 
 static int
 jennrich_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
-             const gsl_vector * u, void * params, gsl_vector * v)
+             const gsl_vector * u, void * params, gsl_vector * v,
+             gsl_matrix * JTJ)
 {
   gsl_matrix_view J = gsl_matrix_view_array(jennrich_J, jennrich_N, jennrich_P);
   double x1 = gsl_vector_get(x, 0);
@@ -62,7 +63,11 @@ jennrich_df (CBLAS_TRANSPOSE_t TransJ, const gsl_vector * x,
       gsl_matrix_set(&J.matrix, i, 1, -ip1*exp(ip1*x2));
     }
 
-  gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+  if (v)
+    gsl_blas_dgemv(TransJ, 1.0, &J.matrix, u, 0.0, v);
+
+  if (JTJ)
+    gsl_blas_dsyrk(CblasLower, CblasTrans, 1.0, &J.matrix, 0.0, JTJ);
 
   (void)params; /* avoid unused parameter warning */
 
@@ -101,6 +106,7 @@ static gsl_multilarge_nlinear_fdf jennrich_func =
   jennrich_N,
   jennrich_P,
   NULL,
+  0,
   0,
   0,
   0

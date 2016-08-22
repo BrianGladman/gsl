@@ -217,11 +217,18 @@ involves solving a linear least squares system involving the Jacobian
 matrix. For small to moderate sized problems (@code{gsl_multifit_nlinear} interface),
 this is accomplished by factoring the full Jacobian matrix, which is provided
 by the user, with the Cholesky, QR, or SVD decompositions. For large systems
-(@code{gsl_multilarge_nlinear} interface), this is done iteratively without needing
-to store the full Jacobian matrix in memory.  Instead, the user must provide a routine
+(@code{gsl_multilarge_nlinear} interface), the user has two choices. One
+is to solve the system iteratively, without needing to store the full
+Jacobian matrix in memory. With this method, the user must provide a routine
 to calculate the matrix-vector products @math{J u} or @math{J^T u} for a given vector @math{u}.
-This allows the user to take advantage of any sparse structure which may be present
-in the Jacobian for speed improvements.
+This iterative method is particularly useful for systems where the Jacobian has
+sparse structure, since forming matrix-vector products can be done cheaply. The
+second option for large systems involves forming the normal equations matrix
+@math{J^T J} and then factoring it using a Cholesky decomposition. The normal
+equations matrix is @math{p}-by-@math{p}, typically much smaller than the full
+@math{n}-by-@math{p} Jacobian, and can usually be stored in memory even if the full
+Jacobian matrix cannot. This option is useful for large, dense systems, or if the
+iterative method has difficulty converging.
 
 @node Nonlinear Least-Squares TRS Levenberg-Marquardt
 @subsection Levenberg-Marquardt
@@ -500,7 +507,6 @@ defined as follows:
 typedef struct
 @{
   const gsl_multifit_nlinear_trs *trs;        /* trust region subproblem method */
-  const gsl_multifit_nlinear_update *update;  /* LM parameter update method */
   const gsl_multifit_nlinear_scale *scale;    /* scaling method */
   const gsl_multifit_nlinear_solver *solver;  /* solver method */
   gsl_multifit_nlinear_fdtype fdtype;         /* finite difference method */
@@ -520,16 +526,17 @@ defined as follows:
 @example
 typedef struct
 @{
-  const gsl_multilarge_nlinear_trs *trs;      /* trust region subproblem method */
-  gsl_multilarge_nlinear_fdtype fdtype;       /* finite difference method */
-  double factor_up;                           /* factor for increasing trust radius */
-  double factor_down;                         /* factor for decreasing trust radius */
-  int accel;                                  /* use geodesic acceleration */
-  double avmax;                               /* max allowed |a|/|v| */
-  double h_df;                                /* step size for finite difference Jacobian */
-  double h_fvv;                               /* step size for finite difference fvv */
-  size_t max_iter;                            /* maximum iterations for trs method */
-  double tol;                                 /* tolerance for solving trs */
+  const gsl_multilarge_nlinear_trs *trs;       /* trust region subproblem method */
+  const gsl_multilarge_nlinear_scale *scale;   /* scaling method */
+  const gsl_multilarge_nlinear_solver *solver; /* solver method */
+  gsl_multilarge_nlinear_fdtype fdtype;        /* finite difference method */
+  double factor_up;                            /* factor for increasing trust radius */
+  double factor_down;                          /* factor for decreasing trust radius */
+  double avmax;                                /* max allowed |a|/|v| */
+  double h_df;                                 /* step size for finite difference Jacobian */
+  double h_fvv;                                /* step size for finite difference fvv */
+  size_t max_iter;                             /* maximum iterations for trs method */
+  double tol;                                  /* tolerance for solving trs */
 @} gsl_multilarge_nlinear_parameters;
 @end example
 
@@ -543,27 +550,31 @@ This parameter determines the method used to solve the trust region
 subproblem, and may be selected from the following choices,
 
 @defvr {Default} gsl_multifit_nlinear_trs_lm
+@defvrx {Default} gsl_multilarge_nlinear_trs_lm
 This selects the Levenberg-Marquardt algorithm.
 @end defvr
 
-@defvr {Default} gsl_multifit_nlinear_trs_lmaccel
+@defvr {Option} gsl_multifit_nlinear_trs_lmaccel
+@defvrx {Option} gsl_multilarge_nlinear_trs_lmaccel
 This selects the Levenberg-Marquardt algorithm with geodesic
 acceleration.
 @end defvr
 
-@defvr {Default} gsl_multifit_nlinear_trs_dogleg
+@defvr {Option} gsl_multifit_nlinear_trs_dogleg
+@defvrx {Option} gsl_multilarge_nlinear_trs_dogleg
 This selects the dogleg algorithm.
 @end defvr
 
-@defvr {Default} gsl_multifit_nlinear_trs_ddogleg
+@defvr {Option} gsl_multifit_nlinear_trs_ddogleg
+@defvrx {Option} gsl_multilarge_nlinear_trs_ddogleg
 This selects the double dogleg algorithm.
 @end defvr
 
-@defvr {Default} gsl_multifit_nlinear_trs_subspace2D
+@defvr {Option} gsl_multifit_nlinear_trs_subspace2D
 This selects the 2D subspace algorithm.
 @end defvr
 
-@defvr {Default} gsl_multilarge_nlinear_trs_cgst
+@defvr {Option} gsl_multilarge_nlinear_trs_cgst
 This selects the Steihaug-Toint conjugate gradient algorithm. This
 method is available only for large systems.
 @end defvr
@@ -571,11 +582,13 @@ method is available only for large systems.
 @end deftypevr
 
 @deftypevr {Parameter} {const gsl_multifit_nlinear_scale *} scale
+@deftypevrx {Parameter} {const gsl_multilarge_nlinear_scale *} scale
 
 This parameter determines the diagonal scaling matrix @math{D} and
 may be selected from the following choices,
 
 @defvr {Default} gsl_multifit_nlinear_scale_more
+@defvrx {Default} gsl_multilarge_nlinear_scale_more
 This damping strategy was suggested by Mor@'e, and
 corresponds to @math{D^T D = } max(diag(@math{J^T J})),
 in other words the maximum elements of
@@ -593,6 +606,7 @@ default, but it may not be the best choice for all problems.
 @end defvr
 
 @defvr {Option} gsl_multifit_nlinear_scale_levenberg
+@defvrx {Option} gsl_multilarge_nlinear_scale_levenberg
 This damping strategy was originally suggested by Levenberg, and
 corresponds to @math{D^T D = I}. This method has also proven
 effective on a large class of problems, but is not scale-invariant.
@@ -602,6 +616,7 @@ to parameter evaporation (ie: parameters go to infinity)
 @end defvr
 
 @defvr {Option} gsl_multifit_nlinear_scale_marquardt
+@defvrx {Option} gsl_multilarge_nlinear_scale_marquardt
 This damping strategy was suggested by Marquardt, and
 corresponds to @math{D^T D = } diag(@math{J^T J}). This
 method is scale-invariant, but it is generally considered
@@ -612,6 +627,7 @@ may work well on certain classes of problems.
 @end deftypevr
 
 @deftypevr {Parameter} {const gsl_multifit_nlinear_solver *} solver
+@deftypevrx {Parameter} {const gsl_multilarge_nlinear_solver *} solver
 
 @noindent
 Solving the trust region subproblem on each iteration almost always
@@ -657,6 +673,7 @@ below.
 @end defvr
 
 @defvr {Option} gsl_multifit_nlinear_solver_cholesky
+@defvrx {Default} gsl_multilarge_nlinear_solver_cholesky
 This method solves the alternate normal equations problem
 @tex
 \beforedisplay
@@ -684,7 +701,7 @@ known that the Jacobian matrix is well conditioned, this method
 is accurate and will perform faster than the QR approach.
 @end defvr
 
-@defvr {Default} gsl_multifit_nlinear_solver_svd
+@defvr {Option} gsl_multifit_nlinear_solver_svd
 This method solves the system using a singular value
 decomposition of the Jacobian @math{J}. This method will
 produce the most reliable solutions for ill-conditioned Jacobians
@@ -989,6 +1006,7 @@ This does not need to be set by the user. It counts the number of
 @deftp {Data Type} gsl_multilarge_nlinear_fdf
 This data type defines a general system of functions with arbitrary parameters,
 a function to compute @math{J u} or @math{J^T u} for a given vector @math{u},
+the normal equations matrix @math{J^T J},
 and optionally the second directional derivative of the functions for geodesic acceleration.
 
 @table @code
@@ -998,11 +1016,15 @@ This function should store the @math{n} components of the vector
 @math{f(x)} in @var{f} for argument @var{x} and arbitrary parameters @var{params},
 returning an appropriate error code if the function cannot be computed.
 
-@item int (* df) (CBLAS_TRANSPOSE_t @var{TransJ}, const gsl_vector * @var{x}, const gsl_vector * @var{u}, void * @var{params}, gsl_vector * @var{v})
+@item int (* df) (CBLAS_TRANSPOSE_t @var{TransJ}, const gsl_vector * @var{x}, const gsl_vector * @var{u}, void * @var{params}, gsl_vector * @var{v}, gsl_matrix * @var{JTJ})
 If @var{TransJ} is equal to @code{CblasNoTrans}, then this function should
 compute the matrix-vector product @math{J u} and store the result in @var{v}.
 If @var{TransJ} is equal to @code{CblasTrans}, then this function should
 compute the matrix-vector product @math{J^T u} and store the result in @var{v}.
+Additionally, the normal equations matrix @math{J^T J} should be stored in the
+lower half of @var{JTJ}. The input matrix @var{JTJ} could be set to NULL,
+for example by iterative methods which do not require this matrix, so the user
+should check for this prior to constructing the matrix.
 The input @var{params} contains the arbitrary parameters.
 
 @item int (* fvv) (const gsl_vector * @var{x}, const gsl_vector * @var{v}, void * @var{params}, gsl_vector * @var{fvv})
@@ -1033,9 +1055,14 @@ a pointer to the arbitrary parameters of the function.
 This does not need to be set by the user. It counts the number of
 function evaluations and is initialized by the @code{_init} function.
 
-@item size_t nevaldf
+@item size_t nevaldfu
 This does not need to be set by the user. It counts the number of
-Jacobian evaluations and is initialized by the @code{_init} function.
+Jacobian matrix-vector evaluations (@math{J u} or @math{J^T u}) and
+is initialized by the @code{_init} function.
+
+@item size_t nevaldf2
+This does not need to be set by the user. It counts the number of
+@math{J^T J} evaluations and is initialized by the @code{_init} function.
 
 @item size_t nevalfvv
 This does not need to be set by the user. It counts the number of
@@ -1116,13 +1143,40 @@ The iteration counter is updated on each call to the
 @code{_init} functions.
 @end deftypefun
 
-@deftypefun int gsl_multifit_nlinear_rcond (double * @var{rcond}, gsl_multifit_nlinear_workspace * @var{w})
-This function computes the reciprocal condition number
-of the Jacobian at the current position @math{x} and
-stores it in @var{rcond}. It is computed by calculating
-the eigenvalues @math{\gamma} of @math{J(x)^T J(x)} and setting
-@var{rcond} = @math{\sqrt{\gamma_{min} / \gamma_{max}}}. If
-the eigenvalue decomposition fails, an error is returned.
+@deftypefun int gsl_multifit_nlinear_rcond (double * @var{rcond}, const gsl_multifit_nlinear_workspace * @var{w})
+@deftypefunx int gsl_multilarge_nlinear_rcond (double * @var{rcond}, const gsl_multilarge_nlinear_workspace * @var{w})
+This function estimates the reciprocal condition number
+of the Jacobian matrix at the current position @math{x} and
+stores it in @var{rcond}. The computed value is only an estimate
+to give the user a guideline as to the conditioning of their particular
+problem. Its calculation is based on which factorization
+method is used (Cholesky, QR, or SVD). 
+
+@itemize @bullet
+
+@item For the Cholesky solver, the matrix @math{J^T J} is factored at each
+iteration, or in the case of Levenberg-Marquardt, @math{J^T J + \mu D^T D}.
+Therefore this function will estimate the 1-norm condition number
+@math{rcond^2 = 1/(||J^T J||_1 \cdot ||(J^T J)^{-1}||_1)}
+(or @math{1/(||J^T J + \mu D^T D||_1 \cdot ||(J^T J + \mu D^T D)^{-1}||_1)} for
+Levenberg-Marquardt). The added term for Levenberg-Marquardt tends to improve
+the conditioning of the Jacobian, so treat the calculated number with caution in this
+case.
+
+@item For the QR solver, @math{J} is factored as @math{J = Q R} at each
+iteration. For simplicity, this function calculates the 1-norm conditioning of
+only the @math{R} factor, @math{rcond = 1 / (||R||_1 \cdot ||R^{-1}||_1)}.
+This can be computed efficiently since @math{R} is upper triangular.
+
+@item For the SVD solver, in order to efficiently solve the trust region
+subproblem, the matrix which is factored is @math{J D^{-1}}, instead of
+@math{J} itself. The resulting singular values are used to provide
+the 2-norm reciprocal condition number, as @math{rcond = \sigma_{min} / \sigma_{max}}.
+Note that when using Mor@'e scaling, @math{D \ne I} and the resulting
+@var{rcond} estimate may be significantly different from the true
+@var{rcond} of @math{J} itself.
+
+@end itemize
 @end deftypefun
 
 @node Nonlinear Least-Squares Testing for Convergence
@@ -1250,6 +1304,7 @@ see @ref{Nonlinear Least-Squares Troubleshooting} for further guidance.
 @cindex covariance matrix, nonlinear fits
 
 @deftypefun int gsl_multifit_nlinear_covar (const gsl_matrix * @var{J}, const double @var{epsrel}, gsl_matrix * @var{covar})
+@deftypefunx int gsl_multilarge_nlinear_covar (gsl_matrix * @var{covar}, gsl_multilarge_nlinear_workspace * @var{w})
 This function computes the covariance matrix of best-fit parameters
 using the Jacobian matrix @var{J} and stores it in @var{covar}.
 The parameter @var{epsrel} is used to remove linear-dependent columns
@@ -1286,8 +1341,8 @@ covar = (J^T W J)^@{-1@}
 
 @end ifinfo
 @noindent
-and is computed by QR decomposition of J with column-pivoting.  Any
-columns of @math{R} which satisfy 
+and is computed using the factored form of the Jacobian (Cholesky, QR, or SVD).
+Any columns of @math{R} which satisfy 
 @tex
 \beforedisplay
 $$
@@ -1378,6 +1433,7 @@ squares fitting capabilities.
 * Nonlinear Least-Squares Exponential Fit Example::
 * Nonlinear Least-Squares Geodesic Acceleration Example::
 * Nonlinear Least-Squares Comparison Example::
+* Nonlinear Least-Squares Large Example::
 @end menu
 
 @node Nonlinear Least-Squares Exponential Fit Example
@@ -1452,23 +1508,23 @@ the gradient falls below @math{10^{-8}}. Here are the results of running
 the program:
 
 @smallexample
-iter 0: A = 1.0000, lambda = 1.0000, b = 0.0000, cond(J) = 46.1118, |f(x)| = 62.2029
-iter 1: A = 1.2196, lambda = 0.3663, b = 0.0436, cond(J) = 19.8763, |f(x)| = 59.8062
-iter 2: A = 1.6062, lambda = 0.1506, b = 0.1054, cond(J) = 20.2970, |f(x)| = 53.9039
-iter 3: A = 2.4528, lambda = 0.0583, b = 0.2470, cond(J) = 90.3289, |f(x)| = 28.8039
-iter 4: A = 2.9723, lambda = 0.0494, b = 0.3727, cond(J) = 184.3828, |f(x)| = 15.3252
-iter 5: A = 3.3473, lambda = 0.0477, b = 0.4410, cond(J) = 235.5901, |f(x)| = 10.7511
-iter 6: A = 3.6690, lambda = 0.0508, b = 0.4617, cond(J) = 206.1182, |f(x)| = 9.7373
-iter 7: A = 3.9907, lambda = 0.0580, b = 0.5433, cond(J) = 147.7071, |f(x)| = 8.7661
-iter 8: A = 4.2353, lambda = 0.0731, b = 0.7989, cond(J) = 125.8964, |f(x)| = 7.4299
-iter 9: A = 4.6573, lambda = 0.0958, b = 1.0302, cond(J) = 100.5450, |f(x)| = 6.1893
-iter 10: A = 5.0138, lambda = 0.1060, b = 1.0329, cond(J) = 94.0404, |f(x)| = 5.4961
-iter 11: A = 5.1505, lambda = 0.1103, b = 1.0497, cond(J) = 91.2259, |f(x)| = 5.4552
-iter 12: A = 5.1724, lambda = 0.1110, b = 1.0526, cond(J) = 90.7179, |f(x)| = 5.4542
-iter 13: A = 5.1737, lambda = 0.1110, b = 1.0528, cond(J) = 90.6803, |f(x)| = 5.4542
-iter 14: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) = 90.6791, |f(x)| = 5.4542
-iter 15: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) = 90.6790, |f(x)| = 5.4542
-iter 16: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) = 90.6790, |f(x)| = 5.4542
+iter  0: A = 1.0000, lambda = 1.0000, b = 0.0000, cond(J) =      inf, |f(x)| = 62.2029
+iter  1: A = 1.2196, lambda = 0.3663, b = 0.0436, cond(J) =  53.6368, |f(x)| = 59.8062
+iter  2: A = 1.6062, lambda = 0.1506, b = 0.1054, cond(J) =  23.8178, |f(x)| = 53.9039
+iter  3: A = 2.4528, lambda = 0.0583, b = 0.2470, cond(J) =  20.0493, |f(x)| = 28.8039
+iter  4: A = 2.9723, lambda = 0.0494, b = 0.3727, cond(J) =  94.5601, |f(x)| = 15.3252
+iter  5: A = 3.3473, lambda = 0.0477, b = 0.4410, cond(J) = 229.3627, |f(x)| = 10.7511
+iter  6: A = 3.6690, lambda = 0.0508, b = 0.4617, cond(J) = 298.3589, |f(x)| = 9.7373
+iter  7: A = 3.9907, lambda = 0.0580, b = 0.5433, cond(J) = 250.0194, |f(x)| = 8.7661
+iter  8: A = 4.2353, lambda = 0.0731, b = 0.7989, cond(J) = 154.8571, |f(x)| = 7.4299
+iter  9: A = 4.6573, lambda = 0.0958, b = 1.0302, cond(J) = 140.2265, |f(x)| = 6.1893
+iter 10: A = 5.0138, lambda = 0.1060, b = 1.0329, cond(J) = 109.4141, |f(x)| = 5.4961
+iter 11: A = 5.1505, lambda = 0.1103, b = 1.0497, cond(J) = 100.8762, |f(x)| = 5.4552
+iter 12: A = 5.1724, lambda = 0.1110, b = 1.0526, cond(J) =  97.3403, |f(x)| = 5.4542
+iter 13: A = 5.1737, lambda = 0.1110, b = 1.0528, cond(J) =  96.7136, |f(x)| = 5.4542
+iter 14: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) =  96.6678, |f(x)| = 5.4542
+iter 15: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) =  96.6663, |f(x)| = 5.4542
+iter 16: A = 5.1738, lambda = 0.1110, b = 1.0528, cond(J) =  96.6663, |f(x)| = 5.4542
 summary from method 'trust-region/levenberg-marquardt'
 number of iterations: 16
 function evaluations: 23
@@ -1641,16 +1697,16 @@ NAEV          = 0
 initial cost  = 2.250225000000e+04
 final cost    = 6.674986031430e-18
 final x       = (9.999999974165e-01, 9.999999948328e-01)
-final cond(J) = 5.000079979663e+02
+final cond(J) = 6.000096055094e+02
 === Solving system with acceleration ===
 NITER         = 15
-NFEV          = 16
+NFEV          = 17
 NJEV          = 16
-NAEV          = 15
+NAEV          = 16
 initial cost  = 2.250225000000e+04
-final cost    = 1.778587232284e-21
-final x       = (9.999999999578e-01, 9.999999999157e-01)
-final cond(J) = 5.000079999976e+02
+final cost    = 7.518932873279e-19
+final x       = (9.999999991329e-01, 9.999999982657e-01)
+final cond(J) = 6.000097233278e+02
 @end smallexample
 
 @noindent
@@ -1708,14 +1764,16 @@ below uses the starting point @math{(x_1,x_2) = (6,14.5)}
 and calculates the solution with all available nonlinear
 least squares TRS methods. The program output is shown below.
 
-@smallexample
-Method                    NITER  NFEV   NJEV   Initial Cost  Final cost   Final cond(J) Final x        
-levenberg-marquardt       20     27     21     1.9874e+02    3.9789e-01   1.4844e+08    (-3.14e+00, 1.23e+01)
-levenberg-marquardt+accel 27     36     28     1.9874e+02    3.9789e-01   3.4719e+07    (3.14e+00, 2.27e+00)
-dogleg                    23     64     23     1.9874e+02    3.9789e-01   inf           (3.14e+00, 2.28e+00)
-double-dogleg             24     69     24     1.9874e+02    3.9789e-01   3.1929e+07    (3.14e+00, 2.27e+00)
-2D-subspace               23     54     24     1.9874e+02    3.9789e-01   5.1824e+07    (3.14e+00, 2.27e+00)
-@end smallexample
+@smallformat
+@verbatim
+Method                    NITER  NFEV  NJEV  Initial Cost  Final cost   Final cond(J) Final x        
+levenberg-marquardt       20     27    21    1.9874e+02    3.9789e-01   6.1399e+07    (-3.14e+00, 1.23e+01)
+levenberg-marquardt+accel 27     36    28    1.9874e+02    3.9789e-01   1.4465e+07    (3.14e+00, 2.27e+00)
+dogleg                    23     64    23    1.9874e+02    3.9789e-01   5.0692e+08    (3.14e+00, 2.28e+00)
+double-dogleg             24     69    24    1.9874e+02    3.9789e-01   3.4879e+07    (3.14e+00, 2.27e+00)
+2D-subspace               23     54    24    1.9874e+02    3.9789e-01   2.5142e+07    (3.14e+00, 2.27e+00)
+@end verbatim
+@end smallformat
 
 @noindent
 The first row of output above corresponds to standard Levenberg-Marquardt, while
@@ -1741,6 +1799,130 @@ The program is given below.
 
 @example
 @verbatiminclude examples/nlfit3.c
+@end example
+
+@node Nonlinear Least-Squares Large Example
+@subsection Large Nonlinear Least Squares Example
+
+The following program illustrates the large nonlinear least
+squares solvers on a system with significant sparse structure
+in the Jacobian. The cost function is given by
+@tex
+\beforedisplay
+$$
+\eqalign{
+\Phi(x) &= {1 \over 2} \sum_{i=1}^{p+1} f_i^2 \cr
+f_i &= \sqrt{\alpha} (x_i - 1), \quad 1 \le i \le p \cr
+f_{p+1} &= ||x||^2 - {1 \over 4}
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+\Phi(x) &= 1/2 \sum_@{i=1@}^@{p+1@} f_i^2
+f_i &= \sqrt@{\alpha@} (x_i - 1), 1 \le i \le p
+f_@{p+1@} &= ||x||^2 - 1/4
+@end example
+
+@end ifinfo
+with @math{\alpha = 10^{-5}}. The residual @math{f_{p+1}} imposes a constraint on the @math{p}
+parameters @math{x}, to ensure that @math{||x||^2 \approx {1 \over 4}}.
+The @math{(p+1)}-by-@math{p} Jacobian for this system is given by
+@tex
+\beforedisplay
+$$
+J(x) =
+\left(
+\matrix{
+\sqrt{\alpha} I_p \cr
+2 x^T
+}
+\right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+J(x) = [ \sqrt@{alpha@} I_p; 2 x^T ]
+@end example
+
+@end ifinfo
+and the normal equations matrix is given by
+@tex
+\beforedisplay
+$$
+J^T J =
+\left(
+\alpha I_p + 4 x x^T
+\right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+J^T J = [ \alpha I_p + 4 x x^T ]
+@end example
+
+@end ifinfo
+@noindent
+Finally, the second directional derivative of @math{f} for the
+geodesic acceleration method is given by
+@tex
+\beforedisplay
+$$
+f_{vv} = D_v^2 f =
+\left(
+\matrix{
+0 \cr
+2 ||v||^2
+}
+\right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+fvv = [ 0; 2 ||v||^2 ]
+@end example
+
+@end ifinfo
+@noindent
+Since the upper @math{p}-by-@math{p} block of @math{J} is diagonal,
+this sparse structure should be exploited in the nonlinear solver.
+For comparison, the following program solves the system for @math{p = 2000}
+using the dense direct Cholesky solver based on the normal equations matrix
+@math{J^T J}, as well as the iterative Steihaug-Toint solver, based on
+sparse matrix-vector products @math{J u} and @math{J^T u}. The
+program output is shown below.
+
+@smallformat
+@verbatim
+Method                    NITER NFEV NJUEV NJTJEV NAEV Init Cost  Final cost cond(J) Final |x|^2 Time (s)  
+levenberg-marquardt       25    31   26    26     0    7.1218e+18 1.9555e-02 447.50  2.5044e-01  45.73
+levenberg-marquardt+accel 22    23   45    23     22   7.1218e+18 1.9555e-02 447.64  2.5044e-01  33.82
+dogleg                    37    87   36    36     0    7.1218e+18 1.9555e-02 447.83  2.5044e-01  56.84
+double-dogleg             35    88   34    34     0    7.1218e+18 1.9555e-02 447.68  2.5044e-01  53.89
+steihaug-toint            35    88   345   0      0    7.1218e+18 1.9555e-02 inf     2.5044e-01  0.09
+@end verbatim
+@end smallformat
+
+@noindent
+The first four rows use methods based on factoring the dense @math{J^T J} matrix
+while the last row uses the iterative Steihaug-Toint method. While the number
+of Jacobian matrix-vector products (NJUEV) is less for the dense methods, the added time
+to construct and factor the @math{J^T J} matrix (NJTJEV) results in a much larger runtime than the
+iterative method (see last column).
+
+@noindent
+The program is given below.
+
+@example
+@verbatiminclude examples/nlfit4.c
 @end example
 
 @node Nonlinear Least-Squares References and Further Reading
@@ -1771,7 +1953,11 @@ Optimization and Nonlinear Equations, SIAM, 1996.
 @item
 M. K. Transtrum, B. B. Machta, and J. P. Sethna,
 Geometry of nonlinear least squares with applications to sloppy models and optimization,
-Phys. Rev. E 83, 036701
+Phys. Rev. E 83, 036701, 2011.
+
+@item
+M. K. Transtrum and J. P. Sethna, Improvements to the Levenberg-Marquardt
+algorithm for nonlinear least-squares minimization, arXiv:1201.5885, 2012.
 
 @item 
 J.J. Mor@'e, B.S. Garbow, K.E. Hillstrom, ``Testing Unconstrained

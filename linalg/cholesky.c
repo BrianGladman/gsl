@@ -42,6 +42,9 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 
+static double cholesky_norm1(const gsl_matrix * LLT, gsl_vector * work);
+static int cholesky_Ainv(CBLAS_TRANSPOSE_t TransA, gsl_vector * x, void * params);
+
 /*
 gsl_linalg_cholesky_decomp()
   Perform Cholesky decomposition of a symmetric positive
@@ -95,10 +98,6 @@ gsl_linalg_cholesky_decomp (gsl_matrix * A)
           gsl_vector_scale(&v.vector, 1.0 / ajj);
         }
 
-      /* now copy the transposed lower triangle to the upper triangle,
-       * the diagonal is common. */
-      gsl_matrix_transpose_tricpy('L', 0, A, A);
-      
       return GSL_SUCCESS;
     }
 }
@@ -122,20 +121,14 @@ gsl_linalg_cholesky_solve (const gsl_matrix * LLT,
     }
   else
     {
-      /* Copy x <- b */
+      int status;
 
+      /* copy x <- b */
       gsl_vector_memcpy (x, b);
 
-      /* Solve for c using forward-substitution, L c = b */
+      status = gsl_linalg_cholesky_svx(LLT, x);
 
-      gsl_blas_dtrsv (CblasLower, CblasNoTrans, CblasNonUnit, LLT, x);
-
-      /* Perform back-substitution, U x = c */
-
-      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, LLT, x);
-
-
-      return GSL_SUCCESS;
+      return status;
     }
 }
 
@@ -153,13 +146,11 @@ gsl_linalg_cholesky_svx (const gsl_matrix * LLT,
     }
   else
     {
-      /* Solve for c using forward-substitution, L c = b */
-
+      /* solve for c using forward-substitution, L c = b */
       gsl_blas_dtrsv (CblasLower, CblasNoTrans, CblasNonUnit, LLT, x);
 
-      /* Perform back-substitution, U x = c */
-
-      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, LLT, x);
+      /* perform back-substitution, L^T x = c */
+      gsl_blas_dtrsv (CblasLower, CblasTrans, CblasNonUnit, LLT, x);
 
       return GSL_SUCCESS;
     }
@@ -185,74 +176,49 @@ gsl_linalg_cholesky_invert(gsl_matrix * LLT)
     }
   else
     {
-      size_t N = LLT->size1;
-      size_t i, j;
-      double sum;
+      const size_t N = LLT->size1;
+      size_t i;
       gsl_vector_view v1, v2;
 
       /* invert the lower triangle of LLT */
-      for (i = 0; i < N; ++i)
-        {
-          double ajj;
-
-          j = N - i - 1;
-
-          gsl_matrix_set(LLT, j, j, 1.0 / gsl_matrix_get(LLT, j, j));
-          ajj = -gsl_matrix_get(LLT, j, j);
-
-          if (j < N - 1)
-            {
-              gsl_matrix_view m;
-              
-              m = gsl_matrix_submatrix(LLT, j + 1, j + 1,
-                                       N - j - 1, N - j - 1);
-              v1 = gsl_matrix_subcolumn(LLT, j, j + 1, N - j - 1);
-
-              gsl_blas_dtrmv(CblasLower, CblasNoTrans, CblasNonUnit,
-                             &m.matrix, &v1.vector);
-
-              gsl_blas_dscal(ajj, &v1.vector);
-            }
-        } /* for (i = 0; i < N; ++i) */
+      gsl_linalg_tri_lower_invert(LLT);
 
       /*
        * The lower triangle of LLT now contains L^{-1}. Now compute
-       * A^{-1} = L^{-t} L^{-1}
-       *
-       * The (ij) element of A^{-1} is column i of L^{-1} dotted into
-       * column j of L^{-1}
+       * A^{-1} = L^{-T} L^{-1}
        */
 
       for (i = 0; i < N; ++i)
         {
-          for (j = i + 1; j < N; ++j)
+          double aii = gsl_matrix_get(LLT, i, i);
+
+          if (i < N - 1)
             {
-              v1 = gsl_matrix_subcolumn(LLT, i, j, N - j);
-              v2 = gsl_matrix_subcolumn(LLT, j, j, N - j);
+              double tmp;
 
-              /* compute Ainv_{ij} = sum_k Linv_{ki} Linv_{kj} */
-              gsl_blas_ddot(&v1.vector, &v2.vector, &sum);
+              v1 = gsl_matrix_subcolumn(LLT, i, i, N - i);
+              gsl_blas_ddot(&v1.vector, &v1.vector, &tmp);
+              gsl_matrix_set(LLT, i, i, tmp);
 
-              /* store in upper triangle */
-              gsl_matrix_set(LLT, i, j, sum);
+              if (i > 0)
+                {
+                  gsl_matrix_view m = gsl_matrix_submatrix(LLT, i + 1, 0, N - i - 1, i);
+
+                  v1 = gsl_matrix_subcolumn(LLT, i, i + 1, N - i - 1);
+                  v2 = gsl_matrix_subrow(LLT, i, 0, i);
+
+                  gsl_blas_dgemv(CblasTrans, 1.0, &m.matrix, &v1.vector, aii, &v2.vector);
+                }
             }
-
-          /* now compute the diagonal element */
-          v1 = gsl_matrix_subcolumn(LLT, i, i, N - i);
-          gsl_blas_ddot(&v1.vector, &v1.vector, &sum);
-          gsl_matrix_set(LLT, i, i, sum);
+          else
+            {
+              v1 = gsl_matrix_row(LLT, N - 1);
+              gsl_blas_dscal(aii, &v1.vector);
+            }
         }
 
-      /* copy the transposed upper triangle to the lower triangle */
-
-      for (j = 1; j < N; j++)
-        {
-          for (i = 0; i < j; i++)
-            {
-              double A_ij = gsl_matrix_get (LLT, i, j);
-              gsl_matrix_set (LLT, j, i, A_ij);
-            }
-        } 
+      /* copy lower triangle to upper */
+      gsl_matrix_transpose_tricpy('L', 0, LLT, LLT);
 
       return GSL_SUCCESS;
     }
@@ -457,8 +423,8 @@ gsl_linalg_cholesky_svx2 (const gsl_matrix * LLT,
       /* Solve for c using forward-substitution, L c = b~ */
       gsl_blas_dtrsv (CblasLower, CblasNoTrans, CblasNonUnit, LLT, x);
 
-      /* Perform back-substitution, U x~ = c */
-      gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, LLT, x);
+      /* Perform back-substitution, L^T x~ = c */
+      gsl_blas_dtrsv (CblasLower, CblasTrans, CblasNonUnit, LLT, x);
 
       /* compute original solution vector x = S x~ */
       gsl_vector_mul(x, S);
@@ -500,4 +466,106 @@ gsl_linalg_cholesky_solve2 (const gsl_matrix * LLT,
 
       return status;
     }
+}
+
+int
+gsl_linalg_cholesky_rcond (const gsl_matrix * LLT, double * rcond,
+                           gsl_vector * work)
+{
+  const size_t M = LLT->size1;
+  const size_t N = LLT->size2;
+
+  if (M != N)
+    {
+      GSL_ERROR ("cholesky matrix must be square", GSL_ENOTSQR);
+    }
+  else if (work->size != 3 * N)
+    {
+      GSL_ERROR ("work vector must have length 3*N", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+      double Anorm = cholesky_norm1(LLT, work); /* ||A||_1 */
+      double Ainvnorm;                          /* ||A^{-1}||_1 */
+
+      *rcond = 0.0;
+
+      /* don't continue if matrix is singular */
+      if (Anorm == 0.0)
+        return GSL_SUCCESS;
+
+      /* estimate ||A^{-1}||_1 */
+      status = gsl_linalg_invnorm1(N, cholesky_Ainv, (void *) LLT, &Ainvnorm, work);
+
+      if (status)
+        return status;
+
+      if (Ainvnorm != 0.0)
+        *rcond = (1.0 / Anorm) / Ainvnorm;
+
+      return GSL_SUCCESS;
+    }
+}
+
+/* compute 1-norm of original matrix, stored in upper triangle of LLT;
+ * diagonal entries have to be reconstructed */
+static double
+cholesky_norm1(const gsl_matrix * LLT, gsl_vector * work)
+{
+  const size_t N = LLT->size1;
+  double max = 0.0;
+  size_t i, j;
+
+  for (j = 0; j < N; ++j)
+    {
+      double sum = 0.0;
+      gsl_vector_const_view lj = gsl_matrix_const_subrow(LLT, j, 0, j + 1);
+      double Ajj;
+
+      /* compute diagonal (j,j) entry of A */
+      gsl_blas_ddot(&lj.vector, &lj.vector, &Ajj);
+
+      for (i = 0; i < j; ++i)
+        {
+          double *wi = gsl_vector_ptr(work, i);
+          double Aij = gsl_matrix_get(LLT, i, j);
+          double absAij = fabs(Aij);
+
+          sum += absAij;
+          *wi += absAij;
+        }
+
+      gsl_vector_set(work, j, sum + fabs(Ajj));
+    }
+
+  for (i = 0; i < N; ++i)
+    {
+      double wi = gsl_vector_get(work, i);
+      max = GSL_MAX(max, wi);
+    }
+
+  return max;
+}
+
+/* x := A^{-1} x = A^{-t} x, A = L L^T */
+static int
+cholesky_Ainv(CBLAS_TRANSPOSE_t TransA, gsl_vector * x, void * params)
+{
+  int status;
+  gsl_matrix * A = (gsl_matrix * ) params;
+
+  (void) TransA; /* unused parameter warning */
+
+  /* compute L^{-1} x */
+  status = gsl_blas_dtrsv(CblasLower, CblasNoTrans, CblasNonUnit, A, x);
+  if (status)
+    return status;
+
+  /* compute L^{-t} x */
+  status = gsl_blas_dtrsv(CblasLower, CblasTrans, CblasNonUnit, A, x);
+  if (status)
+    return status;
+
+  return GSL_SUCCESS;
 }

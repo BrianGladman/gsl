@@ -1,0 +1,6 @@
+Method                    NITER NFEV NJUEV NJTJEV NAEV Init Cost  Final cost cond(J) Final |x|^2 Time (s)  
+levenberg-marquardt       25    31   26    26     0    7.1218e+18 1.9555e-02 447.50  2.5044e-01  45.73
+levenberg-marquardt+accel 22    23   45    23     22   7.1218e+18 1.9555e-02 447.64  2.5044e-01  33.82
+dogleg                    37    87   36    36     0    7.1218e+18 1.9555e-02 447.83  2.5044e-01  56.84
+double-dogleg             35    88   34    34     0    7.1218e+18 1.9555e-02 447.68  2.5044e-01  53.89
+steihaug-toint            35    88   345   0      0    7.1218e+18 1.9555e-02 inf     2.5044e-01  0.09
