@@ -82,7 +82,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\;..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;HAVE_CONFIG_H;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -113,7 +113,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\;..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;HAVE_CONFIG_H;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -140,7 +140,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\;..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;HAVE_CONFIG_H;_CRT_SECURE_NO_DEPRECATE;GSL_RANGE_CHECK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -170,7 +170,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\;..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;HAVE_CONFIG_H;_CRT_SECURE_NO_DEPRECATE;GSL_RANGE_CHECK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -3319,6 +3319,7 @@
     <ClInclude Include="..\..\gsl\gsl_inline.h" />
     <ClInclude Include="..\..\gsl\gsl_integration.h" />
     <ClInclude Include="..\..\gsl\gsl_interp.h" />
+    <ClInclude Include="..\..\gsl\gsl_interp2d.h" />
     <ClInclude Include="..\..\gsl\gsl_linalg.h" />
     <ClInclude Include="..\..\gsl\gsl_machine.h" />
     <ClInclude Include="..\..\gsl\gsl_math.h" />
@@ -3347,12 +3348,16 @@
     <ClInclude Include="..\..\gsl\gsl_monte_vegas.h" />
     <ClInclude Include="..\..\gsl\gsl_multifit.h" />
     <ClInclude Include="..\..\gsl\gsl_multifit_nlin.h" />
+    <ClInclude Include="..\..\gsl\gsl_multifit_nlinear.h" />
+    <ClInclude Include="..\..\gsl\gsl_multilarge.h" />
+    <ClInclude Include="..\..\gsl\gsl_multilarge_nlinear.h" />
     <ClInclude Include="..\..\gsl\gsl_multimin.h" />
     <ClInclude Include="..\..\gsl\gsl_multiroots.h" />
     <ClInclude Include="..\..\gsl\gsl_multiset.h" />
     <ClInclude Include="..\..\gsl\gsl_nan.h" />
     <ClInclude Include="..\..\gsl\gsl_ntuple.h" />
     <ClInclude Include="..\..\gsl\gsl_odeiv.h" />
+    <ClInclude Include="..\..\gsl\gsl_odeiv2.h" />
     <ClInclude Include="..\..\gsl\gsl_permutation.h" />
     <ClInclude Include="..\..\gsl\gsl_permute.h" />
     <ClInclude Include="..\..\gsl\gsl_permute_char.h" />
@@ -3364,6 +3369,21 @@
     <ClInclude Include="..\..\gsl\gsl_permute_int.h" />
     <ClInclude Include="..\..\gsl\gsl_permute_long.h" />
     <ClInclude Include="..\..\gsl\gsl_permute_long_double.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_char.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_complex_double.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_complex_float.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_complex_long_double.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_double.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_float.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_int.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_long.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_long_double.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_short.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_uchar.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_uint.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_ulong.h" />
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_ushort.h" />
     <ClInclude Include="..\..\gsl\gsl_permute_short.h" />
     <ClInclude Include="..\..\gsl\gsl_permute_uchar.h" />
     <ClInclude Include="..\..\gsl\gsl_permute_uint.h" />
@@ -3391,6 +3411,7 @@
     <ClInclude Include="..\..\gsl\gsl_randist.h" />
     <ClInclude Include="..\..\gsl\gsl_rng.h" />
     <ClInclude Include="..\..\gsl\gsl_roots.h" />
+    <ClInclude Include="..\..\gsl\gsl_rstat.h" />
     <ClInclude Include="..\..\gsl\gsl_sf.h" />
     <ClInclude Include="..\..\gsl\gsl_sf_airy.h" />
     <ClInclude Include="..\..\gsl\gsl_sf_bessel.h" />
@@ -3447,8 +3468,12 @@
     <ClInclude Include="..\..\gsl\gsl_sort_vector_uint.h" />
     <ClInclude Include="..\..\gsl\gsl_sort_vector_ulong.h" />
     <ClInclude Include="..\..\gsl\gsl_sort_vector_ushort.h" />
+    <ClInclude Include="..\..\gsl\gsl_spblas.h" />
     <ClInclude Include="..\..\gsl\gsl_specfunc.h" />
+    <ClInclude Include="..\..\gsl\gsl_splinalg.h" />
     <ClInclude Include="..\..\gsl\gsl_spline.h" />
+    <ClInclude Include="..\..\gsl\gsl_spline2d.h" />
+    <ClInclude Include="..\..\gsl\gsl_spmatrix.h" />
     <ClInclude Include="..\..\gsl\gsl_statistics.h" />
     <ClInclude Include="..\..\gsl\gsl_statistics_char.h" />
     <ClInclude Include="..\..\gsl\gsl_statistics_double.h" />
@@ -3502,6 +3527,7 @@
     <ClInclude Include="..\..\specfunc\recurse.h" />
     <ClInclude Include="..\..\utils\system.h" />
     <ClInclude Include="..\..\vector\view.h" />
+    <ClInclude Include="..\config.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cblaslib\cblaslib.vcxproj">

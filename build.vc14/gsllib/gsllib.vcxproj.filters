@@ -2531,5 +2531,81 @@
     <ClInclude Include="..\..\multilarge\gsl_multilarge.h">
       <Filter>gsl</Filter>
     </ClInclude>
+    <ClInclude Include="..\config.h" />
+    <ClInclude Include="..\..\gsl\gsl_interp2d.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_multifit_nlinear.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_multilarge.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_multilarge_nlinear.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_odeiv2.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_char.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_complex_double.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_complex_float.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_complex_long_double.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_double.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_float.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_int.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_long.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_long_double.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_short.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_uchar.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_uint.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_ulong.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_permute_matrix_ushort.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_rstat.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_spblas.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_splinalg.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_spline2d.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_spmatrix.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
