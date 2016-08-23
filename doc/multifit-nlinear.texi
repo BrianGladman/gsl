@@ -190,12 +190,6 @@ region subproblem in 2(b), as well as different choices of scaling matrices
 the user has a lot of control to fine-tune the various steps of the
 algorithm for their specific problem.
 
-@noindent
-Note that the model parameters are denoted by @math{x} in this chapter
-since the non-linear least-squares algorithms are described
-geometrically (i.e. finding the minimum of a surface).  The
-independent variable of any data to be fitted is denoted by @math{t}.
-
 @node Nonlinear Least-Squares TRS Overview
 @section Solving the Trust Region Subproblem (TRS)
 
@@ -493,6 +487,9 @@ J~_ij = 1 / \sigma_i df_i/dx_j
 @end example
 
 @end ifinfo
+
+@noindent
+For large systems, the user must perform their own weighting.
 
 @node Nonlinear Least-Squares Tunable Parameters
 @section Tunable Parameters
@@ -835,7 +832,7 @@ can estimate this second directional derivative using a finite
 difference method. When using finite differences, the library
 must calculate @math{f(x + h v)} where @math{h} represents
 a small step in the velocity direction. The parameter
-@var{h_fvv} defines this step size and is set to 0.01 by
+@var{h_fvv} defines this step size and is set to 0.02 by
 default.
 
 @end deftypevr
@@ -1155,13 +1152,8 @@ method is used (Cholesky, QR, or SVD).
 @itemize @bullet
 
 @item For the Cholesky solver, the matrix @math{J^T J} is factored at each
-iteration, or in the case of Levenberg-Marquardt, @math{J^T J + \mu D^T D}.
-Therefore this function will estimate the 1-norm condition number
+iteration. Therefore this function will estimate the 1-norm condition number
 @math{rcond^2 = 1/(||J^T J||_1 \cdot ||(J^T J)^{-1}||_1)}
-(or @math{1/(||J^T J + \mu D^T D||_1 \cdot ||(J^T J + \mu D^T D)^{-1}||_1)} for
-Levenberg-Marquardt). The added term for Levenberg-Marquardt tends to improve
-the conditioning of the Jacobian, so treat the calculated number with caution in this
-case.
 
 @item For the QR solver, @math{J} is factored as @math{J = Q R} at each
 iteration. For simplicity, this function calculates the 1-norm conditioning of

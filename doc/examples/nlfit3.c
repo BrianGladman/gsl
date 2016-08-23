@@ -73,11 +73,6 @@ callback(const size_t iter, void *params,
   double x1 = gsl_vector_get(x, 0);
   double x2 = gsl_vector_get(x, 1);
 
-#if 0
-  fprintf(stderr, "iter %zu: x1 = %.4f x2 = %.4f\n",
-          iter, x1, x2);
-#endif
-
   /* print out current location */
   printf("%f %f\n", x1, x2);
 }
