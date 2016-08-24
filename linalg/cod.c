@@ -411,7 +411,7 @@ cod_householder_transform(double *alpha, gsl_vector * v)
       return 0.0; /* tau = 0 */
     }
 
-  beta = - (*alpha >= 0.0 ? +1.0 : -1.0) * hypot(*alpha, xnorm);
+  beta = - (*alpha >= 0.0 ? +1.0 : -1.0) * gsl_hypot(*alpha, xnorm);
   tau = (beta - *alpha) / beta;
 
   {

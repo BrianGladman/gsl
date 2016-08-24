@@ -32,35 +32,6 @@
 
 #include "test_fdf.c"
 
-static const gsl_multifit_nlinear_trs **nlinear_trs[] = {
-#if 1 /*XXX*/
-  &gsl_multifit_nlinear_trs_lm,
-  &gsl_multifit_nlinear_trs_lmaccel,
-  &gsl_multifit_nlinear_trs_dogleg,
-  &gsl_multifit_nlinear_trs_ddogleg,
-#else
-  &gsl_multifit_nlinear_trs_subspace2D,
-#endif
-
-  NULL
-};
-
-static const gsl_multifit_nlinear_solver **nlinear_solvers[] = {
-  &gsl_multifit_nlinear_solver_cholesky,
-  &gsl_multifit_nlinear_solver_qr,
-  &gsl_multifit_nlinear_solver_svd,
-
-  NULL
-};
-
-/* skip Marquardt scaling since it won't pass */
-static const gsl_multifit_nlinear_scale **nlinear_scales[] = {
-  &gsl_multifit_nlinear_scale_levenberg,
-  &gsl_multifit_nlinear_scale_more,
-
-  NULL
-};
-
 static void
 test_proc(const gsl_multifit_nlinear_trs *trs,
           const gsl_multifit_nlinear_scale *scale,
@@ -81,13 +52,34 @@ test_proc(const gsl_multifit_nlinear_trs *trs,
 int
 main (void)
 {
+  const gsl_multifit_nlinear_trs **nlinear_trs[5];
+  const gsl_multifit_nlinear_solver **nlinear_solvers[4];
+  const gsl_multifit_nlinear_scale **nlinear_scales[3];
   const gsl_multifit_nlinear_trs **trs;
   const gsl_multifit_nlinear_solver **solver;
   const gsl_multifit_nlinear_scale **scale;
-  int fdtype;
   size_t i = 0;
 
   gsl_ieee_env_setup();
+
+  /* initialize arrays */
+
+  nlinear_trs[0] = &gsl_multifit_nlinear_trs_lm;
+  nlinear_trs[1] = &gsl_multifit_nlinear_trs_lmaccel;
+  nlinear_trs[2] = &gsl_multifit_nlinear_trs_dogleg;
+  nlinear_trs[3] = &gsl_multifit_nlinear_trs_ddogleg;
+  /*nlinear_trs[4] = &gsl_multifit_nlinear_trs_subspace2D;*/
+  nlinear_trs[4] = NULL;
+
+  nlinear_solvers[0] = &gsl_multifit_nlinear_solver_cholesky;
+  nlinear_solvers[1] = &gsl_multifit_nlinear_solver_qr;
+  nlinear_solvers[2] = &gsl_multifit_nlinear_solver_svd;
+  nlinear_solvers[3] = NULL;
+
+  /* skip Marquardt scaling since it won't pass */
+  nlinear_scales[0] = &gsl_multifit_nlinear_scale_levenberg;
+  nlinear_scales[1] = &gsl_multifit_nlinear_scale_more;
+  nlinear_scales[2] = NULL;
 
   /* run testsuite over all parameter combinations */
 
@@ -103,11 +95,8 @@ main (void)
           fprintf(stderr, "solver = %s\n", (*solver)->name);
           for (scale = nlinear_scales[k]; scale != NULL; scale = nlinear_scales[++k])
             {
-              for (fdtype = GSL_MULTIFIT_NLINEAR_FWDIFF;
-                   fdtype <= GSL_MULTIFIT_NLINEAR_CTRDIFF; ++fdtype)
-                {
-                  test_proc(*trs, *scale, *solver, fdtype);
-                }
+              test_proc(*trs, *scale, *solver, GSL_MULTIFIT_NLINEAR_FWDIFF);
+              test_proc(*trs, *scale, *solver, GSL_MULTIFIT_NLINEAR_CTRDIFF);
             }
         }
     }

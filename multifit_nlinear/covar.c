@@ -22,7 +22,7 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_linalg.h>
-#include <gsl/gsl_multifit_nlin.h>
+#include <gsl/gsl_multifit_nlinear.h>
 
 static int covar_QRPT (gsl_matrix * r, gsl_permutation * perm,
                        const double epsrel, gsl_matrix * covar);

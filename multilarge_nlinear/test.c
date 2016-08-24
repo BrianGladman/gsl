@@ -32,23 +32,6 @@
 
 #include "test_fdf.c"
 
-static const gsl_multilarge_nlinear_trs **nlinear_trs[] = {
-  &gsl_multilarge_nlinear_trs_lm,
-  &gsl_multilarge_nlinear_trs_lmaccel,
-  &gsl_multilarge_nlinear_trs_dogleg,
-  &gsl_multilarge_nlinear_trs_ddogleg,
-  &gsl_multilarge_nlinear_trs_cgst,
-
-  NULL
-};
-
-static const gsl_multilarge_nlinear_scale **nlinear_scales[] = {
-  &gsl_multilarge_nlinear_scale_levenberg,
-  &gsl_multilarge_nlinear_scale_more,
-
-  NULL
-};
-
 static void
 test_proc(const gsl_multilarge_nlinear_trs *trs,
           const gsl_multilarge_nlinear_scale *scale,
@@ -67,12 +50,27 @@ test_proc(const gsl_multilarge_nlinear_trs *trs,
 int
 main (void)
 {
+  const gsl_multilarge_nlinear_trs **nlinear_trs[6];
+  const gsl_multilarge_nlinear_scale **nlinear_scales[3];
   const gsl_multilarge_nlinear_trs **trs;
   const gsl_multilarge_nlinear_scale **scale;
   int fdtype;
   size_t i = 0;
 
   gsl_ieee_env_setup();
+
+  /* initialize arrays */
+
+  nlinear_trs[0] = &gsl_multilarge_nlinear_trs_lm;
+  nlinear_trs[1] = &gsl_multilarge_nlinear_trs_lmaccel;
+  nlinear_trs[2] = &gsl_multilarge_nlinear_trs_dogleg;
+  nlinear_trs[3] = &gsl_multilarge_nlinear_trs_ddogleg;
+  nlinear_trs[4] = &gsl_multilarge_nlinear_trs_cgst;
+  nlinear_trs[5] = NULL;
+
+  nlinear_scales[0] = &gsl_multilarge_nlinear_scale_levenberg;
+  nlinear_scales[1] = &gsl_multilarge_nlinear_scale_more;
+  nlinear_scales[2] = NULL;
 
   /* run testsuite over all parameter combinations */
 

@@ -2,7 +2,7 @@
 #define meyer_P         3
 
 static double meyer_x0[meyer_P] = { 0.02, 4000.0, 250.0 };
-static double meyer_epsrel = 1.0e-8;
+static double meyer_epsrel = 1.0e-7;
 
 static double meyer_J[meyer_N * meyer_P];
 
