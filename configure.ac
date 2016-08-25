@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([gsl],[2.1+])
+AC_INIT([gsl],[2.1.91])
 AC_CONFIG_SRCDIR(gsl_math.h)
 
 AM_INIT_AUTOMAKE([gnu])
@@ -30,6 +30,7 @@ dnl gsl-1.15   libgsl 16:0:16  libgslcblas 0:0:0
 dnl gsl-1.16   libgsl 17:0:17  libgslcblas 0:0:0 
 dnl gsl-2.0    libgsl 18:0:18  (**) libgslcblas 0:0:0 
 dnl gsl-2.1    libgsl 19:0:0   libgslcblas 0:0:0 
+dnl gsl-2.2    libgsl 20:0:1   libgslcblas 0:0:0 
 dnl 
 dnl (*) There was an error on this release.  Firstly, the versioning
 dnl numbers were not updated.  Secondly, 2 functions were removed, but
@@ -56,9 +57,9 @@ dnl See https://www.gnu.org/software/libtool/manual/html_node/Updating-version-i
 dnl for more detailed info
 
 dnl
-GSL_CURRENT=19
+GSL_CURRENT=20
 GSL_REVISION=0
-GSL_AGE=0
+GSL_AGE=1
 dnl
 CBLAS_CURRENT=0
 CBLAS_REVISION=0

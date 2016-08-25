@@ -2,7 +2,7 @@
 #define meyerscal_P         3
 
 static double meyerscal_x0[meyerscal_P] = { 8.85, 4.0, 2.5 };
-static double meyerscal_epsrel = 1.0e-7;
+static double meyerscal_epsrel = 1.0e-6;
 
 static double meyerscal_J[meyerscal_N * meyerscal_P];
 
