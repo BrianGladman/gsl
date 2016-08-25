@@ -4,7 +4,8 @@
 /* dogleg method has trouble converging from recommended starting point,
  * so we use an x0 which is a little closer to the true solution */
 /*static double biggs_x0[biggs_P] = { 1.0, 2.0, 1.0, 1.0, 1.0, 1.0 };*/
-static double biggs_x0[biggs_P] = { 1.0, 5.0, 1.0, 2.0, 3.0, 2.0 };
+/* static double biggs_x0[biggs_P] = { 1.0, 5.0, 1.0, 2.0, 3.0, 2.0 };*/
+static double biggs_x0[biggs_P] = { 1.0, 8.0, 1.0, 2.0, 3.0, 2.0 };
 static double biggs_epsrel = 1.0e-9;
 
 static double biggs_J[biggs_N * biggs_P];
