@@ -46,7 +46,30 @@ static double cholesky_norm1(const gsl_matrix * LLT, gsl_vector * work);
 static int cholesky_Ainv(CBLAS_TRANSPOSE_t TransA, gsl_vector * x, void * params);
 
 /*
-gsl_linalg_cholesky_decomp()
+In GSL 2.2, we decided to modify the behavior of the Cholesky decomposition
+to store the Cholesky factor in the lower triangle, and store the original
+matrix in the upper triangle. Previous versions stored the Cholesky factor in
+both places. The routine gsl_linalg_cholesky_decomp1 was added for the new
+behavior, and gsl_linalg_cholesky_decomp is maintained for backward compatibility.
+It will be removed in a future release.
+*/
+
+int
+gsl_linalg_cholesky_decomp (gsl_matrix * A)
+{
+  int status;
+
+  status = gsl_linalg_cholesky_decomp1(A);
+  if (status == GSL_SUCCESS)
+    {
+      gsl_matrix_transpose_tricpy('L', 0, A, A);
+    }
+
+  return status;
+}
+
+/*
+gsl_linalg_cholesky_decomp1()
   Perform Cholesky decomposition of a symmetric positive
 definite matrix
 
@@ -61,7 +84,7 @@ Van Loan, Matrix Computations (4th ed).
 */
 
 int
-gsl_linalg_cholesky_decomp (gsl_matrix * A)
+gsl_linalg_cholesky_decomp1 (gsl_matrix * A)
 {
   const size_t M = A->size1;
   const size_t N = A->size2;
@@ -231,7 +254,7 @@ gsl_linalg_cholesky_decomp_unit(gsl_matrix * A, gsl_vector * D)
   size_t i, j;
 
   /* initial Cholesky */
-  int stat_chol = gsl_linalg_cholesky_decomp(A);
+  int stat_chol = gsl_linalg_cholesky_decomp1(A);
 
   if(stat_chol == GSL_SUCCESS)
   {
@@ -390,7 +413,7 @@ gsl_linalg_cholesky_decomp2(gsl_matrix * A, gsl_vector * S)
         return status;
 
       /* compute Cholesky decomposition of diag(S) A diag(S) */
-      status = gsl_linalg_cholesky_decomp(A);
+      status = gsl_linalg_cholesky_decomp1(A);
       if (status)
         return status;
 

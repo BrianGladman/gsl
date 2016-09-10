@@ -1,9 +1,23 @@
-* What is new in gsl-2.2:
+* What is new in gsl-2.3:
+
+** fixed scaling issue in 2D subspace nonlinear least squares
+   method
+
+** optimize dogleg methods to calculate Gauss-Newton point
+   only when needed
+
+* What was new in gsl-2.2.1:
+
+** reverted gsl_linalg_cholesky_decomp to its previous behavior
+   so it is backward compatible; new cholesky routine is
+   gsl_linalg_cholesky_decomp1
+
+* What was new in gsl-2.2:
 
 ** updated gsl_linalg_cholesky_invert to use Level-2 BLAS
    and added function gsl_linalg_pcholesky_invert
 
-** added function gsl_linalg_invtri for inverting
+** added functions gsl_linalg_tri_*_invert for inverting
    triangular matrices
 
 ** fix GSL_EIGEN_SORT_VAL_{ASC,DESC} for nonsymmetric

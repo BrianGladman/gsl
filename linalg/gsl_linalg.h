@@ -468,6 +468,7 @@ int gsl_linalg_PTLQ_update (gsl_matrix * Q, gsl_matrix * L,
 /* Cholesky Decomposition */
 
 int gsl_linalg_cholesky_decomp (gsl_matrix * A);
+int gsl_linalg_cholesky_decomp1 (gsl_matrix * A);
 
 int gsl_linalg_cholesky_solve (const gsl_matrix * cholesky,
                                const gsl_vector * b,

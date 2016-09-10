@@ -3736,7 +3736,7 @@ test_cholesky_solve_dim(const gsl_matrix * m, const double * actual, double eps)
   gsl_vector * x = gsl_vector_calloc(dim);
   gsl_matrix_memcpy(u,m);
   for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
-  s += gsl_linalg_cholesky_decomp(u);
+  s += gsl_linalg_cholesky_decomp1(u);
   s += gsl_linalg_cholesky_solve(u, rhs, x);
   for(i=0; i<dim; i++) {
     int foo = check(gsl_vector_get(x, i), actual[i], eps);

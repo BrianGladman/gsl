@@ -152,7 +152,7 @@ test_cholesky_decomp_eps(const int scale, const gsl_matrix * m,
   if (scale)
     s += gsl_linalg_cholesky_decomp2(V, S);
   else
-    s += gsl_linalg_cholesky_decomp(V);
+    s += gsl_linalg_cholesky_decomp1(V);
 
   /* compute L and LT */
   gsl_matrix_tricpy('L', 1, L, V);
@@ -256,7 +256,7 @@ test_cholesky_invert_eps(const gsl_matrix * m, const double eps, const char *des
 
   gsl_matrix_memcpy(v, m);
 
-  s += gsl_linalg_cholesky_decomp(v);
+  s += gsl_linalg_cholesky_decomp1(v);
   s += gsl_linalg_cholesky_invert(v);
 
   /* c = m m^{-1} */

@@ -741,7 +741,7 @@ where @math{S} is a diagonal matrix whose elements are given by
 Jacobi preconditioning. There are routines below to solve
 both the scaled and unscaled systems.
 
-@deftypefun int gsl_linalg_cholesky_decomp (gsl_matrix * @var{A})
+@deftypefun int gsl_linalg_cholesky_decomp1 (gsl_matrix * @var{A})
 @deftypefunx int gsl_linalg_complex_cholesky_decomp (gsl_matrix_complex * @var{A})
 These functions factorize the symmetric, positive-definite square matrix
 @var{A} into the Cholesky decomposition @math{A = L L^T} (or
@@ -756,6 +756,10 @@ error code @code{GSL_EDOM}.
 
 When testing whether a matrix is positive-definite, disable the error
 handler first to avoid triggering an error.
+@end deftypefun
+
+@deftypefun int gsl_linalg_cholesky_decomp (gsl_matrix * @var{A})
+This function is now deprecated and is provided only for backward compatibility.
 @end deftypefun
 
 @deftypefun int gsl_linalg_cholesky_solve (const gsl_matrix * @var{cholesky}, const gsl_vector * @var{b}, gsl_vector * @var{x})

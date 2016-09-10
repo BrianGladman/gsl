@@ -1721,7 +1721,7 @@ test_multivariate_gaussian_log_pdf (void)
   gsl_matrix_set(Sigma, 1, 0, 2);
 
   gsl_matrix_memcpy(L, Sigma);
-  gsl_linalg_cholesky_decomp(L);
+  gsl_linalg_cholesky_decomp1(L);
 
   gsl_ran_multivariate_gaussian_log_pdf(x, mu, L, &obs_res, work);
   gsl_test_rel(obs_res, exp_res, 1.0e-10, "gsl_ran_multivariate_gaussian_log_pdf");
@@ -1761,7 +1761,7 @@ test_multivariate_gaussian_pdf (void)
   gsl_matrix_set(Sigma, 1, 0, 2);
 
   gsl_matrix_memcpy(L, Sigma);
-  gsl_linalg_cholesky_decomp(L);
+  gsl_linalg_cholesky_decomp1(L);
 
   gsl_ran_multivariate_gaussian_pdf(x, mu, L, &obs_res, work);
   gsl_test_rel(obs_res, exp_res, 1.0e-10, "gsl_ran_multivariate_gaussian_pdf");
@@ -1806,7 +1806,7 @@ test_multivariate_gaussian (void)
 
   /* draw N random vectors */
   gsl_matrix_memcpy(L, Sigma);
-  gsl_linalg_cholesky_decomp(L);
+  gsl_linalg_cholesky_decomp1(L);
   for (i = 0; i < N; ++i) {
     gsl_ran_multivariate_gaussian(r_global, mu, L, sample);
     gsl_matrix_set_row(samples, i, sample);
@@ -1821,7 +1821,7 @@ test_multivariate_gaussian (void)
   gsl_vector_memcpy(mu_hat_ctr, mu_hat);
   gsl_vector_sub(mu_hat_ctr, mu);
   gsl_matrix_memcpy(Sigma_hat_inv, Sigma_hat);
-  gsl_linalg_cholesky_decomp(Sigma_hat_inv);
+  gsl_linalg_cholesky_decomp1(Sigma_hat_inv);
   gsl_linalg_cholesky_invert(Sigma_hat_inv);
   gsl_blas_dgemv(CblasNoTrans, 1, Sigma_hat_inv, mu_hat_ctr, 0, tmp);
   gsl_blas_ddot(mu_hat_ctr, tmp, &T2);
