@@ -103,6 +103,7 @@ static test_fdf_problem rosenbrocke_problem =
   "rosenbrock_extended",
   rosenbrocke_x0,
   NULL,
+  NULL,
   &rosenbrocke_epsrel,
   &rosenbrocke_checksol,
   &rosenbrocke_func

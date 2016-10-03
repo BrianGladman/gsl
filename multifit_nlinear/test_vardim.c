@@ -112,6 +112,7 @@ static test_fdf_problem vardim_problem =
   "vardim",
   vardim_x0,
   NULL,
+  NULL,
   &vardim_epsrel,
   &vardim_checksol,
   &vardim_func

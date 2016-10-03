@@ -108,6 +108,7 @@ static test_fdf_problem rat43a_problem =
 {
   "nist-rat43a",
   rat43_x0a,
+  NULL,
   rat43_sigma,
   &rat43_epsrel,
   &rat43_checksol,
@@ -118,6 +119,7 @@ static test_fdf_problem rat43b_problem =
 {
   "nist-rat43b",
   rat43_x0b,
+  NULL,
   rat43_sigma,
   &rat43_epsrel,
   &rat43_checksol,

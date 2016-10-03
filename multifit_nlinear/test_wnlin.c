@@ -167,6 +167,7 @@ static test_fdf_problem wnlin_problem1 =
   "wnlin_internal_weights",
   wnlin_x0,
   NULL,
+  NULL,
   &wnlin_epsrel,
   &wnlin_checksol,
   &wnlin_func1
@@ -176,6 +177,7 @@ static test_fdf_problem wnlin_problem2 =
 {
   "wnlin_external_weights",
   wnlin_x0,
+  wnlin_W,
   NULL,
   &wnlin_epsrel,
   &wnlin_checksol,

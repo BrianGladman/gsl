@@ -90,6 +90,7 @@ static test_fdf_problem powell3_problem =
   "powell_badly_scaled",
   powell3_x0,
   NULL,
+  NULL,
   &powell3_epsrel,
   &powell3_checksol,
   &powell3_func

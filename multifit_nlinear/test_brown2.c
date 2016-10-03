@@ -163,6 +163,7 @@ static test_fdf_problem brown2_problem =
   "brown_almost_linear",
   brown2_x0,
   NULL,
+  NULL,
   &brown2_epsrel,
   &brown2_checksol,
   &brown2_func

@@ -96,6 +96,14 @@ gsl_multifit_linear_alloc (const size_t nmax, const size_t pmax)
       GSL_ERROR_VAL ("failed to allocate space for D", GSL_ENOMEM, 0);
     }
 
+  w->min_workspace_p = gsl_min_fminimizer_alloc(gsl_min_fminimizer_brent);
+
+  if (w->min_workspace_p == 0)
+    {
+      gsl_multifit_linear_free(w);
+      GSL_ERROR_VAL ("failed to allocate space for min workspace", GSL_ENOMEM, 0);
+    }
+
   return w;
 }
 
@@ -124,6 +132,9 @@ gsl_multifit_linear_free (gsl_multifit_linear_workspace * w)
 
   if (w->D)
     gsl_vector_free (w->D);
+
+  if (w->min_workspace_p)
+    gsl_min_fminimizer_free (w->min_workspace_p);
 
   free (w);
 }

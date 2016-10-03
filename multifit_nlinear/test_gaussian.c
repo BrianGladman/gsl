@@ -128,6 +128,7 @@ static test_fdf_problem gaussian_problem =
   "gaussian",
   gaussian_x0,
   NULL,
+  NULL,
   &gaussian_epsrel,
   &gaussian_checksol,
   &gaussian_func

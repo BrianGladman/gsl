@@ -113,6 +113,7 @@ static test_fdf_problem powell1_problem =
   "powell_singular",
   powell1_x0,
   NULL,
+  NULL,
   &powell1_epsrel,
   &powell1_checksol,
   &powell1_func

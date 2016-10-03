@@ -146,6 +146,7 @@ static test_fdf_problem bard_problem =
   "bard",
   bard_x0,
   NULL,
+  NULL,
   &bard_epsrel,
   &bard_checksol,
   &bard_func

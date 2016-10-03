@@ -155,6 +155,7 @@ static test_fdf_problem watson_problem =
   "watson",
   watson_x0,
   NULL,
+  NULL,
   &watson_epsrel,
   &watson_checksol,
   &watson_func

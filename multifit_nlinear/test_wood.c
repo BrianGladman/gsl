@@ -108,6 +108,7 @@ static test_fdf_problem wood_problem =
   "wood",
   wood_x0,
   NULL,
+  NULL,
   &wood_epsrel,
   &wood_checksol,
   &wood_func

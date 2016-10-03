@@ -106,6 +106,7 @@ static test_fdf_problem beale_problem =
   "beale",
   beale_x0,
   NULL,
+  NULL,
   &beale_epsrel,
   &beale_checksol,
   &beale_func

@@ -125,6 +125,7 @@ static test_fdf_problem boxboda_problem =
 {
   "nist-boxboda",
   boxbod_x0a,
+  NULL,
   boxbod_sigma,
   &boxbod_epsrel,
   &boxbod_checksol,
@@ -135,6 +136,7 @@ static test_fdf_problem boxbodb_problem =
 {
   "nist-boxbodb",
   boxbod_x0b,
+  NULL,
   boxbod_sigma,
   &boxbod_epsrel,
   &boxbod_checksol,

@@ -125,6 +125,7 @@ static test_fdf_problem meyerscal_problem =
   "meyerscal",
   meyerscal_x0,
   NULL,
+  NULL,
   &meyerscal_epsrel,
   &meyerscal_checksol,
   &meyerscal_func

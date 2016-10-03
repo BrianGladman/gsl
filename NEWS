@@ -1,5 +1,26 @@
 * What is new in gsl-2.3:
 
+** added routines for Generalized Cross Validation for
+   regularized linear least squares
+
+** improved rstat example program and added documentation for
+   gsl_rstat_sd_mean (Jonathan Leto)
+
+** added function gsl_multifit_linear_rank
+
+** bug fix in nonlinear least squares when using data weights with
+   finite-difference Jacobian
+
+** add 2D subspace method for large systems (multilarge_nlinear)
+
+** bug fix in gsl_ran_beta for small parameters
+   (bug #47646, Yu Liu)
+
+** bug fix in gsl_complex_tan for negative imaginary arguments
+   (bug #47347, Yu Liu)
+
+** doc bug fix: value of golden ratio
+
 ** fixed scaling issue in 2D subspace nonlinear least squares
    method
 

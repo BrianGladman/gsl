@@ -299,6 +299,7 @@
     <ClCompile Include="..\..\linalg\pcholesky.c" />
     <ClCompile Include="..\..\multifit\fdfridge.c" />
     <ClCompile Include="..\..\multifit\fdjac.c" />
+    <ClCompile Include="..\..\multifit\gcv.c" />
     <ClCompile Include="..\..\multifit\linear_common.c" />
     <ClCompile Include="..\..\multifit\lmniel.c" />
     <ClCompile Include="..\..\multifit\multireg.c" />
@@ -416,6 +417,7 @@
     <ClCompile Include="..\..\multilarge_nlinear\lm.c" />
     <ClCompile Include="..\..\multilarge_nlinear\nielsen.c" />
     <ClCompile Include="..\..\multilarge_nlinear\scaling.c" />
+    <ClCompile Include="..\..\multilarge_nlinear\subspace2D.c" />
     <ClCompile Include="..\..\multilarge_nlinear\trust.c">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)multilarge_nlinear\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)multilarge_nlinear\</ObjectFileName>

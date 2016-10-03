@@ -132,6 +132,7 @@ static test_fdf_problem thurbera_problem =
 {
   "nist-thurbera",
   thurber_x0a,
+  NULL,
   thurber_sigma,
   &thurber_epsrel,
   &thurber_checksol,
@@ -142,6 +143,7 @@ static test_fdf_problem thurberb_problem =
 {
   "nist-thurberb",
   thurber_x0b,
+  NULL,
   thurber_sigma,
   &thurber_epsrel,
   &thurber_checksol,

@@ -100,6 +100,7 @@ static test_fdf_problem lin1_problem =
   "linear_full",
   lin1_x0,
   NULL,
+  NULL,
   &lin1_epsrel,
   &lin1_checksol,
   &lin1_func

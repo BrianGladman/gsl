@@ -108,6 +108,7 @@ static test_fdf_problem helical_problem =
   "helical",
   helical_x0,
   NULL,
+  NULL,
   &helical_epsrel,
   &helical_checksol,
   &helical_func

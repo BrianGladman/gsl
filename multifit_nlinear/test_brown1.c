@@ -119,6 +119,7 @@ static test_fdf_problem brown1_problem =
   "brown_dennis",
   brown1_x0,
   NULL,
+  NULL,
   &brown1_epsrel,
   &brown1_checksol,
   &brown1_func

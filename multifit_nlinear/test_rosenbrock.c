@@ -84,6 +84,7 @@ static test_fdf_problem rosenbrock_problem =
   "rosenbrock",
   rosenbrock_x0,
   NULL,
+  NULL,
   &rosenbrock_epsrel,
   &rosenbrock_checksol,
   &rosenbrock_func

@@ -136,6 +136,7 @@ static test_fdf_problem eckerlea_problem =
 {
   "nist-eckerlea",
   eckerle_x0a,
+  NULL,
   eckerle_sigma,
   &eckerle_epsrel,
   &eckerle_checksol,
@@ -146,6 +147,7 @@ static test_fdf_problem eckerleb_problem =
 {
   "nist-eckerleb",
   eckerle_x0b,
+  NULL,
   eckerle_sigma,
   &eckerle_epsrel,
   &eckerle_checksol,

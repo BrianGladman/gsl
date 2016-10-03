@@ -133,6 +133,7 @@ static test_fdf_problem biggs_problem =
   "biggs",
   biggs_x0,
   NULL,
+  NULL,
   &biggs_epsrel,
   &biggs_checksol,
   &biggs_func

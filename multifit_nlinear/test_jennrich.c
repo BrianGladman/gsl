@@ -105,6 +105,7 @@ static test_fdf_problem jennrich_problem =
   "jennrich",
   jennrich_x0,
   NULL,
+  NULL,
   &jennrich_epsrel,
   &jennrich_checksol,
   &jennrich_func
