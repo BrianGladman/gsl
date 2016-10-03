@@ -1824,6 +1824,9 @@
     <ClCompile Include="..\..\multilarge_nlinear\scaling.c">
       <Filter>multilarge_nlinear</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\multilarge_nlinear\subspace2D.c">
+      <Filter>multilarge_nlinear</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\histogram\gsl_histogram.h">

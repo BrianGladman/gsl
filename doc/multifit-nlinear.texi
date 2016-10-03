@@ -568,6 +568,7 @@ This selects the double dogleg algorithm.
 @end defvr
 
 @defvr {Option} gsl_multifit_nlinear_trs_subspace2D
+@defvrx {Option} gsl_multilarge_nlinear_trs_subspace2D
 This selects the 2D subspace algorithm.
 @end defvr
 
@@ -1847,9 +1848,7 @@ and the normal equations matrix is given by
 \beforedisplay
 $$
 J^T J =
-\left(
 \alpha I_p + 4 x x^T
-\right)
 $$
 \afterdisplay
 @end tex

@@ -124,6 +124,7 @@ static test_fdf_problem meyer_problem =
   "meyer",
   meyer_x0,
   NULL,
+  NULL,
   &meyer_epsrel,
   &meyer_checksol,
   &meyer_func

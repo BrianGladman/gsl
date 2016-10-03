@@ -154,6 +154,7 @@ static test_fdf_problem ensoa_problem =
 {
   "nist-ENSOa",
   enso_x0a,
+  NULL,
   enso_sigma,
   &enso_epsrel,
   &enso_checksol,
@@ -164,6 +165,7 @@ static test_fdf_problem ensob_problem =
 {
   "nist-ENSOb",
   enso_x0b,
+  NULL,
   enso_sigma,
   &enso_epsrel,
   &enso_checksol,

@@ -78,6 +78,9 @@ int
 gsl_multifit_linear_bsvd (const gsl_matrix * X,
                           gsl_multifit_linear_workspace * work);
 
+size_t
+gsl_multifit_linear_rank(const double tol, const gsl_multifit_linear_workspace * work);
+
 int
 gsl_multifit_linear_solve (const double lambda,
                            const gsl_matrix * X,

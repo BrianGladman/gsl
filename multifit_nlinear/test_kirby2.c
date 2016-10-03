@@ -202,6 +202,7 @@ static test_fdf_problem kirby2a_problem =
 {
   "nist-kirby2a",
   kirby2_x0a,
+  NULL,
   kirby2_sigma,
   &kirby2_epsrel,
   &kirby2_checksol,
@@ -212,6 +213,7 @@ static test_fdf_problem kirby2b_problem =
 {
   "nist-kirby2b",
   kirby2_x0b,
+  NULL,
   kirby2_sigma,
   &kirby2_epsrel,
   &kirby2_checksol,

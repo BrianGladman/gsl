@@ -88,6 +88,7 @@ static test_fdf_problem powell2_problem =
   "powell2",
   powell2_x0,
   NULL,
+  NULL,
   &powell2_epsrel,
   &powell2_checksol,
   &powell2_func

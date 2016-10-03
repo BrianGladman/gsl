@@ -91,6 +91,7 @@ static test_fdf_problem brown3_problem =
   "brown_badly_scaled",
   brown3_x0,
   NULL,
+  NULL,
   &brown3_epsrel,
   &brown3_checksol,
   &brown3_func

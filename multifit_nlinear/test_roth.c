@@ -100,6 +100,7 @@ static test_fdf_problem roth_problem =
   "roth_freudenstein",
   roth_x0,
   NULL,
+  NULL,
   &roth_epsrel,
   &roth_checksol,
   &roth_func

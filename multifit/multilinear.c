@@ -115,6 +115,24 @@ gsl_multifit_linear_bsvd (const gsl_matrix * X,
   return status;
 } /* gsl_multifit_linear_bsvd() */
 
+size_t
+gsl_multifit_linear_rank(const double tol, const gsl_multifit_linear_workspace * work)
+{
+  double s0 = gsl_vector_get (work->S, 0);
+  size_t rank = 0;
+  size_t j;
+
+  for (j = 0; j < work->p; j++)
+    {
+      double sj = gsl_vector_get (work->S, j);
+
+      if (sj > tol * s0)
+        ++rank;
+    }
+
+  return rank;
+}
+
 /* Estimation of values for given x */
 
 int

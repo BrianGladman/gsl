@@ -160,6 +160,7 @@ static test_fdf_problem kowalik_problem =
   "kowalik",
   kowalik_x0,
   NULL,
+  NULL,
   &kowalik_epsrel,
   &kowalik_checksol,
   &kowalik_func

@@ -416,6 +416,7 @@
     <ClCompile Include="..\..\multilarge_nlinear\lm.c" />
     <ClCompile Include="..\..\multilarge_nlinear\nielsen.c" />
     <ClCompile Include="..\..\multilarge_nlinear\scaling.c" />
+    <ClCompile Include="..\..\multilarge_nlinear\subspace2D.c" />
     <ClCompile Include="..\..\multilarge_nlinear\trust.c">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)multilarge_nlinear\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)multilarge_nlinear\</ObjectFileName>

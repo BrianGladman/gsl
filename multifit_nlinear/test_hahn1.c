@@ -207,6 +207,7 @@ static test_fdf_problem hahn1a_problem =
 {
   "nist-hahn1a",
   hahn1_x0a,
+  NULL,
   hahn1_sigma,
   &hahn1_epsrel,
   &hahn1_checksol,
@@ -217,6 +218,7 @@ static test_fdf_problem hahn1b_problem =
 {
   "nist-hahn1b",
   hahn1_x0b,
+  NULL,
   hahn1_sigma,
   &hahn1_epsrel,
   &hahn1_checksol,

@@ -131,6 +131,7 @@ static test_fdf_problem exp1_problem =
   "expfit1",
   exp1_x0,
   NULL,
+  NULL,
   &exp1_epsrel,
   &exp1_checksol,
   &exp1_func
