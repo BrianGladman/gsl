@@ -1827,9 +1827,12 @@
     <ClCompile Include="..\..\multilarge_nlinear\subspace2D.c">
       <Filter>multilarge_nlinear</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="..\..\multifit\gcv.c">
       <Filter>multifit</Filter>
     </ClCompile>
+=======
+>>>>>>> c7647cbadb714321514ffbfd22126d6c1f91d68d
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\histogram\gsl_histogram.h">

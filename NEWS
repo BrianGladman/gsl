@@ -1,8 +1,11 @@
 * What is new in gsl-2.3:
 
+<<<<<<< HEAD
 ** added routines for Generalized Cross Validation for
    regularized linear least squares
 
+=======
+>>>>>>> c7647cbadb714321514ffbfd22126d6c1f91d68d
 ** improved rstat example program and added documentation for
    gsl_rstat_sd_mean (Jonathan Leto)
 
