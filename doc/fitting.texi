@@ -363,6 +363,24 @@ which have zero singular value (to machine precision) are discarded
 from the fit.
 @end deftypefun
 
+@deftypefun int gsl_multifit_linear_tsvd (const gsl_matrix * @var{X}, const gsl_vector * @var{y}, const double @var{tol}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, size_t * @var{rank}, gsl_multifit_linear_workspace * @var{work})
+This function computes the best-fit parameters @var{c} of the model
+@math{y = X c} for the observations @var{y} and the matrix of
+predictor variables @var{X}, using a truncated SVD expansion.
+Singular values which satisfy @math{s_i \le tol \times s_0}
+are discarded from the fit, where @math{s_0} is the largest singular value.
+The @math{p}-by-@math{p} variance-covariance matrix of the model parameters
+@var{cov} is set to @math{\sigma^2 (X^T X)^{-1}}, where @math{\sigma} is
+the standard deviation of the fit residuals.
+The sum of squares of the residuals from the best-fit,
+@math{\chi^2}, is returned in @var{chisq}. The effective rank
+(number of singular values used in solution) is returned in @var{rank}.
+If the coefficient of
+determination is desired, it can be computed from the expression
+@math{R^2 = 1 - \chi^2 / TSS}, where the total sum of squares (TSS) of
+the observations @var{y} may be computed from @code{gsl_stats_tss}.
+@end deftypefun
+
 @deftypefun int gsl_multifit_wlinear (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, gsl_multifit_linear_workspace * @var{work})
 This function computes the best-fit parameters @var{c} of the weighted
 model @math{y = X c} for the observations @var{y} with weights @var{w}
@@ -371,6 +389,23 @@ workspace provided in @var{work}.  The @math{p}-by-@math{p} covariance matrix of
 parameters @var{cov} is computed as @math{(X^T W X)^{-1}}. The weighted
 sum of squares of the residuals from the best-fit, @math{\chi^2}, is
 returned in @var{chisq}. If the coefficient of determination is
+desired, it can be computed from the expression @math{R^2 = 1 - \chi^2
+/ WTSS}, where the weighted total sum of squares (WTSS) of the
+observations @var{y} may be computed from @code{gsl_stats_wtss}.
+@end deftypefun
+
+@deftypefun int gsl_multifit_wlinear_tsvd (const gsl_matrix * @var{X}, const gsl_vector * @var{w}, const gsl_vector * @var{y}, const double @var{tol}, gsl_vector * @var{c}, gsl_matrix * @var{cov}, double * @var{chisq}, size_t * @var{rank}, gsl_multifit_linear_workspace * @var{work})
+This function computes the best-fit parameters @var{c} of the weighted
+model @math{y = X c} for the observations @var{y} with weights @var{w}
+and the matrix of predictor variables @var{X}, using a truncated SVD expansion.
+Singular values which satisfy @math{s_i \le tol \times s_0}
+are discarded from the fit, where @math{s_0} is the largest singular value.
+The @math{p}-by-@math{p} covariance matrix of the model
+parameters @var{cov} is computed as @math{(X^T W X)^{-1}}. The weighted
+sum of squares of the residuals from the best-fit, @math{\chi^2}, is
+returned in @var{chisq}. The effective rank of the system (number of
+singular values used in the solution) is returned in @var{rank}.
+If the coefficient of determination is
 desired, it can be computed from the expression @math{R^2 = 1 - \chi^2
 / WTSS}, where the weighted total sum of squares (WTSS) of the
 observations @var{y} may be computed from @code{gsl_stats_wtss}.
@@ -426,8 +461,12 @@ the @math{p}-by-@math{1} solution vector,
 and @math{||r||_W^2 = r^T W r}.
 In cases where the least squares matrix @math{X} is ill-conditioned,
 small perturbations (ie: noise) in the observation vector could lead to
-widely different solution vectors @math{c}. In these cases it is often
-advantageous to include a regularization term in the least squares
+widely different solution vectors @math{c}.
+One way of dealing with ill-conditioned matrices is to use a ``truncated SVD''
+in which small singular values, below some given tolerance, are discarded
+from the solution. The truncated SVD method is available using the functions
+@code{gsl_multifit_linear_tsvd} and @code{gsl_multifit_wlinear_tsvd}. Another way
+to help solve ill-posed problems is to include a regularization term in the least squares
 minimization
 @tex
 \beforedisplay

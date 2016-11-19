@@ -73,6 +73,16 @@ gsl_multifit_linear (const gsl_matrix * X,
                      gsl_multifit_linear_workspace * work);
 
 int
+gsl_multifit_linear_tsvd (const gsl_matrix * X,
+                          const gsl_vector * y,
+                          const double tol,
+                          gsl_vector * c,
+                          gsl_matrix * cov,
+                          double * chisq,
+                          size_t * rank,
+                          gsl_multifit_linear_workspace * work);
+
+int
 gsl_multifit_linear_svd (const gsl_matrix * X,
                          gsl_multifit_linear_workspace * work);
 
@@ -203,6 +213,17 @@ gsl_multifit_wlinear (const gsl_matrix * X,
                       gsl_matrix * cov,
                       double * chisq,
                       gsl_multifit_linear_workspace * work);
+
+int
+gsl_multifit_wlinear_tsvd (const gsl_matrix * X,
+                           const gsl_vector * w,
+                           const gsl_vector * y,
+                           const double tol,
+                           gsl_vector * c,
+                           gsl_matrix * cov,
+                           double * chisq,
+                           size_t * rank,
+                           gsl_multifit_linear_workspace * work);
 
 int
 gsl_multifit_wlinear_svd (const gsl_matrix * X,
