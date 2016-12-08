@@ -213,12 +213,18 @@ gsl_multifit_linear_gcv_min(const gsl_vector * reg_param,
       size_t iter = 0;
       gsl_function F;
 
+      /* XXX FIXME */
+      gsl_min_fminimizer *min_workspace_p;
+
       if (idxG == 0 || idxG == ((int)npts - 1))
         {
           /* the minimum is an endpoint of the curve, no need to search */
           *lambda = m;
           return GSL_SUCCESS;
         }
+
+      /* XXX FIXME */
+      min_workspace_p = gsl_min_fminimizer_alloc(gsl_min_fminimizer_brent);
 
       params.S = &S.vector;
       params.UTy = UTy;
@@ -229,24 +235,26 @@ gsl_multifit_linear_gcv_min(const gsl_vector * reg_param,
       F.function = gcv_func;
       F.params = &params;
 
-      gsl_min_fminimizer_set(work->min_workspace_p, &F, m, a, b);
+      gsl_min_fminimizer_set(min_workspace_p, &F, m, a, b);
 
       do
         {
           iter++;
-          status = gsl_min_fminimizer_iterate(work->min_workspace_p);
+          status = gsl_min_fminimizer_iterate(min_workspace_p);
 
-          a = gsl_min_fminimizer_x_lower(work->min_workspace_p);
-          b = gsl_min_fminimizer_x_upper(work->min_workspace_p);
+          a = gsl_min_fminimizer_x_lower(min_workspace_p);
+          b = gsl_min_fminimizer_x_upper(min_workspace_p);
 
           status = gsl_min_test_interval(a, b, 0.0, tol);
         }
       while (status == GSL_CONTINUE && iter < max_iter);
 
       if (status == GSL_SUCCESS)
-        *lambda = gsl_min_fminimizer_minimum(work->min_workspace_p);
+        *lambda = gsl_min_fminimizer_minimum(min_workspace_p);
       else
         status = GSL_EMAXITER;
+
+      gsl_min_fminimizer_free(min_workspace_p);
 
       return status;
     }

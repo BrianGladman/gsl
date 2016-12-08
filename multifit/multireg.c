@@ -1195,6 +1195,7 @@ gsl_multifit_linear_Lsobolev(const size_t p, const size_t kmax,
           s = gsl_multifit_linear_Lk(p, k, &Lk.matrix);
           if (s)
             return s;
+
           gsl_matrix_scale(&Lk.matrix, ak);
 
           /* LTL += L_k^T L_k */

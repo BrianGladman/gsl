@@ -25,7 +25,6 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
-#include <gsl/gsl_min.h>
 #include <gsl/gsl_types.h>
 
 #undef __BEGIN_DECLS
@@ -54,7 +53,6 @@ typedef struct
   gsl_vector * xt;
   gsl_vector * D;
   double rcond;        /* reciprocal condition number */
-  gsl_min_fminimizer *min_workspace_p;
 } 
 gsl_multifit_linear_workspace;
 

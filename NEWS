@@ -1,5 +1,8 @@
 * What is new in gsl-2.3:
 
+** bug fix in documentation for gsl_linalg_LU_refine
+   (bug #49728, Joey De Pauw)
+
 ** added gsl_multifit_linear_tsvd and gsl_multifit_wlinear_tsvd
    to give user more control over cutoff for truncated SVD
 
