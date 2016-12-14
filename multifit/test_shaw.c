@@ -282,7 +282,7 @@ test_shaw_system_gcv(gsl_rng *rng_p, const size_t n, const size_t p,
   /* test against known lambda value if given */
   if (lambda_expected > 0.0)
     {
-      gsl_test_rel(lambda, lambda_expected, tol1,
+      gsl_test_rel(lambda, lambda_expected, tol2,
                    "shaw gcv: n=%zu p=%zu lambda",
                    n, p);
     }

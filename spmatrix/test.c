@@ -557,7 +557,7 @@ test_io_ascii(const size_t M, const size_t N,
   {
     FILE *f = fdopen(fd, "w");
 
-    gsl_spmatrix_fprintf(f, A, "%lg");
+    gsl_spmatrix_fprintf(f, A, "%g");
 
     fclose(f);
   }
@@ -578,7 +578,7 @@ test_io_ascii(const size_t M, const size_t N,
     FILE *f = fopen(filename, "w");
     gsl_spmatrix *A_ccs = gsl_spmatrix_ccs(A);
 
-    gsl_spmatrix_fprintf(f, A_ccs, "%lg");
+    gsl_spmatrix_fprintf(f, A_ccs, "%g");
 
     fclose(f);
     gsl_spmatrix_free(A_ccs);
@@ -600,7 +600,7 @@ test_io_ascii(const size_t M, const size_t N,
     FILE *f = fopen(filename, "w");
     gsl_spmatrix *A_crs = gsl_spmatrix_crs(A);
 
-    gsl_spmatrix_fprintf(f, A_crs, "%lg");
+    gsl_spmatrix_fprintf(f, A_crs, "%g");
 
     fclose(f);
     gsl_spmatrix_free(A_crs);

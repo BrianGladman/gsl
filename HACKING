@@ -192,7 +192,7 @@ variable
 
 or
 
-  $ scripts/runvalgrind.sh
+  $ sh scripts/runvalgrind.sh
 
 Note that this only works if configure was run with --disable-shared,
 because otherwise the shared library libtool scripts themselves are
