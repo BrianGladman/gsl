@@ -53,6 +53,8 @@ static int cod_householder_mh(const double tau, const gsl_vector * v,
 static int cod_householder_hv(const double tau, const gsl_vector * v, gsl_vector * w);
 static int cod_householder_ZTvec(const gsl_matrix * QRZ, const gsl_vector * tau_Z, const size_t rank,
                                  gsl_vector * v);
+static int cod_trireg_solve(const gsl_matrix * R, const double lambda, const gsl_vector * b,
+                            gsl_matrix * S, gsl_vector * x, gsl_vector * work);
 
 int
 gsl_linalg_COD_decomp_e(gsl_matrix * A, gsl_vector * tau_Q, gsl_vector * tau_Z,
@@ -124,7 +126,7 @@ gsl_linalg_COD_decomp(gsl_matrix * A, gsl_vector * tau_Q, gsl_vector * tau_Z,
 gsl_linalg_COD_lssolve()
   Find the least squares solution to the overdetermined system 
 
-   A x = b 
+min ||b - A x||^2
 
 for M >= N using the COD factorization A P = Q R Z
 
@@ -174,7 +176,7 @@ gsl_linalg_COD_lssolve (const gsl_matrix * QRZ, const gsl_vector * tau_Q, const 
 
       gsl_vector_set_zero(x);
 
-      /* compute residual = Q^T b */
+      /* compute residual = Q^T b = [ c1 ; c2 ] */
       gsl_vector_memcpy(residual, b);
       gsl_linalg_QR_QTvec (QRZ, tau_Q, residual);
 
@@ -188,8 +190,102 @@ gsl_linalg_COD_lssolve (const gsl_matrix * QRZ, const gsl_vector * tau_Q, const 
       /* compute x = P Z^T ( R11^{-1} x1; 0 ) */
       gsl_permute_vector_inverse(perm, x);
 
-      /* compute residual = b - A x = Q (Q^T b - R [ R11^{-1} x1; 0 ]) */
+      /* compute residual = b - A x = Q (Q^T b - R [ R11^{-1} x1; 0 ]) = Q [ 0 ; c2 ] */
       gsl_vector_set_zero(&(QTb1.vector));
+      gsl_linalg_QR_Qvec(QRZ, tau_Q, residual);
+
+      return GSL_SUCCESS;
+    }
+}
+
+/*
+gsl_linalg_COD_lssolve2()
+  Find the least squares solution to the Tikhonov regularized
+system in standard form:
+
+min ||b - A x||^2 + lambda^2 ||x||^2
+
+for M >= N using the COD factorization A P = Q R Z
+
+Inputs: lambda   - parameter
+        QRZ      - matrix A, in COD compressed format, M-by-N
+        tau_Q    - Householder scalars for Q, length min(M,N)
+        tau_Z    - Householder scalars for Z, length min(M,N)
+        perm     - permutation matrix
+        rank     - rank of A
+        b        - rhs vector, length M
+        x        - (output) solution vector, length N
+        residual - (output) residual vector, b - A x, length M
+        S        - workspace, rank-by-rank
+        work     - workspace, length rank
+*/
+
+int
+gsl_linalg_COD_lssolve2 (const double lambda, const gsl_matrix * QRZ, const gsl_vector * tau_Q, const gsl_vector * tau_Z,
+                         const gsl_permutation * perm, const size_t rank, const gsl_vector * b,
+                         gsl_vector * x, gsl_vector * residual, gsl_matrix * S, gsl_vector * work)
+{
+  const size_t M = QRZ->size1;
+  const size_t N = QRZ->size2;
+
+  if (M < N)
+    {
+      GSL_ERROR ("QRZ matrix must have M>=N", GSL_EBADLEN);
+    }
+  else if (M != b->size)
+    {
+      GSL_ERROR ("matrix size must match b size", GSL_EBADLEN);
+    }
+  else if (rank > GSL_MIN (M, N))
+    {
+      GSL_ERROR ("rank must be <= MIN(M,N)", GSL_EBADLEN);
+    }
+  else if (N != x->size)
+    {
+      GSL_ERROR ("matrix size must match solution size", GSL_EBADLEN);
+    }
+  else if (M != residual->size)
+    {
+      GSL_ERROR ("matrix size must match residual size", GSL_EBADLEN);
+    }
+  else if (S->size1 != rank || S->size2 != rank)
+    {
+      GSL_ERROR ("S must be rank-by-rank", GSL_EBADLEN);
+    }
+  else if (work->size != rank)
+    {
+      GSL_ERROR ("work must be length rank", GSL_EBADLEN);
+    }
+  else
+    {
+      gsl_matrix_const_view R11 = gsl_matrix_const_submatrix (QRZ, 0, 0, rank, rank);
+      gsl_vector_view c1 = gsl_vector_subvector(residual, 0, rank);
+      gsl_vector_view y1 = gsl_vector_subvector(x, 0, rank);
+
+      gsl_vector_set_zero(x);
+
+      /* compute residual = Q^T b = [ c1 ; c2 ]*/
+      gsl_vector_memcpy(residual, b);
+      gsl_linalg_QR_QTvec (QRZ, tau_Q, residual);
+
+      /* solve [ R11 ; lambda*I ] y1 = [ (Q^T b)(1:r) ; 0 ] */
+      cod_trireg_solve(&(R11.matrix), lambda, &(c1.vector), S, &(y1.vector), work);
+
+      /* save y1 for later residual calculation */
+      gsl_vector_memcpy(work, &(y1.vector));
+
+      /* compute Z^T [ y1; 0 ] */
+      cod_householder_ZTvec(QRZ, tau_Z, rank, x);
+
+      /* compute x = P Z^T ( y1; 0 ) */
+      gsl_permute_vector_inverse(perm, x);
+
+      /* compute residual = b - A x = Q (Q^T b - [ R11 y1; 0 ]) = Q [ c1 - R11*y1 ; c2 ] */
+
+      /* work = R11*y1 */
+      gsl_blas_dtrmv(CblasUpper, CblasNoTrans, CblasNonUnit, &(R11.matrix), work);
+
+      gsl_vector_sub(&(c1.vector), work);
       gsl_linalg_QR_Qvec(QRZ, tau_Q, residual);
 
       return GSL_SUCCESS;
@@ -567,4 +663,132 @@ cod_householder_ZTvec(const gsl_matrix * QRZ, const gsl_vector * tau_Z, const si
 
       return GSL_SUCCESS;
     }
+}
+
+/*
+cod_trireg_solve()
+
+  This function computes the solution to the least squares system
+
+  [    R     ] x = [ b ]
+  [ lambda*I ]     [ 0 ]
+
+where R is an N-by-N upper triangular matrix, lambda is a scalar parameter,
+and b is a vector of length N. This is done by computing the QR factorization
+
+[    R     ] = W S^T
+[ lambda*I ]
+
+where S^T is upper triangular, and solving
+
+S^T x = W^T [ b ]
+            [ 0 ]
+
+Inputs: R      - full rank upper triangular matrix; the diagonal
+                 elements are modified but restored on output
+        lambda - scalar parameter lambda
+        b      - right hand side vector b
+        S      - workspace, N-by-N
+        x      - (output) least squares solution of the system
+        work   - workspace of length N
+*/
+
+static int
+cod_trireg_solve (const gsl_matrix * R, const double lambda, const gsl_vector * b,
+                  gsl_matrix * S, gsl_vector * x, gsl_vector * work)
+{
+  const size_t N = R->size2;
+  gsl_vector_const_view diag = gsl_matrix_const_diagonal(R);
+  size_t i, j, k;
+
+  if (lambda <= 0.0)
+    {
+      GSL_ERROR("lambda must be positive", GSL_EINVAL);
+    }
+
+  /* copy R and b to preserve input and initialise S; store diag(R) in work */
+  gsl_matrix_transpose_tricpy('U', 0, S, R);
+  gsl_vector_memcpy(work, &diag.vector);
+  gsl_vector_memcpy(x, b);
+
+  /* eliminate the diagonal matrix lambda*I using Givens rotations */
+
+  for (j = 0; j < N; j++)
+    {
+      double bj = 0.0;
+
+      gsl_matrix_set (S, j, j, lambda);
+
+      for (k = j + 1; k < N; k++)
+        {
+          gsl_matrix_set (S, k, k, 0.0);
+        }
+
+      /* the transformations to eliminate the row of lambda*I modify only a
+         single element of b beyond the first n, which is initially
+         zero */
+
+      for (k = j; k < N; k++)
+        {
+          /* determine a Givens rotation which eliminates the
+             appropriate element in the current row of lambda*I */
+
+          double sine, cosine;
+
+          double xk = gsl_vector_get (x, k);
+          double rkk = gsl_vector_get (work, k);
+          double skk = gsl_matrix_get (S, k, k);
+
+          if (skk == 0)
+            {
+              continue;
+            }
+
+          if (fabs (rkk) < fabs (skk))
+            {
+              double cotangent = rkk / skk;
+              sine = 0.5 / sqrt (0.25 + 0.25 * cotangent * cotangent);
+              cosine = sine * cotangent;
+            }
+          else
+            {
+              double tangent = skk / rkk;
+              cosine = 0.5 / sqrt (0.25 + 0.25 * tangent * tangent);
+              sine = cosine * tangent;
+            }
+
+          /* Compute the modified diagonal element of r and the
+             modified element of [b,0] */
+
+          {
+            double new_rkk = cosine * rkk + sine * skk;
+            double new_xk = cosine * xk + sine * bj;
+            
+            bj = -sine * xk + cosine * bj;
+
+            gsl_vector_set(work, k, new_rkk);
+            gsl_matrix_set(S, k, k, new_rkk);
+            gsl_vector_set(x, k, new_xk);
+          }
+
+          /* Accumulate the transformation in the row of s */
+
+          for (i = k + 1; i < N; i++)
+            {
+              double sik = gsl_matrix_get (S, i, k);
+              double sii = gsl_matrix_get (S, i, i);
+              
+              double new_sik = cosine * sik + sine * sii;
+              double new_sii = -sine * sik + cosine * sii;
+
+              gsl_matrix_set(S, i, k, new_sik);
+              gsl_matrix_set(S, i, i, new_sii);
+            }
+        }
+    }
+
+  /* solve: S^T x = rhs in place */
+  gsl_blas_dtrsv(CblasLower, CblasTrans, CblasNonUnit, S, x);
+
+  return GSL_SUCCESS;
 }
