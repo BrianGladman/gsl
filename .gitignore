@@ -5,6 +5,7 @@ autom4te.cache
 *.aux
 block/test.dat
 block/test.txt
+compile
 config.cache
 config.guess
 config.h

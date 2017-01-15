@@ -855,7 +855,24 @@ FUNCTION (test, trap) (size_t stride, size_t N)
   FUNCTION (gsl_vector, free) (v);      /* free whatever is in v */
 }
 
+void
+FUNCTION (test, alloc_zero_length) (void)
+{
+  TYPE (gsl_vector) * b = FUNCTION (gsl_vector, alloc) (0);
 
+  gsl_test (b == 0, NAME (gsl_vector) "_alloc permits zero length");
+  gsl_test (b->size != 0, NAME (gsl_vector) "_alloc reflects zero length");
 
+  FUNCTION (gsl_vector, free) (b);
+}
 
+void
+FUNCTION (test, calloc_zero_length) (void)
+{
+  TYPE (gsl_vector) * b = FUNCTION (gsl_vector, calloc) (0);
 
+  gsl_test (b == 0, NAME (gsl_vector) "_calloc permits zero length");
+  gsl_test (b->size != 0, NAME (gsl_vector) "_calloc reflects zero length");
+
+  FUNCTION (gsl_vector, free) (b);
+}

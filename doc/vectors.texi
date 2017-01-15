@@ -104,8 +104,8 @@ initialized and so the values of its elements are undefined.  Use the
 function @code{gsl_block_calloc} if you want to ensure that all the
 elements are initialized to zero.
 
-A null pointer is returned if insufficient memory is available to create
-the block.
+Zero-sized requests are valid and return a non-null result.  A null pointer
+is returned if insufficient memory is available to create the block.
 @end deftypefun
 
 @deftypefun {gsl_block *} gsl_block_calloc (size_t @var{n})
@@ -254,6 +254,7 @@ a newly initialized vector struct. A new block is allocated for the
 elements of the vector, and stored in the @var{block} component of the
 vector struct.  The block is ``owned'' by the vector, and will be
 deallocated when the vector is deallocated.
+Zero-sized requests are valid and return a non-null result.
 @end deftypefun
 
 @deftypefun {gsl_vector *} gsl_vector_calloc (size_t @var{n})
@@ -931,11 +932,12 @@ use the library error handler to abort your program then it isn't
 necessary to check every @code{alloc}.
 
 @deftypefun {gsl_matrix *} gsl_matrix_alloc (size_t @var{n1}, size_t @var{n2})
-This function creates a matrix of size @var{n1} rows by @var{n2}
-columns, returning a pointer to a newly initialized matrix struct. A new
-block is allocated for the elements of the matrix, and stored in the
-@var{block} component of the matrix struct.  The block is ``owned'' by the
-matrix, and will be deallocated when the matrix is deallocated.
+This function creates a matrix of size @var{n1} rows by @var{n2} columns,
+returning a pointer to a newly initialized matrix struct. A new block is
+allocated for the elements of the matrix, and stored in the @var{block}
+component of the matrix struct.  The block is ``owned'' by the matrix,
+and will be deallocated when the matrix is deallocated.  Requesting zero
+for @var{n1} or @var{n2} is valid and returns a non-null result.
 @end deftypefun
 
 @deftypefun {gsl_matrix *} gsl_matrix_calloc (size_t @var{n1}, size_t @var{n2})

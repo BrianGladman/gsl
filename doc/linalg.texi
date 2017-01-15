@@ -516,10 +516,13 @@ where @math{P} is a @math{N}-by-@math{N} permutation matrix,
 @math{r}-by-@math{r} upper triangular, with @math{r = {\rm rank}(A)},
 and @math{Z} is @math{N}-by-@math{N} orthogonal. If @math{A}
 has full rank, then @math{R_{11} = R}, @math{Z = I} and this reduces to the
-QR decomposition with column pivoting. The advantage of using
-the complete orthogonal decomposition for rank deficient matrices
-is the ability to compute the minimum norm solution to the linear
-least squares problem @math{Ax = b}, which is given by
+QR decomposition with column pivoting.
+
+@noindent
+For a rank deficient least squares problem, @math{\min_x{|| b - Ax||^2}}, the solution vector
+@math{x} is not unique. However if we further require that @math{||x||^2} is minimized,
+then the complete orthogonal decomposition gives us the ability to compute
+the unique minimum norm solution, which is given by
 @tex
 \beforedisplay
 $$
@@ -543,6 +546,77 @@ x = P Z^T [ R11^-1 c1 ]
 @end ifinfo
 and the vector @math{c_1} is the first @math{r} elements of @math{Q^T b}.
 
+@noindent
+The COD also enables a straightforward solution of regularized least squares problems
+in Tikhonov standard form, written as
+@tex
+\beforedisplay
+$$
+\min_x ||b - A x||^2 + \lambda^2 ||x||^2
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+\min_x ||b - A x||^2 + \lambda^2 ||x||^2
+@end example
+
+@end ifinfo
+where @math{\lambda > 0} is a regularization parameter which represents a tradeoff between
+minimizing the residual norm @math{||b - A x||} and the solution norm @math{||x||}. For this system,
+the solution is given by
+@tex
+\beforedisplay
+$$
+x = P Z^T
+\left(
+\matrix{
+y_1 \cr
+0 \cr
+}
+\right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+x = P Z^T [ y1 ]
+          [ 0  ]
+@end example
+
+@end ifinfo
+where @math{y_1} is a vector of length @math{r} which is found by solving
+@tex
+\beforedisplay
+$$
+\left(
+\matrix{
+R_{11} \cr
+\lambda I_r \cr
+}
+\right) y_1 =
+\left(
+\matrix{
+c_1 \cr
+0 \cr
+}
+\right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+[     R11     ] y_1 = [ c_1 ]
+[ \lambda I_r ]       [  0  ]
+@end example
+
+@end ifinfo
+and @math{c_1} is defined above. The equation above can be solved efficiently for different
+values of @math{\lambda} using QR factorizations of the left hand side matrix.
+
 @deftypefun int gsl_linalg_COD_decomp (gsl_matrix * @var{A}, gsl_vector * @var{tau_Q}, gsl_vector * @var{tau_Z}, gsl_permutation * @var{p}, size_t * @var{rank}, gsl_vector * @var{work})
 @deftypefunx int gsl_linalg_COD_decomp_e (gsl_matrix * @var{A}, gsl_vector * @var{tau_Q}, gsl_vector * @var{tau_Z}, gsl_permutation * @var{p}, double @var{tol}, size_t * @var{rank}, gsl_vector * @var{work})
 These functions factor the @math{M}-by-@math{N} matrix @var{A} into the decomposition @math{A = Q R Z P^T}. The rank of @var{A}
@@ -555,13 +629,22 @@ of length @math{k = \min(M,N)}. The vector @var{work} is additional workspace of
 @end deftypefun
 
 @deftypefun int gsl_linalg_COD_lssolve (const gsl_matrix * @var{QRZ}, const gsl_vector * @var{tau_Q}, const gsl_vector * @var{tau_Z}, const gsl_permutation * @var{p}, const size_t @var{rank}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual})
-This function finds the least squares solution to the overdetermined
+This function finds the unique minimum norm least squares solution to the overdetermined
 system @math{A x = b} where the matrix @var{A} has more rows than
 columns.  The least squares solution minimizes the Euclidean norm of the
-residual, @math{||b - A x||}.  The routine requires as input 
+residual, @math{||b - A x||} as well as the norm of the solution @math{||x||}.  The routine requires as input 
 the @math{QRZ} decomposition of @math{A} into (@var{QRZ}, @var{tau_Q}, @var{tau_Z}, @var{p}, @var{rank})
 given by @code{gsl_linalg_COD_decomp}.  The solution is returned in @var{x}.  The
-residual is computed as a by-product and stored in @var{residual}.
+residual, @math{b - Ax}, is computed as a by-product and stored in @var{residual}.
+@end deftypefun
+
+@deftypefun int gsl_linalg_COD_lssolve2 (const double @var{lambda}, const gsl_matrix * @var{QRZ}, const gsl_vector * @var{tau_Q}, const gsl_vector * @var{tau_Z}, const gsl_permutation * @var{p}, const size_t @var{rank}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual}, gsl_matrix * @var{S}, gsl_vector * @var{work})
+This function finds the solution to the regularized least squares problem in Tikhonov
+standard form, @math{\min_x ||b - Ax||^2 + \lambda^2 ||x||^2}. The routine requires as input 
+the @math{QRZ} decomposition of @math{A} into (@var{QRZ}, @var{tau_Q}, @var{tau_Z}, @var{p}, @var{rank})
+given by @code{gsl_linalg_COD_decomp}. The parameter @math{\lambda} is supplied in @var{lambda}.  The solution
+is returned in @var{x}. The residual, @math{b - Ax}, is stored in @var{residual} on output. @var{S} is additional
+workspace of size @var{rank}-by-@var{rank}. @var{work} is additional workspace of length @var{rank}.
 @end deftypefun
 
 @deftypefun int gsl_linalg_COD_unpack (const gsl_matrix * @var{QRZ}, const gsl_vector * @var{tau_Q}, const gsl_vector * @var{tau_Z}, const size_t @var{rank}, gsl_matrix * @var{Q}, gsl_matrix * @var{R}, gsl_matrix * @var{Z})

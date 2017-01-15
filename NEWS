@@ -1,4 +1,12 @@
-* What is new in gsl-2.3:
+* What is new in gsl-2.4:
+
+** permit zero-dimension blocks, vectors, matrics, subvectors,
+   submatrices, and views of the above (bug #49988)
+
+** added routine gsl_linalg_COD_lssolve2 for regularized
+   least squares problems
+
+* What was new in gsl-2.3:
 
 ** bug fix in documentation for gsl_linalg_LU_refine
    (bug #49728, Joey De Pauw)

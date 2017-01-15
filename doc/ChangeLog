@@ -1,3 +1,8 @@
+2017-01-07  Rhys Ulerich  <rhys.ulerich@gmail.com>
+
+	* vectors.texi: Document zero-length block/vector/matrix
+	behavior (bug #49988).
+
 2012-07-12  Rhys Ulerich  <rhys.ulerich@gmail.com>
 
 	* randplots.gnp: Use "set view map" to fix orientation of

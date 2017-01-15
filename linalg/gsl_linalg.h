@@ -382,6 +382,11 @@ int gsl_linalg_COD_lssolve (const gsl_matrix * QRZ, const gsl_vector * tau_Q, co
                             const gsl_permutation * perm, const size_t rank, const gsl_vector * b,
                             gsl_vector * x, gsl_vector * residual);
 
+int
+gsl_linalg_COD_lssolve2 (const double lambda, const gsl_matrix * QRZ, const gsl_vector * tau_Q, const gsl_vector * tau_Z,
+                         const gsl_permutation * perm, const size_t rank, const gsl_vector * b,
+                         gsl_vector * x, gsl_vector * residual, gsl_matrix * S, gsl_vector * work);
+
 int gsl_linalg_COD_unpack(const gsl_matrix * QRZ, const gsl_vector * tau_Q,
                           const gsl_vector * tau_Z, const size_t rank, gsl_matrix * Q,
                           gsl_matrix * R, gsl_matrix * Z);
