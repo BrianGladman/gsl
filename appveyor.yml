@@ -1,0 +1,7 @@
+install: set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
+
+build_script:
+  - msbuild /m build.vc\gsl.dll.sln
+  - msbuild /m build.vc\test.gsl.dll.sln
+  - msbuild /m build.vc\gsl.lib.sln
+  - msbuild /m build.vc\test.gsl.lib.sln
