@@ -90,9 +90,9 @@ test_COD_decomp_eps(const gsl_matrix * m, const double eps, const char *desc)
   gsl_matrix_memcpy(lhs, m);
   gsl_permute_matrix(perm, lhs);
 
-  /* compute rhs = Q R Z */
+  /* compute rhs = Q R Z^T */
   gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, Q, R, 0.0, QR);
-  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, QR, Z, 0.0, rhs);
+  gsl_blas_dgemm (CblasNoTrans, CblasTrans, 1.0, QR, Z, 0.0, rhs);
 
   for (i = 0; i < M; i++)
     {

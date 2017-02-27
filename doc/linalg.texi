@@ -498,14 +498,14 @@ A P = Q
 R_{11} & 0 \cr
 0 & 0 \cr
 }
-\right) Z
+\right) Z^T
 $$
 \afterdisplay
 @end tex
 @ifinfo
 
 @example
-A P = Q [ R11 0 ] Z
+A P = Q [ R11 0 ] Z^T
         [  0  0 ]
 @end example
 
@@ -526,7 +526,7 @@ the unique minimum norm solution, which is given by
 @tex
 \beforedisplay
 $$
-x = P Z^T
+x = P Z
 \left(
 \matrix{
 R_{11}^{-1} c_1 \cr
@@ -539,8 +539,8 @@ $$
 @ifinfo
 
 @example
-x = P Z^T [ R11^-1 c1 ]
-          [    0      ]
+x = P Z [ R11^-1 c1 ]
+        [    0      ]
 @end example
 
 @end ifinfo
@@ -569,7 +569,7 @@ the solution is given by
 @tex
 \beforedisplay
 $$
-x = P Z^T
+x = P Z
 \left(
 \matrix{
 y_1 \cr
@@ -582,8 +582,8 @@ $$
 @ifinfo
 
 @example
-x = P Z^T [ y1 ]
-          [ 0  ]
+x = P Z [ y1 ]
+        [ 0  ]
 @end example
 
 @end ifinfo
@@ -628,36 +628,36 @@ contain the Householder scalars corresponding to the matrices @math{Q} and @math
 of length @math{k = \min(M,N)}. The vector @var{work} is additional workspace of length @math{N}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_COD_lssolve (const gsl_matrix * @var{QRZ}, const gsl_vector * @var{tau_Q}, const gsl_vector * @var{tau_Z}, const gsl_permutation * @var{p}, const size_t @var{rank}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual})
+@deftypefun int gsl_linalg_COD_lssolve (const gsl_matrix * @var{QRZT}, const gsl_vector * @var{tau_Q}, const gsl_vector * @var{tau_Z}, const gsl_permutation * @var{p}, const size_t @var{rank}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual})
 This function finds the unique minimum norm least squares solution to the overdetermined
 system @math{A x = b} where the matrix @var{A} has more rows than
 columns.  The least squares solution minimizes the Euclidean norm of the
 residual, @math{||b - A x||} as well as the norm of the solution @math{||x||}.  The routine requires as input 
-the @math{QRZ} decomposition of @math{A} into (@var{QRZ}, @var{tau_Q}, @var{tau_Z}, @var{p}, @var{rank})
+the @math{QRZT} decomposition of @math{A} into (@var{QRZT}, @var{tau_Q}, @var{tau_Z}, @var{p}, @var{rank})
 given by @code{gsl_linalg_COD_decomp}.  The solution is returned in @var{x}.  The
 residual, @math{b - Ax}, is computed as a by-product and stored in @var{residual}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_COD_lssolve2 (const double @var{lambda}, const gsl_matrix * @var{QRZ}, const gsl_vector * @var{tau_Q}, const gsl_vector * @var{tau_Z}, const gsl_permutation * @var{p}, const size_t @var{rank}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual}, gsl_matrix * @var{S}, gsl_vector * @var{work})
+@deftypefun int gsl_linalg_COD_lssolve2 (const double @var{lambda}, const gsl_matrix * @var{QRZT}, const gsl_vector * @var{tau_Q}, const gsl_vector * @var{tau_Z}, const gsl_permutation * @var{p}, const size_t @var{rank}, const gsl_vector * @var{b}, gsl_vector * @var{x}, gsl_vector * @var{residual}, gsl_matrix * @var{S}, gsl_vector * @var{work})
 This function finds the solution to the regularized least squares problem in Tikhonov
 standard form, @math{\min_x ||b - Ax||^2 + \lambda^2 ||x||^2}. The routine requires as input 
-the @math{QRZ} decomposition of @math{A} into (@var{QRZ}, @var{tau_Q}, @var{tau_Z}, @var{p}, @var{rank})
+the @math{QRZT} decomposition of @math{A} into (@var{QRZT}, @var{tau_Q}, @var{tau_Z}, @var{p}, @var{rank})
 given by @code{gsl_linalg_COD_decomp}. The parameter @math{\lambda} is supplied in @var{lambda}.  The solution
 is returned in @var{x}. The residual, @math{b - Ax}, is stored in @var{residual} on output. @var{S} is additional
 workspace of size @var{rank}-by-@var{rank}. @var{work} is additional workspace of length @var{rank}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_COD_unpack (const gsl_matrix * @var{QRZ}, const gsl_vector * @var{tau_Q}, const gsl_vector * @var{tau_Z}, const size_t @var{rank}, gsl_matrix * @var{Q}, gsl_matrix * @var{R}, gsl_matrix * @var{Z})
-This function unpacks the encoded @math{QRZ} decomposition
-(@var{QRZ}, @var{tau_Q}, @var{tau_Z}, @var{rank}) into the matrices
+@deftypefun int gsl_linalg_COD_unpack (const gsl_matrix * @var{QRZT}, const gsl_vector * @var{tau_Q}, const gsl_vector * @var{tau_Z}, const size_t @var{rank}, gsl_matrix * @var{Q}, gsl_matrix * @var{R}, gsl_matrix * @var{Z})
+This function unpacks the encoded @math{QRZT} decomposition
+(@var{QRZT}, @var{tau_Q}, @var{tau_Z}, @var{rank}) into the matrices
 @var{Q}, @var{R}, and @var{Z}, where @var{Q} is @math{M}-by-@math{M},
 @var{R} is @math{M}-by-@math{N}, and @var{Z} is @math{N}-by-@math{N}.
 @end deftypefun
 
-@deftypefun int gsl_linalg_COD_matZ (const gsl_matrix * @var{QRZ}, const gsl_vector * @var{tau_Z}, const size_t @var{rank}, gsl_matrix * @var{A}, gsl_vector * @var{work})
+@deftypefun int gsl_linalg_COD_matZ (const gsl_matrix * @var{QRZT}, const gsl_vector * @var{tau_Z}, const size_t @var{rank}, gsl_matrix * @var{A}, gsl_vector * @var{work})
 This function multiplies the input matrix @var{A} on the right by @var{Z},
-@math{A' = A Z} using the encoded @math{QRZ} decomposition
-(@var{QRZ}, @var{tau_Z}, @var{rank}). @var{A} must have @math{N} columns but may
+@math{A' = A Z} using the encoded @math{QRZT} decomposition
+(@var{QRZT}, @var{tau_Z}, @var{rank}). @var{A} must have @math{N} columns but may
 have any number of rows. Additional workspace of length @math{M} is provided
 in @var{work}.
 @end deftypefun

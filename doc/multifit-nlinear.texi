@@ -1172,6 +1172,14 @@ Note that when using Mor@'e scaling, @math{D \ne I} and the resulting
 @end itemize
 @end deftypefun
 
+@deftypefun double gsl_multifit_nlinear_avratio (const gsl_multifit_nlinear_workspace * @var{w})
+@deftypefunx double gsl_multilarge_nlinear_avratio (const gsl_multilarge_nlinear_workspace * @var{w})
+This function returns the current ratio @math{|a| / |v|} of the acceleration correction term to
+the velocity step term. The acceleration term is computed only by the
+@code{gsl_multifit_nlinear_lmaccel} and @code{gsl_multilarge_nlinear_lmaccel} methods, so
+this ratio will be zero for other TRS methods.
+@end deftypefun
+
 @node Nonlinear Least-Squares Testing for Convergence
 @section Testing for Convergence
 @cindex nonlinear fitting, stopping parameters, convergence
@@ -1424,7 +1432,8 @@ squares fitting capabilities.
 
 @menu
 * Nonlinear Least-Squares Exponential Fit Example::
-* Nonlinear Least-Squares Geodesic Acceleration Example::
+* Nonlinear Least-Squares Geodesic Acceleration Example 1::
+* Nonlinear Least-Squares Geodesic Acceleration Example 2::
 * Nonlinear Least-Squares Comparison Example::
 * Nonlinear Least-Squares Large Example::
 @end menu
@@ -1562,8 +1571,8 @@ although this particular system is too small to really benefit.
 @verbatiminclude examples/nlfit.c
 @end example
 
-@node Nonlinear Least-Squares Geodesic Acceleration Example
-@subsection Geodesic Acceleration Example
+@node Nonlinear Least-Squares Geodesic Acceleration Example 1
+@subsection Geodesic Acceleration Example 1
 
 The following example program minimizes a modified Rosenbrock function,
 which is characterized by a narrow canyon with steep walls. The
@@ -1592,7 +1601,7 @@ f2 = 1 - x1
 
 @end ifinfo
 @noindent
-The Jacobian matrix is given by
+The Jacobian matrix is
 @tex
 \beforedisplay
 $$
@@ -1625,7 +1634,7 @@ the second directional derivative of each residual in the
 velocity direction,
 @math{D_v^2 f_i = \sum_{\alpha\beta} v_{\alpha} v_{\beta} \partial_{\alpha} \partial_{\beta} f_i}.
 The velocity vector @math{v} is provided by the solver. For this example,
-these derivatives are given by
+these derivatives are
 @tex
 \beforedisplay
 $$
@@ -1654,7 +1663,7 @@ fvv = [ -200 v1^2 ; 0 ]
 
 @end ifinfo
 @noindent
-The solution of this minimization problem is given by
+The solution of this minimization problem is
 @tex
 \beforedisplay
 $$
@@ -1724,12 +1733,200 @@ The program is given below.
 @verbatiminclude examples/nlfit2.c
 @end example
 
+@node Nonlinear Least-Squares Geodesic Acceleration Example 2
+@subsection Geodesic Acceleration Example 2
+
+The following example fits a set of data to a Gaussian model
+using the Levenberg-Marquardt method with geodesic acceleration.
+The cost function is
+@tex
+\beforedisplay
+$$
+\eqalign{
+\Phi(x) &= {1 \over 2} \sum_i f_i^2 \cr
+f_i &= y_i - Y(a,b,c;t_i)
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+Phi(x) = 1/2 \sum_i f_i^2
+f_i = y_i - Y(a,b,c;t_i)
+@end example
+
+@end ifinfo
+where @math{y_i} is the measured data point at time @math{t_i}, and
+the model is specified by
+@tex
+\beforedisplay
+$$
+Y(a,b,c;t) = a \exp{
+\left[
+-{1 \over 2}
+\left(
+{ t - b \over c }
+\right)^2
+\right]
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+Y(a,b,c;t) = a exp(-1/2 ((t-b)/c)^2)
+@end example
+
+@end ifinfo
+The parameters @math{a,b,c} represent the amplitude, mean, and width of the Gaussian
+respectively. The program below generates the @math{y_i} data on @math{[0,1]} using
+the values @math{a = 5}, @math{b = 0.4}, @math{c = 0.15} and adding random noise.
+The @math{i}th row of the Jacobian is
+@tex
+\beforedisplay
+$$
+J_{i,:} =
+\left(
+\matrix{
+{\partial f_i \over \partial a} & {\partial f_i \over \partial b} & {\partial f_i \over \partial c}
+}
+\right) =
+\left(
+\matrix{
+-e_i & -{a \over c} z_i e_i & -{a \over c} z_i^2 e_i
+}
+\right)
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+J(i,:) = ( -e_i  -(a/c)*z_i*e_i  -(a/c)*z_i^2*e_i )
+@end example
+
+@end ifinfo
+where
+@tex
+\beforedisplay
+$$
+\eqalign{
+z_i &= { t_i - b \over c} \cr
+e_i &= \exp{\left( -{1 \over 2} z_i^2 \right)}
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+z_i = (t_i - b) / c
+e_i = \exp(-1/2 z_i^2)
+@end example
+
+@end ifinfo
+In order to use geodesic acceleration, we need the second directional derivative
+of the residuals in the velocity direction,
+@math{D_v^2 f_i = \sum_{\alpha\beta} v_{\alpha} v_{\beta} \partial_{\alpha} \partial_{\beta} f_i},
+where @math{v} is provided by the solver. To compute this, it is helpful to make a table of
+all second derivatives of the residuals with respect to each combination of model parameters. This
+table is
+@tex
+\beforedisplay
+$$
+\matrix{
+& {\partial \over \partial a} & {\partial \over \partial b} & {\partial \over \partial c} \cr
+{\partial \over \partial a} & 0 & -{z_i \over c} e_i & -{z_i^2 \over c} e_i \cr
+{\partial \over \partial b} & & {a \over c^2} \left( 1 - z_i^2 \right) e_i & {a \over c^2} z_i \left( 2 - z_i^2 \right) e_i \cr
+{\partial \over \partial c} & & & {a \over c^2} z_i^2 \left( 3 - z_i^2 \right) e_i
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+@end example
+
+@end ifinfo
+The lower half of the table is omitted since it is symmetric. Then, the second directional derivative
+of @math{f_i} is
+@tex
+\beforedisplay
+$$
+\eqalign{
+D_v^2 f_i &= v_a^2 \partial_a^2 f_i + 2 v_a v_b \partial_a \partial_b f_i + 2 v_a v_c \partial_a \partial_c f_i + v_b^2 \partial_b^2 f_i + 2 v_b v_c \partial_b \partial_c f_i + v_c^2 \partial_c^2 f_i
+}
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+@end example
+
+@end ifinfo
+The factors of 2 come from the symmetry of the mixed second partial derivatives.
+The iteration is started using the initial guess @math{a = 1}, @math{b = 0}, @math{c = 1}.
+The program output is shown below.
+
+@smallformat
+@verbatim
+iter  0: a = 1.0000, b = 0.0000, c = 1.0000, |a|/|v| = 0.0000 cond(J) =      inf, |f(x)| = 35.4785
+iter  1: a = 1.5708, b = 0.5321, c = 0.5219, |a|/|v| = 0.3093 cond(J) =  29.0443, |f(x)| = 31.1042
+iter  2: a = 1.7387, b = 0.4040, c = 0.4568, |a|/|v| = 0.1199 cond(J) =   3.5256, |f(x)| = 28.7217
+iter  3: a = 2.2340, b = 0.3829, c = 0.3053, |a|/|v| = 0.3308 cond(J) =   4.5121, |f(x)| = 23.8074
+iter  4: a = 3.2275, b = 0.3952, c = 0.2243, |a|/|v| = 0.2784 cond(J) =   8.6499, |f(x)| = 15.6003
+iter  5: a = 4.3347, b = 0.3974, c = 0.1752, |a|/|v| = 0.2029 cond(J) =  15.1732, |f(x)| = 7.5908
+iter  6: a = 4.9352, b = 0.3992, c = 0.1536, |a|/|v| = 0.1001 cond(J) =  26.6621, |f(x)| = 4.8402
+iter  7: a = 5.0716, b = 0.3994, c = 0.1498, |a|/|v| = 0.0166 cond(J) =  34.6922, |f(x)| = 4.7103
+iter  8: a = 5.0828, b = 0.3994, c = 0.1495, |a|/|v| = 0.0012 cond(J) =  36.5422, |f(x)| = 4.7095
+iter  9: a = 5.0831, b = 0.3994, c = 0.1495, |a|/|v| = 0.0000 cond(J) =  36.6929, |f(x)| = 4.7095
+iter 10: a = 5.0831, b = 0.3994, c = 0.1495, |a|/|v| = 0.0000 cond(J) =  36.6975, |f(x)| = 4.7095
+iter 11: a = 5.0831, b = 0.3994, c = 0.1495, |a|/|v| = 0.0000 cond(J) =  36.6976, |f(x)| = 4.7095
+NITER         = 11
+NFEV          = 18
+NJEV          = 12
+NAEV          = 17
+initial cost  = 1.258724737288e+03
+final cost    = 2.217977560180e+01
+final x       = (5.083101559156e+00, 3.994484109594e-01, 1.494898e-01)
+final cond(J) = 3.669757713403e+01
+@end verbatim
+@end smallformat
+
+@noindent
+We see the method converges after 11 iterations. For comparison the standard
+Levenberg-Marquardt method requires 26 iterations and so the Gaussian fitting
+problem benefits substantially from the geodesic acceleration correction. The
+column marked @code{|a|/|v|} above shows the ratio of the acceleration term
+to the velocity term as the iteration progresses. Larger values of this
+ratio indicate that the geodesic acceleration correction term is contributing
+substantial information to the solver relative to the standard LM velocity step.
+
+@noindent
+The data and fitted model are shown below.
+
+@iftex
+@sp 1
+@center @image{nlfit2b,6in}
+@end iftex
+
+@noindent
+The program is given below.
+
+@example
+@verbatiminclude examples/nlfit2b.c
+@end example
+
 @node Nonlinear Least-Squares Comparison Example
 @subsection Comparing TRS Methods Example
 
 The following program compares all available nonlinear least squares
 trust-region subproblem (TRS) methods on the Branin function, a common
-optimization test problem. The cost function is given by
+optimization test problem. The cost function is
 @tex
 \beforedisplay
 $$
@@ -1799,7 +1996,7 @@ The program is given below.
 
 The following program illustrates the large nonlinear least
 squares solvers on a system with significant sparse structure
-in the Jacobian. The cost function is given by
+in the Jacobian. The cost function is
 @tex
 \beforedisplay
 $$
@@ -1822,7 +2019,7 @@ f_@{p+1@} &= ||x||^2 - 1/4
 @end ifinfo
 with @math{\alpha = 10^{-5}}. The residual @math{f_{p+1}} imposes a constraint on the @math{p}
 parameters @math{x}, to ensure that @math{||x||^2 \approx {1 \over 4}}.
-The @math{(p+1)}-by-@math{p} Jacobian for this system is given by
+The @math{(p+1)}-by-@math{p} Jacobian for this system is
 @tex
 \beforedisplay
 $$
@@ -1843,7 +2040,7 @@ J(x) = [ \sqrt@{alpha@} I_p; 2 x^T ]
 @end example
 
 @end ifinfo
-and the normal equations matrix is given by
+and the normal equations matrix is
 @tex
 \beforedisplay
 $$
@@ -1861,7 +2058,7 @@ J^T J = [ \alpha I_p + 4 x x^T ]
 @end ifinfo
 @noindent
 Finally, the second directional derivative of @math{f} for the
-geodesic acceleration method is given by
+geodesic acceleration method is
 @tex
 \beforedisplay
 $$
