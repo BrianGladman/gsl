@@ -1842,41 +1842,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\histogram\gsl_histogram.h">
-      <Filter>histogram</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\histogram\gsl_histogram2d.h">
-      <Filter>histogram</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ieee-utils\gsl_ieee_utils.h">
-      <Filter>ieeeutils</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\integration\qng.h">
       <Filter>integration</Filter>
     </ClInclude>
     <ClInclude Include="..\..\interpolation\integ_eval.h">
       <Filter>interpolation</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\linalg\tridiag.h">
-      <Filter>linalg</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\matrix\view.h">
       <Filter>matrix</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\monte\gsl_monte.h">
-      <Filter>monte</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\monte\gsl_monte_miser.h">
-      <Filter>monte</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\monte\gsl_monte_plain.h">
-      <Filter>monte</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\monte\gsl_monte_vegas.h">
-      <Filter>monte</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\qrng\gsl_qrng.h">
-      <Filter>qrng</Filter>
     </ClInclude>
     <ClInclude Include="..\..\specfunc\bessel.h">
       <Filter>specfunc</Filter>

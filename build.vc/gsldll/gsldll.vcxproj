@@ -288,7 +288,16 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)integration\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)integration\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="..\..\integration\hermite.c" />
+    <ClCompile Include="..\..\integration\hermite.c">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName)2.obj</ObjectFileName>
+      <ProgramDataBaseFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(TargetDir)$(TargetName)2.pdb</ProgramDataBaseFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName)2.obj</ObjectFileName>
+      <ProgramDataBaseFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(TargetDir)$(TargetName)2.pdb</ProgramDataBaseFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName)2.obj</ObjectFileName>
+      <ProgramDataBaseFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetDir)$(TargetName)2.pdb</ProgramDataBaseFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName)2.obj</ObjectFileName>
+      <ProgramDataBaseFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(TargetDir)$(TargetName)2.pdb</ProgramDataBaseFileName>
+    </ClCompile>
     <ClCompile Include="..\..\integration\laguerre.c" />
     <ClCompile Include="..\..\interpolation\bicubic.c" />
     <ClCompile Include="..\..\interpolation\bilinear.c" />
@@ -3568,18 +3577,9 @@
     <ClInclude Include="..\..\gsl\gsl_version.h" />
     <ClInclude Include="..\..\gsl\gsl_wavelet.h" />
     <ClInclude Include="..\..\gsl\gsl_wavelet2d.h" />
-    <ClInclude Include="..\..\histogram\gsl_histogram.h" />
-    <ClInclude Include="..\..\histogram\gsl_histogram2d.h" />
-    <ClInclude Include="..\..\ieee-utils\gsl_ieee_utils.h" />
     <ClInclude Include="..\..\integration\qng.h" />
     <ClInclude Include="..\..\interpolation\integ_eval.h" />
-    <ClInclude Include="..\..\linalg\tridiag.h" />
     <ClInclude Include="..\..\matrix\view.h" />
-    <ClInclude Include="..\..\monte\gsl_monte.h" />
-    <ClInclude Include="..\..\monte\gsl_monte_miser.h" />
-    <ClInclude Include="..\..\monte\gsl_monte_plain.h" />
-    <ClInclude Include="..\..\monte\gsl_monte_vegas.h" />
-    <ClInclude Include="..\..\qrng\gsl_qrng.h" />
     <ClInclude Include="..\..\specfunc\bessel.h" />
     <ClInclude Include="..\..\specfunc\bessel_amp_phase.h" />
     <ClInclude Include="..\..\specfunc\recurse.h" />
