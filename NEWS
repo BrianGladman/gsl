@@ -1,5 +1,11 @@
 * What is new in gsl-2.4:
 
+** added routines to compute integrals with Hermite quadrature
+   (based on IQPACK)
+
+** added routines for Hermite polynomials, gsl_sf_hermite_*
+   (Konrad Griessinger)
+
 ** added new nonlinear least squares example for fitting
    a Gaussian to data
 
