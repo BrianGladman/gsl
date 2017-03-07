@@ -1827,6 +1827,18 @@
     <ClCompile Include="..\..\multifit\gcv.c">
       <Filter>multifit</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\integration\fixed.c">
+      <Filter>integration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\integration\hermite.c">
+      <Filter>integration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\integration\laguerre.c">
+      <Filter>integration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\specfunc\hermite.c">
+      <Filter>specfunc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\histogram\gsl_histogram.h">

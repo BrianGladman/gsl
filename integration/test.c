@@ -74,7 +74,8 @@ void my_error_handler (const char *reason, const char *file,
                        int line, int err);
 
 
-int main (void)
+int
+main (void)
 {
   gsl_ieee_env_setup ();
   gsl_set_error_handler (&my_error_handler); 
@@ -2373,8 +2374,97 @@ int main (void)
 
       gsl_integration_cquad_workspace_free(ws);
     }
-  }        
+  }
 
+  /* test Hermite quadrature */
+  {
+    const gsl_integration_fixed_type *T = gsl_integration_fixed_hermite;
+    size_t n;
+    struct monomial_params params;
+    gsl_function f;
+    double exact, result;
+    double a, b, alpha;
+    gsl_integration_fixed_workspace *w;
+
+    f.function = &f_monomial;
+    f.params = &params;
+
+    params.degree   = 2;
+    params.constant = 1.0;
+
+    n = 5;
+    for ( b = 0.1; b <= 2.0; b += 0.1)
+      {
+        a = b + 1.0;
+        exact = 0.5 * M_SQRTPI * pow(b, -1.5) * (1.0 + 2*a*a*b);
+
+        w = gsl_integration_fixed_alloc(T, n, a, b, 0.0, 0.0);
+
+        gsl_integration_fixed(&f, &result, w);
+        gsl_test_rel (result, exact, 1e-12, "hermite monomial a=%g b=%g", a, b);
+
+        gsl_integration_fixed_free(w);
+      }
+
+    /* now test on myfn1 */
+
+    a = 1.2;
+    b = 0.6;
+    alpha = 1.0;
+    n = 200;
+    exact = 0.877421600198066;
+
+    f = make_function(&myfn1, 0);
+    w = gsl_integration_fixed_alloc(T, n, a, b, alpha, 0.0);
+    gsl_integration_fixed(&f, &result, w);
+    gsl_test_rel (result, exact, 1e-12, "hermite myfn1");
+    gsl_integration_fixed_free(w);
+  }
+
+  /* test Laguerre quadrature */
+  {
+    const gsl_integration_fixed_type *T = gsl_integration_fixed_laguerre;
+    size_t n;
+    struct monomial_params params;
+    gsl_function f;
+    double exact, result;
+    double a, b, alpha;
+    gsl_integration_fixed_workspace *w;
+
+    f.function = &f_monomial;
+    f.params = &params;
+
+    params.degree   = 2;
+    params.constant = 1.0;
+
+    n = 50;
+    for ( b = 0.1; b <= 2.0; b += 0.1)
+      {
+        a = b + 1.0;
+        exact = (2.0 + a*b*(2.0 + a*b)) / (b*b*b);
+
+        w = gsl_integration_fixed_alloc(T, n, a, b, 0.0, 0.0);
+
+        gsl_integration_fixed(&f, &result, w);
+        gsl_test_rel (result, exact, 1e-12, "laguerre monomial a=%g b=%g", a, b);
+
+        gsl_integration_fixed_free(w);
+      }
+
+    /* now test on myfn1 */
+
+    a = 1.2;
+    b = 0.6;
+    alpha = 0.5;
+    n = 200;
+    exact = 0.006604180366378123;
+
+    f = make_function(&myfn1, 0);
+    w = gsl_integration_fixed_alloc(T, n, a, b, alpha, 0.0);
+    gsl_integration_fixed(&f, &result, w);
+    gsl_test_rel (result, exact, 1e-12, "laguerre myfn1");
+    gsl_integration_fixed_free(w);
+  }
 
   exit (gsl_test_summary());
 } 

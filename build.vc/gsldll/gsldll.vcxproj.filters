@@ -2,163 +2,163 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="blas">
-      <UniqueIdentifier>{1a59d062-22d1-4402-b925-561c75a8fdd2}</UniqueIdentifier>
+      <UniqueIdentifier>{63f23020-426f-4950-8b26-193c93712c6b}</UniqueIdentifier>
     </Filter>
     <Filter Include="block">
-      <UniqueIdentifier>{e99e7f7c-f61f-40bb-a29f-b4ce63ca73a4}</UniqueIdentifier>
+      <UniqueIdentifier>{f6f13bbb-06bc-4245-9969-0f38aa169030}</UniqueIdentifier>
     </Filter>
     <Filter Include="bspline">
-      <UniqueIdentifier>{190482b9-f940-4752-a405-e49aeaa4912f}</UniqueIdentifier>
+      <UniqueIdentifier>{e61282d4-ccbd-4298-b569-3db0ff36c72d}</UniqueIdentifier>
     </Filter>
     <Filter Include="cdf">
-      <UniqueIdentifier>{b8a95b7c-a867-4a09-af9e-c3daf1a0e012}</UniqueIdentifier>
+      <UniqueIdentifier>{42d56e85-c9c6-410e-83a8-1e2aa5916ba7}</UniqueIdentifier>
     </Filter>
     <Filter Include="cheb">
-      <UniqueIdentifier>{c5f75d0f-5cf9-4973-90af-31f01aa4022c}</UniqueIdentifier>
+      <UniqueIdentifier>{a724308a-92f6-44b1-8688-5726e37a8a42}</UniqueIdentifier>
     </Filter>
     <Filter Include="combination">
-      <UniqueIdentifier>{97f190f5-1598-4761-939b-e79273ec7eeb}</UniqueIdentifier>
+      <UniqueIdentifier>{01e3a5ea-b352-40e9-a663-af3b9428d90b}</UniqueIdentifier>
     </Filter>
     <Filter Include="complex">
-      <UniqueIdentifier>{b7d9c586-9483-465b-94d9-9d0799a6f389}</UniqueIdentifier>
+      <UniqueIdentifier>{ef4a61af-dcd6-4aab-a52d-fd26b5c3b26d}</UniqueIdentifier>
     </Filter>
     <Filter Include="deriv">
-      <UniqueIdentifier>{bc65d2a6-af97-4a54-a8c6-d11261906844}</UniqueIdentifier>
+      <UniqueIdentifier>{bafb66d9-c9f2-4529-a2ef-5bc80a814d2c}</UniqueIdentifier>
     </Filter>
     <Filter Include="dht">
-      <UniqueIdentifier>{26a492b4-3601-4275-b326-7b5c2fe57eaf}</UniqueIdentifier>
+      <UniqueIdentifier>{ad048986-006e-46f3-96f6-0a852a758204}</UniqueIdentifier>
     </Filter>
     <Filter Include="diff">
-      <UniqueIdentifier>{e296a3e1-41c9-4f0a-970f-4eed28c41039}</UniqueIdentifier>
+      <UniqueIdentifier>{98482af5-3233-4944-b3f8-50f5ff6d835d}</UniqueIdentifier>
     </Filter>
     <Filter Include="eigen">
-      <UniqueIdentifier>{62fff4b0-d624-459c-bc00-63b869db88aa}</UniqueIdentifier>
+      <UniqueIdentifier>{7ca3892f-c7bc-4460-aad0-3fab82bd6350}</UniqueIdentifier>
     </Filter>
     <Filter Include="err">
-      <UniqueIdentifier>{856869c0-55d9-4f3d-9dae-d59f6633480a}</UniqueIdentifier>
+      <UniqueIdentifier>{95d274be-8e9e-4bd6-ac8e-6dfd85e6f023}</UniqueIdentifier>
     </Filter>
     <Filter Include="fft">
-      <UniqueIdentifier>{5fcb8f01-01ae-4c3f-b0c9-5c384cfa165a}</UniqueIdentifier>
+      <UniqueIdentifier>{e67ea433-5c51-42f8-abe6-9888167bc5a1}</UniqueIdentifier>
     </Filter>
     <Filter Include="fit">
-      <UniqueIdentifier>{eb0a2021-bde9-4344-8cbd-03ecac90fb59}</UniqueIdentifier>
+      <UniqueIdentifier>{45aad3fb-6921-44fe-b158-13b3623c7331}</UniqueIdentifier>
     </Filter>
     <Filter Include="gsl">
-      <UniqueIdentifier>{5f7dc541-1dc4-473b-a664-f01c255c5ff3}</UniqueIdentifier>
+      <UniqueIdentifier>{99b017c9-aec4-4cad-a3eb-19c29bc5cdbe}</UniqueIdentifier>
     </Filter>
     <Filter Include="histogram">
-      <UniqueIdentifier>{d2a3b62a-0426-4d45-963c-c804436c71f9}</UniqueIdentifier>
+      <UniqueIdentifier>{307bdb7f-91b5-48e1-be75-d1077ee34519}</UniqueIdentifier>
     </Filter>
     <Filter Include="ieeeutils">
-      <UniqueIdentifier>{825cf99e-f24a-4e38-a4c3-edbcb22fb75a}</UniqueIdentifier>
+      <UniqueIdentifier>{77f43746-f242-4faa-b4e9-cd431c46b0e5}</UniqueIdentifier>
     </Filter>
     <Filter Include="integration">
-      <UniqueIdentifier>{75f3ee49-778b-42cb-9b5d-95130bb35b3e}</UniqueIdentifier>
+      <UniqueIdentifier>{1e9b9adf-9873-4c9c-8aa3-8b77f0a63187}</UniqueIdentifier>
     </Filter>
     <Filter Include="interpolation">
-      <UniqueIdentifier>{70b4eb14-2aec-4d72-8166-9766682802f4}</UniqueIdentifier>
+      <UniqueIdentifier>{585d70a7-f3c9-4563-88be-e600fdddb963}</UniqueIdentifier>
     </Filter>
     <Filter Include="linalg">
-      <UniqueIdentifier>{30c07b0c-1b44-41b0-9e0d-2233a33099e6}</UniqueIdentifier>
+      <UniqueIdentifier>{e7cc80b5-230d-420d-a8c7-e190d2db24bf}</UniqueIdentifier>
     </Filter>
     <Filter Include="matrix">
-      <UniqueIdentifier>{a7b4557e-1b9e-40b2-b3db-7f28952fb689}</UniqueIdentifier>
+      <UniqueIdentifier>{dd1a0164-1dbe-4223-bd84-511421511fdc}</UniqueIdentifier>
     </Filter>
     <Filter Include="min">
-      <UniqueIdentifier>{3f7d03a7-1a4f-4530-89b8-65954441417e}</UniqueIdentifier>
+      <UniqueIdentifier>{daff5c79-6e06-4193-b024-5285408e055f}</UniqueIdentifier>
     </Filter>
     <Filter Include="monte">
-      <UniqueIdentifier>{c3e454f4-3e1b-49a9-9865-f706eb7a133d}</UniqueIdentifier>
+      <UniqueIdentifier>{87114ef0-d13f-4525-ba0b-efdbec536a26}</UniqueIdentifier>
     </Filter>
     <Filter Include="multifit">
-      <UniqueIdentifier>{5604f298-a410-4094-ac6d-96718f634e12}</UniqueIdentifier>
+      <UniqueIdentifier>{94fcf47a-ce22-474e-a21d-d7093973eb80}</UniqueIdentifier>
     </Filter>
     <Filter Include="multimin">
-      <UniqueIdentifier>{84afd1c8-0f7b-4a80-bd8c-cd26bcec4771}</UniqueIdentifier>
+      <UniqueIdentifier>{85381dc4-8108-4a35-a369-e58eb0a233e6}</UniqueIdentifier>
     </Filter>
     <Filter Include="multiroot">
-      <UniqueIdentifier>{50432516-aeb6-4528-9281-fba35ef355a7}</UniqueIdentifier>
+      <UniqueIdentifier>{5e79fff3-a053-4e34-a965-909f92c4f7fa}</UniqueIdentifier>
     </Filter>
     <Filter Include="ntuple">
-      <UniqueIdentifier>{f5c21b1b-40e9-4ed3-8b56-6fdac1910f45}</UniqueIdentifier>
+      <UniqueIdentifier>{0f068699-2e1f-4ffb-88e9-ab2878798353}</UniqueIdentifier>
     </Filter>
     <Filter Include="ode">
-      <UniqueIdentifier>{bb058bad-2e94-4211-bcea-f57a3a0395ad}</UniqueIdentifier>
+      <UniqueIdentifier>{e9055cf0-2db0-46cd-9c95-6eb77e043b52}</UniqueIdentifier>
     </Filter>
     <Filter Include="permutation">
-      <UniqueIdentifier>{c1a6f48b-393d-4474-a736-975761631298}</UniqueIdentifier>
+      <UniqueIdentifier>{7c0dd03f-51a9-4b94-a23f-d23c9300321a}</UniqueIdentifier>
     </Filter>
     <Filter Include="poly">
-      <UniqueIdentifier>{e7935ec1-f7c5-45ef-b83a-f1957094f478}</UniqueIdentifier>
+      <UniqueIdentifier>{e30dd156-6ec1-4c6e-83e1-0578829c75aa}</UniqueIdentifier>
     </Filter>
     <Filter Include="qrng">
-      <UniqueIdentifier>{77d95710-03f7-4897-b36a-f6389a50e4d3}</UniqueIdentifier>
+      <UniqueIdentifier>{c31c521b-e3fd-4fbd-b5e3-1f9ffc2f3f38}</UniqueIdentifier>
     </Filter>
     <Filter Include="randist">
-      <UniqueIdentifier>{13031b9d-d219-4f1f-b5d5-84a3b30cddcb}</UniqueIdentifier>
+      <UniqueIdentifier>{c17daa49-485f-4426-9a01-3da88867b47a}</UniqueIdentifier>
     </Filter>
     <Filter Include="rng">
-      <UniqueIdentifier>{ca6fb99f-2614-489e-9caa-2b6c0f1ae1b1}</UniqueIdentifier>
+      <UniqueIdentifier>{c8a79feb-2752-4b7b-8f0f-4b70727e2b6c}</UniqueIdentifier>
     </Filter>
     <Filter Include="roots">
-      <UniqueIdentifier>{05b6a7d3-7970-4bf8-82b0-59c94b150ccb}</UniqueIdentifier>
+      <UniqueIdentifier>{87b57e9c-52af-4c6c-8a72-c26dc38ae0ec}</UniqueIdentifier>
     </Filter>
     <Filter Include="siman">
-      <UniqueIdentifier>{3ab6fcd9-73b2-4bd2-af7b-1165b63d1690}</UniqueIdentifier>
+      <UniqueIdentifier>{218e3e5a-3d22-40eb-9741-bd4ff21eaa32}</UniqueIdentifier>
     </Filter>
     <Filter Include="sort">
-      <UniqueIdentifier>{3713f48b-14dc-4108-9da1-19577d03473b}</UniqueIdentifier>
+      <UniqueIdentifier>{d4808c5e-cfc3-4522-9b7d-342c57d31f7f}</UniqueIdentifier>
     </Filter>
     <Filter Include="specfunc">
-      <UniqueIdentifier>{03050775-991b-4e63-9a56-d5beb04094cb}</UniqueIdentifier>
+      <UniqueIdentifier>{ec5b4e6d-e14a-4f53-aae0-e417ab44eae0}</UniqueIdentifier>
     </Filter>
     <Filter Include="statistics">
-      <UniqueIdentifier>{78127b47-077f-4cb3-b246-32c685021552}</UniqueIdentifier>
+      <UniqueIdentifier>{2af55c0d-166c-4d9b-867b-430c7982cf4c}</UniqueIdentifier>
     </Filter>
     <Filter Include="sum">
-      <UniqueIdentifier>{1c6c59c7-0e25-4d84-846b-8c84361d297c}</UniqueIdentifier>
+      <UniqueIdentifier>{d3352e1d-f3e8-43e4-920e-fbaf453b7430}</UniqueIdentifier>
     </Filter>
     <Filter Include="sys">
-      <UniqueIdentifier>{433d78c1-f50f-4996-bbe2-1b95eb67f187}</UniqueIdentifier>
+      <UniqueIdentifier>{f5e7569d-8f7a-44f3-9ae1-12f12c09303c}</UniqueIdentifier>
     </Filter>
     <Filter Include="test">
-      <UniqueIdentifier>{12450b49-7544-4444-acda-a3f528e4f9eb}</UniqueIdentifier>
+      <UniqueIdentifier>{9dfea8b2-11e2-4112-acce-93903c0dfb45}</UniqueIdentifier>
     </Filter>
     <Filter Include="utils">
-      <UniqueIdentifier>{f1ecab4d-5035-4d78-a55e-6b82e316e944}</UniqueIdentifier>
+      <UniqueIdentifier>{da495b71-37d4-41a0-98a4-6b39062ebd9c}</UniqueIdentifier>
     </Filter>
     <Filter Include="vector">
-      <UniqueIdentifier>{f5582d86-2f20-4316-b536-2efcd117c3cd}</UniqueIdentifier>
+      <UniqueIdentifier>{7de758c6-b835-4250-a657-2c0f82ea7808}</UniqueIdentifier>
     </Filter>
     <Filter Include="wavelet">
-      <UniqueIdentifier>{f43f22f1-ba7d-4611-9494-6384ea70f943}</UniqueIdentifier>
+      <UniqueIdentifier>{5311bea3-a6af-4495-a6fc-f5b64efbefde}</UniqueIdentifier>
     </Filter>
     <Filter Include="multiset">
-      <UniqueIdentifier>{252da484-f960-4656-9ef3-1a8403f4bda0}</UniqueIdentifier>
+      <UniqueIdentifier>{7ac8acda-2005-4b60-994c-7a15324baf10}</UniqueIdentifier>
     </Filter>
     <Filter Include="ode2">
-      <UniqueIdentifier>{e6610e99-77ca-4a5d-8043-330cf2eb7503}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="spblas">
-      <UniqueIdentifier>{c612ffd3-9627-46fe-bc3e-6bc0ef33f8e8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="splinalg">
-      <UniqueIdentifier>{7fe372c6-8371-4923-9d90-3a21d5689e70}</UniqueIdentifier>
+      <UniqueIdentifier>{ba3b6ec2-459e-4cfd-95d6-0dfb66ea54ea}</UniqueIdentifier>
     </Filter>
     <Filter Include="spmatrix">
-      <UniqueIdentifier>{f131f121-fb21-484b-bbae-e16c89fa40d0}</UniqueIdentifier>
+      <UniqueIdentifier>{d30987d6-5f90-4b3b-9b9e-f981d8fba7d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="splinalg">
+      <UniqueIdentifier>{1f5806a1-be6d-4a7d-ae24-83f4b044adee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="spblas">
+      <UniqueIdentifier>{87f1769f-32f3-412d-a084-c759d6bb6d6e}</UniqueIdentifier>
     </Filter>
     <Filter Include="rstat">
-      <UniqueIdentifier>{e93a38ae-2d48-4729-9f80-73f1ccacbe96}</UniqueIdentifier>
+      <UniqueIdentifier>{848e1abc-026b-470d-970a-7f8293b8f08a}</UniqueIdentifier>
     </Filter>
     <Filter Include="multilarge">
-      <UniqueIdentifier>{b1e60702-51ec-48a9-b13b-1b08eada406e}</UniqueIdentifier>
+      <UniqueIdentifier>{a62972f5-0177-46e4-8d3d-a9ff006af5d7}</UniqueIdentifier>
     </Filter>
     <Filter Include="multifit_nlinear">
-      <UniqueIdentifier>{119b2318-db87-41d0-81dd-3e22e79afc38}</UniqueIdentifier>
+      <UniqueIdentifier>{65761cfd-48e4-4fcd-ba76-f1d4f2ba3cda}</UniqueIdentifier>
     </Filter>
     <Filter Include="multilarge_nlinear">
-      <UniqueIdentifier>{7f20e5c9-adf2-4f34-9863-fd64beccc1ae}</UniqueIdentifier>
+      <UniqueIdentifier>{0b8f7ef7-e7da-4b11-9e2b-ebe059a3593a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1665,9 +1665,6 @@
     <ClCompile Include="..\..\spmatrix\spgetset.c">
       <Filter>spmatrix</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\rng\inline.c">
-      <Filter>rng</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\splinalg\gmres.c">
       <Filter>splinalg</Filter>
     </ClCompile>
@@ -1686,12 +1683,6 @@
     <ClCompile Include="..\..\multifit\fdfridge.c">
       <Filter>multifit</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\spmatrix\avl.c">
-      <Filter>spmatrix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\multifit\lmniel.c">
-      <Filter>multifit</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\interpolation\bicubic.c">
       <Filter>interpolation</Filter>
     </ClCompile>
@@ -1706,6 +1697,12 @@
     </ClCompile>
     <ClCompile Include="..\..\interpolation\steffen.c">
       <Filter>interpolation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\spmatrix\avl.c">
+      <Filter>spmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\multifit\lmniel.c">
+      <Filter>multifit</Filter>
     </ClCompile>
     <ClCompile Include="..\..\rstat\rquantile.c">
       <Filter>rstat</Filter>
@@ -1827,12 +1824,22 @@
     <ClCompile Include="..\..\multilarge_nlinear\subspace2D.c">
       <Filter>multilarge_nlinear</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\..\multifit\gcv.c">
       <Filter>multifit</Filter>
     </ClCompile>
-=======
->>>>>>> c7647cbadb714321514ffbfd22126d6c1f91d68d
+    <ClCompile Include="..\..\rng\inline.c" />
+    <ClCompile Include="..\..\integration\fixed.c">
+      <Filter>integration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\integration\hermite.c">
+      <Filter>integration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\integration\laguerre.c">
+      <Filter>integration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\specfunc\hermite.c">
+      <Filter>specfunc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\histogram\gsl_histogram.h">
@@ -2540,10 +2547,13 @@
     <ClInclude Include="..\..\gsl\gsl_wavelet2d.h">
       <Filter>gsl</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\gsl\gsl_multilarge.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\gsl\gsl_rstat.h">
       <Filter>gsl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\gsl\gsl_multilarge.h">
+    <ClInclude Include="..\..\gsl\gsl_sf_hermite.h">
       <Filter>gsl</Filter>
     </ClInclude>
   </ItemGroup>

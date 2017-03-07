@@ -317,6 +317,63 @@ gsl_integration_cquad (const gsl_function * f, double a, double b,
 		       gsl_integration_cquad_workspace * ws,
 		       double *result, double *abserr, size_t * nevals);
 
+/* IQPACK related structures and routines */
+
+typedef struct
+{
+  double alpha;
+  double beta;
+  double a;
+  double b;
+  double zemu;
+  double shft;
+  double slp;
+  double al;
+  double be;
+} gsl_integration_fixed_params;
+
+typedef struct
+{
+  int (*init)(const size_t n, double * diag, double * subdiag, gsl_integration_fixed_params * params);
+} gsl_integration_fixed_type;
+
+typedef struct
+{
+  size_t size;
+  double *weights; /* quadrature weights */
+  double *x;       /* quadrature nodes */
+  double *diag;    /* diagonal of Jacobi matrix */
+  double *subdiag; /* subdiagonal of Jacobi matrix */
+  const gsl_integration_fixed_type * type;
+} gsl_integration_fixed_workspace;
+
+/* IQPACK integral types */
+GSL_VAR const gsl_integration_fixed_type * gsl_integration_fixed_laguerre;
+GSL_VAR const gsl_integration_fixed_type * gsl_integration_fixed_hermite;
+
+gsl_integration_fixed_workspace *
+gsl_integration_fixed_alloc(const gsl_integration_fixed_type * type, const size_t n,
+                            const double a, const double b, const double alpha, const double beta);
+
+void gsl_integration_fixed_free(gsl_integration_fixed_workspace * w);
+
+int gsl_integration_fixed(const gsl_function * func, double * result,
+                          gsl_integration_fixed_workspace * w);
+
+typedef struct
+{
+  size_t size;
+  double *weights; /* quadrature weights */
+  double *x;       /* quadrature nodes */
+  double *diag;    /* diagonal of Jacobi matrix */
+  double *subdiag; /* subdiagonal of Jacobi matrix */
+} gsl_integration_hermite_workspace;
+
+gsl_integration_hermite_workspace *gsl_integration_hermite_alloc(const size_t n, const double a, const double b);
+
+void gsl_integration_hermite_free(gsl_integration_hermite_workspace * w);
+
+int gsl_integration_hermite(const gsl_function * func, double * result, gsl_integration_hermite_workspace * w);
 
 __END_DECLS
 

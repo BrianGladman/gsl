@@ -194,7 +194,7 @@ gsl_integration_glfixed_table *
     }
 
   /* Use a predefined table of size n if possible */
-  for (i = 0; i < GLAWSIZE;i++)
+  for (i = 0; i < (int) GLAWSIZE;i++)
     {
       if (n == glaw[i].n)
         {

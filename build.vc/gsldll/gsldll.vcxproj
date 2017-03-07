@@ -281,12 +281,15 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)integration\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)integration\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="..\..\integration\fixed.c" />
     <ClCompile Include="..\..\integration\glfixed.c">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)integration\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)integration\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)integration\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)integration\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="..\..\integration\hermite.c" />
+    <ClCompile Include="..\..\integration\laguerre.c" />
     <ClCompile Include="..\..\interpolation\bicubic.c" />
     <ClCompile Include="..\..\interpolation\bilinear.c" />
     <ClCompile Include="..\..\interpolation\interp2d.c" />
@@ -550,6 +553,7 @@
     <ClCompile Include="..\..\rstat\rstat.c" />
     <ClCompile Include="..\..\spblas\spdgemm.c" />
     <ClCompile Include="..\..\spblas\spdgemv.c" />
+    <ClCompile Include="..\..\specfunc\hermite.c" />
     <ClCompile Include="..\..\specfunc\legendre_P.c" />
     <ClCompile Include="..\..\splinalg\gmres.c" />
     <ClCompile Include="..\..\splinalg\itersolve.c" />
@@ -3488,6 +3492,7 @@
     <ClInclude Include="..\..\gsl\gsl_sf_fermi_dirac.h" />
     <ClInclude Include="..\..\gsl\gsl_sf_gamma.h" />
     <ClInclude Include="..\..\gsl\gsl_sf_gegenbauer.h" />
+    <ClInclude Include="..\..\gsl\gsl_sf_hermite.h" />
     <ClInclude Include="..\..\gsl\gsl_sf_hyperg.h" />
     <ClInclude Include="..\..\gsl\gsl_sf_laguerre.h" />
     <ClInclude Include="..\..\gsl\gsl_sf_lambert.h" />

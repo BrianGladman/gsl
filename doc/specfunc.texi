@@ -6,7 +6,7 @@ functions, Clausen functions, Coulomb wave functions, Coupling
 coefficients, the Dawson function, Debye functions, Dilogarithms,
 Elliptic integrals, Jacobi elliptic functions, Error functions,
 Exponential integrals, Fermi-Dirac functions, Gamma functions,
-Gegenbauer functions, Hypergeometric functions, Laguerre functions,
+Gegenbauer functions, Hermite polynomials and functions, Hypergeometric functions, Laguerre functions,
 Legendre functions and Spherical Harmonics, the Psi (Digamma) Function,
 Synchrotron functions, Transport functions, Trigonometric functions and
 Zeta functions.  Each routine also computes an estimate of the numerical
@@ -37,6 +37,7 @@ set of header files can be included using the file @file{gsl_sf.h}.
 * Fermi-Dirac Function::        
 * Gamma and Beta Functions::    
 * Gegenbauer Functions::        
+* Hermite Polynomials and Functions::
 * Hypergeometric Functions::    
 * Laguerre Functions::          
 * Lambert W Functions::         
@@ -223,6 +224,10 @@ accuracy.
 @node Gegenbauer Functions
 @section Gegenbauer Functions
 @include specfunc-gegenbauer.texi
+
+@node Hermite Polynomials and Functions
+@section Hermite Polynomials and Functions
+@include specfunc-hermite.texi
 
 @node Hypergeometric Functions
 @section Hypergeometric Functions

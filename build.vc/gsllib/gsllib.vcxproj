@@ -190,12 +190,15 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)integration\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)integration\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="..\..\integration\fixed.c" />
     <ClCompile Include="..\..\integration\glfixed.c">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)integration\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)integration\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)integration\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)integration\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="..\..\integration\hermite.c" />
+    <ClCompile Include="..\..\integration\laguerre.c" />
     <ClCompile Include="..\..\interpolation\bicubic.c" />
     <ClCompile Include="..\..\interpolation\bilinear.c" />
     <ClCompile Include="..\..\interpolation\interp2d.c" />
@@ -458,6 +461,7 @@
     <ClCompile Include="..\..\rstat\rstat.c" />
     <ClCompile Include="..\..\spblas\spdgemm.c" />
     <ClCompile Include="..\..\spblas\spdgemv.c" />
+    <ClCompile Include="..\..\specfunc\hermite.c" />
     <ClCompile Include="..\..\specfunc\legendre_P.c" />
     <ClCompile Include="..\..\splinalg\gmres.c" />
     <ClCompile Include="..\..\splinalg\itersolve.c" />

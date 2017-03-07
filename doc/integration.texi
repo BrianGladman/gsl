@@ -32,6 +32,8 @@ The functions described in this chapter are declared in the header file
 * QAWF adaptive integration for Fourier integrals::  
 * CQUAD doubly-adaptive integration::  
 * Fixed order Gauss-Legendre integration::  
+* Hermite quadrature integration::
+* Special weight quadratures::
 * Numerical integration error codes::  
 * Numerical integration examples::  
 * Numerical integration References and Further Reading::  
@@ -876,6 +878,75 @@ value.  A function @math{f} may be integrated on [@var{a},@var{b}] by summing
 @deftypefun void gsl_integration_glfixed_table_free ({gsl_integration_glfixed_table *} @var{t})
 @tindex gsl_integration_glfixed_table
 This function frees the memory associated with the table @var{t}.
+@end deftypefun
+
+@node Special weight quadratures
+@section Special weight quadratures
+
+The routines in this section are designed to efficiently evaluate integrals of the form
+@tex
+\beforedisplay
+$$
+\int_a^b w(x) f(x) dx
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+\int_a^b w(x) f(x) dx
+@end example
+
+@end ifinfo
+where the weight function @math{w(x)} takes certain forms which allow solutions based
+on interpolating quadratures. The table below lists the specialized integrals that
+can be solved with this method:
+
+@node Hermite quadrature integration
+@section Hermite quadrature integration
+@cindex Hermite quadrature
+
+Hermite quadrature is useful for approximating integrals of the form
+
+@tex
+\beforedisplay
+$$
+\int_{-\infty}^{\infty} e^{-b (x - a)^2} f(x) dx
+$$
+\afterdisplay
+@end tex
+@ifinfo
+
+@example
+\int_@{-\infty@}^@{\infty@} e^@{-b (x - a)^2@} f(x) dx
+@end example
+
+@end ifinfo
+
+@noindent
+for @math{b > 0}. For polynomial functions, this method gives the exact result when using @var{n}
+sample points to integrate a polynomial of order @math{2n-1} or less. For any function @math{f(x)} that can
+be approximated by a polynomial, the result of the quadrature will give a reasonably accurate approximation
+of the above integral for sufficiently large @var{n}. (See e.g. Introduction to Numerical Analysis (1992) by
+J. Stoer, R. Bulirsch.)  
+
+@noindent
+Unlike most other numerical integration routines within the library, these routines do not accept absolute or
+relative error bounds.
+
+@deftypefun {gsl_integration_hermite_workspace *} gsl_integration_hermite_alloc(const size_t @var{n}, const double @var{a}, const double @var{b})
+This function allocates a workspace for evaluating integrals of the form above with @var{n} quadrature
+nodes and parameters @var{a} and @var{b}.
+@end deftypefun
+
+@deftypefun void gsl_integration_hermite_free(gsl_integration_hermite_workspace * @var{w})
+This function frees the memory associated with the workspace @var{w}.
+@end deftypefun
+
+@deftypefun int gsl_integration_hermite(const gsl_function * @var{func}, double * @var{result}, const gsl_integration_hermite_workspace * @var{w})
+This function evaluates the integral above using the previously computed quadrature weights
+and nodes for a given function @math{f(x)} given by @var{func}. The integral value is stored
+in @var{result} on output.
 @end deftypefun
 
 @node Numerical integration error codes
