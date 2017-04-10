@@ -1,5 +1,7 @@
 * What is new in gsl-2.4:
 
+** fix Cholesky documentation regarding upper triangle on output
+
 ** added routines to compute integrals with Hermite quadrature
    (based on IQPACK)
 

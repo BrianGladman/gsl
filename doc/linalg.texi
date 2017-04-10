@@ -830,9 +830,10 @@ These functions factorize the symmetric, positive-definite square matrix
 @c{$A = L L^{\dagger}$}
 @math{A = L L^H}
 for the complex case). On input, the values from the diagonal and lower-triangular
-part of the matrix @var{A} are used (the upper triangular part is ignored).  On output
+part of the matrix @var{A} are used to compute the Cholesky factor (the upper triangular part is ignored).  On output
 the diagonal and lower triangular part of the input matrix @var{A} contain the matrix
-@math{L}, while the upper triangular part is unmodified.  If the matrix is not
+@math{L}. The original matrix is stored in the upper triangular part, and is required for
+calculating the condition number using @code{gsl_linalg_cholesky_rcond}. If the matrix is not
 positive-definite then the decomposition will fail, returning the
 error code @code{GSL_EDOM}.  
 
@@ -964,8 +965,9 @@ On input, the values from the diagonal and lower-triangular part of the matrix @
 used to construct the factorization. On output the diagonal of the input matrix @var{A} stores
 the diagonal elements of @math{D}, and the lower triangular portion of @var{A}
 contains the matrix @math{L}. Since @math{L} has ones on its diagonal these
-do not need to be explicitely stored. The upper triangular portion of @var{A} is
-unmodified. The permutation matrix @math{P} is stored in @var{p} on output.
+do not need to be explicitely stored. The original matrix is stored in the upper triangular
+portion of @var{A} and is required for later calculations of the condition number,
+using @code{gsl_linalg_pcholesky_rcond}. The permutation matrix @math{P} is stored in @var{p} on output.
 @end deftypefun
 
 @deftypefun int gsl_linalg_pcholesky_solve (const gsl_matrix * @var{LDLT}, const gsl_permutation * @var{p}, const gsl_vector * @var{b}, gsl_vector * @var{x})
@@ -993,8 +995,9 @@ On input, the values from the diagonal and lower-triangular part of the matrix @
 used to construct the factorization.  On output the diagonal of the input matrix @var{A} stores the diagonal
 elements of @math{D}, and the lower triangular portion of @var{A}
 contains the matrix @math{L}. Since @math{L} has ones on its diagonal these
-do not need to be explicitely stored. The upper triangular portion of @var{A}
-is unmodified. The permutation matrix @math{P} is stored in @var{p} on output.
+do not need to be explicitely stored. The original matrix is stored in the upper triangular portion of @var{A},
+which is required for calculating the condition number, using @code{gsl_linalg_pcholesky_rcond}.
+The permutation matrix @math{P} is stored in @var{p} on output.
 The diagonal scaling transformation is stored in @var{S} on output.
 @end deftypefun
 
@@ -1071,8 +1074,9 @@ On input, the values from the diagonal and lower-triangular part of the matrix @
 used to construct the factorization. On output the diagonal of the input matrix @var{A} stores the diagonal
 elements of @math{D}, and the lower triangular portion of @var{A}
 contains the matrix @math{L}. Since @math{L} has ones on its diagonal these
-do not need to be explicitely stored. The upper triangular portion of @var{A}
-is unmodified. The permutation matrix @math{P} is
+do not need to be explicitely stored. The original matrix is stored in the upper triangular portion of @var{A},
+which is needed for later calculations of its
+condition number, using @code{gsl_linalg_mcholesky_rcond}. The permutation matrix @math{P} is
 stored in @var{p} on output. The diagonal perturbation matrix is stored in
 @var{E} on output. The parameter @var{E} may be set to NULL if it is not
 required.
