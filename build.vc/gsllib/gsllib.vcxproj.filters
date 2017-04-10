@@ -1698,9 +1698,6 @@
     <ClCompile Include="..\..\interpolation\steffen.c">
       <Filter>interpolation</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\spmatrix\avl.c">
-      <Filter>spmatrix</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\multifit\lmniel.c">
       <Filter>multifit</Filter>
     </ClCompile>
@@ -1709,9 +1706,6 @@
     </ClCompile>
     <ClCompile Include="..\..\rstat\rstat.c">
       <Filter>rstat</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\multifit\linear_common.c">
-      <Filter>multifit</Filter>
     </ClCompile>
     <ClCompile Include="..\..\multifit\multiwlinear.c">
       <Filter>multifit</Filter>
@@ -1764,9 +1758,6 @@
     <ClCompile Include="..\..\multifit_nlinear\lm.c">
       <Filter>multifit_nlinear</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\multifit_nlinear\nielsen.c">
-      <Filter>multifit_nlinear</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\multifit_nlinear\qr.c">
       <Filter>multifit_nlinear</Filter>
     </ClCompile>
@@ -1813,9 +1804,6 @@
       <Filter>multilarge_nlinear</Filter>
     </ClCompile>
     <ClCompile Include="..\..\multilarge_nlinear\lm.c">
-      <Filter>multilarge_nlinear</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\multilarge_nlinear\nielsen.c">
       <Filter>multilarge_nlinear</Filter>
     </ClCompile>
     <ClCompile Include="..\..\multilarge_nlinear\scaling.c">
