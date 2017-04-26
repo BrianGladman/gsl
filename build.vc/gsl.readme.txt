@@ -1,39 +1,10 @@
 
-Building the GNU Scientific Library with Microsoft Visual Sudio 2013
-====================================================================
+Building the GNU Scientific Library with Microsoft Visual Sudio
+===============================================================
 
-This is GSL, the GNU Scientific Library, a collection of numerical 
-routines for scientific computing.  Please see the readme.txt file 
-for futher information on GNU and GSL.  This file only describes 
-how this version is configured.  THe build files provided here are
-for the GIT repository version of GSL with the commit hash:
-
-SHA-1: d8854b4bd65f7a4bb3ce221fa9091cfebf53e16f
-
-The following sections describe how to compile GSL using Microsoft 
-Visual Studio 2013.  
-
-Although The files are designed for use with the full versions of 
-Visual Studio 2013, they can be used with Microsoft Visual C++ 
-Express 2013. A version of Python 3 also needs to be installed to
-run the tests.
-
-Step 1 - Set Up Directories and Files
--------------------------------------
-
-First GSL needs to be downloaded from the GSL repository using the
-GIT command:
-
-git clone git://git.savannah.gnu.org/gsl.git
-
-Next, the zip file gsl.git.build.vc12.zip needs to be expanded 
-so that its directories and files are in the root directory - this
-should add a 'build.vc12' directory at the top level inside your 
-GSL root directory. 
-
-The GSL solution files gsl.lib.sln or gsl.dll.sln can then be opened 
-to build GSL either as a static library or a dynamic link library 
-respectively.  The projects in these solutions are:
+The GSL solution files gsl.lib.sln or gsl.dll.sln in the directory
+build.vc are used to build a static library or a dynamic link 
+library respectively.  The projects in these solutions are:
 
 Utilities build:
 
@@ -52,8 +23,8 @@ GSL build:
 In addition there are also a large number of test projects that
 will be described later.
 
-Step 2 - Copying or Modifying GSL Header Files
-----------------------------------------------
+Step 1
+------
 
 Either the 'gsldefs' or the 'gslhdrs' project has to be built
 BEFORE any GSL libraries are built. Do NOT run both --  gslhdrs
@@ -70,7 +41,7 @@ have the following directory layout:
      blas       )
      block      )  - GSL subdirectories 
      bspline    )
-     build.vc12    - the Visual Studio build files
+     build.vc      - the Visual Studio build files
      ....          - more GSL subdirectories 
      gsl           - should now contain the GSL header files
      ....
@@ -210,4 +181,4 @@ The GSL build projects create GSL with range checking turned off. If you
 want it turned on you should add the symbol GSL_RANGE_CHECK to the lists
 of pre-processor defines in the cbaslib and gsllib build projects.  
 
-   Brian Gladman, Worcester UK, May 2014
+   Brian Gladman, Worcester UK, April 2017
