@@ -22,6 +22,7 @@
     <ProjectGuid>{CB888B2C-7A72-4F15-ABC3-803772B5FA0E}</ProjectGuid>
     <RootNamespace>testode</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

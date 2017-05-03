@@ -22,6 +22,7 @@
     <ProjectGuid>{A8B15FD8-A9FA-46FD-9C40-99B42CF2354D}</ProjectGuid>
     <RootNamespace>testspecfunc</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

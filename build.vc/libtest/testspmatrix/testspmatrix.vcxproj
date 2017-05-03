@@ -25,6 +25,7 @@
     <ProjectGuid>{C1FC89E5-E2D0-4E56-BA6B-7B554671F93C}</ProjectGuid>
     <RootNamespace>testspmatrix</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

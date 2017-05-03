@@ -22,6 +22,7 @@
     <ProjectGuid>{0DBA3E4B-512F-49A5-ABFE-E758DD47484C}</ProjectGuid>
     <RootNamespace>testerr</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

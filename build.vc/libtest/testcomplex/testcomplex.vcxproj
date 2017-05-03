@@ -22,6 +22,7 @@
     <ProjectGuid>{3ED60A34-45EA-4642-8C20-77CE36641FD7}</ProjectGuid>
     <RootNamespace>testcomplex</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

@@ -144,7 +144,7 @@
 #define HAVE_VPRINTF 1
 
 /* Define if you need to hide the static definitions of inline functions */
-#define HIDE_INLINE_STATIC 1
+#define HIDE_INLINE_STATIC
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */

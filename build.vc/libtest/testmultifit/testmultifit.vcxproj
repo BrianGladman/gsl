@@ -22,6 +22,7 @@
     <ProjectGuid>{1AE8FCD6-20ED-4210-87AF-D880B822C748}</ProjectGuid>
     <RootNamespace>testmultifit</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

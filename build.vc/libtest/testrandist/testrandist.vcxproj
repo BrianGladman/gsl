@@ -22,6 +22,7 @@
     <ProjectGuid>{28FA9F87-03AB-40E3-B5D9-B901B75796F2}</ProjectGuid>
     <RootNamespace>testrandist</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

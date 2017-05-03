@@ -25,6 +25,7 @@
     <RootNamespace>testmultilarge_nlinear</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{A7789F90-DFAB-45AE-B43E-D7060434B0CE}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

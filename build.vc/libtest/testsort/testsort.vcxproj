@@ -22,6 +22,7 @@
     <ProjectGuid>{E6F6B61B-3A2F-4606-AC52-85E2B1BA2D27}</ProjectGuid>
     <RootNamespace>testsort</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
