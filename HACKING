@@ -134,6 +134,7 @@ for HAVE_INLINE use in installed headers.
 > make clean && make && make check
 
 * Check that the library passes "make check" with various compiler flags
+> make clean && ./configure CFLAGS="-g -Wall -ansi -pedantic" && make && make check
 > make clean && ./configure CFLAGS="-O3 -mfpmath=sse -msse2" && make && make check
 > make clean && ./configure CFLAGS="-funsigned-char" && make && make check
 > make clean && ./configure CFLAGS="-std=c89 -ansi -pedantic" && make && make check
