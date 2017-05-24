@@ -185,7 +185,7 @@ main (void)
   const size_t p = 3;    /* number of model parameters */
   const double a = 5.0;  /* amplitude */
   const double b = 0.4;  /* center */
-  const double c = 0.15;  /* width */
+  const double c = 0.15; /* width */
   const gsl_rng_type * T = gsl_rng_default;
   gsl_vector *f = gsl_vector_alloc(n);
   gsl_vector *x = gsl_vector_alloc(p);

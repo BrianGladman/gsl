@@ -1,0 +1,6 @@
+Method                    NITER  NFEV  NJEV  Initial Cost  Final cost   Final cond(J) Final x        
+levenberg-marquardt       20     27    21    1.9874e+02    3.9789e-01   6.1399e+07    (-3.14e+00, 1.23e+01)
+levenberg-marquardt+accel 27     36    28    1.9874e+02    3.9789e-01   1.4465e+07    (3.14e+00, 2.27e+00)
+dogleg                    23     64    23    1.9874e+02    3.9789e-01   5.0692e+08    (3.14e+00, 2.28e+00)
+double-dogleg             24     69    24    1.9874e+02    3.9789e-01   3.4879e+07    (3.14e+00, 2.27e+00)
+2D-subspace               23     54    24    1.9874e+02    3.9789e-01   1.5408e+07    (3.14e+00, 2.27e+00)

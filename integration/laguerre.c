@@ -30,6 +30,25 @@
 #include <gsl/gsl_sf_gamma.h>
 
 static int
+laguerre_check(const size_t n, const gsl_integration_fixed_params * params)
+{
+  (void) n;
+
+  if (params->b <= 0.0)
+    {
+      GSL_ERROR("b must be positive", GSL_EDOM);
+    }
+  else if (params->alpha <= -1.0)
+    {
+      GSL_ERROR("alpha must be > -1", GSL_EDOM);
+    }
+  else
+    {
+      return GSL_SUCCESS;
+    }
+}
+
+static int
 laguerre_init(const size_t n, double * diag, double * subdiag, gsl_integration_fixed_params * params)
 {
   size_t i;
@@ -52,6 +71,7 @@ laguerre_init(const size_t n, double * diag, double * subdiag, gsl_integration_f
 
 static const gsl_integration_fixed_type laguerre_type =
 {
+  laguerre_check,
   laguerre_init
 };
 

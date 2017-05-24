@@ -153,7 +153,7 @@ gsl_sf_hermite_prob_iter_e(const int n, const double x, gsl_sf_result * result)
 	c++;
       }
 
-      while(( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) &&  ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 2.0*GSL_SQRT_DBL_MAX )){
+      while(( ( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) ) || ( ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 0.5*GSL_SQRT_DBL_MAX )){
 	p_n0 *= 2.0;
 	p_n1 *= 2.0;
 	p_n = p_n1;
@@ -373,7 +373,7 @@ gsl_sf_hermite_phys_e(const int n, const double x, gsl_sf_result * result)
 	c++;
       }
 
-      while(( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) &&  ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 2.0*GSL_SQRT_DBL_MAX )){
+      while(( ( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) ) || ( ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 0.5*GSL_SQRT_DBL_MAX )){
 	p_n0 *= 2.0;
 	p_n1 *= 2.0;
 	p_n = p_n1;
@@ -553,7 +553,7 @@ gsl_sf_hermite_func_e(const int n, const double x, gsl_sf_result * result)
 	c++;
       }
 
-      while(( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) &&  ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 2.0*GSL_SQRT_DBL_MAX )){
+	while(( ( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) ) || ( ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 0.5*GSL_SQRT_DBL_MAX )){
 	p_n0 = p_n0*2;
 	p_n1 = p_n1*2;
 	p_n = p_n1;
@@ -645,7 +645,7 @@ gsl_sf_hermite_prob_array(const int nmax, const double x, double * result_array)
 	c++;
       }
 
-      while(( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) &&  ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 2.0*GSL_SQRT_DBL_MAX )){
+      while(( ( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) ) || ( ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 0.5*GSL_SQRT_DBL_MAX )){
 	p_n0 *= 2.0;
 	p_n1 *= 2.0;
 	p_n = p_n1;
@@ -724,7 +724,7 @@ gsl_sf_hermite_prob_array_der(const int m, const int nmax, const double x, doubl
 	c++;
       }
 
-      while(( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) &&  ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 2.0*GSL_SQRT_DBL_MAX )){
+      while(( ( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) ) || ( ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 0.5*GSL_SQRT_DBL_MAX )){
 	p_n0 *= 2.0;
 	p_n1 *= 2.0;
 	p_n = p_n1;
@@ -803,7 +803,7 @@ gsl_sf_hermite_prob_der_array(const int mmax, const int n, const double x, doubl
 	c++;
       }
 
-      while(( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) &&  ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 2.0*GSL_SQRT_DBL_MAX )){
+      while(( ( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) ) || ( ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 0.5*GSL_SQRT_DBL_MAX )){
 	p_n0 *= 2.0;
 	p_n1 *= 2.0;
 	p_n = p_n1;
@@ -917,7 +917,7 @@ gsl_sf_hermite_phys_array(const int nmax, const double x, double * result_array)
 	c++;
       }
 
-      while(( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) &&  ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 2.0*GSL_SQRT_DBL_MAX )){
+      while(( ( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) ) || ( ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 0.5*GSL_SQRT_DBL_MAX )){
 	p_n0 *= 2.0;
 	p_n1 *= 2.0;
 	p_n = p_n1;
@@ -995,7 +995,7 @@ gsl_sf_hermite_phys_array_der(const int m, const int nmax, const double x, doubl
 	c++;
       }
 
-      while(( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) &&  ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 2.0*GSL_SQRT_DBL_MAX )){
+      while(( ( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) ) || ( ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 0.5*GSL_SQRT_DBL_MAX )){
 	p_n0 *= 2.0;
 	p_n1 *= 2.0;
 	p_n = p_n1;
@@ -1074,7 +1074,7 @@ gsl_sf_hermite_phys_der_array(const int mmax, const int n, const double x, doubl
 	c++;
       }
 
-      while(( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) &&  ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 2.0*GSL_SQRT_DBL_MAX )){
+      while(( ( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) ) || ( ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 0.5*GSL_SQRT_DBL_MAX )){
 	p_n0 *= 2.0;
 	p_n1 *= 2.0;
 	p_n = p_n1;
@@ -1190,7 +1190,7 @@ gsl_sf_hermite_func_array(const int nmax, const double x, double * result_array)
 	c++;
       }
 
-      while(( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) &&  ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 2.0*GSL_SQRT_DBL_MAX )){
+      while(( ( ( fabs(p_n0) < GSL_SQRT_DBL_MIN ) && ( p_n0 != 0) ) || ( ( fabs(p_n1) < GSL_SQRT_DBL_MIN ) && ( p_n1 != 0) ) ) && ( GSL_MAX(fabs(p_n0),fabs(p_n1)) < 0.5*GSL_SQRT_DBL_MAX )){
 	p_n0 *= 2.0;
 	p_n1 *= 2.0;
 	p_n = p_n1;
@@ -1314,7 +1314,7 @@ gsl_sf_hermite_func_der_e(const int m, const int n, const double x, gsl_sf_resul
 	  c++;
 	}
 
-	while(( (fabs(h0) < GSL_SQRT_DBL_MIN) && (h0 != 0) && (fabs(h1) < GSL_SQRT_DBL_MIN) && (h1 != 0) ) && ( GSL_MAX(fabs(h0),fabs(h1)) < 2.0*GSL_SQRT_DBL_MAX )){
+	while(( ( (fabs(h0) < GSL_SQRT_DBL_MIN) && (h0 != 0) ) || ( (fabs(h1) < GSL_SQRT_DBL_MIN) && (h1 != 0) ) ) && ( GSL_MAX(fabs(h0),fabs(h1)) < 0.5*GSL_SQRT_DBL_MAX )){
 	  h0 *= 2.0;
 	  h1 *= 2.0;
 	  eh0 *= 2.0;
@@ -1348,7 +1348,7 @@ gsl_sf_hermite_func_der_e(const int m, const int n, const double x, gsl_sf_resul
 	  c++;
 	}
 
-	while(( (fabs(p0) < GSL_SQRT_DBL_MIN) && (p0 != 0) && (fabs(p1) < GSL_SQRT_DBL_MIN) && (p1 != 0) ) && ( GSL_MAX(fabs(p0),fabs(p1)) < 2.0*GSL_SQRT_DBL_MAX )){
+	while(( ( (fabs(p0) < GSL_SQRT_DBL_MIN) && (p0 != 0) ) || ( (fabs(p1) < GSL_SQRT_DBL_MIN) && (p1 != 0) ) ) && ( GSL_MAX(fabs(p0),fabs(p1)) < 0.5*GSL_SQRT_DBL_MAX )){
 	  p0 = p0*2;
 	  p1 = p1*2;
 	  ep0 = ep0*2;
@@ -1389,7 +1389,7 @@ gsl_sf_hermite_func_der_e(const int m, const int n, const double x, gsl_sf_resul
 	
 	f *= -(m-j)/(j+1.)/sqrt(n-m+j+1.)*M_SQRT1_2;
 
-	while(( (fabs(h0) > 2.0*GSL_SQRT_DBL_MIN) && (fabs(h1) > 2.0*GSL_SQRT_DBL_MIN) && (fabs(p0) > 2.0*GSL_SQRT_DBL_MIN) && (fabs(p1) > 2.0*GSL_SQRT_DBL_MIN) && (fabs(r) > 2.0*GSL_SQRT_DBL_MIN) ) && ( (fabs(h0) > GSL_SQRT_DBL_MAX) || (fabs(h1) > GSL_SQRT_DBL_MAX) || (fabs(p0) > GSL_SQRT_DBL_MAX) || (fabs(p1) > GSL_SQRT_DBL_MAX) || (fabs(r) > GSL_SQRT_DBL_MAX) )){
+	while(( (fabs(h0) > 2.0*GSL_SQRT_DBL_MIN) && (fabs(h1) > 2.0*GSL_SQRT_DBL_MIN) && (fabs(p0) > 2.0*GSL_SQRT_DBL_MIN) && (fabs(p1) > 2.0*GSL_SQRT_DBL_MIN) && (fabs(r) > 4.0*GSL_SQRT_DBL_MIN) ) && ( (fabs(h0) > GSL_SQRT_DBL_MAX) || (fabs(h1) > GSL_SQRT_DBL_MAX) || (fabs(p0) > GSL_SQRT_DBL_MAX) || (fabs(p1) > GSL_SQRT_DBL_MAX) || (fabs(r) > GSL_SQRT_DBL_MAX) )){
 	  h0 *= 0.5;
 	  h1 *= 0.5;
 	  eh0 *= 0.5;
@@ -1403,7 +1403,7 @@ gsl_sf_hermite_func_der_e(const int m, const int n, const double x, gsl_sf_resul
 	  c++;
 	}
 
-	while(( ( (fabs(h0) < GSL_SQRT_DBL_MIN) && (h0 != 0) )|| ( (fabs(h1) < GSL_SQRT_DBL_MIN) && (h1 != 0) ) || ( (fabs(p0) < GSL_SQRT_DBL_MIN) && (p0 != 0) ) || ( (fabs(p1) < GSL_SQRT_DBL_MIN) && (p1 != 0) ) || ( (fabs(r) < GSL_SQRT_DBL_MIN) && (r != 0) ) ) && ( (fabs(h0) < 2.0*GSL_SQRT_DBL_MAX) && (fabs(h1) < 2.0*GSL_SQRT_DBL_MAX) || (fabs(p0) < 2.0*GSL_SQRT_DBL_MAX) || (fabs(p1) < 2.0*GSL_SQRT_DBL_MAX) || (fabs(r) < 2.0*GSL_SQRT_DBL_MAX) )){
+	while(( ( (fabs(h0) < GSL_SQRT_DBL_MIN) && (h0 != 0) ) || ( (fabs(h1) < GSL_SQRT_DBL_MIN) && (h1 != 0) ) || ( (fabs(p0) < GSL_SQRT_DBL_MIN) && (p0 != 0) ) || ( (fabs(p1) < GSL_SQRT_DBL_MIN) && (p1 != 0) ) || ( (fabs(r) < GSL_SQRT_DBL_MIN) && (r != 0) ) ) && ( (fabs(h0) < 0.5*GSL_SQRT_DBL_MAX) && (fabs(h1) < 0.5*GSL_SQRT_DBL_MAX) && (fabs(p0) < 0.5*GSL_SQRT_DBL_MAX) && (fabs(p1) < 0.5*GSL_SQRT_DBL_MAX) && (fabs(r) < 0.25*GSL_SQRT_DBL_MAX) )){
 	  p0 *= 2.0;
 	  p1 *= 2.0;
 	  ep0 *= 2.0;

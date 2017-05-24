@@ -1828,6 +1828,27 @@
     <ClCompile Include="..\..\specfunc\hermite.c">
       <Filter>specfunc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\integration\chebyshev.c">
+      <Filter>integration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\integration\chebyshev2.c">
+      <Filter>integration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\integration\exponential.c">
+      <Filter>integration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\integration\gegenbauer.c">
+      <Filter>integration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\integration\jacobi.c">
+      <Filter>integration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\integration\legendre.c">
+      <Filter>integration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\integration\rational.c">
+      <Filter>integration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\integration\qng.h">

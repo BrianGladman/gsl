@@ -212,9 +212,21 @@ test_COD_lssolve_eps(const gsl_matrix * m, const double * actual, const double e
 
   for (i = 0; i < N; i++)
     {
-      gsl_test_rel(gsl_vector_get(res, i), gsl_vector_get(r, i), sqrt(eps),
-                   "%s res (%3lu,%3lu)[%lu]: %22.18g   %22.18g\n",
-                   desc, M, N, i, gsl_vector_get(res, i), gsl_vector_get(r,i));
+      double r1 = gsl_vector_get(res, i);
+      double r2 = gsl_vector_get(r, i);
+
+      if (fabs(r2) < 1.0e2 * GSL_DBL_EPSILON)
+        {
+          gsl_test_abs(r1, r2, eps,
+                       "%s res (%3lu,%3lu)[%lu]: %22.18g   %22.18g\n",
+                       desc, M, N, i, r1, r2);
+        }
+      else
+        {
+          gsl_test_rel(r1, r2, eps,
+                       "%s res (%3lu,%3lu)[%lu]: %22.18g   %22.18g\n",
+                       desc, M, N, i, r1, r2);
+        }
     }
 
   gsl_vector_free(r);
@@ -236,7 +248,7 @@ test_COD_lssolve(void)
 {
   int s = 0;
 
-  test_COD_lssolve_eps(m53, m53_lssolution, 1.0e2 * GSL_DBL_EPSILON, "COD_lssolve m(5,3)");
+  test_COD_lssolve_eps(m53, m53_lssolution, 1.0e4 * GSL_DBL_EPSILON, "COD_lssolve m(5,3)");
 
   test_COD_lssolve_eps(hilb2, hilb2_solution, 1.0e2 * GSL_DBL_EPSILON, "COD_lssolve hilbert(2)");
   test_COD_lssolve_eps(hilb3, hilb3_solution, 1.0e2 * GSL_DBL_EPSILON, "COD_lssolve hilbert(3)");

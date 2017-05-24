@@ -30,15 +30,34 @@
 #include <gsl/gsl_sf_gamma.h>
 
 static int
+hermite_check(const size_t n, const gsl_integration_fixed_params * params)
+{
+  (void) n;
+
+  if (params->b <= 0.0)
+    {
+      GSL_ERROR("b must be positive", GSL_EDOM);
+    }
+  else if (params->alpha <= -1.0)
+    {
+      GSL_ERROR("alpha must be > -1", GSL_EDOM);
+    }
+  else
+    {
+      return GSL_SUCCESS;
+    }
+}
+
+static int
 hermite_init(const size_t n, double * diag, double * subdiag, gsl_integration_fixed_params * params)
 {
   size_t i;
 
   /* construct the diagonal and subdiagonal elements of Jacobi matrix */
-  for (i = 0; i < n; i++)
+  for (i = 1; i <= n; i++)
     {
-      diag[i] = 0.0;
-      subdiag[i] = sqrt (0.5 * (i + 1.0));
+      diag[i - 1] = 0.0;
+      subdiag[i - 1] = sqrt (0.5 * (i + params->alpha * (i % 2)));
     }
 
   params->zemu = gsl_sf_gamma(0.5 * (params->alpha + 1.0));
@@ -52,6 +71,7 @@ hermite_init(const size_t n, double * diag, double * subdiag, gsl_integration_fi
 
 static const gsl_integration_fixed_type hermite_type =
 {
+  hermite_check,
   hermite_init
 };
 

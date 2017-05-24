@@ -158,7 +158,7 @@ test_cholesky_decomp(gsl_rng * r)
 
           create_hilbert_matrix2(m);
 
-          test_cholesky_decomp_eps(0, m, expected_rcond, GSL_DBL_EPSILON, "cholesky_decomp unscaled hilbert");
+          test_cholesky_decomp_eps(0, m, expected_rcond, N * GSL_DBL_EPSILON, "cholesky_decomp unscaled hilbert");
           test_cholesky_decomp_eps(1, m, expected_rcond, N * GSL_DBL_EPSILON, "cholesky_decomp scaled hilbert");
         }
 
@@ -413,7 +413,7 @@ test_mcholesky_decomp(gsl_rng * r)
 
           create_hilbert_matrix2(m);
 
-          test_mcholesky_decomp_eps(1, 0, m, expected_rcond, N * GSL_DBL_EPSILON, "mcholesky_decomp unscaled hilbert");
+          test_mcholesky_decomp_eps(1, 0, m, expected_rcond, 128.0 * N * GSL_DBL_EPSILON, "mcholesky_decomp unscaled hilbert");
         }
 
       gsl_matrix_free(m);
@@ -721,8 +721,8 @@ test_pcholesky_decomp(gsl_rng * r)
 
           create_hilbert_matrix2(m);
 
-          test_pcholesky_decomp_eps(0, m, expected_rcond, N * GSL_DBL_EPSILON, "pcholesky_decomp unscaled hilbert");
-          test_pcholesky_decomp_eps(1, m, expected_rcond, N * GSL_DBL_EPSILON, "pcholesky_decomp scaled hilbert");
+          test_pcholesky_decomp_eps(0, m, expected_rcond, 1024.0 * N * GSL_DBL_EPSILON, "pcholesky_decomp unscaled hilbert");
+          test_pcholesky_decomp_eps(1, m, expected_rcond, 1024.0 * N * GSL_DBL_EPSILON, "pcholesky_decomp scaled hilbert");
         }
 
       gsl_matrix_free(m);

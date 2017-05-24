@@ -718,15 +718,10 @@ FUNCTION (test, file) (size_t stride, size_t N)
 
   size_t i;
 
-  char filename[] = "test.XXXXXX";
-#if !defined( _WIN32 )
-  int fd = mkstemp(filename);
-#else
-  char * fd = _mktemp(filename);
-#  define fdopen fopen
-#endif
+  char filename[] = "test.dat";
+
   {
-    FILE *f = fdopen (fd, "wb");
+    FILE *f = fopen (filename, "wb");
 
     for (i = 0; i < N; i++)
       {
@@ -772,15 +767,10 @@ FUNCTION (test, text) (size_t stride, size_t N)
 
   size_t i;
 
-  char filename[] = "test.XXXXXX";
-#if !defined( _WIN32 )
-   int fd = mkstemp(filename);
-#else
-   char * fd = _mktemp(filename);
-#  define fdopen fopen
-#endif
+  char filename[] = "test.dat";
+
   {
-    FILE *f = fdopen (fd, "w");
+    FILE *f = fopen (filename, "w");
 
     for (i = 0; i < N; i++)
       {

@@ -1,0 +1,18 @@
+=== Solving system without acceleration ===
+NITER         = 53
+NFEV          = 56
+NJEV          = 54
+NAEV          = 0
+initial cost  = 2.250225000000e+04
+final cost    = 6.674986031430e-18
+final x       = (9.999999974165e-01, 9.999999948328e-01)
+final cond(J) = 6.000096055094e+02
+=== Solving system with acceleration ===
+NITER         = 15
+NFEV          = 17
+NJEV          = 16
+NAEV          = 16
+initial cost  = 2.250225000000e+04
+final cost    = 7.518932873279e-19
+final x       = (9.999999991329e-01, 9.999999982657e-01)
+final cond(J) = 6.000097233278e+02

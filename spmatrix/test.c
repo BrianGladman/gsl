@@ -18,6 +18,7 @@
  */
 
 #include <config.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <unistd.h>
@@ -581,17 +582,11 @@ test_io_ascii(const size_t M, const size_t N,
   int status;
   gsl_spmatrix *A = create_random_sparse_int(M, N, density, r);
 
-  char filename[] = "test.XXXXXX";
-#if !defined( _WIN32 )
-  int fd = mkstemp(filename);
-#else
-  char * fd = _mktemp(filename);
-# define fdopen fopen
-#endif
+  char filename[] = "test.dat";
 
   /* test triplet I/O */
   {
-    FILE *f = fdopen(fd, "w");
+    FILE *f = fopen(filename, "w");
 
     gsl_spmatrix_fprintf(f, A, "%g");
 
@@ -666,17 +661,11 @@ test_io_binary(const size_t M, const size_t N,
   gsl_spmatrix *A = create_random_sparse(M, N, density, r);
   gsl_spmatrix *A_ccs, *A_crs;
 
-  char filename[] = "test.XXXXXX";
-#if !defined( _WIN32 )
-  int fd = mkstemp(filename);
-#else
-  char * fd = _mktemp(filename);
-# define fdopen fopen
-#endif
+  char filename[] = "test.dat";
 
   /* test triplet I/O */
   {
-    FILE *f = fdopen(fd, "wb");
+    FILE *f = fopen(filename, "wb");
 
     gsl_spmatrix_fwrite(f, A);
 

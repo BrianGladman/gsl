@@ -127,7 +127,7 @@ test_shaw_system_l(gsl_rng *rng_p, const size_t n, const size_t p,
 {
   const size_t npoints = 1000; /* number of points on L-curve */
   const double tol1 = 1.0e-12;
-  const double tol2 = 1.0e-10;
+  const double tol2 = 1.0e-9;
   const double tol3 = 1.0e-5;
   gsl_vector * reg_param = gsl_vector_alloc(npoints);
   gsl_vector * rho = gsl_vector_alloc(npoints);

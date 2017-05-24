@@ -33,17 +33,13 @@ gsl_integration_fixed_workspace *
 gsl_integration_fixed_alloc(const gsl_integration_fixed_type * type, const size_t n,
                             const double a, const double b, const double alpha, const double beta)
 {
+  int status;
   gsl_integration_fixed_workspace *w;
 
   /* check inputs */
   if (n < 1)
     {
       GSL_ERROR_VAL ("workspace size n must be at least 1", GSL_EDOM, 0);
-    }
-
-  if (b <= 0.0)
-    {
-      GSL_ERROR_VAL ("b must be greater than 0", GSL_EDOM, 0);
     }
 
   w = calloc(1, sizeof(gsl_integration_fixed_workspace));
@@ -80,11 +76,16 @@ gsl_integration_fixed_alloc(const gsl_integration_fixed_type * type, const size_
       GSL_ERROR_VAL ("unable to allocate subdiag", GSL_ENOMEM, 0);
     }
 
-  w->size = n;
+  w->n = n;
   w->type = type;
 
   /* compute quadrature weights and nodes */
-  fixed_compute(a, b, alpha, beta, w);
+  status = fixed_compute(a, b, alpha, beta, w);
+  if (status)
+    {
+      gsl_integration_fixed_free(w);
+      GSL_ERROR_VAL ("error in integration parameters", GSL_EDOM, 0);
+    }
 
   return w;
 }
@@ -107,11 +108,29 @@ gsl_integration_fixed_free(gsl_integration_fixed_workspace * w)
   free(w);
 }
 
+size_t
+gsl_integration_fixed_n(const gsl_integration_fixed_workspace * w)
+{
+  return w->n;
+}
+
+double *
+gsl_integration_fixed_nodes(const gsl_integration_fixed_workspace * w)
+{
+  return w->x;
+}
+
+double *
+gsl_integration_fixed_weights(const gsl_integration_fixed_workspace * w)
+{
+  return w->weights;
+}
+
 int
 gsl_integration_fixed(const gsl_function * func, double * result,
-                      gsl_integration_fixed_workspace * w)
+                      const gsl_integration_fixed_workspace * w)
 {
-  const size_t n = w->size;
+  const size_t n = w->n;
   size_t i;
   double sum = 0.0;
 
@@ -126,12 +145,17 @@ gsl_integration_fixed(const gsl_function * func, double * result,
   return GSL_SUCCESS;
 }
 
+/*
+fixed_compute()
+  Compute quadrature weights and nodes
+*/
+
 static int
 fixed_compute(const double a, const double b, const double alpha, const double beta,
               gsl_integration_fixed_workspace * w)
 {
   int s;
-  const size_t n = w->size;
+  const size_t n = w->n;
   gsl_integration_fixed_params params;
   size_t i;
 
@@ -140,6 +164,12 @@ fixed_compute(const double a, const double b, const double alpha, const double b
   params.alpha = alpha;
   params.beta = beta;
 
+  /* check input parameters */
+  s = (w->type->check)(n, &params);
+  if (s)
+    return s;
+
+  /* initialize Jacobi matrix */
   s = (w->type->init)(n, w->diag, w->subdiag, &params);
   if (s)
     return s;

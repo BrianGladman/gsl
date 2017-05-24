@@ -1,12 +1,15 @@
 * What is new in gsl-2.4:
 
+** migrated documentation to Sphinx software, which has built-in
+   support for latex equations and figures in HTML output
+
 ** add const to declaration of appropriate gsl_rstat routines
 
 ** bug fix for #45730: change gsl_sf_sin/cos to libm sin/cos
 
 ** fix Cholesky documentation regarding upper triangle on output
 
-** added routines to compute integrals with Hermite quadrature
+** added routines to compute integrals with fixed-point quadrature
    (based on IQPACK)
 
 ** added routines for Hermite polynomials, gsl_sf_hermite_*

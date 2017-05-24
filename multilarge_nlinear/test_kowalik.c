@@ -2,7 +2,7 @@
 #define kowalik_P         4
 
 static double kowalik_x0[kowalik_P] = { 0.25, 0.39, 0.415, 0.39 };
-static double kowalik_epsrel = 1.0e-7;
+static double kowalik_epsrel = 1.0e-6;
 
 static double kowalik_J[kowalik_N * kowalik_P];
 

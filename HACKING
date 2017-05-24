@@ -231,6 +231,27 @@ na.digest@na-net.ornl.gov or freshmeat.net
 
 ----------- Notes on updating documentation
 
+    # sync new html tree in gsl_www CVS area:
+    $ cd doc
+    $ rsync -av _build/ /path/to/www/gsl/doc/
+
+    # Remove any deleted/renamed files
+    $ cd /path/to/www/gsl
+    $ cvs remove
+
+    # Add any new files; first add directories not called CVS; then
+    # add all the files in the directories
+    $ cd /path/to/www/gsl/doc/html
+    $ find . -type d \! -name CVS -exec cvs add '{}' \;
+    $ find . \( -type d -name CVS -prune \) -o \( -type f -exec cvs add '{}' \; \)
+
+    # Edit the checked out gsl.html and update version numbers
+
+    # Commit new html tree
+    $ cvs commit
+
+### Old instructions
+
 * edit doc/gsl-ref.texi and make sure copyright years are current
 
 * At minimum 'touch doc/gsl-ref.texi' so that the date on the first page

@@ -1,0 +1,18 @@
+matrix condition number = 1.025113e+04
+=== Unregularized fit ===
+best fit: y = -43.6588 u + 45.6636 v
+residual norm = 31.6248
+solution norm = 63.1764
+chisq/dof = 1.00213
+=== Regularized fit (L-curve) ===
+optimal lambda: 4.51103
+best fit: y = 1.00113 u + 1.0032 v
+residual norm = 31.6547
+solution norm = 1.41728
+chisq/dof = 1.04499
+=== Regularized fit (GCV) ===
+optimal lambda: 0.0232029
+best fit: y = -19.8367 u + 21.8417 v
+residual norm = 31.6332
+solution norm = 29.5051
+chisq/dof = 1.00314

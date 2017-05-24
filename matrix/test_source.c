@@ -622,16 +622,10 @@ FUNCTION (test, text) (const size_t M, const size_t N)
   size_t i, j;
   int k = 0;
 
-  char filename[] = "test.XXXXXX";
-#if !defined( _WIN32 )
-  int fd = mkstemp(filename);
-#else
-  char * fd = _mktemp(filename);
-# define fdopen fopen
-#endif
+  char filename[] = "test.dat";
 
   {
-    FILE *f = fdopen(fd, "w");
+    FILE *f = fopen(filename, "w");
 
     for (i = 0; i < M; i++)
       {
@@ -683,16 +677,10 @@ FUNCTION (test, binary) (const size_t M, const size_t N)
   size_t i, j;
   size_t k = 0;
 
-  char filename[] = "test.XXXXXX";
-#if !defined( _WIN32 )
-  int fd = mkstemp(filename);
-#else
-  char * fd = _mktemp(filename);
-# define fdopen fopen
-#endif
+  char filename[] = "test.dat";
 
   {
-    FILE *f = fdopen(fd, "wb");
+    FILE *f = fopen(filename, "wb");
     k = 0;
     for (i = 0; i < M; i++)
       {
@@ -744,16 +732,10 @@ FUNCTION (test, binary_noncontiguous) (const size_t M, const size_t N)
   size_t i, j;
   size_t k = 0;
 
-  char filename[] = "test.XXXXXX";
-#if !defined( _WIN32 )
-  int fd = mkstemp(filename);
-#else
-  char * fd = _mktemp(filename);
-# define fdopen fopen
-#endif
+  char filename[] = "test.dat";
 
   {
-    FILE *f = fdopen(fd, "wb");
+    FILE *f = fopen(filename, "wb");
     k = 0;
     for (i = 0; i < M; i++)
       {
