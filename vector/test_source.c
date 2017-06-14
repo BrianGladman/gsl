@@ -718,39 +718,32 @@ FUNCTION (test, file) (size_t stride, size_t N)
 
   size_t i;
 
-  char filename[] = "test.dat";
+  FILE *f = tmpfile();
 
-  {
-    FILE *f = fopen (filename, "wb");
+  /* write file */
 
-    for (i = 0; i < N; i++)
-      {
-        FUNCTION (gsl_vector, set) (v, i, (ATOMIC) (N - i));
-      };
+  for (i = 0; i < N; i++)
+    {
+      FUNCTION (gsl_vector, set) (v, i, (ATOMIC) (N - i));
+    };
 
-    FUNCTION (gsl_vector, fwrite) (f, v);
+  FUNCTION (gsl_vector, fwrite) (f, v);
 
-    fclose (f);
-  }
+  /* read file */
 
-  {
-    FILE *f = fopen (filename, "rb");
+  rewind(f);
+  FUNCTION (gsl_vector, fread) (f, w);
 
-    FUNCTION (gsl_vector, fread) (f, w);
+  status = 0;
+  for (i = 0; i < N; i++)
+    {
+      if (w->data[i*stride] != (ATOMIC) (N - i))
+        status = 1;
+    };
 
-    status = 0;
-    for (i = 0; i < N; i++)
-      {
-        if (w->data[i*stride] != (ATOMIC) (N - i))
-          status = 1;
-      };
+  TEST (status, "_write and read");
 
-    TEST (status, "_write and read");
-
-    fclose (f);
-  }
-
-  unlink(filename);
+  fclose(f);
 
   FUNCTION (gsl_vector, free) (v);      /* free whatever is in v */
   FUNCTION (gsl_vector, free) (w);      /* free whatever is in w */
@@ -767,39 +760,32 @@ FUNCTION (test, text) (size_t stride, size_t N)
 
   size_t i;
 
-  char filename[] = "test.dat";
+  FILE *f = tmpfile();
 
-  {
-    FILE *f = fopen (filename, "w");
+  /* write file */
 
-    for (i = 0; i < N; i++)
-      {
-        FUNCTION (gsl_vector, set) (v, i, (ATOMIC) i);
-      };
+  for (i = 0; i < N; i++)
+    {
+      FUNCTION (gsl_vector, set) (v, i, (ATOMIC) i);
+    };
 
-    FUNCTION (gsl_vector, fprintf) (f, v, OUT_FORMAT);
+  FUNCTION (gsl_vector, fprintf) (f, v, OUT_FORMAT);
 
-    fclose (f);
-  }
+  /* read file */
 
-  {
-    FILE *f = fopen (filename, "r");
+  rewind(f);
+  FUNCTION (gsl_vector, fscanf) (f, w);
 
-    FUNCTION (gsl_vector, fscanf) (f, w);
+  status = 0;
+  for (i = 0; i < N; i++)
+    {
+      if (w->data[i*stride] != (ATOMIC) i)
+        status = 1;
+    };
 
-    status = 0;
-    for (i = 0; i < N; i++)
-      {
-        if (w->data[i*stride] != (ATOMIC) i)
-          status = 1;
-      };
+  gsl_test (status, NAME (gsl_vector) "_fprintf and fscanf");
 
-    gsl_test (status, NAME (gsl_vector) "_fprintf and fscanf");
-
-    fclose (f);
-  }
-
-  unlink(filename);
+  fclose (f);
 
   FUNCTION (gsl_vector, free) (v);
   FUNCTION (gsl_vector, free) (w);

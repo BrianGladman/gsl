@@ -9,8 +9,8 @@
 
 ** fix Cholesky documentation regarding upper triangle on output
 
-** added routines to compute integrals with fixed-point quadrature
-   (based on IQPACK)
+** added routines to compute integrals with fixed-point quadrature,
+   based on IQPACK (Konrad Griessinger)
 
 ** added routines for Hermite polynomials, gsl_sf_hermite_*
    (Konrad Griessinger)

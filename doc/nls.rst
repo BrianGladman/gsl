@@ -814,7 +814,6 @@ Initializing the Solver
 .. function:: int gsl_multifit_nlinear_init (const gsl_vector * x, gsl_multifit_nlinear_fdf * fdf, gsl_multifit_nlinear_workspace * w)
               int gsl_multifit_nlinear_winit (const gsl_vector * x, const gsl_vector * wts, gsl_multifit_nlinear_fdf * fdf, gsl_multifit_nlinear_workspace * w)
               int gsl_multilarge_nlinear_init (const gsl_vector * x, gsl_multilarge_nlinear_fdf * fdf, gsl_multilarge_nlinear_workspace * w)
-              int gsl_multilarge_nlinear_winit (const gsl_vector * x, const gsl_vector * wts, gsl_multilarge_nlinear_fdf * fdf, gsl_multilarge_nlinear_workspace * w)
 
    These functions initialize, or reinitialize, an existing workspace :data:`w`
    to use the system :data:`fdf` and the initial guess

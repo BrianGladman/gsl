@@ -180,6 +180,11 @@ if they are called with the wrong format string, and these don't show up otherwi
 
 * Update the BUGS file using scripts/BUGS.pl
 
+* Update doc version and gsl-ref.info:
+> cd doc
+> *edit conf.py and put correct version number; also make sure copyright years are correct*
+> make info
+
 * Regenerate everything. make dist, unpack somewhere and then
 configure, make, make check.  Try running make check under ulimit -v
 65536 to be sure that excessive memory is not required to do the
@@ -231,8 +236,14 @@ na.digest@na-net.ornl.gov or freshmeat.net
 
 ----------- Notes on updating documentation
 
+    # First you must have the sphinx software installed
+    $ pip install -U Sphinx
+    $ pip install -U sphinx_rtd_theme
+
     # sync new html tree in gsl_www CVS area:
     $ cd doc
+    *edit conf.py and make sure version number and copyright years are correct*
+    $ make clean ; make html ; make latexpdf
     $ rsync -av _build/ /path/to/www/gsl/doc/
 
     # Remove any deleted/renamed files

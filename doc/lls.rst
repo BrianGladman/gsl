@@ -1239,7 +1239,7 @@ the partition scheme described above, these are given by
       X^T y = \sum_i X_i^T y_i
 
 Since the matrix :math:`X^T X` is symmetric, only half of it
-needs to be calculated. Once all of the blocks (:math:`X_i,y_i`)
+needs to be calculated. Once all of the blocks :math:`(X_i,y_i)`
 have been accumulated into the final :math:`X^T X` and :math:`X^T y`,
 the system can be solved with a Cholesky factorization of the
 :math:`X^T X` matrix. The :math:`X^T X` matrix is first transformed via

@@ -844,7 +844,7 @@ as well as additional variables for intermediate calculations:
 
    This function returns a pointer to an array of size :data:`n` containing the quadrature weights :math:`w_i`.
 
-.. function:: void gsl_integration_fixed(const gsl_function * func, double * result, const gsl_integration_fixed_workspace * w)
+.. function:: int gsl_integration_fixed(const gsl_function * func, double * result, const gsl_integration_fixed_workspace * w)
 
    This function integrates the function :math:`f(x)` provided in :data:`func` using previously
    computed fixed quadrature rules. The integral is approximated as

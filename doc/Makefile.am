@@ -94,8 +94,12 @@ info:
 	@$(SPHINX_BUILD) -M $@ "$(SPHINX_SOURCEDIR)" "$(SPHINX_BUILDDIR)" $(SPHINX_OPTS) $(O)
 	cp "$(SPHINX_BUILDDIR)/texinfo/gsl-ref.info" .
 
-install-data-local: gsl-ref.info
-	${INSTALL} gsl-ref.info ${infodir}
+install-data-local: $(srcdir)/gsl-ref.info
+	$(MKDIR_P) "$(DESTDIR)$(infodir)"
+	$(INSTALL_DATA) $(srcdir)/gsl-ref.info $(DESTDIR)$(infodir)
+
+uninstall-local:
+	rm -f "$(DESTDIR)$(infodir)/gsl-ref.info"
 
 clean-local:
 	rm -rf "$(SPHINX_BUILDDIR)"
