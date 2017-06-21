@@ -56,7 +56,7 @@ test_hermite_id1(const int n, const double x, const double y)
 
   lhs = gsl_sf_hermite_phys_series(n, x, a);
   rhs = gsl_sf_hermite_phys(n, x + y);
-  gsl_test_rel(lhs, rhs, TEST_TOL2, "identity1 phys n=%d x=%g y=%g", n, x, y);
+  gsl_test_rel(lhs, rhs, TEST_TOL4, "identity1 phys n=%d x=%g y=%g", n, x, y);
 
   lhs = gsl_sf_hermite_prob_series(n, x, b);
   rhs = gsl_sf_hermite_prob(n, x + y);

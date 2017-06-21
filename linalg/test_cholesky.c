@@ -868,7 +868,7 @@ test_pcholesky_invert(gsl_rng * r)
       if (N <= 4)
         {
           create_hilbert_matrix2(m);
-          test_pcholesky_invert_eps(m, 256.0 * N * GSL_DBL_EPSILON, "pcholesky_invert unscaled hilbert");
+          test_pcholesky_invert_eps(m, 1024.0 * N * GSL_DBL_EPSILON, "pcholesky_invert unscaled hilbert");
         }
 
       gsl_matrix_free(m);

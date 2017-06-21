@@ -217,7 +217,7 @@ test_COD_lssolve_eps(const gsl_matrix * m, const double * actual, const double e
 
       if (fabs(r2) < 1.0e3 * GSL_DBL_EPSILON)
         {
-          gsl_test_abs(r1, r2, eps,
+          gsl_test_abs(r1, r2, 10.0 * eps,
                        "%s res (%3lu,%3lu)[%lu]: %22.18g   %22.18g\n",
                        desc, M, N, i, r1, r2);
         }

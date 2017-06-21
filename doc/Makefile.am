@@ -74,9 +74,98 @@ figures =                              \
   images/siman-test.png                \
   images/sparse_poisson.png
 
-noinst_DATA = $(figures)
+rst_files =                            \
+  autoconf.rst                         \
+  blas.rst                             \
+  bspline.rst                          \
+  cblas.rst                            \
+  cheb.rst                             \
+  combination.rst                      \
+  complex.rst                          \
+  const.rst                            \
+  contrib.rst                          \
+  debug.rst                            \
+  dht.rst                              \
+  diff.rst                             \
+  dwt.rst                              \
+  eigen.rst                            \
+  err.rst                              \
+  fdl.rst                              \
+  fft.rst                              \
+  gpl.rst                              \
+  histogram.rst                        \
+  ieee754.rst                          \
+  include.rst                          \
+  index.rst                            \
+  integration.rst                      \
+  interp.rst                           \
+  intro.rst                            \
+  linalg.rst                           \
+  lls.rst                              \
+  math.rst                             \
+  min.rst                              \
+  montecarlo.rst                       \
+  multimin.rst                         \
+  multiroots.rst                       \
+  multiset.rst                         \
+  nls.rst                              \
+  ntuple.rst                           \
+  ode-initval.rst                      \
+  permutation.rst                      \
+  poly.rst                             \
+  qrng.rst                             \
+  randist.rst                          \
+  rng.rst                              \
+  roots.rst                            \
+  rstat.rst                            \
+  siman.rst                            \
+  sort.rst                             \
+  spblas.rst                           \
+  specfunc-airy.rst                    \
+  specfunc-bessel.rst                  \
+  specfunc-clausen.rst                 \
+  specfunc-coulomb.rst                 \
+  specfunc-coupling.rst                \
+  specfunc-dawson.rst                  \
+  specfunc-debye.rst                   \
+  specfunc-dilog.rst                   \
+  specfunc-elementary.rst              \
+  specfunc-ellint.rst                  \
+  specfunc-elljac.rst                  \
+  specfunc-erf.rst                     \
+  specfunc-expint.rst                  \
+  specfunc-exp.rst                     \
+  specfunc-fermi-dirac.rst             \
+  specfunc-gamma.rst                   \
+  specfunc-gegenbauer.rst              \
+  specfunc-hermite.rst                 \
+  specfunc-hyperg.rst                  \
+  specfunc-laguerre.rst                \
+  specfunc-lambert.rst                 \
+  specfunc-legendre.rst                \
+  specfunc-log.rst                     \
+  specfunc-mathieu.rst                 \
+  specfunc-pow-int.rst                 \
+  specfunc-psi.rst                     \
+  specfunc.rst                         \
+  specfunc-synchrotron.rst             \
+  specfunc-transport.rst               \
+  specfunc-trig.rst                    \
+  specfunc-zeta.rst                    \
+  splinalg.rst                         \
+  spmatrix.rst                         \
+  statistics.rst                       \
+  sum.rst                              \
+  usage.rst                            \
+  vectors.rst
 
-EXTRA_DIST = $(man_MANS) $(noinst_DATA) gsl-design.texi gsl-ref.info
+static_files =                         \
+  _static/fdl.txt                      \
+	_static/gpl.txt
+
+noinst_DATA = $(figures) $(rst_files) $(static_files)
+
+EXTRA_DIST = $(man_MANS) $(noinst_DATA) gsl-design.texi gsl-ref.info conf.py
 
 SPHINX_OPTS        =
 SPHINX_BUILD       = sphinx-build
