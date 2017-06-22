@@ -1,4 +1,8 @@
-* What is new in gsl-2.4:
+* What is new in gsl-2.5:
+
+** fix for rstat/test.c on PPC64 (reported by Adam Majer)
+
+* What was new in gsl-2.4:
 
 ** migrated documentation to Sphinx software, which has built-in
    support for latex equations and figures in HTML output

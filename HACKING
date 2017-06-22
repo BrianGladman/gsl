@@ -139,6 +139,9 @@ for HAVE_INLINE use in installed headers.
 > make clean && ./configure CFLAGS="-funsigned-char" && make && make check
 > make clean && ./configure CFLAGS="-std=c89 -ansi -pedantic" && make && make check
 
+* Check that the library passes parallel build and check
+> make clean && ./configure && make -j8 && make check -j8
+
 * Also do a compilation in c89 and c99 mode explicitly
 > make clean && ./configure CC=c89 && make && make check
 > make clean && ./configure CC=c99 && make && make check
