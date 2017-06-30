@@ -37,12 +37,14 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
     case GSL_IEEE_DOUBLE_PRECISION:
     default:							mode |= _PC_53;
 	}
+
 	/* precison control is disabled on Windows x64 with MSVC 
 	   but is allowed by the Intel compiler 
 	*/
 #if !defined( _WIN64 ) || defined( __ICL )
 	mask |= _MCW_PC;
 #endif
+
 	switch(rounding)
     {
     case GSL_IEEE_ROUND_DOWN:			mode |= _RC_DOWN; break;
@@ -66,7 +68,8 @@ gsl_ieee_set_mode (int precision, int rounding, int exception_mask)
 		mode &= ~_EM_INEXACT;
 	else
 		mode |= _EM_INEXACT;
-
-	_controlfp_s( &old, mode, mask);
+	
+	_clearfp();
+	_controlfp_s(&old, mode, mask);
 	return GSL_SUCCESS;
 }

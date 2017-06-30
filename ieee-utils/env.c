@@ -25,7 +25,7 @@
 void
 gsl_ieee_env_setup (void)
 {
-  const char * p = getenv("GSL_IEEE_MODE") ;
+  const char * p = getenv("GSL_IEEE_MODE");
 
   int precision = 0, rounding = 0, exception_mask = 0 ;
 
@@ -34,7 +34,8 @@ gsl_ieee_env_setup (void)
 #if defined( _MSC_VER )
 
     extern const char *fp_env_string;
-    p = fp_env_string;
+	if(p == 0 || *p == '\0')
+        p = fp_env_string;
 
 #else
 
