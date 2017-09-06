@@ -90,7 +90,7 @@ projects has to be the same as that used to build the GSL libraries.
 Each of the test projects runs and puts its output in the appropriate
 subdirectory ('lib' for static libraries, 'dll' for DLL libraries):
 
-  gsl-1.16
+  gsl
     <lib|dll>
       win32
         release
