@@ -1849,6 +1849,9 @@
     <ClCompile Include="..\..\integration\rational.c">
       <Filter>integration</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\specfunc\sincos_pi.c">
+      <Filter>specfunc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\integration\qng.h">

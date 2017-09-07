@@ -740,6 +740,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)specfunc\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)specfunc\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="..\..\specfunc\sincos_pi.c" />
     <ClCompile Include="..\..\splinalg\gmres.c">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)splinalg\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)splinalg\</ObjectFileName>

@@ -536,7 +536,7 @@ test_ops(const size_t M, const size_t N,
     gsl_spmatrix *A_crs = gsl_spmatrix_crs(A);
     gsl_spmatrix *B_crs = gsl_spmatrix_crs(B);
     gsl_spmatrix *C_crs = gsl_spmatrix_alloc_nzmax(M, N, 1, GSL_SPMATRIX_CRS);
-    
+
     gsl_spmatrix_add(C_ccs, A_ccs, B_ccs);
     gsl_spmatrix_add(C_crs, A_crs, B_crs);
 
@@ -563,6 +563,32 @@ test_ops(const size_t M, const size_t N,
 
     gsl_test(status == 1, "test_ops: add M=%zu N=%zu CCS", M, N);
     gsl_test(status == 2, "test_ops: add M=%zu N=%zu CRS", M, N);
+
+    /* test again with C = 2*A */
+    gsl_spmatrix_add(C_ccs, A_ccs, A_ccs);
+    gsl_spmatrix_add(C_crs, A_crs, A_crs);
+
+    status = 0;
+    for (i = 0; i < M; ++i)
+      {
+        for (j = 0; j < N; ++j)
+          {
+            double aij, bij, cij;
+
+            aij = gsl_spmatrix_get(A_ccs, i, j);
+            cij = gsl_spmatrix_get(C_ccs, i, j);
+            if (aij + aij != cij)
+              status = 1;
+
+            aij = gsl_spmatrix_get(A_crs, i, j);
+            cij = gsl_spmatrix_get(C_crs, i, j);
+            if (aij + aij != cij)
+              status = 2;
+          }
+      }
+
+    gsl_test(status == 1, "test_ops: add duplicate M=%zu N=%zu CCS", M, N);
+    gsl_test(status == 2, "test_ops: add duplicate M=%zu N=%zu CRS", M, N);
 
     gsl_spmatrix_free(A);
     gsl_spmatrix_free(B);

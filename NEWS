@@ -1,5 +1,16 @@
 * What is new in gsl-2.5:
 
+** bug fix in gsl_spmatrix_add for duplicate input arguments
+   (reported by Alfredo Correa)
+
+** add support for negative arguments nu in gsl_sf_bessel_Jnu and
+   gsl_sf_bessel_Ynu (Konrad Griessinger)
+
+** better texinfo documentation for gsl_sf_hyperg functions
+
+** fix vector and matrix fread/fwrite testing on windows systems
+   when tmpfile() fails
+
 ** fix for rstat/test.c on PPC64 (reported by Adam Majer)
 
 * What was new in gsl-2.4:

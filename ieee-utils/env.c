@@ -25,7 +25,7 @@
 void
 gsl_ieee_env_setup (void)
 {
-  const char * p = getenv("GSL_IEEE_MODE");
+  const char * p = getenv("GSL_IEEE_MODE") ;
 
   int precision = 0, rounding = 0, exception_mask = 0 ;
 
