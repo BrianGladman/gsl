@@ -163,7 +163,7 @@ test_sincos_pi(void)
   TEST_SF(s, gsl_sf_cos_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
 
   fx = -0.375;
-  exact = -0.382683432365089771728459984030;
+  exact = 0.382683432365089771728459984030;
   
   TEST_SF(s, gsl_sf_cos_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
   
