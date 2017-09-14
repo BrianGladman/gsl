@@ -142,7 +142,7 @@ int
 gsl_sf_sin_pi_e(const double x, gsl_sf_result *result)
 {
   double intx = 0.0, fracx = 0.0;
-  long q;
+  long long q;
   int sign, status;
 
   result->val = 0.0;
@@ -182,7 +182,7 @@ int
 gsl_sf_cos_pi_e(const double x, gsl_sf_result *result)
 {
   double intx = 0.0, fracx = 0.0;
-  long q;
+  long long q;
   int sign, status;
 
   result->val = 0.0;
