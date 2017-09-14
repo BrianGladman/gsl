@@ -1815,7 +1815,6 @@
     <ClCompile Include="..\..\multifit\gcv.c">
       <Filter>multifit</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\rng\inline.c" />
     <ClCompile Include="..\..\integration\fixed.c">
       <Filter>integration</Filter>
     </ClCompile>
@@ -1851,6 +1850,9 @@
     </ClCompile>
     <ClCompile Include="..\..\specfunc\sincos_pi.c">
       <Filter>specfunc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\rng\inline.c">
+      <Filter>rng</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
