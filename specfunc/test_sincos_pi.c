@@ -30,15 +30,54 @@
 #include <gsl/gsl_sf.h>
 #include "test_sf.h"
 
+/* Any double precision number bigger than this is automatically an even integer. */
+#define BIGDBL (2.0 / GSL_DBL_EPSILON)
+
 int
 test_sincos_pi(void)
 {
   gsl_sf_result r;
   int s = 0;
   int k = 0, kmax = 12;
-  double ix = 0.0, fx = 0.0, exact = 0.0;
+  double x = 0.0, ix = 0.0, fx = 0.0, exact = 0.0;
 
   /* sin_pi tests */
+
+  fx = 0.5;
+  exact = 1.0;
+
+  TEST_SF(s, gsl_sf_sin_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+  fx = -0.5;
+  exact = -1.0;
+
+  TEST_SF(s, gsl_sf_sin_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+
+  fx = 1.5;
+  exact = -1.0;
+
+  TEST_SF(s, gsl_sf_sin_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+  fx = -1.5;
+  exact = 1.0;
+
+  TEST_SF(s, gsl_sf_sin_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+
+  fx = 2.5;
+  exact = 1.0;
+
+  TEST_SF(s, gsl_sf_sin_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+  fx = -2.5;
+  exact = -1.0;
+
+  TEST_SF(s, gsl_sf_sin_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+
+  fx = 3.5;
+  exact = -1.0;
+
+  TEST_SF(s, gsl_sf_sin_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+  fx = -3.5;
+  exact = 1.0;
+
+  TEST_SF(s, gsl_sf_sin_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
 
   fx = 0.375;
   exact = 0.923879532511286756128183189397;
@@ -49,7 +88,7 @@ test_sincos_pi(void)
   exact = -0.923879532511286756128183189397;
   
   TEST_SF(s, gsl_sf_sin_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
-    
+  
   fx = 0.0;
   exact = 0.0;
 
@@ -118,7 +157,7 @@ test_sincos_pi(void)
     TEST_SF(s, gsl_sf_sin_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
     ix = pow(10.0,k+1);
   }
-  
+
   fx = 0.75;
   exact = 0.707106781186547524400844362105;
 
@@ -153,9 +192,78 @@ test_sincos_pi(void)
     ix = pow(10.0,k+1);
   }
 
+  /* sin_pi tests for very large arguments */
+
+  fx = 0.0625;
+  exact = 0.195090322016128267848284868477;
+  ix = LONG_MAX + 1.0;
+  ix += fabs(fmod(ix,2.0)); /* make sure of even number */
+  
+  for (k=0; k<kmax; k++) {
+    x = ix + fx;
+    x -= ix; /* careful with compiler optimization */
+    if ( ( x != fx ) || ( fabs(ix+fx) >= BIGDBL ) ) break;
+    printf("ix+fx= %.18e\n", ix+fx);
+    TEST_SF(s, gsl_sf_sin_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+    ix += 101.0;
+    exact = -exact;
+  }
+
+  fx = -0.0625;
+  exact = -0.195090322016128267848284868477;
+  ix = LONG_MIN - 1.0;
+  ix -= fabs(fmod(ix,2.0)); /* make sure of even number */
+  
+  for (k=0; k<kmax; k++) {
+    x = ix + fx;
+    x -= ix; /* careful with compiler optimization */
+    if ( ( x != fx ) || ( fabs(ix+fx) >= BIGDBL ) ) break;
+    printf("ix+fx= %.18e\n", ix+fx);
+    TEST_SF(s, gsl_sf_sin_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+    ix -= 101.0;
+    exact = -exact;
+  }
 
   
+  
   /* cos_pi tests */
+
+  ix = 0.0;
+  fx = 0.0;
+  exact = 1.0;
+
+  TEST_SF(s, gsl_sf_cos_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+
+  fx = 1.0;
+  exact = -1.0;
+
+  TEST_SF(s, gsl_sf_cos_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+
+  fx = -1.0;
+  exact = -1.0;
+
+  TEST_SF(s, gsl_sf_cos_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+
+  fx = 2.0;
+  exact = 1.0;
+
+  TEST_SF(s, gsl_sf_cos_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+
+  fx = -2.0;
+  exact = 1.0;
+
+  TEST_SF(s, gsl_sf_cos_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+
+  fx = 3.0;
+  exact = -1.0;
+
+  TEST_SF(s, gsl_sf_cos_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+
+  fx = -3.0;
+  exact = -1.0;
+
+  TEST_SF(s, gsl_sf_cos_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+
 
   fx = 0.375;
   exact = 0.382683432365089771728459984030;
@@ -251,7 +359,37 @@ test_sincos_pi(void)
     TEST_SF(s, gsl_sf_cos_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
     ix = pow(10.0,k+1);
   }
+  
+  /* cos_pi tests for very large arguments */
 
+  fx = 0.0625;
+  exact = 0.980785280403230449126182236134;
+  ix = LONG_MAX + 1.0;
+  ix += fabs(fmod(ix,2.0)); /* make sure of even number */
+  
+  for (k=0; k<kmax; k++) {
+    x = ix + fx;
+    x -= ix; /* careful with compiler optimization */
+    if ( ( x != fx ) || ( fabs(ix+fx) >= BIGDBL ) ) break;
+    TEST_SF(s, gsl_sf_cos_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+    ix += 101.0;
+    exact = -exact;
+  }
+
+  fx = -0.0625;
+  exact = 0.980785280403230449126182236134;
+  ix = LONG_MIN - 1.0;
+  ix -= fabs(fmod(ix,2.0)); /* make sure of even number */
+  
+  for (k=0; k<kmax; k++) {
+    x = ix + fx;
+    x -= ix; /* careful with compiler optimization */
+    if ( ( x != fx ) || ( fabs(ix+fx) >= BIGDBL ) ) break;
+    TEST_SF(s, gsl_sf_cos_pi_e, (ix+fx, &r), exact, TEST_TOL0, GSL_SUCCESS);
+    ix -= 101.0;
+    exact = -exact;
+  }
+  
   return s;
 }
 
