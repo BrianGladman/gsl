@@ -181,6 +181,7 @@
     <ClCompile Include="..\..\..\specfunc\test_legendre.c" />
     <ClCompile Include="..\..\..\specfunc\test_mathieu.c" />
     <ClCompile Include="..\..\..\specfunc\test_sf.c" />
+    <ClCompile Include="..\..\..\specfunc\test_sincos_pi.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

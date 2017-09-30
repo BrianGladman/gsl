@@ -2543,5 +2543,9 @@
     <ClInclude Include="..\..\gsl\gsl_sf_hermite.h">
       <Filter>gsl</Filter>
     </ClInclude>
+    <ClInclude Include="..\config.h" />
+    <ClInclude Include="..\..\gsl\gsl_sf_sincos_pi.h">
+      <Filter>gsl</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
