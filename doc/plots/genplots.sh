@@ -5,6 +5,7 @@
 ./plot_dwt.gp
 ./plot_fft.gp
 ./plot_histogram.gp
+./plot_histogram2d.gp
 ./plot_interp_compare.gp
 ./plot_lls.gp
 ./plot_min.gp
