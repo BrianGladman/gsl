@@ -1,3 +1,11 @@
+2017-10-22  Tuomo Keskitalo  <tuomo.keskitalo@iki.fi>
+
+	* msadams.c: Corrected bug #52230 in msadams_apply, where solver
+	crashed to order change -2 error. This could happen in a very rare
+	case when two consecutive failed steps suggest decreasing
+	order. Fix is to reset solver if that happens. Thanks for Michael
+	Kaufman for reporting this bug and testing the fix!
+
 2013-06-08  Tuomo Keskitalo  <tuomo.keskitalo@iki.fi>
 
 	* driver.c: Removed redundant if clause. Thanks to
