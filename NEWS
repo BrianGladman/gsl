@@ -1,5 +1,11 @@
 * What is new in gsl-2.5:
 
+** bug fixes in ode-initval2 for very rare solver crashing cases:
+   #52230 in msadams (reported by Michael Kaufman) and
+   #52336 in msbdf (reported by Andrew Benson). As a fix,
+   the maximum scaling of controlled step length was decreased
+   from 5.0 to 4.9.
+
 ** add histogram2d figure to manual (was missing in 2.4)
 
 ** bug fix in gsl_spmatrix_add for duplicate input arguments
