@@ -1,21 +1,23 @@
 #!/usr/bin/env gnuplot
 
-set term pngcairo enh mono
+set term pngcairo enh color
 
-unset key
 set pointsize 1
 
 ## exponential fitting example
 
 # best fit curve
-A = 5.17379
-lambda = 0.11104
-b = 1.05283
+A = 4.80085
+lambda = 0.09488
+b = 0.99249
 f(x) = A * exp(-lambda*x) + b
 
+load 'grid.cfg'
+
+set xlabel "time"
 set out "../images/fit-exp.png"
-plot f(x), \
-     '../examples/nlfit.txt' us 2:3:4 ls 1 w errorbars
+plot '../examples/nlfit.txt' us 2:3:4 ls 1 w errorbars ti "Data", \
+     f(x) ls 3 lw 4 ti "Model"
 
 ## geodesic acceleration example 1
 

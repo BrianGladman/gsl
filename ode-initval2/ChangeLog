@@ -1,3 +1,9 @@
+2018-03-18  Tuomo Keskitalo  <tuomo.keskitalo@iki.fi>
+
+	* rk2imp.c and evolve.c: Added debug printouts, run indent -gnu -nut.
+	Thanks for Dominic Steinitz for the additions!
+	* test.c: Added identifiers to debug printouts.
+
 2017-11-04  Tuomo Keskitalo  <tuomo.keskitalo@iki.fi>
 
 	* cscal.c: Corrected bug #52336 in cscal.c: Decreased maximum step

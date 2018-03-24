@@ -903,9 +903,17 @@ Fixed-point quadrature example
 In this example, we use a fixed-point quadrature rule to integrate the
 integral
 
-.. math:: \int_{-\infty}^{\infty} e^{-x^2} \left( x^m + 1 \right) dx
+.. math::
+   
+   \int_{-\infty}^{\infty} e^{-x^2} \left( x^m + 1 \right) dx =
+     \left\{
+       \begin{array}{cc}
+         \sqrt{\pi} + \Gamma{\left( \frac{m+1}{2} \right)}, & m \textrm{ even} \\
+         \sqrt{\pi}, & m \textrm{ odd}
+       \end{array}
+     \right.
 
-Consulting our :ref:`table <tab_fixed-quadratures>` of fixed point quadratures,
+for integer :math:`m`. Consulting our :ref:`table <tab_fixed-quadratures>` of fixed point quadratures,
 we see that this integral can be evaluated with a Hermite quadrature rule,
 setting :math:`\alpha = 0, a = 0, b = 1`. Since we are integrating a polynomial
 of degree :math:`m`, we need to choose the number of nodes :math:`n \ge (m+1)/2`
