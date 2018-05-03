@@ -160,6 +160,12 @@
     <Filter Include="multilarge_nlinear">
       <UniqueIdentifier>{0b8f7ef7-e7da-4b11-9e2b-ebe059a3593a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="filter">
+      <UniqueIdentifier>{aefe7694-65c1-434c-bfe9-e47369f12bec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="movstat">
+      <UniqueIdentifier>{4356b522-ffd0-44b3-9aac-a63d6c264093}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\blas\blas.c">
@@ -1437,9 +1443,6 @@
     <ClCompile Include="..\..\statistics\skew.c">
       <Filter>statistics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\statistics\ttest.c">
-      <Filter>statistics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\statistics\variance.c">
       <Filter>statistics</Filter>
     </ClCompile>
@@ -1853,6 +1856,102 @@
     </ClCompile>
     <ClCompile Include="..\..\rng\inline.c">
       <Filter>rng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\filter\gaussian.c">
+      <Filter>filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\filter\impulse.c">
+      <Filter>filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\filter\median.c">
+      <Filter>filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\filter\rmedian.c">
+      <Filter>filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\alloc.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\apply.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\fill.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\funcacc.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\medacc.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\mmacc.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\movmad.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\movmean.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\movmedian.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\movminmax.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\movQn.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\movqqr.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\movSn.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\movsum.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\movvariance.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\mvacc.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\qnacc.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\qqracc.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\snacc.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\sumacc.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\statistics\gastwirth.c">
+      <Filter>statistics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\statistics\mad.c">
+      <Filter>statistics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\statistics\Qn.c">
+      <Filter>statistics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\statistics\select.c">
+      <Filter>statistics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\statistics\Sn.c">
+      <Filter>statistics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\integration\romberg.c">
+      <Filter>integration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\statistics\trmean.c">
+      <Filter>statistics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\statistics\ttest.c">
+      <Filter>statistics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

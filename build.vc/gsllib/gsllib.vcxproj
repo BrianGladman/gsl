@@ -141,6 +141,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\bspline\greville.c" />
+    <ClCompile Include="..\..\filter\gaussian.c" />
+    <ClCompile Include="..\..\filter\impulse.c" />
+    <ClCompile Include="..\..\filter\median.c" />
+    <ClCompile Include="..\..\filter\rmedian.c" />
     <ClCompile Include="..\..\integration\chebyshev.c" />
     <ClCompile Include="..\..\integration\chebyshev2.c" />
     <ClCompile Include="..\..\integration\cquad.c" />
@@ -153,6 +157,7 @@
     <ClCompile Include="..\..\integration\laguerre.c" />
     <ClCompile Include="..\..\integration\legendre.c" />
     <ClCompile Include="..\..\integration\rational.c" />
+    <ClCompile Include="..\..\integration\romberg.c" />
     <ClCompile Include="..\..\interpolation\bicubic.c" />
     <ClCompile Include="..\..\interpolation\bilinear.c" />
     <ClCompile Include="..\..\interpolation\interp2d.c" />
@@ -163,6 +168,26 @@
     <ClCompile Include="..\..\linalg\invtri.c" />
     <ClCompile Include="..\..\linalg\mcholesky.c" />
     <ClCompile Include="..\..\linalg\pcholesky.c" />
+    <ClCompile Include="..\..\movstat\alloc.c" />
+    <ClCompile Include="..\..\movstat\apply.c" />
+    <ClCompile Include="..\..\movstat\fill.c" />
+    <ClCompile Include="..\..\movstat\funcacc.c" />
+    <ClCompile Include="..\..\movstat\medacc.c" />
+    <ClCompile Include="..\..\movstat\mmacc.c" />
+    <ClCompile Include="..\..\movstat\movmad.c" />
+    <ClCompile Include="..\..\movstat\movmean.c" />
+    <ClCompile Include="..\..\movstat\movmedian.c" />
+    <ClCompile Include="..\..\movstat\movminmax.c" />
+    <ClCompile Include="..\..\movstat\movQn.c" />
+    <ClCompile Include="..\..\movstat\movqqr.c" />
+    <ClCompile Include="..\..\movstat\movSn.c" />
+    <ClCompile Include="..\..\movstat\movsum.c" />
+    <ClCompile Include="..\..\movstat\movvariance.c" />
+    <ClCompile Include="..\..\movstat\mvacc.c" />
+    <ClCompile Include="..\..\movstat\qnacc.c" />
+    <ClCompile Include="..\..\movstat\qqracc.c" />
+    <ClCompile Include="..\..\movstat\snacc.c" />
+    <ClCompile Include="..\..\movstat\sumacc.c" />
     <ClCompile Include="..\..\multifit\fdfridge.c" />
     <ClCompile Include="..\..\multifit\fdjac.c" />
     <ClCompile Include="..\..\multifit\gcv.c" />
@@ -236,6 +261,13 @@
     <ClCompile Include="..\..\spmatrix\spoper.c" />
     <ClCompile Include="..\..\spmatrix\spprop.c" />
     <ClCompile Include="..\..\spmatrix\spswap.c" />
+    <ClCompile Include="..\..\statistics\gastwirth.c" />
+    <ClCompile Include="..\..\statistics\mad.c" />
+    <ClCompile Include="..\..\statistics\Qn.c" />
+    <ClCompile Include="..\..\statistics\select.c" />
+    <ClCompile Include="..\..\statistics\Sn.c" />
+    <ClCompile Include="..\..\statistics\variance.c" />
+    <ClCompile Include="..\..\statistics\wvariance.c" />
     <ClCompile Include="..\..\version.c" />
     <ClCompile Include="..\..\blas\blas.c" />
     <ClCompile Include="..\..\block\block.c" />
@@ -616,13 +648,10 @@
     <ClCompile Include="..\..\statistics\p_variance.c" />
     <ClCompile Include="..\..\statistics\quantiles.c" />
     <ClCompile Include="..\..\statistics\skew.c" />
-    <ClCompile Include="..\..\statistics\ttest.c" />
-    <ClCompile Include="..\..\statistics\variance.c" />
     <ClCompile Include="..\..\statistics\wabsdev.c" />
     <ClCompile Include="..\..\statistics\wkurtosis.c" />
     <ClCompile Include="..\..\statistics\wmean.c" />
     <ClCompile Include="..\..\statistics\wskew.c" />
-    <ClCompile Include="..\..\statistics\wvariance.c" />
     <ClCompile Include="..\..\sum\levin_u.c" />
     <ClCompile Include="..\..\sum\levin_utrunc.c" />
     <ClCompile Include="..\..\sum\work_u.c" />

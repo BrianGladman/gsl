@@ -17,11 +17,15 @@ figures =                              \
   images/fit-wlinear2.png              \
   images/fit-wlinear.png               \
   images/histogram.png                 \
+  images/histogram2d.png               \
+  images/impulse.png                   \
   images/interp2d.png                  \
   images/interp_compare.png            \
   images/interp.png                    \
   images/interpp.png                   \
   images/min-interval.png              \
+  images/movstat1.png                  \
+  images/movstat2.png                  \
   images/multilarge.png                \
   images/multimin.png                  \
   images/nlfit2b.png                   \
@@ -92,6 +96,7 @@ rst_files =                            \
   err.rst                              \
   fdl.rst                              \
   fft.rst                              \
+  filter.rst                           \
   gpl.rst                              \
   histogram.rst                        \
   ieee754.rst                          \
@@ -105,6 +110,7 @@ rst_files =                            \
   math.rst                             \
   min.rst                              \
   montecarlo.rst                       \
+  movstat.rst                          \
   multimin.rst                         \
   multiroots.rst                       \
   multiset.rst                         \

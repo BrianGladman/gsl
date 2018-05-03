@@ -162,6 +162,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\statistics\test.c" />
     <ClCompile Include="..\..\..\statistics\test_nist.c" />
+    <ClCompile Include="..\..\..\statistics\test_robust.c" />
+    <ClCompile Include="..\..\..\statistics\trmean.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

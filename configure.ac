@@ -604,8 +604,9 @@ doc/Makefile                 \
 doc/examples/Makefile        \
 eigen/Makefile               \
 err/Makefile                 \
-fit/Makefile                 \
 fft/Makefile                 \
+filter/Makefile              \
+fit/Makefile                 \
 gsl/Makefile                 \
 histogram/Makefile           \
 ieee-utils/Makefile          \
@@ -615,6 +616,7 @@ linalg/Makefile              \
 matrix/Makefile              \
 min/Makefile                 \
 monte/Makefile               \
+movstat/Makefile             \
 multifit/Makefile            \
 multifit_nlinear/Makefile    \
 multilarge/Makefile          \

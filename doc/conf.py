@@ -47,7 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'GSL'
-copyright = u'1996-2017 The GSL Team'
+copyright = u'1996-2018 The GSL Team'
 author = u'The GSL Team'
 title = u'GNU Scientific Library'
 
