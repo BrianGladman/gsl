@@ -20,24 +20,25 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_statistics.h>
-#include <gsl/gsl_sort_vector.h>
+#include <gsl/gsl_sort.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_movstat.h>
 
 /* calculate S_n statistic for input vector using slow/naive algorithm */
 static int
 slow_movQn(const gsl_movstat_end_t etype, const gsl_vector * x, gsl_vector * y,
            const int H, const int J)
 {
-  const int n = (int) x->size;
+  const size_t n = x->size;
   const int K = H + J + 1;
   double *window = malloc(K * sizeof(double));
   double *work = malloc(3 * K * sizeof(double));
   int *work_int = malloc(5 * K * sizeof(int));
-  int i;
+  size_t i;
 
   for (i = 0; i < n; ++i)
     {
-      int wsize = test_window(etype, i, H, J, x, window);
+      size_t wsize = gsl_movstat_fill(etype, x, i, H, J, window);
       double Qn;
 
       gsl_sort(window, 1, wsize);

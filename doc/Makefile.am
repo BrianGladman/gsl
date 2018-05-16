@@ -13,9 +13,12 @@ figures =                              \
   images/dwt.png                       \
   images/fft-complex-radix2.png        \
   images/fft-real-mixedradix.png       \
+  images/filt_edge.png                 \
   images/fit-exp.png                   \
   images/fit-wlinear2.png              \
   images/fit-wlinear.png               \
+  images/gaussfilt.png                 \
+  images/gaussfilt2.png                \
   images/histogram.png                 \
   images/histogram2d.png               \
   images/impulse.png                   \

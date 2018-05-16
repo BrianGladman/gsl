@@ -29,6 +29,7 @@
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
+#include <gsl/gsl_statistics.h>
 
 /* slow/dumb rmedian which constructs actual window for each sample, sorts
  * it and finds median */
@@ -65,7 +66,7 @@ slow_rmedian(const gsl_vector * x, gsl_vector * y, const size_t k)
             window[j++] = 0.0; /* zero pad */
         }
 
-      yi = median_find((long) window_size, window);
+      yi = gsl_stats_median(window, 1, window_size);
       gsl_vector_set(y, i, yi);
     }
 

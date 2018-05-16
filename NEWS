@@ -1,5 +1,10 @@
 * What is new in gsl-2.5:
 
+** added new module for digital filtering (gsl_filter); current filters include:
+     Gaussian filter
+     median filter
+     impulse detection filter
+
 ** added new module for moving window statistics (gsl_movstat)
 
 ** added statistics functions:

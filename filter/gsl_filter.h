@@ -56,15 +56,16 @@ typedef enum
 /* workspace for Gaussian filter */
 typedef struct
 {
-  size_t H;        /* window half-length (K / 2) */
   size_t K;        /* window size */
   double *kernel;  /* Gaussian kernel, size K */
+  gsl_movstat_workspace *movstat_workspace_p;
 } gsl_filter_gaussian_workspace;
 
 gsl_filter_gaussian_workspace *gsl_filter_gaussian_alloc(const size_t K);
 void gsl_filter_gaussian_free(gsl_filter_gaussian_workspace * w);
-int gsl_filter_gaussian(const double sigma, const size_t order, const gsl_vector * x, gsl_vector * y,
-                        gsl_filter_gaussian_workspace * w);
+int gsl_filter_gaussian(const gsl_filter_end_t endtype, const double alpha, const size_t order, const gsl_vector * x,
+                        gsl_vector * y, gsl_filter_gaussian_workspace * w);
+int gsl_filter_gaussian_kernel(const double alpha, const size_t order, const int normalize, gsl_vector * kernel);
 
 /* workspace for standard median filter */
 typedef struct

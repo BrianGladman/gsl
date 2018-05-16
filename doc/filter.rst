@@ -14,6 +14,67 @@ Here, :math:`H` is a non-negative integer called the *window half-length*, which
 represents the number of samples before and after sample :math:`i`.
 The total window length is :math:`K = 2 H + 1`.
 
+Linear Digital Filters
+======================
+
+Gaussian Filter
+---------------
+
+The Gaussian filter convolves the input signal with a Gaussian kernel or window. This filter
+is often used as a smoothing or noise reduction filter. The Gaussian kernel is
+defined by
+
+.. math:: G(k) = e^{-\frac{1}{2} \left( \alpha \frac{k}{(K-1)/2} \right)^2} = e^{-k^2/2\sigma^2}
+
+for :math:`-(K-1)/2 \le k \le (K-1)/2`, and :math:`K` is the size of the kernel. The
+parameter :math:`\alpha` specifies the number of standard deviations :math:`\sigma` desired
+in the kernel. So for example setting :math:`\alpha = 3` would define a Gaussian window
+of length :math:`K` which spans :math:`\pm 3 \sigma`. It is often more convenient to specify
+the parameter :math:`\alpha` rather than the standard deviation :math:`\sigma` when constructing
+the kernel, since a fixed value of :math:`\alpha` would correspond to the same shape of
+Gaussian regardless of the size :math:`K`. The appropriate value of the standard deviation
+depends on :math:`K` and is related to :math:`\alpha` as
+
+.. math:: \sigma = \frac{K - 1}{2\alpha}
+
+The routines below accept :math:`\alpha` as an input argument instead of :math:`\sigma`.
+
+The Gaussian filter offers a convenient way of differentiating and smoothing an input signal
+in a single pass. Using the derivative property of a convolution,
+
+.. math:: \frac{d}{dt} \left( G * x \right) = \frac{dG}{dt} * x
+
+the input signal :math:`x(t)` can be smoothed and differentiated at the same time by
+convolution with a derivative Gaussian kernel, which can be readily computed from the
+analytic expression above. The same principle applies to higher order derivatives.
+
+.. function:: gsl_filter_gaussian_workspace * gsl_filter_gaussian_alloc(const size_t K)
+
+   This function initializes a workspace for Gaussian filtering using a kernel of
+   size :data:`K`. Here, :math:`H = K / 2`. If :math:`K` is even, it is rounded up to the next
+   odd integer to ensure a symmetric window. The size of the workspace is :math:`O(K)`.
+
+.. function:: void gsl_filter_gaussian_free(gsl_filter_gaussian_workspace * w)
+
+   This function frees the memory associated with :data:`w`.
+
+.. function:: int gsl_filter_gaussian(const gsl_filter_end_t endtype, const double alpha, const size_t order, const gsl_vector * x, gsl_vector * y, gsl_filter_gaussian_workspace * w)
+
+   This function applies a Gaussian filter parameterized by :data:`alpha` to the input vector :data:`x`,
+   storing the output in :data:`y`. The derivative order is specified by :data:`order`, with
+   :code:`0` corresponding to a Gaussian, :code:`1` corresponding to a first derivative
+   Gaussian, and so on. The parameter :data:`endtype` specifies how the signal end points are handled.
+   It is allowed for :data:`x` = :data:`y` for an in-place filter.
+
+.. function:: int gsl_filter_gaussian_kernel(const double alpha, const size_t order, const int normalize, gsl_vector * kernel)
+
+   This function constructs a Gaussian kernel parameterized by :data:`alpha` and
+   stores the output in :data:`kernel`. The parameter :data:`order` specifies the
+   derivative order, with :code:`0` corresponding to a Gaussian, :code:`1` corresponding
+   to a first derivative Gaussian, and so on. If :data:`normalize` is set to :code:`1`, then
+   the kernel will be normalized to sum to one on output. If :data:`normalize` is set to
+   :code:`0`, no normalization is performed.
+
 Nonlinear Digital Filters
 =========================
 
@@ -199,6 +260,73 @@ The function :func:`gsl_filter_impulse` sets :math:`\epsilon = 0`.
 
 Examples
 ========
+
+Gaussian Example 1
+------------------
+
+This example program illustrates the Gaussian filter applied to smoothing a time series of length
+:math:`N = 500` with a kernel size of :math:`K = 51`. Three filters are applied with
+parameters :math:`\alpha = 0.5, 3, 10`. The results are shown in :numref:`fig_filt-gaussian`.
+
+.. _fig_filt-gaussian:
+
+.. figure:: /images/gaussfilt.png
+   :scale: 60%
+
+   Top panel: Gaussian kernels (unnormalized) for :math:`\alpha = 0.5, 3, 10`.
+   Bottom panel: Time series (gray) with Gaussian filter output for same :math:`\alpha`
+   values.
+
+We see that the filter corresponding to :math:`\alpha = 0.5` applies the most smoothing,
+while :math:`\alpha = 10` corresponds to the least amount of smoothing.
+The program is given below.
+
+.. include:: examples/gaussfilt.c
+   :code:
+
+Gaussian Example 2
+------------------
+
+A common application of the Gaussian filter is to detect edges, or sudden jumps, in a noisy
+input signal. It is used both for 1D edge detection in time series, as well as 2D edge
+detection in images. Here we will examine a noisy time series of length :math:`N = 1000`
+with a single edge. The input signal is defined as
+
+.. math:: x(n) = e(n) +
+            \left\{
+              \begin{array}{cc}
+                0, & n \le N/2 \\
+                0.5, & n > N/2
+              \end{array}
+            \right.
+
+where :math:`e(n)` is Gaussian random noise. The program smooths the input signal
+with order :math:`0,1,` and :math:`2` Gaussian filters of length :math:`K = 61` with
+:math:`\alpha = 3`. For comparison, the program also computes finite differences
+of the input signal without smoothing. The results are shown in :numref:`fig_filt-gaussian2`.
+
+.. _fig_filt-gaussian2:
+
+.. figure:: /images/gaussfilt2.png
+   :scale: 60%
+
+   Top row: original input signal :math:`x(n)` (black) with Gaussian smoothed signal in red.
+   Second row: First finite differences of input signal.
+   Third row: Input signal smoothed with a first order Gaussian filter.
+   Fourth row: Input signal smoothed with a second order Gaussian filter.
+
+The finite difference approximation of the first derivative (second row) shows
+the common problem with differentiating a noisy signal. The noise is amplified
+and makes it extremely difficult to detect the sharp gradient at sample :math:`500`.
+The third row shows the first order Gaussian smoothed signal with a clear peak
+at the location of the edge. Alternatively, one could examine the second order
+Gaussian smoothed signal (fourth row) and look for zero crossings to determine
+the edge location.
+
+The program is given below.
+
+.. include:: examples/gaussfilt2.c
+   :code:
 
 Square Wave Signal Example
 --------------------------

@@ -20,28 +20,30 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_test.h>
+#include <gsl/gsl_movstat.h>
+#include <gsl/gsl_statistics.h>
 
 /* compute filtered data by explicitely constructing window and finding MAD */
 int
 slow_movmad(const gsl_movstat_end_t etype, const gsl_vector * x, gsl_vector * y,
             const int H, const int J)
 {
-  const int n = (int) x->size;
+  const size_t n = x->size;
   const int K = H + J + 1;
   double *window = malloc(K * sizeof(double));
-  int i;
+  size_t i;
 
   for (i = 0; i < n; ++i)
     {
-      int wsize = test_window(etype, i, H, J, x, window);
-      double median = median_find(wsize, window);
+      size_t wsize = gsl_movstat_fill(etype, x, i, H, J, window);
+      double median = gsl_stats_median(window, 1, wsize);
       double mad;
-      int j;
+      size_t j;
 
       for (j = 0; j < wsize; ++j)
         window[j] = fabs(window[j] - median);
 
-      mad = median_find(wsize, window);
+      mad = gsl_stats_median(window, 1, wsize);
 
       gsl_vector_set(y, i, mad);
     }

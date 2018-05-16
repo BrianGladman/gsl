@@ -23,12 +23,10 @@
 #include <string.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_movstat.h>
-#include <gsl/gsl_sort.h>
 #include <gsl/gsl_statistics.h>
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
-#include <gsl/gsl_sort.h>
 #include <gsl/gsl_ieee_utils.h>
 
 /* compare two vectors */
@@ -61,14 +59,6 @@ random_vector(gsl_vector * v, gsl_rng * r)
     }
 }
 
-/* find median of array z of length n by sorting */
-static double
-median_find(const size_t n, double * z)
-{
-  gsl_sort(z, 1, n);
-  return gsl_stats_median_from_sorted_data(z, 1, n);
-}
-
 static int
 test_noisy_sine(const double sigma, gsl_vector * x, gsl_rng * r)
 {
@@ -86,59 +76,6 @@ test_noisy_sine(const double sigma, gsl_vector * x, gsl_rng * r)
     }
 
   return GSL_SUCCESS;
-}
-
-/* fill window for sample 'idx' from x using given end conditions */
-static int
-test_window(const gsl_movstat_end_t endtype, const int idx, const int H, const int J,
-            const gsl_vector * x, double * window)
-{
-  const int n = x->size;
-  int idx1, idx2, j;
-  int wsize;
-
-  if (endtype == GSL_MOVSTAT_END_TRUNCATE)
-    {
-      idx1 = GSL_MAX(idx - H, 0);
-      idx2 = GSL_MIN(idx + J, n - 1);
-    }
-  else
-    {
-      idx1 = idx - H;
-      idx2 = idx + J;
-    }
-
-  wsize = idx2 - idx1 + 1;
-
-  /* fill sliding window */
-  for (j = idx1; j <= idx2; ++j)
-    {
-      int widx = j - idx1;
-
-      if (j < 0)
-        {
-          /* initial condition */
-          if (endtype == GSL_MOVSTAT_END_PADZERO)
-            window[widx] = 0.0;
-          else if (endtype == GSL_MOVSTAT_END_PADVALUE)
-            window[widx] = gsl_vector_get(x, 0);
-        }
-      else if (j >= n)
-        {
-          if (endtype == GSL_MOVSTAT_END_PADZERO)
-            window[widx] = 0.0;
-          else if (endtype == GSL_MOVSTAT_END_PADVALUE)
-            window[widx] = gsl_vector_get(x, n - 1);
-        }
-      else
-        {
-          window[widx] = gsl_vector_get(x, j);
-        }
-    }
-
-  wsize = idx2 - idx1 + 1;
-
-  return wsize;
 }
 
 #include "test_mad.c"

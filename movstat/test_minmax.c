@@ -28,14 +28,14 @@ int
 slow_minmax(const gsl_movstat_end_t etype, const gsl_vector * x, gsl_vector * y_min, gsl_vector * y_max,
             const int H, const int J)
 {
-  const int n = (int) x->size;
+  const size_t n = x->size;
   const int K = H + J + 1;
   double *window = malloc(K * sizeof(double));
-  int i;
+  size_t i;
 
   for (i = 0; i < n; ++i)
     {
-      int wsize = test_window(etype, i, H, J, x, window);
+      size_t wsize = gsl_movstat_fill(etype, x, i, H, J, window);
       gsl_vector_view v = gsl_vector_view_array(window, wsize);
       double min, max;
 

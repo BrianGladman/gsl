@@ -22,21 +22,22 @@
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_movstat.h>
+#include <gsl/gsl_statistics.h>
 
 /* compute filtered data by explicitely constructing window, sorting it and finding median */
 int
 slow_movmedian(const gsl_movstat_end_t etype, const gsl_vector * x, gsl_vector * y,
                const int H, const int J)
 {
-  const int n = (int) x->size;
+  const size_t n = x->size;
   const int K = H + J + 1;
   double *window = malloc(K * sizeof(double));
-  int i;
+  size_t i;
 
   for (i = 0; i < n; ++i)
     {
-      int wsize = test_window(etype, i, H, J, x, window);
-      double yi = median_find(wsize, window);
+      size_t wsize = gsl_movstat_fill(etype, x, i, H, J, window);
+      double yi = gsl_stats_median(window, 1, wsize);
 
       gsl_vector_set(y, i, yi);
     }
