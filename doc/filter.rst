@@ -8,11 +8,71 @@ Introduction
 The filters discussed in this chapter are based on the following moving data
 window which is centered on :math:`i`-th sample:
 
-.. math:: W_i^H = \left\{ x_{i-H}, \dots, x_i, \dots, x_{i+H} \right\}
+.. only:: not texinfo
+
+   .. math:: W_i^H = \left\{ x_{i-H}, \dots, x_i, \dots, x_{i+H} \right\}
+
+.. only:: texinfo
+
+   ::
+
+      W_i^H = { x_{i-H}, ..., x_i, ..., x_{i+H} }
 
 Here, :math:`H` is a non-negative integer called the *window half-length*, which
 represents the number of samples before and after sample :math:`i`.
 The total window length is :math:`K = 2 H + 1`.
+
+Handling Endpoints
+==================
+
+When processing samples near the ends of the input signal, there will not
+be enough samples to fill the window :math:`W_i^H` defined above.
+Therefore the user must specify how to construct the windows near the end points.
+This is done by passing an input argument of type :type:`gsl_filter_end_t`:
+
+.. type:: gsl_filter_end_t
+
+   This data type specifies how to construct windows near end points and can
+   be selected from the following choices:
+
+   .. macro:: GSL_FILTER_END_PADZERO
+
+      With this option, a full window of length :math:`K` will be constructed
+      by inserting zeros into the window near the signal end points. Effectively,
+      the input signal is modified to
+
+      .. only:: not texinfo
+
+         .. math:: \tilde{x} = \{ \underbrace{0, \dots, 0}_{H \textrm{ zeros}}, x_1, x_2, \dots, x_{n-1}, x_n, \underbrace{0, \dots, 0}_{H \textrm{ zeros} } \}
+
+      .. only:: texinfo
+
+         ::
+
+            x~ = { 0, ..., 0, x_1, x_2, ..., x_{n-1}, x_n, 0, ..., 0 }
+
+      to ensure a well-defined window for all :math:`x_i`.
+
+   .. macro:: GSL_FILTER_END_PADVALUE
+
+      With this option, a full window of length :math:`K` will be constructed
+      by padding the window with the first and last sample in the input signal.
+      Effectively, the input signal is modified to
+
+      .. only:: not texinfo
+
+         .. math:: \tilde{x} = \{ \underbrace{x_1, \dots, x_1}_{H}, x_1, x_2, \dots, x_{n-1}, x_n, \underbrace{x_n, \dots, x_n}_{H} \}
+
+      .. only:: texinfo
+
+         ::
+
+            x~ = { x_1, ..., x_1, x_1, x_2, ..., x_{n-1}, x_n, x_n, ..., x_n }
+
+   .. macro:: GSL_FILTER_END_TRUNCATE
+
+      With this option, no padding is performed, and the windows are simply truncated
+      as the end points are approached.
 
 Linear Digital Filters
 ======================
@@ -24,7 +84,15 @@ The Gaussian filter convolves the input signal with a Gaussian kernel or window.
 is often used as a smoothing or noise reduction filter. The Gaussian kernel is
 defined by
 
-.. math:: G(k) = e^{-\frac{1}{2} \left( \alpha \frac{k}{(K-1)/2} \right)^2} = e^{-k^2/2\sigma^2}
+.. only:: not texinfo
+
+   .. math:: G(k) = e^{-\frac{1}{2} \left( \alpha \frac{k}{(K-1)/2} \right)^2} = e^{-k^2/2\sigma^2}
+
+.. only:: texinfo
+
+   ::
+
+      G(k) = e^{-1/2 ( \alpha k/((K-1)/2) )^2} = e^{-k^2/2\sigma^2}
 
 for :math:`-(K-1)/2 \le k \le (K-1)/2`, and :math:`K` is the size of the kernel. The
 parameter :math:`\alpha` specifies the number of standard deviations :math:`\sigma` desired
@@ -35,14 +103,30 @@ the kernel, since a fixed value of :math:`\alpha` would correspond to the same s
 Gaussian regardless of the size :math:`K`. The appropriate value of the standard deviation
 depends on :math:`K` and is related to :math:`\alpha` as
 
-.. math:: \sigma = \frac{K - 1}{2\alpha}
+.. only:: not texinfo
+
+   .. math:: \sigma = \frac{K - 1}{2\alpha}
+
+.. only:: texinfo
+
+   ::
+
+      \sigma = (K - 1)/(2 \alpha)
 
 The routines below accept :math:`\alpha` as an input argument instead of :math:`\sigma`.
 
 The Gaussian filter offers a convenient way of differentiating and smoothing an input signal
 in a single pass. Using the derivative property of a convolution,
 
-.. math:: \frac{d}{dt} \left( G * x \right) = \frac{dG}{dt} * x
+.. only:: not texinfo
+
+   .. math:: \frac{d}{dt} \left( G * x \right) = \frac{dG}{dt} * x
+
+.. only:: texinfo
+
+   ::
+
+      d/dt ( G * x ) = dG/dt * x
 
 the input signal :math:`x(t)` can be smoothed and differentiated at the same time by
 convolution with a derivative Gaussian kernel, which can be readily computed from the
@@ -81,7 +165,15 @@ Nonlinear Digital Filters
 The nonlinear digital filters described below are based on the window median, which is given
 by
 
-.. math:: m_i = \textrm{median} \left\{ W_i^H \right\} = \textrm{median} \left\{ x_{i-H}, \dots, x_i, \dots, x_{i+H} \right\}
+.. only:: not texinfo
+
+   .. math:: m_i = \textrm{median} \left\{ W_i^H \right\} = \textrm{median} \left\{ x_{i-H}, \dots, x_i, \dots, x_{i+H} \right\}
+
+.. only:: texinfo
+
+   ::
+
+      m_i = median { W_i^H } = median { x_{i-H}, ..., x_i, ..., x_{i+H} }
 
 The median is considered robust to local outliers, unlike the mean.
 Median filters can preserve sharp edges while at the same removing signal noise, and are used
@@ -117,7 +209,15 @@ Recursive Median Filter
 The *recursive median filter* (RMF) is a modification of the SMF to include previous filter outputs
 in the window before computing the median. The filter's response is
 
-.. math:: y_i = \textrm{median} \left( y_{i-H}, \dots, y_{i-1}, x_i, x_{i+1}, \dots, x_{i+H} \right)
+.. only:: not texinfo
+
+   .. math:: y_i = \textrm{median} \left( y_{i-H}, \dots, y_{i-1}, x_i, x_{i+1}, \dots, x_{i+H} \right)
+
+.. only:: texinfo
+
+   ::
+
+      y_i = median ( y_{i-H}, ..., y_{i-1}, x_i, x_{i+1}, ..., x_{i+H} )
 
 Sometimes, the SMF must be applied several times in a row to achieve adequate smoothing (i.e. a cascade filter).
 The RMF, on the other hand, converges to a *root sequence* in one pass,
@@ -134,9 +234,10 @@ left unchanged by the filter.  So there is no need to apply a recursive median f
 
    This function frees the memory associated with :data:`w`.
 
-.. function:: int gsl_filter_rmedian(const gsl_vector * x, gsl_vector * y, gsl_filter_rmedian_workspace * w)
+.. function:: int gsl_filter_rmedian(const gsl_filter_end_t endtype, const gsl_vector * x, gsl_vector * y, gsl_filter_rmedian_workspace * w)
 
-   This function applies a recursive median filter to the input :data:`x`, storing the output in :data:`y`. It
+   This function applies a recursive median filter to the input :data:`x`, storing the output in :data:`y`.
+   The parameter :data:`endtype` specifies how the signal end points are handled. It
    is allowed to have :data:`x` = :data:`y` for an in-place filter.
 
 Impulse Detection Filter
@@ -147,12 +248,21 @@ surrounding neighborhood. This section describes a powerful class of filters, al
 *impulse rejection filters* and *decision-based filters*, designed to detect and remove such outliers from data.
 The filter's response is given by
 
-.. math:: y_i = \left\{
-                  \begin{array}{cc}
-                    x_i, & |x_i - m_i| \le t S_i \\
-                    m_i, & |x_i - m_i| > t S_i
-                  \end{array}
-                \right.
+.. only:: not texinfo
+
+   .. math:: y_i = \left\{
+                     \begin{array}{cc}
+                       x_i, & |x_i - m_i| \le t S_i \\
+                       m_i, & |x_i - m_i| > t S_i
+                     \end{array}
+                   \right.
+
+.. only:: texinfo
+
+   ::
+
+      y_i = { x_i, |x_i - m_i| <= t * S_i
+            { m_i, |x_i - m_i| > t * S_i
 
 where :math:`m_i` is the median value of the window :math:`W_i^H`, :math:`S_i` is a robust estimate
 of the scatter or dispersion for the window :math:`W_i^H`, and :math:`t` is a tuning parameter specifying
@@ -185,7 +295,15 @@ computing the scale estimate :math:`S_i`, all of which are robust to the presenc
 
       This option specifies the median absolute deviation (MAD) scale estimate, defined by
 
-      .. math:: S_i = 1.4826 \times \textrm{median} \left\{ | W_i^H - m_i | \right\}
+      .. only:: not texinfo
+
+         .. math:: S_i = 1.4826 \times \textrm{median} \left\{ | W_i^H - m_i | \right\}
+
+      .. only:: texinfo
+
+         ::
+
+            S_i = 1.4826 median { | W_i^H - m_i | }
 
       This choice of scale estimate is also known as the *Hampel filter* in the statistical literature.
       See :ref:`here <sec_mad-statistic>` for more information.
@@ -195,7 +313,15 @@ computing the scale estimate :math:`S_i`, all of which are robust to the presenc
       This option specifies the interquartile range (IQR) scale estimate, defined as the difference between
       the 75th and 25th percentiles of the window :math:`W_i^H`,
 
-      .. math:: S_i = 0.7413 \left( Q_{0.75} - Q_{0.25} \right)
+      .. only:: not texinfo
+
+         .. math:: S_i = 0.7413 \left( Q_{0.75} - Q_{0.25} \right)
+
+      .. only:: texinfo
+
+         ::
+
+            S_i = 0.7413 ( Q_{0.75} - Q_{0.25} )
 
       where :math:`Q_p` is the p-quantile of the window :math:`W_i^H`. The idea is to throw away the largest
       and smallest 25% of the window samples (where the outliers would be), and estimate a scale from the middle 50%.
@@ -223,19 +349,6 @@ computing the scale estimate :math:`S_i`, all of which are robust to the presenc
    filter will act like the standard median filter regardless of the value of :math:`t`. Caution should also
    be exercised if dividing by :math:`S_i`.
 
-Because of the possibility of scale implosion, GSL offers a routine :func:`gsl_filter_impulse2` where
-the user can input an additional parameter :data:`epsilon`. This parameter is used as a lower bound
-on the :math:`S_i`. So for this function, the filter's response is
-
-.. math:: y_i = \left\{
-                  \begin{array}{cc}
-                    x_i, & |x_i - m_i| \le t S_i \textrm{ or } S_i < \epsilon \\
-                    m_i, & |x_i - m_i| > t S_i
-                  \end{array}
-                \right.
-
-The function :func:`gsl_filter_impulse` sets :math:`\epsilon = 0`.
-
 .. function:: gsl_filter_impulse_workspace * gsl_filter_impulse_alloc(const size_t K)
 
    This function initializes a workspace for impulse detection filtering using a symmetric moving window of
@@ -247,11 +360,9 @@ The function :func:`gsl_filter_impulse` sets :math:`\epsilon = 0`.
    This function frees the memory associated with :data:`w`.
 
 .. function:: int gsl_filter_impulse(const gsl_filter_end_t endtype, const gsl_filter_scale_t scale_type, const double t, const gsl_vector * x, gsl_vector * y, gsl_vector * xmedian, gsl_vector * xsigma, size_t * noutlier, gsl_vector_int * ioutlier, gsl_filter_impulse_workspace * w)
-.. function:: int gsl_filter_impulse2(const gsl_filter_end_t endtype, const gsl_filter_scale_t scale_type, const double epsilon, const double t, const gsl_vector * x, gsl_vector * y, gsl_vector * xmedian, gsl_vector * xsigma, size_t * noutlier, gsl_vector_int * ioutlier, gsl_filter_impulse_workspace * w)
 
    These functions apply an impulse detection filter to the input vector :data:`x`, storing the filtered output
-   in :data:`y`. The tuning parameter :math:`t` is provided in :data:`t`. The lower
-   bound :math:`\epsilon` for the scale estimates :math:`S_i` is provided in :data:`epsilon`.
+   in :data:`y`. The tuning parameter :math:`t` is provided in :data:`t`.
    The window medians :math:`m_i` are stored in :data:`xmedian` and the :math:`S_i` are stored in :data:`xsigma` on output.
    The number of outliers detected is stored in :data:`noutlier` on output, while
    the locations of flagged outliers are stored in the boolean array :data:`ioutlier`. The input
@@ -292,13 +403,22 @@ input signal. It is used both for 1D edge detection in time series, as well as 2
 detection in images. Here we will examine a noisy time series of length :math:`N = 1000`
 with a single edge. The input signal is defined as
 
-.. math:: x(n) = e(n) +
-            \left\{
-              \begin{array}{cc}
-                0, & n \le N/2 \\
-                0.5, & n > N/2
-              \end{array}
-            \right.
+.. only:: not texinfo
+
+   .. math:: x(n) = e(n) +
+               \left\{
+                 \begin{array}{cc}
+                   0, & n \le N/2 \\
+                   0.5, & n > N/2
+                 \end{array}
+               \right.
+
+.. only:: texinfo
+
+   ::
+
+      x(n) = e(n) + { 0,   n <= N/2
+                    { 0.5, n >  N/2
 
 where :math:`e(n)` is Gaussian random noise. The program smooths the input signal
 with order :math:`0,1,` and :math:`2` Gaussian filters of length :math:`K = 61` with
@@ -378,3 +498,18 @@ The program is given below.
 
 .. include:: examples/impulse.c
    :code:
+
+References and Further Reading
+==============================
+
+The following publications are relevant to the algorithms described
+in this chapter,
+
+* F. J. Harris, *On the use of windows for harmonic analysis with the discrete Fourier transform*,
+  Proceedings of the IEEE, 66 (1), 1978.
+
+* S-J. Ko, Y-H. Lee, and A. T. Fam. *Efficient implementation of one-dimensional recursive median filters*,
+  IEEE transactions on circuits and systems 37.11 (1990): 1447-1450.
+
+* R. K. Pearson and M. Gabbouj, *Nonlinear Digital Filtering with Python: An Introduction*.
+  CRC Press, 2015.

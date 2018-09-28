@@ -60,6 +60,7 @@ random_vector(gsl_vector * v, gsl_rng * r)
     }
 }
 
+#include "test_impulse.c"
 #include "test_gaussian.c"
 #include "test_median.c"
 #include "test_rmedian.c"
@@ -70,8 +71,10 @@ main()
   gsl_rng * r = gsl_rng_alloc(gsl_rng_default);
 
   test_gaussian(r);
+
+  test_impulse(r);
   test_median(r);
-  /*XXXtest_rmedian(r);*/
+  test_rmedian(r);
 
   gsl_rng_free(r);
 

@@ -29,6 +29,7 @@ figures =                              \
   images/min-interval.png              \
   images/movstat1.png                  \
   images/movstat2.png                  \
+  images/movstat3.png                  \
   images/multilarge.png                \
   images/multimin.png                  \
   images/nlfit2b.png                   \

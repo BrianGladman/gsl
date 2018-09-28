@@ -35,6 +35,7 @@
 #include <gsl/gsl_filter.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_statistics.h>
+#include <gsl/gsl_movstat.h>
 
 typedef struct
 {
@@ -42,8 +43,6 @@ typedef struct
   void *minmax_state;                   /* minimum/maximum accumulator workspace */
 } rmedian_state_t;
 
-static int rmedian_fill_window(const gsl_filter_end_t endtype, const int idx, const int H, const int J,
-                               const gsl_vector * x, double * window);
 static size_t rmedian_size(const size_t n);
 static int rmedian_init(const size_t n, void * vstate);
 static int rmedian_insert(const double x, void * vstate);
@@ -122,7 +121,6 @@ Inputs: endtype - end point handling
 int
 gsl_filter_rmedian(const gsl_filter_end_t endtype, const gsl_vector * x, gsl_vector * y, gsl_filter_rmedian_workspace * w)
 {
-#if 1
   if (x->size != y->size)
     {
       GSL_ERROR("input and output vectors must have same length", GSL_EBADLEN);
@@ -136,7 +134,7 @@ gsl_filter_rmedian(const gsl_filter_end_t endtype, const gsl_vector * x, gsl_vec
       int wsize;
 
       /* find median of first window to initialize filter */
-      wsize = rmedian_fill_window(endtype, 0, H, H, x, w->window);
+      wsize = gsl_movstat_fill(endtype, x, 0, H, H, w->window);
       yprev = gsl_stats_median(w->window, 1, wsize);
       gsl_vector_set(y, 0, yprev);
 
@@ -152,194 +150,6 @@ gsl_filter_rmedian(const gsl_filter_end_t endtype, const gsl_vector * x, gsl_vec
 
       return status;
     }
-#else
-  if (x->size != y->size)
-    {
-      GSL_ERROR("input and output vectors must have same length", GSL_EBADLEN);
-    }
-  else
-    {
-      const int n = (int) x->size;
-      const int H = (int) w->H;
-      double yprev;
-      double xminmax[2]; /* { xmin, xmax } */
-      double yval;
-      int wsize;
-      int i;
-
-      /* find median of first window to initialize filter */
-      wsize = rmedian_fill_window(endtype, 0, H, H, x, w->window);
-      yprev = gsl_stats_median(w->window, 1, wsize);
-      gsl_vector_set(y, 0, yprev);
-
-      /* initialize min/max accumulator */
-      (w->minmaxacc->init)(H + 1, w->state);
-
-      for (i = 1; i < n; ++i)
-        {
-          double xi = gsl_vector_get(x, i);
-
-          (w->minmaxacc->insert)(xi, w->state);
-
-          if (i >= H)
-            {
-              (w->minmaxacc->get)(NULL, xminmax, w->state);
-
-              /* y_{i-H} = median [ yprev, xmin, xmax ] */
-              if (yprev <= xminmax[0])
-                yval = xminmax[0];
-              else if (yprev <= xminmax[1])
-                yval = yprev;
-              else
-                yval = xminmax[1];
-
-              gsl_vector_set(y, i - H, yval);
-              yprev = yval;
-            }
-        }
-
-      /* now handle the last H elements of y */
-      for (i = 0; i < H; ++i)
-        {
-          int idx = n - H + i;
-
-          /* zero pad input vector */
-          (w->minmaxacc->insert)(0.0, w->state);
-
-          if (idx >= 0)
-            {
-              (w->minmaxacc->get)(NULL, xminmax, w->state);
-
-              /* y_{n-H+i} = median [ yprev, xmin, xmax ] */
-              if (yprev <= xminmax[0])
-                yval = xminmax[0];
-              else if (yprev <= xminmax[1])
-                yval = yprev;
-              else
-                yval = xminmax[1];
-
-              gsl_vector_set(y, idx, yval);
-              yprev = yval;
-            }
-        }
-
-      return GSL_SUCCESS;
-    }
-#endif
-}
-
-int
-gsl_filter_rmedian2(const gsl_vector * x, gsl_vector * y, gsl_filter_rmedian_workspace * w)
-{
-  const size_t n = x->size;
-
-  if (n != y->size)
-    {
-      GSL_ERROR("input and output vectors must have same length", GSL_EBADLEN);
-    }
-  else
-    {
-      double yprev = 0.0;
-      size_t i;
-
-      for (i = 0; i < n; ++i)
-        {
-          double xi = gsl_vector_get(x, i);
-          double xmax = xi;
-          double xmin = xi;
-          double yi;
-          size_t j;
-
-          /* find min/max [ x_{i+1}, ..., x_{i+H} ] */
-          for (j = i + 1; j <= GSL_MIN(i + w->H, n - 1); ++j)
-            {
-              double xj = gsl_vector_get(x, j);
-              if (xj > xmax)
-                xmax = xj;
-              if (xj < xmin)
-                xmin = xj;
-            }
-
-          /* yi = median [ yprev, xmin, xmax ] */
-          if (yprev <= xmin)
-            yi = xmin;
-          else if (yprev <= xmax)
-            yi = yprev;
-          else
-            yi = xmax;
-
-          gsl_vector_set(y, i, yi);
-          yprev = yi;
-        }
-
-      return GSL_SUCCESS;
-    }
-}
-
-/*
-rmedian_fill_window()
-  Fill window for sample 'idx' from x using given end conditions
-
-Inputs: endtype - how to handle end points
-        idx     - index of center sample in window
-        H       - number of samples left of center to include
-        J       - number of samples right of center to include
-        x       - input vector
-        window  - (output) window of samples centered on x_{idx}
-
-Return: number of samples in window
-*/
-
-static int
-rmedian_fill_window(const gsl_filter_end_t endtype, const int idx, const int H, const int J,
-                    const gsl_vector * x, double * window)
-{
-  const int n = x->size;
-  int idx1, idx2, j;
-  int wsize;
-
-  if (endtype == GSL_FILTER_END_TRUNCATE)
-    {
-      idx1 = GSL_MAX(idx - H, 0);
-      idx2 = GSL_MIN(idx + J, n - 1);
-    }
-  else
-    {
-      idx1 = idx - H;
-      idx2 = idx + J;
-    }
-
-  wsize = idx2 - idx1 + 1;
-
-  /* fill sliding window */
-  for (j = idx1; j <= idx2; ++j)
-    {
-      int widx = j - idx1;
-
-      if (j < 0)
-        {
-          /* initial condition */
-          if (endtype == GSL_FILTER_END_PADZERO)
-            window[widx] = 0.0;
-          else if (endtype == GSL_FILTER_END_PADVALUE)
-            window[widx] = gsl_vector_get(x, 0);
-        }
-      else if (j >= n)
-        {
-          if (endtype == GSL_FILTER_END_PADZERO)
-            window[widx] = 0.0;
-          else if (endtype == GSL_FILTER_END_PADVALUE)
-            window[widx] = gsl_vector_get(x, n - 1);
-        }
-      else
-        {
-          window[widx] = gsl_vector_get(x, j);
-        }
-    }
-
-  wsize = idx2 - idx1 + 1;
-
-  return wsize;
 }
 
 static size_t

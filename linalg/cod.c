@@ -628,7 +628,7 @@ Inputs: QRZT  - encoded COD matrix
         tau_Z - Householder scalars for Z
         rank  - matrix rank
         v     - on input, vector of length N
-                on output, Z^T * v
+                on output, Z * v
 */
 
 static int

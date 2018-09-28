@@ -119,6 +119,7 @@ int gsl_movstat_sum(const gsl_movstat_end_t endtype, const gsl_vector * x, gsl_v
 
 /* accumulator variables */
 
+GSL_VAR const gsl_movstat_accum * gsl_movstat_accum_mad;
 GSL_VAR const gsl_movstat_accum * gsl_movstat_accum_max;
 GSL_VAR const gsl_movstat_accum * gsl_movstat_accum_mean;
 GSL_VAR const gsl_movstat_accum * gsl_movstat_accum_median;

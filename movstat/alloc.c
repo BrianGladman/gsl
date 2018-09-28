@@ -112,6 +112,7 @@ gsl_movstat_alloc_with_size(const size_t accum_state_size, const size_t H, const
        * determine maximum number of bytes needed for the various accumulators;
        * the accumulators will all share the same workspace
        */
+      state_size = GSL_MAX(state_size, (gsl_movstat_accum_mad->size)(w->K));    /* MAD accumulator */
       state_size = GSL_MAX(state_size, (gsl_movstat_accum_mean->size)(w->K));   /* mean/variance/sd accumulator */
       state_size = GSL_MAX(state_size, (gsl_movstat_accum_min->size)(w->K));    /* min/max accumulator */
       state_size = GSL_MAX(state_size, (gsl_movstat_accum_sum->size)(w->K));    /* sum accumulator */

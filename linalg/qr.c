@@ -74,8 +74,7 @@ gsl_linalg_QR_decomp (gsl_matrix * A, gsl_vector * tau)
           /* Compute the Householder transformation to reduce the j-th
              column of the matrix to a multiple of the j-th unit vector */
 
-          gsl_vector_view c_full = gsl_matrix_column (A, i);
-          gsl_vector_view c = gsl_vector_subvector (&(c_full.vector), i, M-i);
+          gsl_vector_view c = gsl_matrix_subcolumn (A, i, i, M - i);
 
           double tau_i = gsl_linalg_householder_transform (&(c.vector));
 

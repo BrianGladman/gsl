@@ -749,7 +749,15 @@ Gastwirth Estimator
 
 Gastwirth's location estimator is a weighted sum of three order statistics,
 
-.. math:: gastwirth = 0.3 \times Q_{\frac{1}{3}} + 0.4 \times Q_{\frac{1}{2}} + 0.3 \times Q_{\frac{2}{3}}
+.. only:: not texinfo
+
+   .. math:: gastwirth = 0.3 \times Q_{\frac{1}{3}} + 0.4 \times Q_{\frac{1}{2}} + 0.3 \times Q_{\frac{2}{3}}
+
+.. only:: texinfo
+
+   ::
+
+      gastwirth = 0.3 * Q_{1/3} + 0.4 * Q_{1/2} + 0.3 * Q_{2/3}
 
 where :math:`Q_{\frac{1}{3}}` is the one-third quantile, :math:`Q_{\frac{1}{2}}` is the one-half
 quantile (i.e. median), and :math:`Q_{\frac{2}{3}}` is the two-thirds quantile.
@@ -785,7 +793,15 @@ Median Absolute Deviation (MAD)
 
 The median absolute deviation (MAD) is defined as
 
-.. math:: MAD = 1.4826 \times \textrm{median} \left\{ \left| x_i - \textrm{median} \left( x \right) \right| \right\}
+.. only:: not texinfo
+
+   .. math:: MAD = 1.4826 \times \textrm{median} \left\{ \left| x_i - \textrm{median} \left( x \right) \right| \right\}
+
+.. only:: texinfo
+
+   ::
+
+      MAD = 1.4826 median { | x_i - median(x) | }
 
 In words, first the median of all samples is computed. Then the median
 is subtracted from all samples in the input to find the deviation of each sample
@@ -813,7 +829,15 @@ The median absolute deviation has an asymptotic efficiency of 37%.
 
 The :math:`S_n` statistic developed by Croux and Rousseeuw is defined as
 
-.. math:: S_n = 1.1926 \times c_n \times \textrm{median}_i \left\{ \textrm{median}_j \left( \left| x_i - x_j \right| \right) \right\}
+.. only:: not texinfo
+
+   .. math:: S_n = 1.1926 \times c_n \times \textrm{median}_i \left\{ \textrm{median}_j \left( \left| x_i - x_j \right| \right) \right\}
+
+.. only:: texinfo
+
+   ::
+
+      S_n = 1.1926 * c_n * median_i { median_j ( | x_i - x_j | ) }
 
 For each sample :math:`x_i, 1 \le i \le n`, the median of the values :math:`\left| x_i - x_j \right|` is computed for all
 :math:`x_j, 1 \le j \le n`. This yields :math:`n` values, whose median then gives the final :math:`S_n`.
@@ -844,18 +868,35 @@ efficiency of 58%.
 
 The :math:`Q_n` statistic developed by Croux and Rousseeuw is defined as
 
-.. math:: Q_n = 2.21914 \times d_n \times \left\{ \left| x_i - x_j \right|, i < j \right\}_{(k)}
+.. only:: not texinfo
+
+   .. math:: Q_n = 2.21914 \times d_n \times \left\{ \left| x_i - x_j \right|, i < j \right\}_{(k)}
+
+.. only:: texinfo
+
+   ::
+
+      Q_n = 2.21914 * d_n * { | x_i - x_j |, i < j }_{(k)}
 
 The factor :math:`2.21914` makes :math:`Q_n` an unbiased estimate of the standard deviation for Gaussian data.
 The factor :math:`d_n` is a correction factor to correct bias in small sample sizes. The order statistic
 is
 
-.. math:: k = \left(
-                \begin{array}{c}
-                  \left\lfloor \frac{n}{2} \right\rfloor + 1 \\
-                  2
-                \end{array}
-              \right)
+.. only:: not texinfo
+
+   .. math:: k = \left(
+                   \begin{array}{c}
+                     \left\lfloor \frac{n}{2} \right\rfloor + 1 \\
+                     2
+                   \end{array}
+                 \right)
+
+.. only:: texinfo
+
+   ::
+
+      k = ( floor(n/2) + 1 )
+          (       2        )
 
 :math:`Q_n` has an asymptotic efficiency of 82%.
 

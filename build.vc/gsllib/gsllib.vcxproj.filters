@@ -1950,6 +1950,15 @@
     <ClCompile Include="..\..\statistics\wcovar.c">
       <Filter>statistics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\randist\wishart.c">
+      <Filter>randist</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\movstat\madacc.c">
+      <Filter>movstat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\linalg\cholesky_band.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\integration\qng.h">

@@ -74,6 +74,13 @@ test_median_root(const double tol, const size_t n, const size_t K, const gsl_mov
   gsl_movstat_free(w);
 }
 
+static double
+func_median(const size_t n, double x[], void * params)
+{
+  (void) params;
+  return gsl_stats_median(x, 1, n);
+}
+
 static void
 test_median_proc(const double tol, const size_t n, const size_t H, const size_t J,
                  const gsl_movstat_end_t etype, gsl_rng *rng_p)
@@ -82,7 +89,11 @@ test_median_proc(const double tol, const size_t n, const size_t H, const size_t 
   gsl_vector *x = gsl_vector_alloc(n);
   gsl_vector *y = gsl_vector_alloc(n);
   gsl_vector *z = gsl_vector_alloc(n);
+  gsl_movstat_function F;
   char buf[2048];
+
+  F.function = func_median;
+  F.params = NULL;
 
   if (H == J)
     w = gsl_movstat_alloc(2*H + 1);
@@ -107,6 +118,12 @@ test_median_proc(const double tol, const size_t n, const size_t H, const size_t 
   gsl_movstat_median(etype, z, z, w);
 
   sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u median random in-place", n, H, J, etype);
+  compare_vectors(tol, z, y, buf);
+
+  /* z = median(x) with user-defined function */
+  gsl_movstat_apply(etype, &F, x, z, w);
+
+  sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u median user", n, H, J, etype);
   compare_vectors(tol, z, y, buf);
 
   gsl_vector_free(x);

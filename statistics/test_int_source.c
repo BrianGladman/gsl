@@ -263,7 +263,7 @@ FUNCTION (test, func) (const size_t stridea, const size_t strideb)
   }
 
   {
-    const double trim = 0.3;
+    const double trim = 0.31;
     double trmean = FUNCTION(gsl_stats,trmean_from_sorted_data)(trim, sorted, stridea, ina) ;
     double expected = 17.875;
     gsl_test_rel  (trmean, expected, rel,

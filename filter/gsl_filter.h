@@ -91,7 +91,6 @@ typedef struct
 gsl_filter_rmedian_workspace *gsl_filter_rmedian_alloc(const size_t K);
 void gsl_filter_rmedian_free(gsl_filter_rmedian_workspace * w);
 int gsl_filter_rmedian(const gsl_filter_end_t, const gsl_vector * x, gsl_vector * y, gsl_filter_rmedian_workspace * w);
-int gsl_filter_rmedian2(const gsl_vector * x, gsl_vector * y, gsl_filter_rmedian_workspace * w);
 
 typedef struct
 {
@@ -103,9 +102,6 @@ void gsl_filter_impulse_free(gsl_filter_impulse_workspace * w);
 int gsl_filter_impulse(const gsl_filter_end_t endtype, const gsl_filter_scale_t scale_type, const double t,
                        const gsl_vector * x, gsl_vector * y, gsl_vector * xmedian, gsl_vector * xsigma, size_t * noutlier,
                        gsl_vector_int * ioutlier, gsl_filter_impulse_workspace * w);
-int gsl_filter_impulse2(const gsl_filter_end_t endtype, const gsl_filter_scale_t scale_type, const double epsilon, const double t,
-                        const gsl_vector * x, gsl_vector * y, gsl_vector * xmedian, gsl_vector * xsigma, size_t * noutlier,
-                        gsl_vector_int * ioutlier, gsl_filter_impulse_workspace * w);
 
 __END_DECLS
 

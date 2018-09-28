@@ -53,17 +53,37 @@ slow_movmad(const gsl_movstat_end_t etype, const gsl_vector * x, gsl_vector * y,
   return GSL_SUCCESS;
 }
 
+static double
+func_mad(const size_t n, double x[], void * params)
+{
+  double *work = malloc(n * sizeof(double));
+  double mad;
+
+  (void) params;
+
+  mad = gsl_stats_mad0(x, 1, n, work);
+
+  free(work);
+
+  return mad;
+}
+
 static void
 test_mad_proc(const double tol, const size_t n, const size_t H, const size_t J,
               const gsl_movstat_end_t etype, gsl_rng *rng_p)
 {
+  const double scale = 1.482602218505602;
   gsl_movstat_workspace *w;
   gsl_vector *x = gsl_vector_alloc(n);
   gsl_vector *y = gsl_vector_alloc(n);
   gsl_vector *z = gsl_vector_alloc(n);
   gsl_vector *med1 = gsl_vector_alloc(n);
   gsl_vector *med2 = gsl_vector_alloc(n);
+  gsl_movstat_function F;
   char buf[2048];
+
+  F.function = func_mad;
+  F.params = NULL;
 
   if (H == J)
     w = gsl_movstat_alloc(2*H + 1);
@@ -83,21 +103,34 @@ test_mad_proc(const double tol, const size_t n, const size_t H, const size_t J,
   gsl_movstat_median(etype, x, med2, w);
 
   /* test y = z */
-  sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u MAD random", n, H, J, etype);
+  sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u MAD0 random", n, H, J, etype);
   compare_vectors(tol, z, y, buf);
 
   /* test med1 = med2 */
-  sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u MAD random median test", n, H, J, etype);
+  sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u MAD0 random median test", n, H, J, etype);
   compare_vectors(tol, med1, med2, buf);
 
-#if 0 /*XXX*/
   /* z = MAD(x) in-place */
   gsl_vector_memcpy(z, x);
-  gsl_movstat_mad(etype, z, med1, z, w);
+  gsl_movstat_mad0(etype, z, med1, z, w);
 
-  sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u MAD random in-place", n, H, J, etype);
+  sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u MAD0 random in-place", n, H, J, etype);
   compare_vectors(tol, z, y, buf);
-#endif
+
+  /* z = MAD(x) with user-defined function */
+  gsl_movstat_apply(etype, &F, x, z, w);
+
+  sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u MAD0 user", n, H, J, etype);
+  compare_vectors(tol, z, y, buf);
+
+  /* test scaled MAD function */
+
+  /* z = MAD(x) */
+  gsl_movstat_mad(etype, x, med1, z, w);
+
+  sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u MAD random", n, H, J, etype);
+  gsl_vector_scale(y, scale);
+  compare_vectors(tol, z, y, buf);
 
   gsl_vector_free(x);
   gsl_vector_free(y);

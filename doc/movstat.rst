@@ -26,7 +26,15 @@ includes the sample itself as well as some specified number of samples
 before and after the sample in question. For a sample :math:`x_i`, we
 define a window :math:`W_i^{H,J}` as
 
-.. math:: W_i^{H,J} = \left\{ x_{i-H}, \dots, x_i, \dots, x_{i+J} \right\}
+.. only:: not texinfo
+
+   .. math:: W_i^{H,J} = \left\{ x_{i-H}, \dots, x_i, \dots, x_{i+J} \right\}
+
+.. only:: texinfo
+
+   ::
+
+      W_i^{H,J} = {x_{i-H},...,x_i,...,x_{i+J}}
 
 The parameters :math:`H` and :math:`J` are non-negative integers specifying
 the number of samples to include before and after the sample :math:`x_i`.
@@ -55,7 +63,15 @@ This is done by passing an input argument of type :type:`gsl_movstat_end_t`:
       by inserting zeros into the window near the signal end points. Effectively,
       the input signal is modified to
 
-      .. math:: \tilde{x} = \{ \underbrace{0, \dots, 0}_{H \textrm{ zeros}}, x_1, x_2, \dots, x_{n-1}, x_n, \underbrace{0, \dots, 0}_{J \textrm{ zeros} } \}
+      .. only:: not texinfo
+
+         .. math:: \tilde{x} = \{ \underbrace{0, \dots, 0}_{H \textrm{ zeros}}, x_1, x_2, \dots, x_{n-1}, x_n, \underbrace{0, \dots, 0}_{J \textrm{ zeros} } \}
+
+      .. only:: texinfo
+
+         ::
+
+            x~ = {0, ..., 0, x_1, x_2, ..., x_{n-1}, x_n, 0, ..., 0}
 
       to ensure a well-defined window for all :math:`x_i`.
 
@@ -65,7 +81,15 @@ This is done by passing an input argument of type :type:`gsl_movstat_end_t`:
       by padding the window with the first and last sample in the input signal.
       Effectively, the input signal is modified to
 
-      .. math:: \tilde{x} = \{ \underbrace{x_1, \dots, x_1}_{H}, x_1, x_2, \dots, x_{n-1}, x_n, \underbrace{x_n, \dots, x_n}_{J} \}
+      .. only:: not texinfo
+
+         .. math:: \tilde{x} = \{ \underbrace{x_1, \dots, x_1}_{H}, x_1, x_2, \dots, x_{n-1}, x_n, \underbrace{x_n, \dots, x_n}_{J} \}
+
+      .. only:: texinfo
+
+         ::
+
+            x~ = {x_1, ..., x_1, x_1, x_2, ..., x_{n-1}, x_n, x_n, ..., x_n}
 
    .. macro:: GSL_MOVSTAT_END_TRUNCATE
 
@@ -107,7 +131,15 @@ Moving Mean
 
 The moving window mean calculates the mean of the values of each window :math:`W_i^{H,J}`.
 
-.. math:: \hat{\mu}_i = \frac{1}{\left| W_i^{H,J} \right|} \sum_{x_m \in W_i^{H,J}} x_m
+.. only:: not texinfo
+
+   .. math:: \hat{\mu}_i = \frac{1}{\left| W_i^{H,J} \right|} \sum_{x_m \in W_i^{H,J}} x_m
+
+.. only:: texinfo
+
+   ::
+
+      \hat{\mu}_i = 1/| W_i^{H,J} | \sum_{x_m \in W_i^{H,J}} x_m
 
 Here, :math:`\left| W_i^{H,J} \right|` represents the number of elements in the window
 :math:`W_i^{H,J}`. This will normally be :math:`K`, unless the :macro:`GSL_MOVSTAT_END_TRUNCATE`
@@ -132,7 +164,15 @@ Moving Variance and Standard Deviation
 The moving window variance calculates the *sample variance* of the values of each window :math:`W_i^{H,J}`,
 defined by
 
-.. math:: \hat{\sigma}_i^2 = \frac{1}{\left( \left| W_i^{H,J} \right| - 1 \right)} \sum_{x_m \in W_i^{H,J}} \left( x_m - \hat{\mu}_i \right)^2
+.. only:: not texinfo
+
+   .. math:: \hat{\sigma}_i^2 = \frac{1}{\left( \left| W_i^{H,J} \right| - 1 \right)} \sum_{x_m \in W_i^{H,J}} \left( x_m - \hat{\mu}_i \right)^2
+
+.. only:: texinfo
+
+   ::
+
+      \hat{\sigma}_i^2 = 1/(|W_i^{H,J}| - 1) \sum_{x_m \in W_i^{H,J}} ( x_m - \hat{\mu}_i )^2
 
 where :math:`\hat{\mu}_i` is the mean of :math:`W_i^{H,J}` defined above. The standard deviation :math:`\hat{\sigma}_i`
 is the square root of the variance.
@@ -163,10 +203,19 @@ Moving Minimum and Maximum
 The moving minimum/maximum calculates the minimum and maximum values of
 each window :math:`W_i^{H,J}`.
 
-.. math::
+.. only:: not texinfo
 
-   y_i^{min} &= \min \left( W_i^{H,J} \right) \\
-   y_i^{max} &= \max \left( W_i^{H,J} \right)
+    .. math::
+
+       y_i^{min} &= \min \left( W_i^{H,J} \right) \\
+       y_i^{max} &= \max \left( W_i^{H,J} \right)
+
+.. only:: texinfo
+
+   ::
+
+      y_i^{min} = \min W_i^{H,J}
+      y_i^{max} = \max W_i^{H,J}
 
 .. function:: int gsl_movstat_min(const gsl_movstat_end_t endtype, const gsl_vector * x, gsl_vector * y, gsl_movstat_workspace * w)
 
@@ -216,7 +265,15 @@ Moving Median
 The moving median calculates the median of the window :math:`W_i^{H,J}` for
 each sample :math:`x_i`:
 
-.. math:: y_i = \textrm{median} \left( W_i^{H,J} \right)
+.. only:: not texinfo
+
+    .. math:: y_i = \textrm{median} \left( W_i^{H,J} \right)
+
+.. only:: texinfo
+
+   ::
+
+      y_i = median(W_i^{H,J})
 
 .. function:: int gsl_movstat_median(const gsl_movstat_end_t endtype, const gsl_vector * x, gsl_vector * y, gsl_movstat_workspace * w)
 
@@ -246,7 +303,15 @@ Moving MAD
 The median absolute deviation (MAD) for the window :math:`W_i^{H,J}` is defined
 to be the median of the absolute deviations from the window's median:
 
-.. math:: MAD_i = 1.4826 \times \textrm{median} \left( \left| W_i^{H,J} - \textrm{median} \left( W_i^{H,J} \right) \right| \right)
+.. only:: not texinfo
+
+    .. math:: MAD_i = 1.4826 \times \textrm{median} \left( \left| W_i^{H,J} - \textrm{median} \left( W_i^{H,J} \right) \right| \right)
+
+.. only:: texinfo
+
+   ::
+
+      MAD_i = 1.4826 * median[ |W_i^{H,J} - median(W_i^{H,J})| ]
 
 The factor of :math:`1.4826` makes the MAD an unbiased estimator of the standard deviation
 for Gaussian data. The MAD has an efficiency of 37%.  See :ref:`here <sec_mad-statistic>` for more information.
@@ -517,13 +582,35 @@ the presence of the outliers. The program is given below.
 .. include:: examples/movstat2.c
    :code:
 
+Example 3: User-defined Moving Window
+-------------------------------------
+
+This example program illustrates how a user can define their own moving window function to apply
+to an input vector. It constructs a random noisy time series of length :math:`N = 1000` with
+some outliers added. Then it applies a moving window trimmed mean to the time series with
+trim parameter :math:`\alpha = 0.1`. The length of the moving window is :math:`K = 11`, so
+the smallest and largest sample of each window is discarded prior to computing the mean.
+The results are shown in :numref:`fig_movstat3`.
+
+.. _fig_movstat3:
+
+.. figure:: /images/movstat3.png
+   :scale: 60%
+
+   Noisy time series data (black) with moving window trimmed mean (red)
+
+The program is given below.
+
+.. include:: examples/movstat3.c
+   :code:
+
 References and Further Reading
 ==============================
 
 The following publications are relevant to the algorithms described
 in this chapter,
 
-* W. Härdle and W. Steiger, *Optimal Median Smoothing*, Appl. Statist. 44 (2), 1995.
+* W.Hardle and W. Steiger, *Optimal Median Smoothing*, Appl. Statist., 44 (2), 1995.
 
 * D. Lemire, *Streaming Maximum-Minimum Filter Using No More than Three Comparisons per Element*,
   Nordic Journal of Computing, 13 (4), 2006 (https://arxiv.org/abs/cs/0610046).

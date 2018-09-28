@@ -42,6 +42,7 @@ static ringbuf_type_t ringbuf_peek(const int i, const ringbuf * b);
 static ringbuf_type_t ringbuf_peek_front(const ringbuf * d);
 static ringbuf_type_t ringbuf_peek_back(const ringbuf * d);
 static size_t ringbuf_copy(double * dest, const ringbuf * b);
+static int ringbuf_n(const ringbuf * b);
 
 static size_t
 ringbuf_size(const size_t n)
@@ -199,7 +200,7 @@ ringbuf_copy(double * dest, const ringbuf * b)
     }
   else
     {
-      const int n = (b->head > b->tail) ? (b->size - b->head + b->tail + 1) : (b->tail - b->head + 1);
+      const int n = ringbuf_n(b);
       int i;
 
       for (i = 0; i < n; ++i)
@@ -207,6 +208,13 @@ ringbuf_copy(double * dest, const ringbuf * b)
 
       return (size_t) n;
     }
+}
+
+static int
+ringbuf_n(const ringbuf * b)
+{
+  const int n = (b->head > b->tail) ? (b->size - b->head + b->tail + 1) : (b->tail - b->head + 1);
+  return n;
 }
 
 #endif /* __GSL_RINGBUF_C__ */

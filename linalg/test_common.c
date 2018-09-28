@@ -65,6 +65,29 @@ create_symm_matrix(gsl_matrix * m, gsl_rng * r)
   return GSL_SUCCESS;
 }
 
+/* create symmetric banded matrix with p sub/super-diagonals */
+static int
+create_symm_band_matrix(const size_t p, gsl_matrix * m, gsl_rng * r)
+{
+  size_t i;
+
+  gsl_matrix_set_zero(m);
+
+  for (i = 0; i < p + 1; ++i)
+    {
+      gsl_vector_view subdiag = gsl_matrix_subdiagonal(m, i);
+      create_random_vector(&subdiag.vector, r);
+
+      if (i > 0)
+        {
+          gsl_vector_view superdiag = gsl_matrix_superdiagonal(m, i);
+          gsl_vector_memcpy(&superdiag.vector, &subdiag.vector);
+        }
+    }
+
+  return GSL_SUCCESS;
+}
+
 static int
 create_posdef_matrix(gsl_matrix * m, gsl_rng * r)
 {
@@ -102,4 +125,58 @@ create_hilbert_matrix2(gsl_matrix * m)
     }
 
   return GSL_SUCCESS;
+}
+
+static int
+create_posdef_band_matrix(const size_t p, gsl_matrix * m, gsl_rng * r)
+{
+  const size_t N = m->size1;
+  const double alpha = 10.0 * N;
+  size_t i;
+
+  /* The idea is to make a symmetric diagonally dominant
+   * matrix. Make a symmetric matrix and add alpha*I to
+   * its diagonal */
+
+  create_symm_band_matrix(p, m, r);
+
+  for (i = 0; i < N; ++i)
+    {
+      double *mii = gsl_matrix_ptr(m, i, i);
+      *mii += alpha;
+    }
+
+  return GSL_SUCCESS;
+}
+
+/* transform dense symmetric banded matrix to compact form, with bandwidth p */
+static int
+symm2band_matrix(const size_t p, const gsl_matrix * m, gsl_matrix * bm)
+{
+  const size_t N = m->size1;
+
+  if (bm->size1 != N)
+    {
+      GSL_ERROR("banded matrix requires N rows", GSL_EBADLEN);
+    }
+  else if (bm->size2 != p + 1)
+    {
+      GSL_ERROR("banded matrix requires p + 1 columns", GSL_EBADLEN);
+    }
+  else
+    {
+      size_t i;
+
+      gsl_matrix_set_zero(bm);
+
+      for (i = 0; i < p + 1; ++i)
+        {
+          gsl_vector_const_view diag = gsl_matrix_const_subdiagonal(m, i);
+          gsl_vector_view v = gsl_matrix_subcolumn(bm, i, 0, N - i);
+
+          gsl_vector_memcpy(&v.vector, &diag.vector);
+        }
+
+      return GSL_SUCCESS;
+    }
 }

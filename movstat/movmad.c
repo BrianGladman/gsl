@@ -27,9 +27,6 @@
 #include <gsl/gsl_sort.h>
 #include <gsl/gsl_statistics.h>
 
-static int movstat_mad(const gsl_movstat_end_t endtype, const double scale, const gsl_vector * x,
-                       gsl_vector * xmedian, gsl_vector * xmad, gsl_movstat_workspace * w);
-
 /*
 gsl_movstat_mad()
   Apply a moving MAD to an input vector (with scale factor to make an
@@ -48,8 +45,20 @@ int
 gsl_movstat_mad(const gsl_movstat_end_t endtype, const gsl_vector * x, gsl_vector * xmedian, gsl_vector * xmad,
                 gsl_movstat_workspace * w)
 {
-  int status = movstat_mad(endtype, 1.482602218505602, x, xmedian, xmad, w);
-  return status;
+  if (x->size != xmedian->size)
+    {
+      GSL_ERROR("x and xmedian vectors must have same length", GSL_EBADLEN);
+    }
+  else if (x->size != xmad->size)
+    {
+      GSL_ERROR("x and xmad vectors must have same length", GSL_EBADLEN);
+    }
+  else
+    {
+      double scale = 1.482602218505602;
+      int status = gsl_movstat_apply_accum(endtype, x, gsl_movstat_accum_mad, &scale, xmedian, xmad, w);
+      return status;
+    }
 }
 
 /*
@@ -70,14 +79,6 @@ int
 gsl_movstat_mad0(const gsl_movstat_end_t endtype, const gsl_vector * x, gsl_vector * xmedian, gsl_vector * xmad,
                  gsl_movstat_workspace * w)
 {
-  int status = movstat_mad(endtype, 1.0, x, xmedian, xmad, w);
-  return status;
-}
-
-static int
-movstat_mad(const gsl_movstat_end_t endtype, const double scale, const gsl_vector * x, gsl_vector * xmedian, gsl_vector * xmad,
-            gsl_movstat_workspace * w)
-{
   if (x->size != xmedian->size)
     {
       GSL_ERROR("x and xmedian vectors must have same length", GSL_EBADLEN);
@@ -88,29 +89,8 @@ movstat_mad(const gsl_movstat_end_t endtype, const double scale, const gsl_vecto
     }
   else
     {
-      const size_t n = x->size;
-      double *window = w->work;
-      size_t i;
-
-      /* first calculate median values of each window in x */
-      gsl_movstat_median(endtype, x, xmedian, w);
-
-      /* loop over windows and compute MAD */
-      for (i = 0; i < n; ++i)
-        {
-          size_t window_size = gsl_movstat_fill(endtype, x, i, w->H, w->J, window);
-          double xmedi = gsl_vector_get(xmedian, i);
-          double *xmadi = gsl_vector_ptr(xmad, i);
-          size_t j;
-
-          /* compute absolute deviations from median for this window */
-          for (j = 0; j < window_size; ++j)
-            window[j] = fabs(window[j] - xmedi);
-
-          /* compute MAD for this window */
-          *xmadi = scale * gsl_stats_median(window, 1, window_size);
-        }
-
-      return GSL_SUCCESS;
+      double scale = 1.0;
+      int status = gsl_movstat_apply_accum(endtype, x, gsl_movstat_accum_mad, &scale, xmedian, xmad, w);
+      return status;
     }
 }

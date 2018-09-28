@@ -17,13 +17,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifdef _MSC_VER
-#  include <gettimeofday.h>
-#else
-#  include <sys/time.h>
-#endif
-#define TIMEDIFF(a, b)    ((double) ((b).tv_sec - (a).tv_sec) + 1.0e-6 * ((b).tv_usec - (a).tv_usec))
-
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_test.h>
@@ -34,39 +27,36 @@
 /* slow/dumb rmedian which constructs actual window for each sample, sorts
  * it and finds median */
 static int
-slow_rmedian(const gsl_vector * x, gsl_vector * y, const size_t k)
+slow_rmedian(const gsl_filter_end_t endtype, const gsl_vector * x, gsl_vector * y, const int K)
 {
-  const size_t n = x->size;
-  const size_t window_size = (k % 2 == 0) ? k + 1 : k;
-  const int H = (int) (window_size / 2);
-  double *window = malloc(window_size * sizeof(double));
-  size_t i;
+  const int n = (int) x->size;
+  const int H = K / 2;
+  double *window = malloc(K * sizeof(double));
+  int i;
 
   for (i = 0; i < n; ++i)
     {
+      size_t wsize = gsl_movstat_fill(endtype, x, i, H, H, window);
       double yi;
-      int idx;
-      size_t j = 0;
+      int j;
 
-      /* fill window with previous filter output values */
-      for (idx = (int) i - H; idx < (int) i; ++idx)
+      /* fill first half of window with previous filter output values */
+      for (j = i - H; j < i; ++j)
         {
-          if (idx < 0)
-            window[j++] = 0.0; /* zero pad */
+          if (j < 0)
+            {
+              if (endtype == GSL_FILTER_END_PADVALUE)
+                window[j - i + H] = gsl_vector_get(x, 0);
+              else if (endtype == GSL_FILTER_END_PADZERO)
+                window[j - i + H] = 0.0;
+            }
           else
-            window[j++] = gsl_vector_get(y, idx);
+            {
+              window[j - i + H] = gsl_vector_get(y, j);
+            }
         }
 
-      /* fill remainder of window with input samples */
-      for (idx = (int) i; idx <= (int) i + H; ++idx)
-        {
-          if (idx < (int) n)
-            window[j++] = gsl_vector_get(x, idx);
-          else
-            window[j++] = 0.0; /* zero pad */
-        }
-
-      yi = gsl_stats_median(window, 1, window_size);
+      yi = gsl_stats_median(window, 1, wsize);
       gsl_vector_set(y, i, yi);
     }
 
@@ -98,12 +88,6 @@ test_rmedian_root(const gsl_filter_end_t etype, const size_t n, const size_t k)
   sprintf(buf, "n=%zu k=%zu RMF square wave root sequence", n, k);
   compare_vectors(tol, y, x, buf);
 
-  /* compute y = rmedian(x) with second algorithm and test y = x */
-  gsl_filter_rmedian2(x, y, w);
-
-  sprintf(buf, "n=%zu k=%zu RMF square wave root sequence 2nd algo", n, k);
-  compare_vectors(tol, y, x, buf);
-
   gsl_vector_free(x);
   gsl_vector_free(y);
   gsl_filter_rmedian_free(w);
@@ -111,10 +95,10 @@ test_rmedian_root(const gsl_filter_end_t etype, const size_t n, const size_t k)
 
 /* test random input and in-place */
 static void
-test_rmedian_random(const gsl_filter_end_t etype, const size_t n, const size_t k, gsl_rng * r)
+test_rmedian_random(const gsl_filter_end_t etype, const size_t n, const int K, gsl_rng * r)
 {
   const double tol = 1.0e-12;
-  gsl_filter_rmedian_workspace *w = gsl_filter_rmedian_alloc(k);
+  gsl_filter_rmedian_workspace *w = gsl_filter_rmedian_alloc(K);
   gsl_vector *x = gsl_vector_alloc(n);
   gsl_vector *y = gsl_vector_alloc(n);
   gsl_vector *z = gsl_vector_alloc(n);
@@ -127,10 +111,10 @@ test_rmedian_random(const gsl_filter_end_t etype, const size_t n, const size_t k
   gsl_filter_rmedian(etype, x, y, w);
 
   /* y = rmedian(x) with slow algorithm */
-  slow_rmedian(x, z, w->K);
+  slow_rmedian(etype, x, z, K);
 
   /* test y = z */
-  sprintf(buf, "n=%zu k=%zu RMF symmetric random slow test", n, k);
+  sprintf(buf, "n=%zu K=%d RMF symmetric random slow test", n, K);
   compare_vectors(tol, y, z, buf);
 
   /* test in-place filter */
@@ -139,59 +123,13 @@ test_rmedian_random(const gsl_filter_end_t etype, const size_t n, const size_t k
   gsl_vector_memcpy(z, x);
   gsl_filter_rmedian(etype, z, z, w);
 
-  sprintf(buf, "n=%zu k=%zu RMF symmetric random in-place", n, k);
+  sprintf(buf, "n=%zu K=%d RMF symmetric random in-place", n, K);
   compare_vectors(tol, z, y, buf);
 
   gsl_vector_free(x);
   gsl_vector_free(y);
   gsl_vector_free(z);
   gsl_filter_rmedian_free(w);
-}
-
-void
-test_rmedian_sine(const gsl_filter_end_t etype, const size_t n, const size_t k, gsl_rng * r)
-{
-  gsl_vector *x = gsl_vector_alloc(n);
-  gsl_vector *y_rmedian = gsl_vector_alloc(n);
-  gsl_vector *z_rmedian = gsl_vector_alloc(n);
-  gsl_filter_rmedian_workspace *w = gsl_filter_rmedian_alloc(k);
-  size_t i;
-  struct timeval tv0, tv1;
-  double t1, t2;
-
-  for (i = 0; i < n; ++i)
-    {
-      double ti = (double) i / (n - 1.0);
-      double xi = sin(2.0 * M_PI * ti) +
-                  sin(2.0 * M_PI * 40.0 * ti);
-      double ei = gsl_ran_gaussian(r, 0.2);
-
-      gsl_vector_set(x, i, xi + ei);
-    }
-
-  /* y = rmedian(x) */
-  gettimeofday(&tv0, NULL);
-  gsl_filter_rmedian(etype, x, y_rmedian, w);
-  gettimeofday(&tv1, NULL);
-  t1 = TIMEDIFF(tv0, tv1);
-
-  /* y = rmedian(x) with 2nd algorithm */
-  gettimeofday(&tv0, NULL);
-  gsl_filter_rmedian2(x, z_rmedian, w);
-  gettimeofday(&tv1, NULL);
-  t2 = TIMEDIFF(tv0, tv1);
-  compare_vectors(GSL_DBL_EPSILON, z_rmedian, y_rmedian, "test_rmedian_sine 2nd algo");
-
-  fprintf(stderr, "1st algo = %g [sec], 2nd algo = %g [sec]\n", t1, t2);
-
-  /* z = rmedian(y) and check y = z */
-  gsl_filter_rmedian(etype, y_rmedian, z_rmedian, w);
-  compare_vectors(GSL_DBL_EPSILON, z_rmedian, y_rmedian, "test_rmedian_sine root sequence");
-
-  gsl_filter_rmedian_free(w);
-  gsl_vector_free(x);
-  gsl_vector_free(y_rmedian);
-  gsl_vector_free(z_rmedian);
 }
 
 void
@@ -218,12 +156,4 @@ test_rmedian(gsl_rng * rng_p)
   test_rmedian_random(GSL_FILTER_END_PADVALUE, 1000, 3, rng_p);
   test_rmedian_random(GSL_FILTER_END_PADVALUE, 100, 1001, rng_p);
   test_rmedian_random(GSL_FILTER_END_PADVALUE, 5, 7, rng_p);
-
-#if 0
-  test_rmedian_sine(1000, 5, rng_p);
-  test_rmedian_sine(5000, 71, rng_p);
-  test_rmedian_sine(5000, 201, rng_p);
-#elif 0
-  test_rmedian_sine(GSL_FILTER_END_PADZERO, 500000, 6001, rng_p);
-#endif
 }

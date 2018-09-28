@@ -50,6 +50,20 @@ slow_movsum(const gsl_movstat_end_t etype, const gsl_vector * x, gsl_vector * y,
   return GSL_SUCCESS;
 }
 
+static double
+func_sum(const size_t n, double x[], void * params)
+{
+  double sum = 0.0;
+  size_t i;
+
+  (void) params;
+
+  for (i = 0; i < n; ++i)
+    sum += x[i];
+
+  return sum;
+}
+
 static void
 test_sum_proc(const double tol, const size_t n, const size_t H, const size_t J,
               const gsl_movstat_end_t etype, gsl_rng * rng_p)
@@ -58,7 +72,11 @@ test_sum_proc(const double tol, const size_t n, const size_t H, const size_t J,
   gsl_vector * x = gsl_vector_alloc(n);
   gsl_vector * y = gsl_vector_alloc(n);
   gsl_vector * z = gsl_vector_alloc(n);
+  gsl_movstat_function F;
   char buf[2048];
+
+  F.function = func_sum;
+  F.params = NULL;
 
   random_vector(x, rng_p);
 
@@ -77,6 +95,12 @@ test_sum_proc(const double tol, const size_t n, const size_t H, const size_t J,
   gsl_movstat_sum(etype, z, z, w);
 
   sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u sum random in-place", n, H, J, etype);
+  compare_vectors(tol, z, y, buf);
+
+  /* z = sum(x) with user-defined function */
+  gsl_movstat_apply(etype, &F, x, z, w);
+
+  sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u sum user", n, H, J, etype);
   compare_vectors(tol, z, y, buf);
 
   gsl_movstat_free(w);

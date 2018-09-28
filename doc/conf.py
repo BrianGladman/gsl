@@ -56,9 +56,9 @@ title = u'GNU Scientific Library'
 # built documents.
 #
 # The short X.Y version.
-version = u'2.4'
+version = u'2.5'
 # The full version, including alpha/beta/rc tags.
-release = u'2.4'
+release = u'2.5'
 
 primary_domain = 'c'
 numfig = True

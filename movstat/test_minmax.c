@@ -49,6 +49,22 @@ slow_minmax(const gsl_movstat_end_t etype, const gsl_vector * x, gsl_vector * y_
   return GSL_SUCCESS;
 }
 
+static double
+func_min(const size_t n, double x[], void * params)
+{
+  gsl_vector_view v = gsl_vector_view_array(x, n);
+  (void) params;
+  return gsl_vector_min(&v.vector);
+}
+
+static double
+func_max(const size_t n, double x[], void * params)
+{
+  gsl_vector_view v = gsl_vector_view_array(x, n);
+  (void) params;
+  return gsl_vector_max(&v.vector);
+}
+
 static void
 test_minmax_x(const double tol, const gsl_vector * x, const int H, const int J,
               const gsl_movstat_end_t endtype, const char * desc)
@@ -61,7 +77,14 @@ test_minmax_x(const double tol, const gsl_vector * x, const int H, const int J,
   gsl_vector * y_max = gsl_vector_alloc(n);
   gsl_vector * z_max = gsl_vector_alloc(n);
   gsl_movstat_workspace * w = gsl_movstat_alloc2(H, J);
+  gsl_movstat_function F1, F2;
   char buf[2048];
+
+  F1.function = func_min;
+  F1.params = NULL;
+
+  F2.function = func_max;
+  F2.params = NULL;
 
   /* compute moving min/max */
   gsl_movstat_min(endtype, x, u_min, w);
@@ -96,6 +119,16 @@ test_minmax_x(const double tol, const gsl_vector * x, const int H, const int J,
 
   sprintf(buf, "test_minmax: %s in-place max endtype=%d n=%zu H=%d J=%d", desc, endtype, n, H, J);
   compare_vectors(tol, u_max, z_max, buf);
+
+  /* user-defined function tests */
+
+  gsl_movstat_apply(endtype, &F1, x, z_min, w);
+  sprintf(buf, "n=%zu H=%d J=%d endtype=%u min user", n, H, J, endtype);
+  compare_vectors(tol, z_min, y_min, buf);
+
+  gsl_movstat_apply(endtype, &F2, x, z_max, w);
+  sprintf(buf, "n=%zu H=%d J=%d endtype=%u max user", n, H, J, endtype);
+  compare_vectors(tol, z_max, y_max, buf);
 
   gsl_vector_free(u_min);
   gsl_vector_free(y_min);

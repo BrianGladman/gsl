@@ -24,7 +24,7 @@
 #include <gsl/gsl_test.h>
 #include <gsl/gsl_movstat.h>
 
-/* calculate S_n statistic for input vector using slow/naive algorithm */
+/* calculate Q_n statistic for input vector using slow/naive algorithm */
 static int
 slow_movQn(const gsl_movstat_end_t etype, const gsl_vector * x, gsl_vector * y,
            const int H, const int J)
@@ -53,6 +53,24 @@ slow_movQn(const gsl_movstat_end_t etype, const gsl_vector * x, gsl_vector * y,
   return GSL_SUCCESS;
 }
 
+static double
+func_Qn(const size_t n, double x[], void * params)
+{
+  double *work = malloc(3 * n * sizeof(double));
+  int *work_int = malloc(5 * n * sizeof(int));
+  double Qn;
+
+  (void) params;
+
+  gsl_sort(x, 1, n);
+  Qn = gsl_stats_Qn_from_sorted_data(x, 1, n, work, work_int);
+
+  free(work);
+  free(work_int);
+
+  return Qn;
+}
+
 static void
 test_Qn_proc(const double tol, const size_t n, const size_t H, const size_t J,
              const gsl_movstat_end_t etype, gsl_rng *rng_p)
@@ -61,7 +79,11 @@ test_Qn_proc(const double tol, const size_t n, const size_t H, const size_t J,
   gsl_vector *x = gsl_vector_alloc(n);
   gsl_vector *y = gsl_vector_alloc(n);
   gsl_vector *z = gsl_vector_alloc(n);
+  gsl_movstat_function F;
   char buf[2048];
+
+  F.function = func_Qn;
+  F.params = NULL;
 
   if (H == J)
     w = gsl_movstat_alloc(2*H + 1);
@@ -71,21 +93,27 @@ test_Qn_proc(const double tol, const size_t n, const size_t H, const size_t J,
   /* test moving median with random input */
   random_vector(x, rng_p);
 
-  /* y = S_n(x) with slow brute force algorithm */
+  /* y = Q_n(x) with slow brute force algorithm */
   slow_movQn(etype, x, y, H, J);
 
-  /* z = S_n(x) */
+  /* z = Q_n(x) */
   gsl_movstat_Qn(etype, x, z, w);
 
   /* test y = z */
   sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u Qn random", n, H, J, etype);
   compare_vectors(tol, z, y, buf);
 
-  /* z = S_n(x) in-place */
+  /* z = Q_n(x) in-place */
   gsl_vector_memcpy(z, x);
   gsl_movstat_Qn(etype, z, z, w);
 
   sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u Qn random in-place", n, H, J, etype);
+  compare_vectors(tol, z, y, buf);
+
+  /* z = Q_n(x) with user-defined function */
+  gsl_movstat_apply(etype, &F, x, z, w);
+
+  sprintf(buf, "n=%zu H=%zu J=%zu endtype=%u Qn user", n, H, J, etype);
   compare_vectors(tol, z, y, buf);
 
   gsl_vector_free(x);

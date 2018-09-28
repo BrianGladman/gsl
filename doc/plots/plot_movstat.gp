@@ -37,3 +37,11 @@ plot file us 1:3 w li ti "True sigma", \
      file us 1:8 w li lc rgb "gray" ti "sigma"
 
 unset multiplot
+
+set out "../images/movstat3.png"
+file = "../examples/movstat3.txt"
+
+plot file us 0:1 w li lw 3 lc rgb "black" ti "Data", \
+     file us 0:2 w li lw mylw lt 7 ti "Trimmed mean"
+
+unset multiplot
