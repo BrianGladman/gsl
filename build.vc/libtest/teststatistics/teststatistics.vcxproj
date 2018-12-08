@@ -22,7 +22,7 @@
     <ProjectGuid>{33D8FD70-EF29-4821-A886-E744B44DB3DE}</ProjectGuid>
     <RootNamespace>teststatistics</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -162,6 +162,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\statistics\test.c" />
     <ClCompile Include="..\..\..\statistics\test_nist.c" />
+    <ClCompile Include="..\..\..\statistics\test_robust.c" />
+    <ClCompile Include="..\..\..\statistics\trmean.c" />
+    <ClCompile Include="..\..\..\statistics\ttest.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

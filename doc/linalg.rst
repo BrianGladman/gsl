@@ -136,6 +136,8 @@ Note that the :math:`LU` decomposition is valid for singular matrices.
 
 .. index:: QR decomposition
 
+.. _linalg-qr:
+
 QR Decomposition
 ================
 
@@ -443,6 +445,77 @@ This basic solution is not guaranteed to be the minimum norm solution unless
    stored in the upper triangle of :data:`QR`. The reciprocal condition number estimate, defined as
    :math:`1 / (||R||_1 \cdot ||R^{-1}||_1)`, is stored in :data:`rcond`.
    Additional workspace of size :math:`3 N` is required in :data:`work`.
+
+.. index:: LQ decomposition
+
+LQ Decomposition
+================
+
+A general rectangular :math:`M`-by-:math:`N` matrix :math:`A` has a
+:math:`LQ` decomposition into the product of a lower trapezoidal
+:math:`M`-by-:math:`N` matrix :math:`L` and an orthogonal
+:math:`N`-by-:math:`N` square matrix :math:`Q`:
+
+.. math:: A = L Q
+
+If :math:`M \le N`, then :math:`L` can be written as :math:`L = (L_1 \quad 0)` where
+:math:`L_1` is :math:`M`-by-:math:`M` lower triangular,
+and
+
+.. math:: A =
+          \begin{pmatrix}
+            L_1 & 0
+          \end{pmatrix}
+          \begin{pmatrix}
+            Q_1 \\ Q_2
+          \end{pmatrix} = L_1 Q_1
+
+where :math:`Q_1` consists of the first :math:`M` rows of :math:`Q`, and :math:`Q_2`
+contains the remaining :math:`N - M` rows. The :math:`LQ` factorization of :math:`A`
+is essentially the same as the :ref:`QR factorization <linalg-qr>` of :math:`A^T`.
+
+The :math:`LQ` factorization may be used to find the minimum norm solution of
+an underdetermined system of equations :math:`A x = b`, where :math:`A` is
+:math:`M`-by-:math:`N` and :math:`M \le N`. The solution is
+
+.. math:: x = Q^T
+              \begin{pmatrix}
+                L_1^{-1} b \\
+                0
+              \end{pmatrix}
+
+.. function:: int gsl_linalg_LQ_decomp (gsl_matrix * A, gsl_vector * tau)
+
+   This function factorizes the :math:`M`-by-:math:`N` matrix :data:`A` into
+   the :math:`LQ` decomposition :math:`A = L Q`.  On output the diagonal and
+   lower trapezoidal part of the input matrix contain the matrix
+   :math:`L`. The vector :data:`tau` and the elements above the diagonal
+   of the matrix :data:`A` contain the Householder coefficients and
+   Householder vectors which encode the orthogonal matrix :data:`Q`.  The
+   vector :data:`tau` must be of length :math:`k=\min(M,N)`. The matrix
+   :math:`Q` is related to these components by, :math:`Q = Q_k ... Q_2 Q_1`
+   where :math:`Q_i = I - \tau_i v_i v_i^T` and :math:`v_i` is the
+   Householder vector :math:`v_i = (0,...,1,A(i,i+1),A(i,i+2),...,A(i,N))`.
+   This is the same storage scheme as used by |lapack|.
+
+.. function:: int gsl_linalg_LQ_lssolve (const gsl_matrix * LQ, const gsl_vector * tau, const gsl_vector * b, gsl_vector * x, gsl_vector * residual)
+
+   This function finds the minimum norm least squares solution to the underdetermined system :math:`A x = b`,
+   where the :math:`M`-by-:math:`N` matrix :data:`A` has :math:`M \le N`.
+   The routine requires as input the :math:`LQ` decomposition of :math:`A` into (:data:`LQ`, :data:`tau`)
+   given by :func:`gsl_linalg_LQ_decomp`.  The solution is returned in :data:`x`.  The
+   residual, :math:`b - Ax`, is computed as a by-product and stored in :data:`residual`.
+
+.. function:: int gsl_linalg_LQ_unpack (const gsl_matrix * LQ, const gsl_vector * tau, gsl_matrix * Q, gsl_matrix * L)
+
+   This function unpacks the encoded :math:`LQ` decomposition
+   (:data:`LQ`, :data:`tau`) into the matrices :data:`Q` and :data:`L`, where
+   :data:`Q` is :math:`N`-by-:math:`N` and :data:`L` is :math:`M`-by-:math:`N`. 
+
+.. function:: int gsl_linalg_LQ_QTvec (const gsl_matrix * LQ, const gsl_vector * tau, gsl_vector * v)
+
+   This function applies :math:`Q^T` to the vector :data:`v`, storing the result :math:`Q^T v` in
+   :data:`v` on output.
 
 .. index:: complete orthogonal decomposition
 
@@ -1538,6 +1611,121 @@ Triangular Systems
    :math:`N`-by-:math:`N` triangular matrix :data:`T`. The reciprocal condition number
    is stored in :data:`rcond` on output, and is defined by :math:`1 / (||T||_1 \cdot ||T^{-1}||_1)`.
    Additional workspace of size :math:`3 N` is required in :data:`work`.
+
+.. index:: banded matrices
+
+Banded Systems
+==============
+
+.. index::
+   single: banded symmetric matrices
+   single: symmetric matrices, banded
+
+.. _sec_symmetric-banded:
+
+Symmetric Banded Format
+-----------------------
+
+Routines which operate on symmetric banded matrices require an input matrix
+with the following format.
+
+As an example, consider the following :math:`6 \times 6` symmetric banded matrix
+with lower bandwidth :math:`p = 2`:
+
+.. math::
+
+   A = \begin{pmatrix}
+         \alpha_1 & \beta_1 & \gamma_1 & 0 & 0 & 0 \\
+         \beta_1 & \alpha_2 & \beta_2 & \gamma_2 & 0 & 0 \\
+         \gamma_1 & \beta_2 & \alpha_3 & \beta_3 & \gamma_3 & 0 \\
+         0 & \gamma_2 & \beta_3 & \alpha_4 & \beta_4 & \gamma_4 \\
+         0 & 0 & \gamma_3 & \beta_4 & \alpha_5 & \beta_5 \\
+         0 & 0 & 0 & \gamma_4 & \beta_5 & \alpha_6
+       \end{pmatrix}
+
+The packed symmetric banded :math:`6 \times 3` matrix will look like:
+
+.. math::
+
+   AB = \begin{pmatrix}
+          \alpha_1 & \beta_1 & \gamma_1 \\
+          \alpha_2 & \beta_2 & \gamma_2 \\
+          \alpha_3 & \beta_3 & \gamma_3 \\
+          \alpha_4 & \beta_4 & \gamma_4 \\
+          \alpha_5 & \beta_5 & * \\
+          \alpha_6 & * & *
+        \end{pmatrix}
+
+The entries marked by :math:`*` are not referenced by the symmetric banded
+routines.
+
+.. warning::
+
+   Note that this format is the transpose of the symmetric banded format used by
+   |LAPACK|. In order to develop efficient routines for symmetric banded matrices,
+   it helps to have the nonzero elements in each column in contiguous memory locations.
+   Since C uses row-major order, GSL stores the columns in the rows of the packed
+   banded format, while |LAPACK|, written in Fortran, uses the transposed format.
+
+.. index::
+   single: Cholesky decomposition, banded
+   single: banded Cholesky Decomposition
+
+Banded Cholesky Decomposition
+-----------------------------
+
+The routines in this section are designed to factor and solve linear
+systems of the form :math:`A x = b` where :math:`A` is a banded, symmetric,
+and positive definite matrix with lower bandwidth :math:`p`.
+
+.. function:: int gsl_linalg_cholesky_band_decomp(gsl_matrix * A)
+
+   This function factorizes the symmetric, positive-definite square matrix
+   :data:`A` into the Cholesky decomposition :math:`A = L L^T`. The input matrix
+   :data:`A` is given in :ref:`symmetric banded format <sec_symmetric-banded>`, and has dimensions
+   :math:`N`-by-:math:`(p + 1)`, where :math:`p` is the lower bandwidth of the matrix.
+   On output, the entries of :data:`A` are replaced by the entries of the matrix
+   :math:`L` in the same format. In addition, the lower right element of :data:`A` is
+   used to store the matrix 1-norm, used later by :func:`gsl_linalg_cholesky_band_rcond` to
+   calculate the reciprocal condition number.
+
+   If the matrix is not positive-definite then the decomposition will fail, returning the
+   error code :macro:`GSL_EDOM`. When testing whether a matrix is positive-definite, disable the error
+   handler first to avoid triggering an error.
+
+.. function:: int gsl_linalg_cholesky_band_solve (const gsl_matrix * LLT, const gsl_vector * b, gsl_vector * x)
+
+   This function solves the symmetric banded system :math:`A x = b` using the Cholesky
+   decomposition of :math:`A` held in the matrix :data:`LLT` which must
+   have been previously computed by :func:`gsl_linalg_cholesky_band_decomp`.
+
+.. function:: int gsl_linalg_cholesky_band_svx (const gsl_matrix * LLT, gsl_vector * x)
+
+   This function solves the symmetric banded system :math:`A x = b` in-place using the
+   Cholesky decomposition of :math:`A` held in the matrix :data:`LLT`
+   which must have been previously computed by :func:`gsl_linalg_cholesky_band_decomp`.
+   On input :data:`x` should contain the right-hand side :math:`b`, which is replaced by the
+   solution on output.
+
+.. function:: int gsl_linalg_cholesky_band_invert (const gsl_matrix * LLT, gsl_matrix * Ainv)
+
+   This function computes the inverse of a symmetric banded matrix from its Cholesky
+   decomposition :data:`LLT`, which must have been previously computed
+   by :func:`gsl_linalg_cholesky_band_decomp`. On output, the inverse is
+   stored in :data:`Ainv`, using both the lower and upper portions.
+
+.. function:: int gsl_linalg_cholesky_band_unpack (const gsl_matrix * LLT, gsl_matrix * L)
+
+   This function unpacks the lower triangular Cholesky factor from :data:`LLT` and stores
+   it in the lower triangular portion of the :math:`N`-by-:math:`N` matrix :data:`L`. The
+   upper triangular portion of :data:`L` is not referenced.
+
+.. function:: int gsl_linalg_cholesky_band_rcond (const gsl_matrix * LLT, double * rcond, gsl_vector * work)
+
+   This function estimates the reciprocal condition number (using the 1-norm) of the symmetric banded positive
+   definite matrix :math:`A`, using its Cholesky decomposition provided in :data:`LLT`.
+   The reciprocal condition number estimate, defined as :math:`1 / (||A||_1 \cdot ||A^{-1}||_1)`, is stored
+   in :data:`rcond`. Additional workspace of size :math:`3 N` is required in :data:`work`.
 
 .. index:: balancing matrices
 

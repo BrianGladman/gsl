@@ -304,7 +304,8 @@ set ytics 0.1
 set output outdir . 'rand-binomial.png'
 set title "Binomial Distribution"
 p(x)= P**int(x)*(1-P)**(n-int(x))*gamma(n+1.0)/gamma(int(x)+1.0)/gamma(n-int(x)+1.0) + 1e-5
-plot P=0.5,n=9.99999999, p(x+0.5) title "p=0.5,n=9"
+#plot P=0.5,n=9.99999999, p(x+0.5) title "p=0.5,n=9"
+plot P=0.5,n=10.0, p(x+0.5) title "p=0.5,n=10"
 
 set xrange [:5.5]
 set yrange [0:0.7]

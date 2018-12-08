@@ -394,6 +394,11 @@ int gsl_linalg_COD_matZ(const gsl_matrix * QRZT, const gsl_vector * tau_Z, const
 
 int gsl_linalg_LQ_decomp (gsl_matrix * A, gsl_vector * tau);
 
+int gsl_linalg_LQ_lssolve(const gsl_matrix * LQ, const gsl_vector * tau,
+                          const gsl_vector * b, gsl_vector * x, gsl_vector * residual);
+
+int gsl_linalg_LQ_QTvec(const gsl_matrix * LQ, const gsl_vector * tau, gsl_vector * v);
+
 int gsl_linalg_LQ_solve_T (const gsl_matrix * LQ, const gsl_vector * tau, 
 			 const gsl_vector * b, gsl_vector * x);
 
@@ -474,9 +479,14 @@ int gsl_linalg_cholesky_decomp1 (gsl_matrix * A);
 int gsl_linalg_cholesky_solve (const gsl_matrix * cholesky,
                                const gsl_vector * b,
                                gsl_vector * x);
+int gsl_linalg_cholesky_solve_mat (const gsl_matrix * cholesky,
+                                   const gsl_matrix * B,
+                                   gsl_matrix * X);
 
 int gsl_linalg_cholesky_svx (const gsl_matrix * cholesky,
                              gsl_vector * x);
+int gsl_linalg_cholesky_svx_mat (const gsl_matrix * cholesky,
+                                 gsl_matrix * X);
 
 int gsl_linalg_cholesky_invert(gsl_matrix * cholesky);
 
@@ -571,6 +581,21 @@ int gsl_linalg_mcholesky_rcond (const gsl_matrix * LDLT, const gsl_permutation *
 
 int gsl_linalg_mcholesky_invert(const gsl_matrix * LDLT, const gsl_permutation * p,
                                 gsl_matrix * Ainv);
+
+/* Banded Cholesky decomposition */
+
+int gsl_linalg_cholesky_band_decomp(gsl_matrix * A);
+
+int gsl_linalg_cholesky_band_solve (const gsl_matrix * LLT, const gsl_vector * b,
+                                    gsl_vector * x);
+
+int gsl_linalg_cholesky_band_svx (const gsl_matrix * LLT, gsl_vector * x);
+
+int gsl_linalg_cholesky_band_invert (const gsl_matrix * LLT, gsl_matrix * Ainv);
+
+int gsl_linalg_cholesky_band_unpack (const gsl_matrix * LLT, gsl_matrix * L);
+
+int gsl_linalg_cholesky_band_rcond (const gsl_matrix * LLT, double * rcond, gsl_vector * work);
 
 /* Symmetric to symmetric tridiagonal decomposition */
 
