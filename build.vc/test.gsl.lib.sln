@@ -108,6 +108,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testfilter", "libtest\testf
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testmovstat", "libtest\testmovstat\testmovstat.vcxproj", "{9F53AF75-0D46-48C4-A578-B8861152D769}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testbst", "libtest\testbst\testbst.vcxproj", "{6156ABB7-4D66-4860-87FD-1E43F103C9B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -540,6 +542,14 @@ Global
 		{9F53AF75-0D46-48C4-A578-B8861152D769}.Release|Win32.Build.0 = Release|Win32
 		{9F53AF75-0D46-48C4-A578-B8861152D769}.Release|x64.ActiveCfg = Release|x64
 		{9F53AF75-0D46-48C4-A578-B8861152D769}.Release|x64.Build.0 = Release|x64
+		{6156ABB7-4D66-4860-87FD-1E43F103C9B4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6156ABB7-4D66-4860-87FD-1E43F103C9B4}.Debug|Win32.Build.0 = Debug|Win32
+		{6156ABB7-4D66-4860-87FD-1E43F103C9B4}.Debug|x64.ActiveCfg = Debug|x64
+		{6156ABB7-4D66-4860-87FD-1E43F103C9B4}.Debug|x64.Build.0 = Debug|x64
+		{6156ABB7-4D66-4860-87FD-1E43F103C9B4}.Release|Win32.ActiveCfg = Release|Win32
+		{6156ABB7-4D66-4860-87FD-1E43F103C9B4}.Release|Win32.Build.0 = Release|Win32
+		{6156ABB7-4D66-4860-87FD-1E43F103C9B4}.Release|x64.ActiveCfg = Release|x64
+		{6156ABB7-4D66-4860-87FD-1E43F103C9B4}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

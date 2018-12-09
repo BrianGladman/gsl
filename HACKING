@@ -124,11 +124,12 @@ The SUBDIRS and SUBLIBS variables have to be updated manually.
 for HAVE_INLINE use in installed headers.  
 
 > grep config.h gsl/*.h    --- shouldn't match anything
-> grep -L config.h */*.c | grep -v _source  --- gives files not using config.h
+> grep -L config.h */*.c | grep -v _source | grep -v test_  --- gives files not using config.h
 
 * Make a master gsl header file and try compiling it to test all possible conflicts
 > cat gsl/*.h > tmp.c
 > gcc -g -Wall -W -c tmp.c
+> g++ -g -Wall -W -c tmp.c
 
 * #undef GSL_DISABLE_DEPRECATED in config.h and
 > make clean && make && make check

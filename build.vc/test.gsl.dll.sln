@@ -108,6 +108,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testfilter", "dlltest\testf
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testmovstat", "dlltest\testmovstat\testmovstat.vcxproj", "{985D2BD4-1B8F-43E4-85ED-9E08212C7910}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testbst", "dlltest\testbst\testbst.vcxproj", "{5045A5B2-D25A-49C6-B7D5-7D68E8A79007}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -540,6 +542,14 @@ Global
 		{985D2BD4-1B8F-43E4-85ED-9E08212C7910}.Release|Win32.Build.0 = Release|Win32
 		{985D2BD4-1B8F-43E4-85ED-9E08212C7910}.Release|x64.ActiveCfg = Release|x64
 		{985D2BD4-1B8F-43E4-85ED-9E08212C7910}.Release|x64.Build.0 = Release|x64
+		{5045A5B2-D25A-49C6-B7D5-7D68E8A79007}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5045A5B2-D25A-49C6-B7D5-7D68E8A79007}.Debug|Win32.Build.0 = Debug|Win32
+		{5045A5B2-D25A-49C6-B7D5-7D68E8A79007}.Debug|x64.ActiveCfg = Debug|x64
+		{5045A5B2-D25A-49C6-B7D5-7D68E8A79007}.Debug|x64.Build.0 = Debug|x64
+		{5045A5B2-D25A-49C6-B7D5-7D68E8A79007}.Release|Win32.ActiveCfg = Release|Win32
+		{5045A5B2-D25A-49C6-B7D5-7D68E8A79007}.Release|Win32.Build.0 = Release|Win32
+		{5045A5B2-D25A-49C6-B7D5-7D68E8A79007}.Release|x64.ActiveCfg = Release|x64
+		{5045A5B2-D25A-49C6-B7D5-7D68E8A79007}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

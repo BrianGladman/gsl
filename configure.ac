@@ -592,6 +592,7 @@ gsl.spec                     \
 blas/Makefile                \
 block/Makefile               \
 bspline/Makefile             \
+bst/Makefile                 \
 cblas/Makefile               \
 cdf/Makefile                 \
 cheb/Makefile                \

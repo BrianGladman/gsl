@@ -166,6 +166,9 @@
     <Filter Include="movstat">
       <UniqueIdentifier>{ba95b0c4-40e3-4f93-8ef0-f747b5020452}</UniqueIdentifier>
     </Filter>
+    <Filter Include="bst">
+      <UniqueIdentifier>{33752e00-19bc-4c19-8a32-56e699781f7d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\blas\blas.c">
@@ -1641,27 +1644,6 @@
     <ClCompile Include="..\..\multifit\robust_wfun.c">
       <Filter>multifit</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\spmatrix\spcompress.c">
-      <Filter>spmatrix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\spmatrix\spcopy.c">
-      <Filter>spmatrix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\spmatrix\spmatrix.c">
-      <Filter>spmatrix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\spmatrix\spoper.c">
-      <Filter>spmatrix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\spmatrix\spprop.c">
-      <Filter>spmatrix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\spmatrix\spswap.c">
-      <Filter>spmatrix</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\spmatrix\spgetset.c">
-      <Filter>spmatrix</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\splinalg\gmres.c">
       <Filter>splinalg</Filter>
     </ClCompile>
@@ -1718,9 +1700,6 @@
     </ClCompile>
     <ClCompile Include="..\..\multilarge\tsqr.c">
       <Filter>multilarge</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\spmatrix\spio.c">
-      <Filter>spmatrix</Filter>
     </ClCompile>
     <ClCompile Include="..\..\linalg\cod.c">
       <Filter>linalg</Filter>
@@ -1958,6 +1937,45 @@
     </ClCompile>
     <ClCompile Include="..\..\linalg\cholesky_band.c">
       <Filter>linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bst\avl.c">
+      <Filter>bst</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bst\bst.c">
+      <Filter>bst</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bst\rb.c">
+      <Filter>bst</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bst\trav.c">
+      <Filter>bst</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\spmatrix\compress.c">
+      <Filter>spmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\spmatrix\copy.c">
+      <Filter>spmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\spmatrix\file.c">
+      <Filter>spmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\spmatrix\getset.c">
+      <Filter>spmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\spmatrix\init.c">
+      <Filter>spmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\spmatrix\oper.c">
+      <Filter>spmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\spmatrix\prop.c">
+      <Filter>spmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\spmatrix\swap.c">
+      <Filter>spmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\spmatrix\util.c">
+      <Filter>spmatrix</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

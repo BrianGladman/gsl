@@ -1,5 +1,15 @@
 * What is new in gsl-2.6:
 
+** add gsl_vector_memcpy_scale()
+
+** remove -u flag to gsl-histogram
+
+** updated spmatrix module
+   - added routines and data structures for all types (float,uint,char,...)
+   - added gsl_spmatrix_scale_columns() and gsl_spmatrix_scale_rows()
+   - more efficient reallocation of COO/triplet matrices (no longer rebuilds binary tree)
+   - enhanced test suite
+
 ** add routines for banded Cholesky decomposition (gsl_linalg_cholesky_band_*)
 
 ** documented gsl_linalg_LQ routines and added gsl_linalg_LQ_lssolve()

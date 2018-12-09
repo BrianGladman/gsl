@@ -134,6 +134,8 @@ int gsl_vector_char_fprintf (FILE * stream, const gsl_vector_char * v,
                               const char *format);
 
 int gsl_vector_char_memcpy (gsl_vector_char * dest, const gsl_vector_char * src);
+int gsl_vector_char_memcpy_scale (gsl_vector_char * dest, const gsl_vector_char * src,
+                                   const char alpha);
 
 int gsl_vector_char_reverse (gsl_vector_char * v);
 
