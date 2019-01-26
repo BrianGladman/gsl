@@ -597,6 +597,28 @@ int gsl_linalg_cholesky_band_unpack (const gsl_matrix * LLT, gsl_matrix * L);
 
 int gsl_linalg_cholesky_band_rcond (const gsl_matrix * LLT, double * rcond, gsl_vector * work);
 
+/* L D L^T decomposition */
+
+int gsl_linalg_ldlt_decomp (gsl_matrix * A);
+
+int gsl_linalg_ldlt_solve (const gsl_matrix * LDLT, const gsl_vector * b, gsl_vector * x);
+
+int gsl_linalg_ldlt_svx (const gsl_matrix * LDLT, gsl_vector * x);
+
+int gsl_linalg_ldlt_rcond (const gsl_matrix * LDLT, double * rcond, gsl_vector * work);
+
+/* Banded L D L^T decomposition */
+
+int gsl_linalg_ldlt_band_decomp (gsl_matrix * A);
+
+int gsl_linalg_ldlt_band_solve (const gsl_matrix * LDLT, const gsl_vector * b, gsl_vector * x);
+
+int gsl_linalg_ldlt_band_svx (const gsl_matrix * LDLT, gsl_vector * x);
+
+int gsl_linalg_ldlt_band_unpack (const gsl_matrix * LDLT, gsl_matrix * L, gsl_vector * D);
+
+int gsl_linalg_ldlt_band_rcond (const gsl_matrix * LDLT, double * rcond, gsl_vector * work);
+
 /* Symmetric to symmetric tridiagonal decomposition */
 
 int gsl_linalg_symmtd_decomp (gsl_matrix * A, 

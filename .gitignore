@@ -54,5 +54,3 @@ vector/test.dat
 vector/test_static
 vector/test.txt
 test-driver
-build-*/
-.vc/

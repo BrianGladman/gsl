@@ -2,11 +2,17 @@
 
 ** add gsl_vector_memcpy_scale()
 
+** add un-pivoted LDLT decomposition and its banded
+   variant (gsl_linalg_ldlt_* and gsl_linalg_ldlt_band_*)
+
+** add binary search tree module (gsl_bst); based on GNU libavl
+
 ** remove -u flag to gsl-histogram
 
 ** updated spmatrix module
    - added routines and data structures for all types (float,uint,char,...)
    - added gsl_spmatrix_scale_columns() and gsl_spmatrix_scale_rows()
+   - added gsl_spmatrix_add_to_dense()
    - more efficient reallocation of COO/triplet matrices (no longer rebuilds binary tree)
    - enhanced test suite
 

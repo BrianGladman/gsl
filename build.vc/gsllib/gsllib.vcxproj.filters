@@ -1977,6 +1977,12 @@
     <ClCompile Include="..\..\spmatrix\util.c">
       <Filter>spmatrix</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\linalg\ldlt.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\linalg\ldlt_band.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\integration\qng.h">

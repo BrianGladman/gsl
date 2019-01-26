@@ -153,6 +153,7 @@ int gsl_spmatrix_complex_float_scale (gsl_spmatrix_complex_float * m, const gsl_
 int gsl_spmatrix_complex_float_scale_columns (gsl_spmatrix_complex_float * m, const gsl_vector_complex_float * x);
 int gsl_spmatrix_complex_float_scale_rows (gsl_spmatrix_complex_float * m, const gsl_vector_complex_float * x);
 int gsl_spmatrix_complex_float_add (gsl_spmatrix_complex_float * c, const gsl_spmatrix_complex_float * a, const gsl_spmatrix_complex_float * b);
+int gsl_spmatrix_complex_float_add_to_dense (gsl_matrix_complex_float * a, const gsl_spmatrix_complex_float * b);
 int gsl_spmatrix_complex_float_d2sp (gsl_spmatrix_complex_float * T, const gsl_matrix_complex_float * A);
 int gsl_spmatrix_complex_float_sp2d (gsl_matrix_complex_float * A, const gsl_spmatrix_complex_float * S);
 

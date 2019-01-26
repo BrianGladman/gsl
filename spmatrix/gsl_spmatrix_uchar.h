@@ -154,6 +154,7 @@ int gsl_spmatrix_uchar_scale_columns (gsl_spmatrix_uchar * m, const gsl_vector_u
 int gsl_spmatrix_uchar_scale_rows (gsl_spmatrix_uchar * m, const gsl_vector_uchar * x);
 int gsl_spmatrix_uchar_minmax (const gsl_spmatrix_uchar * m, unsigned char * min_out, unsigned char * max_out);
 int gsl_spmatrix_uchar_add (gsl_spmatrix_uchar * c, const gsl_spmatrix_uchar * a, const gsl_spmatrix_uchar * b);
+int gsl_spmatrix_uchar_add_to_dense (gsl_matrix_uchar * a, const gsl_spmatrix_uchar * b);
 int gsl_spmatrix_uchar_d2sp (gsl_spmatrix_uchar * T, const gsl_matrix_uchar * A);
 int gsl_spmatrix_uchar_sp2d (gsl_matrix_uchar * A, const gsl_spmatrix_uchar * S);
 

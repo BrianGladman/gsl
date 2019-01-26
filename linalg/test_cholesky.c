@@ -28,8 +28,6 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_permutation.h>
 
-#include "test_common.c"
-
 static int test_cholesky_decomp_eps(const int scale, const gsl_matrix * m,
                                     const double expected_rcond, const double eps,
                                     const char * desc);

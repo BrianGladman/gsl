@@ -933,11 +933,11 @@ both the scaled and unscaled systems.
 Pivoted Cholesky Decomposition
 ==============================
 
-A symmetric, positive definite square matrix :math:`A` has an alternate
+A symmetric positive semi-definite square matrix :math:`A` has an alternate
 Cholesky decomposition into a product of a lower unit triangular matrix :math:`L`,
-a diagonal matrix :math:`D` and :math:`L^T`, given by :math:`L D L^T`. This is
-equivalent to the Cholesky formulation discussed above, with
-the standard Cholesky lower triangular factor given by :math:`L D^{1 \over 2}`.
+a diagonal matrix :math:`D` and :math:`L^T`, given by :math:`L D L^T`. For
+postive definite matrices, this is equivalent to the Cholesky formulation discussed
+above, with the standard Cholesky lower triangular factor given by :math:`L D^{1 \over 2}`.
 For ill-conditioned matrices, it can help to use a pivoting strategy to
 prevent the entries of :math:`D` and :math:`L` from growing too large, and also
 ensure :math:`D_1 \ge D_2 \ge \cdots \ge D_n > 0`, where :math:`D_i` are
@@ -1078,6 +1078,69 @@ well conditioned.
    This function estimates the reciprocal condition number (using the 1-norm) of the perturbed matrix
    :math:`A + E`, using its pivoted Cholesky decomposition provided in :data:`LDLT`.
    The reciprocal condition number estimate, defined as :math:`1 / (||A + E||_1 \cdot ||(A + E)^{-1}||_1)`, is stored
+   in :data:`rcond`.  Additional workspace of size :math:`3 N` is required in :data:`work`.
+
+.. index::
+   single: LDL decomposition
+   single: LDLT decomposition
+   single: Cholesky decomposition, square root free
+
+.. _sec_ldlt-decomposition:
+
+LDLT Decomposition
+==================
+
+If :math:`A` is a symmetric, nonsingular square matrix, then it has a unique
+factorization of the form
+
+.. math:: A = L D L^T
+
+where :math:`L` is a unit lower triangular matrix and :math:`D` is diagonal.
+If :math:`A` is positive definite, then this factorization is equivalent
+to the Cholesky factorization, where the lower triangular Cholesky factor
+is :math:`L D^{\frac{1}{2}}`. Some indefinite matrices for which no
+Cholesky decomposition exists have an :math:`L D L^T` decomposition
+with negative entries in :math:`D`. The :math:`L D L^T` algorithm
+is sometimes referred to as the *square root free* Cholesky
+decomposition, as the algorithm does not require the computation of
+square roots. The algorithm is stable for positive definite matrices,
+but is not guaranteed to be stable for indefinite matrices.
+
+.. function:: int gsl_linalg_ldlt_decomp (gsl_matrix * A)
+
+   This function factorizes the symmetric, non-singular square matrix
+   :data:`A` into the decomposition :math:`A = L D L^T`.
+   On input, the values from the diagonal and lower-triangular
+   part of the matrix :data:`A` are used. The upper triangle of :data:`A`
+   is used as temporary workspace.  On output
+   the diagonal of :data:`A` contains the matrix :math:`D` and the lower
+   triangle of :data:`A` contains the unit lower triangular matrix :math:`L`.
+   The matrix 1-norm, :math:`||A||_1` is stored in the upper right corner
+   on output, for later use by :func:`gsl_linalg_ldlt_rcond`.
+
+   If the matrix is detected to be singular, the function returns
+   the error code :macro:`GSL_EDOM`.
+
+.. function:: int gsl_linalg_ldlt_solve (const gsl_matrix * LDLT, const gsl_vector * b, gsl_vector * x)
+
+   This function solves the system :math:`A x = b` using the :math:`L D L^T`
+   decomposition of :math:`A` held in the matrix :data:`LDLT` which must
+   have been previously computed by :func:`gsl_linalg_ldlt_decomp`.
+
+.. function:: int gsl_linalg_ldlt_svx (const gsl_matrix * LDLT, gsl_vector * x)
+
+   This function solves the system :math:`A x = b` in-place using the
+   :math:`L D L^T` decomposition of :math:`A` held in the matrix :data:`LDLT`
+   which must have been previously computed by
+   :func:`gsl_linalg_ldlt_decomp`.  On input :data:`x` should
+   contain the right-hand side :math:`b`, which is replaced by the
+   solution on output.
+
+.. function:: int gsl_linalg_ldlt_rcond (const gsl_matrix * LDLT, double * rcond, gsl_vector * work)
+
+   This function estimates the reciprocal condition number (using the 1-norm) of the symmetric
+   nonsingular matrix :math:`A`, using its :math:`L D L^T` decomposition provided in :data:`LDLT`.
+   The reciprocal condition number estimate, defined as :math:`1 / (||A||_1 \cdot ||A^{-1}||_1)`, is stored
    in :data:`rcond`.  Additional workspace of size :math:`3 N` is required in :data:`work`.
 
 .. index:: tridiagonal decomposition
@@ -1674,9 +1737,16 @@ routines.
 Banded Cholesky Decomposition
 -----------------------------
 
-The routines in this section are designed to factor and solve linear
-systems of the form :math:`A x = b` where :math:`A` is a banded, symmetric,
-and positive definite matrix with lower bandwidth :math:`p`.
+The routines in this section are designed to factor and solve
+:math:`N`-by-:math:`N` linear systems of the form :math:`A x = b`
+where :math:`A` is a banded, symmetric, and positive definite matrix
+with lower bandwidth :math:`p`. See
+:ref:`Cholesky Decomposition <sec_cholesky-decomposition>` for more
+information on the factorization.  The lower triangular
+factor of the Cholesky decomposition preserves the same
+banded structure as the matrix :math:`A`, enabling an efficient
+algorithm which overwrites the original matrix with the
+:math:`L` factor.
 
 .. function:: int gsl_linalg_cholesky_band_decomp(gsl_matrix * A)
 
@@ -1724,6 +1794,63 @@ and positive definite matrix with lower bandwidth :math:`p`.
 
    This function estimates the reciprocal condition number (using the 1-norm) of the symmetric banded positive
    definite matrix :math:`A`, using its Cholesky decomposition provided in :data:`LLT`.
+   The reciprocal condition number estimate, defined as :math:`1 / (||A||_1 \cdot ||A^{-1}||_1)`, is stored
+   in :data:`rcond`. Additional workspace of size :math:`3 N` is required in :data:`work`.
+
+.. index::
+   single: banded LDLT decomposition
+   single: LDLT decomposition, banded
+
+Banded LDLT Decomposition
+-------------------------
+
+The routines in this section are designed to factor and solve
+:math:`N`-by-:math:`N` linear systems of the form :math:`A x = b`
+where :math:`A` is a banded, symmetric, and non-singular matrix
+with lower bandwidth :math:`p`. See :ref:`sec_ldlt-decomposition`
+for more information on the factorization. The lower triangular
+factor of the :math:`L D L^T` decomposition preserves the same
+banded structure as the matrix :math:`A`, enabling an efficient
+algorithm which overwrites the original matrix with the
+:math:`L` and :math:`D` factors.
+
+.. function:: int gsl_linalg_ldlt_band_decomp (gsl_matrix * A)
+
+   This function factorizes the symmetric, non-singular square matrix
+   :data:`A` into the decomposition :math:`A = L D L^T`. The input matrix
+   :data:`A` is given in :ref:`symmetric banded format <sec_symmetric-banded>`, and has dimensions
+   :math:`N`-by-:math:`(p + 1)`, where :math:`p` is the lower bandwidth of the matrix.
+   On output, the entries of :data:`A` are replaced by the entries of the matrices
+   :math:`D` and :math:`L` in the same format.
+
+   If the matrix is singular then the decomposition will fail, returning the
+   error code :macro:`GSL_EDOM`.
+
+.. function:: int gsl_linalg_ldlt_band_solve (const gsl_matrix * LDLT, const gsl_vector * b, gsl_vector * x)
+
+   This function solves the symmetric banded system :math:`A x = b` using the
+   :math:`L D L^T` decomposition of :math:`A` held in the matrix :data:`LDLT` which must
+   have been previously computed by :func:`gsl_linalg_ldlt_band_decomp`.
+
+.. function:: int gsl_linalg_ldlt_band_svx (const gsl_matrix * LDLT, gsl_vector * x)
+
+   This function solves the symmetric banded system :math:`A x = b` in-place using the
+   :math:`L D L^T` decomposition of :math:`A` held in the matrix :data:`LDLT`
+   which must have been previously computed by :func:`gsl_linalg_ldlt_band_decomp`.
+   On input :data:`x` should contain the right-hand side :math:`b`, which is replaced by the
+   solution on output.
+
+.. function:: gsl_linalg_ldlt_band_unpack (const gsl_matrix * LDLT, gsl_matrix * L, gsl_vector * D)
+
+   This function unpacks the unit lower triangular factor :math:`L` from :data:`LDLT` and stores
+   it in the lower triangular portion of the :math:`N`-by-:math:`N` matrix :data:`L`. The
+   upper triangular portion of :data:`L` is not referenced. The diagonal matrix
+   :math:`D` is stored in the vector :data:`D`.
+
+.. function:: int gsl_linalg_ldlt_band_rcond (const gsl_matrix * LDLT, double * rcond, gsl_vector * work)
+
+   This function estimates the reciprocal condition number (using the 1-norm) of the symmetric banded
+   nonsingular matrix :math:`A`, using its :math:`L D L^T` decomposition provided in :data:`LDLT`.
    The reciprocal condition number estimate, defined as :math:`1 / (||A||_1 \cdot ||A^{-1}||_1)`, is stored
    in :data:`rcond`. Additional workspace of size :math:`3 N` is required in :data:`work`.
 

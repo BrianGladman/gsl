@@ -14,7 +14,7 @@
  */
 
 /*
- * L D L^T decomposition of a symmetrix positive definite matrix.
+ * L D L^T decomposition of a symmetric positive definite matrix.
  *
  * This algorithm does:
  *   P A P' = L D L'

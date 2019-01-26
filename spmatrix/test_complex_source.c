@@ -87,6 +87,32 @@ FUNCTION (test, random_int)(const size_t M, const size_t N, const double density
 }
 
 static void
+FUNCTION (test, random_dense)(TYPE (gsl_matrix) * m, const double lower,
+                              const double upper, const gsl_rng *r)
+{
+  const size_t M = m->size1;
+  const size_t N = m->size2;
+  size_t i, j;
+
+  for (i = 0; i < M; ++i)
+    {
+      for (j = 0; j < N; ++j)
+        {
+          double x;
+          BASE z;
+          
+          x = gsl_rng_uniform(r) * (upper - lower) + lower;
+          GSL_REAL (z) = (ATOMIC) x;
+
+          x = gsl_rng_uniform(r) * (upper - lower) + lower;
+          GSL_IMAG (z) = (ATOMIC) x;
+
+          FUNCTION (gsl_matrix, set) (m, i, j, z);
+        }
+    }
+}
+
+static void
 FUNCTION (test, random_vector)(TYPE (gsl_vector) * x, const double lower,
                                const double upper, const gsl_rng *r)
 {
@@ -568,6 +594,45 @@ FUNCTION (test, add) (const size_t M, const size_t N, const int sptype,
 }
 
 static void
+FUNCTION (test, add_to_dense) (const size_t M, const size_t N, const int sptype,
+                               const double density, gsl_rng * r)
+{
+  TYPE (gsl_spmatrix) * m = FUNCTION (test, random) (M, N, density, 1.0, 20.0, r);
+  TYPE (gsl_spmatrix) * B = FUNCTION (gsl_spmatrix, compress) (m, sptype);
+  TYPE (gsl_matrix) * A = FUNCTION (gsl_matrix, alloc) (M, N);
+  TYPE (gsl_matrix) * A_copy = FUNCTION (gsl_matrix, alloc) (M, N);
+  size_t i, j;
+
+  FUNCTION (test, random_dense) (A, 1.0, 20.0, r);
+  FUNCTION (gsl_matrix, memcpy) (A_copy, A);
+
+  FUNCTION (gsl_spmatrix, add_to_dense) (A, B);
+
+  status = 0;
+  for (i = 0; i < M; ++i)
+    {
+      for (j = 0; j < N; ++j)
+        {
+          BASE aij = FUNCTION (gsl_matrix, get) (A_copy, i, j);
+          BASE bij = FUNCTION (gsl_spmatrix, get) (B, i, j);
+          BASE cij = FUNCTION (gsl_matrix, get) (A, i, j);
+
+          if ((GSL_REAL(aij) + GSL_REAL(bij) != GSL_REAL(cij)) ||
+              (GSL_IMAG(aij) + GSL_IMAG(bij) != GSL_IMAG(cij)))
+            status = 1;
+        }
+    }
+
+  gsl_test (status, NAME (gsl_spmatrix) "_add_to_dense[%zu,%zu](%s)",
+            M, N, FUNCTION (gsl_spmatrix, type) (B));
+
+  FUNCTION (gsl_matrix, free) (A);
+  FUNCTION (gsl_matrix, free) (A_copy);
+  FUNCTION (gsl_spmatrix, free) (B);
+  FUNCTION (gsl_spmatrix, free) (m);
+}
+
+static void
 FUNCTION (test, convert) (const size_t M, const size_t N, const int sptype,
                           const double density, gsl_rng * r)
 {
@@ -695,6 +760,10 @@ FUNCTION (test, all) (const size_t M, const size_t N, const double density, gsl_
 
   FUNCTION (test, add) (M, N, GSL_SPMATRIX_CSC, density, r);
   FUNCTION (test, add) (M, N, GSL_SPMATRIX_CSR, density, r);
+
+  FUNCTION (test, add_to_dense) (M, N, GSL_SPMATRIX_COO, density, r);
+  FUNCTION (test, add_to_dense) (M, N, GSL_SPMATRIX_CSC, density, r);
+  FUNCTION (test, add_to_dense) (M, N, GSL_SPMATRIX_CSR, density, r);
 
   FUNCTION (test, convert) (M, N, GSL_SPMATRIX_COO, density, r);
   FUNCTION (test, convert) (M, N, GSL_SPMATRIX_CSC, density, r);

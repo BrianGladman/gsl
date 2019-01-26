@@ -154,6 +154,7 @@ int gsl_spmatrix_scale_columns (gsl_spmatrix * m, const gsl_vector * x);
 int gsl_spmatrix_scale_rows (gsl_spmatrix * m, const gsl_vector * x);
 int gsl_spmatrix_minmax (const gsl_spmatrix * m, double * min_out, double * max_out);
 int gsl_spmatrix_add (gsl_spmatrix * c, const gsl_spmatrix * a, const gsl_spmatrix * b);
+int gsl_spmatrix_add_to_dense (gsl_matrix * a, const gsl_spmatrix * b);
 int gsl_spmatrix_d2sp (gsl_spmatrix * T, const gsl_matrix * A);
 int gsl_spmatrix_sp2d (gsl_matrix * A, const gsl_spmatrix * S);
 
