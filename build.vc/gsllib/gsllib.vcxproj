@@ -175,6 +175,7 @@
     <ClCompile Include="..\..\linalg\ldlt_band.c" />
     <ClCompile Include="..\..\linalg\mcholesky.c" />
     <ClCompile Include="..\..\linalg\pcholesky.c" />
+    <ClCompile Include="..\..\linalg\trimult.c" />
     <ClCompile Include="..\..\movstat\alloc.c" />
     <ClCompile Include="..\..\movstat\apply.c" />
     <ClCompile Include="..\..\movstat\fill.c" />
@@ -212,6 +213,7 @@
     <ClCompile Include="..\..\multifit_nlinear\fdfvv.c" />
     <ClCompile Include="..\..\multifit_nlinear\fdjac.c" />
     <ClCompile Include="..\..\multifit_nlinear\lm.c" />
+    <ClCompile Include="..\..\multifit_nlinear\mcholesky.c" />
     <ClCompile Include="..\..\multifit_nlinear\qr.c" />
     <ClCompile Include="..\..\multifit_nlinear\scaling.c" />
     <ClCompile Include="..\..\multifit_nlinear\subspace2D.c" />
@@ -227,6 +229,7 @@
     <ClCompile Include="..\..\multilarge_nlinear\dummy.c" />
     <ClCompile Include="..\..\multilarge_nlinear\fdf.c" />
     <ClCompile Include="..\..\multilarge_nlinear\lm.c" />
+    <ClCompile Include="..\..\multilarge_nlinear\mcholesky.c" />
     <ClCompile Include="..\..\multilarge_nlinear\scaling.c" />
     <ClCompile Include="..\..\multilarge_nlinear\subspace2D.c" />
     <ClCompile Include="..\..\multilarge_nlinear\trust.c" />
@@ -267,6 +270,7 @@
     <ClCompile Include="..\..\spmatrix\file.c" />
     <ClCompile Include="..\..\spmatrix\getset.c" />
     <ClCompile Include="..\..\spmatrix\init.c" />
+    <ClCompile Include="..\..\spmatrix\minmax.c" />
     <ClCompile Include="..\..\spmatrix\oper.c" />
     <ClCompile Include="..\..\spmatrix\prop.c" />
     <ClCompile Include="..\..\spmatrix\swap.c" />

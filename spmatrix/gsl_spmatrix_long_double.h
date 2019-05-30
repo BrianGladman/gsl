@@ -147,12 +147,16 @@ long double gsl_spmatrix_long_double_get (const gsl_spmatrix_long_double * m, co
 int gsl_spmatrix_long_double_set (gsl_spmatrix_long_double * m, const size_t i, const size_t j, const long double x);
 long double * gsl_spmatrix_long_double_ptr (const gsl_spmatrix_long_double * m, const size_t i, const size_t j);
 
+/* minmax */
+
+int gsl_spmatrix_long_double_minmax (const gsl_spmatrix_long_double * m, long double * min_out, long double * max_out);
+int gsl_spmatrix_long_double_min_index (const gsl_spmatrix_long_double * m, size_t * imin_out, size_t * jmin_out);
+
 /* operations */
 
 int gsl_spmatrix_long_double_scale (gsl_spmatrix_long_double * m, const long double x);
 int gsl_spmatrix_long_double_scale_columns (gsl_spmatrix_long_double * m, const gsl_vector_long_double * x);
 int gsl_spmatrix_long_double_scale_rows (gsl_spmatrix_long_double * m, const gsl_vector_long_double * x);
-int gsl_spmatrix_long_double_minmax (const gsl_spmatrix_long_double * m, long double * min_out, long double * max_out);
 int gsl_spmatrix_long_double_add (gsl_spmatrix_long_double * c, const gsl_spmatrix_long_double * a, const gsl_spmatrix_long_double * b);
 int gsl_spmatrix_long_double_add_to_dense (gsl_matrix_long_double * a, const gsl_spmatrix_long_double * b);
 int gsl_spmatrix_long_double_d2sp (gsl_spmatrix_long_double * T, const gsl_matrix_long_double * A);

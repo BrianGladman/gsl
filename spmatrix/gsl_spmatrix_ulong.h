@@ -147,12 +147,16 @@ unsigned long gsl_spmatrix_ulong_get (const gsl_spmatrix_ulong * m, const size_t
 int gsl_spmatrix_ulong_set (gsl_spmatrix_ulong * m, const size_t i, const size_t j, const unsigned long x);
 unsigned long * gsl_spmatrix_ulong_ptr (const gsl_spmatrix_ulong * m, const size_t i, const size_t j);
 
+/* minmax */
+
+int gsl_spmatrix_ulong_minmax (const gsl_spmatrix_ulong * m, unsigned long * min_out, unsigned long * max_out);
+int gsl_spmatrix_ulong_min_index (const gsl_spmatrix_ulong * m, size_t * imin_out, size_t * jmin_out);
+
 /* operations */
 
 int gsl_spmatrix_ulong_scale (gsl_spmatrix_ulong * m, const unsigned long x);
 int gsl_spmatrix_ulong_scale_columns (gsl_spmatrix_ulong * m, const gsl_vector_ulong * x);
 int gsl_spmatrix_ulong_scale_rows (gsl_spmatrix_ulong * m, const gsl_vector_ulong * x);
-int gsl_spmatrix_ulong_minmax (const gsl_spmatrix_ulong * m, unsigned long * min_out, unsigned long * max_out);
 int gsl_spmatrix_ulong_add (gsl_spmatrix_ulong * c, const gsl_spmatrix_ulong * a, const gsl_spmatrix_ulong * b);
 int gsl_spmatrix_ulong_add_to_dense (gsl_matrix_ulong * a, const gsl_spmatrix_ulong * b);
 int gsl_spmatrix_ulong_d2sp (gsl_spmatrix_ulong * T, const gsl_matrix_ulong * A);

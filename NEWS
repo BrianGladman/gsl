@@ -1,5 +1,26 @@
 * What is new in gsl-2.6:
 
+** nonlinear least squares Cholesky solver now uses the new Level 3 BLAS
+   method; the old modified Cholesky solver is still available under
+   gsl_multifit_nlinear_solver_mcholesky and gsl_multilarge_nlinear_solver_mcholesky
+
+** implemented Level 3 BLAS versions of several linear algebra routines:
+     - Triangular matrix inversion
+     - Cholesky decomposition and inversion
+
+** removed deprecated function gsl_linalg_hessenberg()
+
+** renamed gsl_interp2d_eval_e_extrap() to gsl_interp2d_eval_extrap_e()
+   to match documentation (reported by D. Lebrun-Grandie)
+
+** renamed some of the gsl_sf_hermite functions to be more consistent
+   with rest of the library, and deprecated old function names
+
+** updated gsl_sf_hermite_func() to use a newer algorithm
+   due to B. Bunck which is more stable for large x; also added
+   gsl_sf_hermite_func_fast() which uses the faster Cauchy integral
+   algorithm in the same paper by Bunck
+
 ** add gsl_vector_memcpy_scale()
 
 ** add un-pivoted LDLT decomposition and its banded
@@ -15,6 +36,7 @@
    - added gsl_spmatrix_add_to_dense()
    - more efficient reallocation of COO/triplet matrices (no longer rebuilds binary tree)
    - enhanced test suite
+   - added gsl_spmatrix_min_index()
 
 ** add routines for banded Cholesky decomposition (gsl_linalg_cholesky_band_*)
 

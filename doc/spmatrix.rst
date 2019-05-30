@@ -538,6 +538,14 @@ Finding Maximum and Minimum Elements
 
    Input matrix formats supported: :ref:`COO <sec_spmatrix-coo>`, :ref:`CSC <sec_spmatrix-csc>`, :ref:`CSR <sec_spmatrix-csr>`
 
+.. function:: int gsl_spmatrix_min_index (const gsl_spmatrix * m, size_t * imin, size_t * jmin)
+
+   This function returns the indices of the minimum value in the matrix
+   :data:`m`, searching only the non-zero values, and storing them in :data:`imin` and :data:`jmin`.
+   When there are several equal minimum elements then the first element found is returned.
+
+   Input matrix formats supported: :ref:`COO <sec_spmatrix-coo>`, :ref:`CSC <sec_spmatrix-csc>`, :ref:`CSR <sec_spmatrix-csr>`
+
 .. index::
    single: sparse matrices, compression
 

@@ -97,7 +97,7 @@ gsl_linalg_cholesky_band_decomp(gsl_matrix * A)
       for (j = 0; j < N; ++j)
         {
           double ajj = gsl_matrix_get(A, j, 0);
-          size_t kn;
+          size_t lenv;
 
           if (ajj <= 0.0)
             {
@@ -109,12 +109,12 @@ gsl_linalg_cholesky_band_decomp(gsl_matrix * A)
 
           /* number of elements in v, which will normally be p, unless we
            * are in lower right corner of matrix */
-          kn = GSL_MIN(p, N - j - 1);
+          lenv = GSL_MIN(p, N - j - 1);
 
-          if (kn > 0)
+          if (lenv > 0)
             {
-              gsl_vector_view v = gsl_matrix_subrow(A, j, 1, kn);
-              gsl_matrix_view m = gsl_matrix_submatrix(A, j + 1, 0, kn, kn);
+              gsl_vector_view v = gsl_matrix_subrow(A, j, 1, lenv);
+              gsl_matrix_view m = gsl_matrix_submatrix(A, j + 1, 0, lenv, lenv);
 
               gsl_blas_dscal(1.0 / ajj, &v.vector);
 

@@ -1,6 +1,6 @@
 /* linalg/invtri.c
  *
- * Copyright (C) 2016 Patrick Alken
+ * Copyright (C) 2016, 2017, 2018, 2019 Patrick Alken
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -28,38 +28,54 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 
-static int triangular_inverse(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_matrix * T);
+static int triangular_inverse_L2(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_matrix * T);
+static int triangular_inverse_L3(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_matrix * T);
+static int triangular_singular(const gsl_matrix * T);
+
+#define CROSSOVER_INVTRI       24
 
 int
 gsl_linalg_tri_upper_invert(gsl_matrix * T)
 {
-  int status = triangular_inverse(CblasUpper, CblasNonUnit, T);
-  return status;
+  int status = triangular_singular(T);
+  if (status)
+    return status;
+  
+  return triangular_inverse_L3(CblasUpper, CblasNonUnit, T);
 }
 
 int
 gsl_linalg_tri_lower_invert(gsl_matrix * T)
 {
-  int status = triangular_inverse(CblasLower, CblasNonUnit, T);
-  return status;
+  int status = triangular_singular(T);
+  if (status)
+    return status;
+
+  return triangular_inverse_L3(CblasLower, CblasNonUnit, T);
 }
 
 int
 gsl_linalg_tri_upper_unit_invert(gsl_matrix * T)
 {
-  int status = triangular_inverse(CblasUpper, CblasUnit, T);
-  return status;
+  int status = triangular_singular(T);
+  if (status)
+    return status;
+
+  return triangular_inverse_L3(CblasUpper, CblasUnit, T);
 }
 
 int
 gsl_linalg_tri_lower_unit_invert(gsl_matrix * T)
 {
-  int status = triangular_inverse(CblasLower, CblasUnit, T);
-  return status;
+  int status = triangular_singular(T);
+  if (status)
+    return status;
+
+  return triangular_inverse_L3(CblasLower, CblasUnit, T);
 }
 
 /*
-triangular_inverse()
+triangular_inverse_L2()
   Invert a triangular matrix T
 
 Inputs: Uplo - CblasUpper or CblasLower
@@ -68,10 +84,13 @@ Inputs: Uplo - CblasUpper or CblasLower
                is replaced by its inverse
 
 Return: success/error
+
+Notes:
+1) Based on LAPACK routine DTRTI2 using Level 2 BLAS
 */
 
 static int
-triangular_inverse(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_matrix * T)
+triangular_inverse_L2(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_matrix * T)
 {
   const size_t N = T->size1;
 
@@ -148,4 +167,96 @@ triangular_inverse(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_matrix * T)
 
       return GSL_SUCCESS;
     }
+}
+
+/*
+triangular_inverse_L3()
+  Invert a triangular matrix T
+
+Inputs: Uplo - CblasUpper or CblasLower
+        Diag - unit triangular?
+        T    - on output the upper (or lower) part of T
+               is replaced by its inverse
+
+Return: success/error
+
+Notes:
+1) Based on ReLAPACK routine DTRTRI using Level 3 BLAS
+*/
+
+static int
+triangular_inverse_L3(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_matrix * T)
+{
+  const size_t N = T->size1;
+
+  if (N != T->size2)
+    {
+      GSL_ERROR ("matrix must be square", GSL_ENOTSQR);
+    }
+  else if (N <= CROSSOVER_INVTRI)
+    {
+      /* use Level 2 BLAS code */
+      return triangular_inverse_L2(Uplo, Diag, T);
+    }
+  else
+    {
+      /* partition matrix:
+       *
+       * T11 T12
+       * T21 T22
+       *
+       * where T11 is N1-by-N1
+       */
+      int status;
+      const size_t N1 = GSL_LINALG_SPLIT(N);
+      const size_t N2 = N - N1;
+      gsl_matrix_view T11 = gsl_matrix_submatrix(T, 0, 0, N1, N1);
+      gsl_matrix_view T12 = gsl_matrix_submatrix(T, 0, N1, N1, N2);
+      gsl_matrix_view T21 = gsl_matrix_submatrix(T, N1, 0, N2, N1);
+      gsl_matrix_view T22 = gsl_matrix_submatrix(T, N1, N1, N2, N2);
+
+      /* recursion on T11 */
+      status = triangular_inverse_L3(Uplo, Diag, &T11.matrix);
+      if (status)
+        return status;
+
+      if (Uplo == CblasLower)
+        {
+          /* T21 = - T21 * T11 */
+          gsl_blas_dtrmm(CblasRight, Uplo, CblasNoTrans, Diag, -1.0, &T11.matrix, &T21.matrix);
+
+          /* T21 = T22 * T21^{-1} */
+          gsl_blas_dtrsm(CblasLeft, Uplo, CblasNoTrans, Diag, 1.0, &T22.matrix, &T21.matrix);
+        }
+      else
+        {
+          /* T12 = - T11 * T12 */
+          gsl_blas_dtrmm(CblasLeft, Uplo, CblasNoTrans, Diag, -1.0, &T11.matrix, &T12.matrix);
+
+          /* T12 = T12 * T22^{-1} */
+          gsl_blas_dtrsm(CblasRight, Uplo, CblasNoTrans, Diag, 1.0, &T22.matrix, &T12.matrix);
+        }
+
+      /* recursion on T22 */
+      status = triangular_inverse_L3(Uplo, Diag, &T22.matrix);
+      if (status)
+        return status;
+
+      return GSL_SUCCESS;
+    }
+}
+
+static int
+triangular_singular(const gsl_matrix * T)
+{
+  size_t i;
+
+  for (i = 0; i < T->size1; ++i)
+    {
+      double Tii = gsl_matrix_get(T, i, i);
+      if (Tii == 0.0)
+        return GSL_ESING;
+    }
+
+  return GSL_SUCCESS;
 }

@@ -147,12 +147,16 @@ int gsl_spmatrix_int_get (const gsl_spmatrix_int * m, const size_t i, const size
 int gsl_spmatrix_int_set (gsl_spmatrix_int * m, const size_t i, const size_t j, const int x);
 int * gsl_spmatrix_int_ptr (const gsl_spmatrix_int * m, const size_t i, const size_t j);
 
+/* minmax */
+
+int gsl_spmatrix_int_minmax (const gsl_spmatrix_int * m, int * min_out, int * max_out);
+int gsl_spmatrix_int_min_index (const gsl_spmatrix_int * m, size_t * imin_out, size_t * jmin_out);
+
 /* operations */
 
 int gsl_spmatrix_int_scale (gsl_spmatrix_int * m, const int x);
 int gsl_spmatrix_int_scale_columns (gsl_spmatrix_int * m, const gsl_vector_int * x);
 int gsl_spmatrix_int_scale_rows (gsl_spmatrix_int * m, const gsl_vector_int * x);
-int gsl_spmatrix_int_minmax (const gsl_spmatrix_int * m, int * min_out, int * max_out);
 int gsl_spmatrix_int_add (gsl_spmatrix_int * c, const gsl_spmatrix_int * a, const gsl_spmatrix_int * b);
 int gsl_spmatrix_int_add_to_dense (gsl_matrix_int * a, const gsl_spmatrix_int * b);
 int gsl_spmatrix_int_d2sp (gsl_spmatrix_int * T, const gsl_matrix_int * A);

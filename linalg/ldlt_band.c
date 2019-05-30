@@ -81,19 +81,21 @@ gsl_linalg_ldlt_band_decomp(gsl_matrix * A)
     {
       const size_t p = ndiag - 1; /* lower bandwidth */
       const int kld = (int) GSL_MAX(1, p);
+      double Anorm;
       size_t j;
 
-      if (ndiag > 1)
-        {
-          /*
-           * calculate 1-norm of A and store in lower right of matrix, which is not accessed
-           * by rest of routine. gsl_linalg_ldlt_band_rcond() will use this later. If
-           * A is diagonal, there is no empty slot to store the 1-norm, so the rcond routine
-           * will have to compute it.
-           */
-          double Anorm = symband_norm1(A);
-          gsl_matrix_set(A, N - 1, p, Anorm);
-        }
+      /* check for quick return */
+      if (ndiag == 1)
+        return GSL_SUCCESS;
+
+      /*
+       * calculate 1-norm of A and store in lower right of matrix, which is not accessed
+       * by rest of routine. gsl_linalg_ldlt_band_rcond() will use this later. If
+       * A is diagonal, there is no empty slot to store the 1-norm, so the rcond routine
+       * will have to compute it.
+       */
+      Anorm = symband_norm1(A);
+      gsl_matrix_set(A, N - 1, p, Anorm);
 
       for (j = 0; j < N - 1; ++j)
         {

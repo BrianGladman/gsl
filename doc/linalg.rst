@@ -832,16 +832,28 @@ both the scaled and unscaled systems.
    for the complex case). On input, the values from the diagonal and lower-triangular
    part of the matrix :data:`A` are used (the upper triangular part is ignored).  On output
    the diagonal and lower triangular part of the input matrix :data:`A` contain the matrix
-   :math:`L`, while the upper triangular part is unmodified.  If the matrix is not
+   :math:`L`, while the upper triangular part contains the original matrix.  If the matrix is not
    positive-definite then the decomposition will fail, returning the
    error code :macro:`GSL_EDOM`.
 
    When testing whether a matrix is positive-definite, disable the error
-   handler first to avoid triggering an error.
+   handler first to avoid triggering an error. The real-valued function
+   uses Level 3 BLAS to compute the Cholesky factorization, while the
+   complex-valued routine uses Level 2 BLAS.
 
 .. function:: int gsl_linalg_cholesky_decomp (gsl_matrix * A)
 
    This function is now deprecated and is provided only for backward compatibility.
+
+.. function:: int gsl_linalg_cholesky_decomp_L2 (gsl_matrix * A)
+
+   This function computes the Cholesky factorization of the matrix :data:`A` using
+   Level 2 BLAS operations.
+
+.. function:: int gsl_linalg_cholesky_decomp_L3 (gsl_matrix * A)
+
+   This function computes the Cholesky factorization of the matrix :data:`A` using
+   Level 3 BLAS operations.
 
 .. function:: int gsl_linalg_cholesky_solve (const gsl_matrix * cholesky, const gsl_vector * b, gsl_vector * x)
               int gsl_linalg_complex_cholesky_solve (const gsl_matrix_complex * cholesky, const gsl_vector_complex * b, gsl_vector_complex * x)
@@ -1674,6 +1686,11 @@ Triangular Systems
    :math:`N`-by-:math:`N` triangular matrix :data:`T`. The reciprocal condition number
    is stored in :data:`rcond` on output, and is defined by :math:`1 / (||T||_1 \cdot ||T^{-1}||_1)`.
    Additional workspace of size :math:`3 N` is required in :data:`work`.
+
+.. function:: int gsl_linalg_tri_LTL (gsl_matrix * L)
+
+   This function computes the product :math:`L^T L` in-place and stores it in the lower
+   triangle of :data:`L` on output.
 
 .. index:: banded matrices
 

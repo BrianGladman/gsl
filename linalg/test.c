@@ -307,17 +307,21 @@ create_tri_matrix(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_matrix * m, gsl_rng 
         {
           double mij = gsl_rng_uniform(r);
 
-          /* put lower bound on diagonal entries to ensure invertibility */
+          /* ensure diagonally dominant matrix */
           if (i == j)
-            mij = GSL_MAX(mij, 0.3);
+            {
+              if (Diag == CblasUnit)
+                mij = 1.0;
+              else
+                mij += 10.0;
+            }
+          else if (Diag == CblasUnit)
+            mij *= 0.01;
 
           if (Uplo == CblasLower)
             gsl_matrix_set(m, i, j, mij);
           else
             gsl_matrix_set(m, j, i, mij);
-
-          if (Diag == CblasUnit && i == j)
-            gsl_matrix_set(m, i, j, 1.0);
         }
     }
 
@@ -3518,7 +3522,7 @@ int test_bidiag_decomp(void)
 int
 test_tri_invert2(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_rng * r, const double tol)
 {
-  const size_t N_max = 30;
+  const size_t N_max = 200;
   int s = 0;
   size_t n, i, j;
   int (*invert_func) (gsl_matrix * T) = NULL;
@@ -3548,17 +3552,44 @@ test_tri_invert2(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_rng * r, const double
       gsl_blas_dtrmm(CblasLeft, Uplo, CblasNoTrans, Diag, 1.0, T, B);
 
       /* test B = I */
-      for (i = 0; i < n; ++i)
+      if (Uplo == CblasUpper)
         {
-          for (j = 0; j < n; ++j)
+          for (i = 0; i < n; ++i)
             {
-              double Bij = gsl_matrix_get(B, i, j);
-              double expected = (i == j) ? 1.0 : 0.0;
+              double Bii = gsl_matrix_get(B, i, i);
 
-              gsl_test_rel(Bij, expected, tol, "tri_invert N=%zu %s %s",
-                           n,
-                           (Uplo == CblasUpper) ? "Upper" : "Lower",
-                           (Diag == CblasNonUnit) ? "NonUnit" : "Unit");
+              gsl_test_abs(Bii, 1.0, tol, "tri_invert[%zu,%zu] N=%zu upper %s",
+                            i, i, n,
+                            (Diag == CblasNonUnit) ? "NonUnit" : "Unit");
+
+              for (j = i + 1; j < n; ++j)
+                {
+                  double Bij = gsl_matrix_get(B, i, j);
+
+                  gsl_test_abs(Bij, 0.0, tol, "tri_invert[%zu,%zu] N=%zu upper %s",
+                               i, j, n,
+                               (Diag == CblasNonUnit) ? "NonUnit" : "Unit");
+                }
+            }
+        }
+      else
+        {
+          for (i = 0; i < n; ++i)
+            {
+              double Bii = gsl_matrix_get(B, i, i);
+
+              gsl_test_abs(Bii, 1.0, tol, "tri_invert[%zu,%zu] N=%zu lower %s",
+                            i, i, n,
+                            (Diag == CblasNonUnit) ? "NonUnit" : "Unit");
+
+              for (j = 0; j < i; ++j)
+                {
+                  double Bij = gsl_matrix_get(B, i, j);
+
+                  gsl_test_abs(Bij, 0.0, tol, "tri_invert[%zu,%zu] N=%zu lower %s",
+                               i, j, n,
+                               (Diag == CblasNonUnit) ? "NonUnit" : "Unit");
+                }
             }
         }
 

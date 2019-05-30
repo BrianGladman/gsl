@@ -153,7 +153,7 @@ static int
 test_cholesky_decomp(gsl_rng * r)
 {
   int s = 0;
-  const size_t N_max = 50;
+  const size_t N_max = 200;
   size_t N;
 
   for (N = 1; N <= N_max; ++N)
@@ -162,7 +162,7 @@ test_cholesky_decomp(gsl_rng * r)
 
       create_posdef_matrix(m, r);
       test_cholesky_decomp_eps(0, m, -1.0, 1.0e2 * N * GSL_DBL_EPSILON, "cholesky_decomp unscaled random");
-      test_cholesky_decomp_eps(1, m, -1.0, 1.0e2 * N * GSL_DBL_EPSILON, "cholesky_decomp scaled random");
+      test_cholesky_decomp_eps(1, m, -1.0, 1.0e3 * N * GSL_DBL_EPSILON, "cholesky_decomp scaled random");
 
       if (N <= 12)
         {
@@ -224,7 +224,7 @@ int
 test_cholesky_invert(gsl_rng * r)
 {
   int s = 0;
-  const size_t N_max = 50;
+  const size_t N_max = 200;
   size_t N;
 
   for (N = 1; N <= N_max; ++N)
@@ -564,7 +564,7 @@ test_mcholesky_invert(gsl_rng * r)
       if (N <= 4)
         {
           create_hilbert_matrix2(m);
-          test_mcholesky_invert_eps(m, 256.0 * N * GSL_DBL_EPSILON, "mcholesky_invert unscaled hilbert");
+          test_mcholesky_invert_eps(m, 512.0 * N * GSL_DBL_EPSILON, "mcholesky_invert unscaled hilbert");
         }
 
       gsl_matrix_free(m);
@@ -868,7 +868,7 @@ int
 test_pcholesky_invert(gsl_rng * r)
 {
   int s = 0;
-  const size_t N_max = 30;
+  const size_t N_max = 200;
   size_t N;
 
   for (N = 1; N <= N_max; ++N)

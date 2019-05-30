@@ -147,12 +147,16 @@ unsigned short gsl_spmatrix_ushort_get (const gsl_spmatrix_ushort * m, const siz
 int gsl_spmatrix_ushort_set (gsl_spmatrix_ushort * m, const size_t i, const size_t j, const unsigned short x);
 unsigned short * gsl_spmatrix_ushort_ptr (const gsl_spmatrix_ushort * m, const size_t i, const size_t j);
 
+/* minmax */
+
+int gsl_spmatrix_ushort_minmax (const gsl_spmatrix_ushort * m, unsigned short * min_out, unsigned short * max_out);
+int gsl_spmatrix_ushort_min_index (const gsl_spmatrix_ushort * m, size_t * imin_out, size_t * jmin_out);
+
 /* operations */
 
 int gsl_spmatrix_ushort_scale (gsl_spmatrix_ushort * m, const unsigned short x);
 int gsl_spmatrix_ushort_scale_columns (gsl_spmatrix_ushort * m, const gsl_vector_ushort * x);
 int gsl_spmatrix_ushort_scale_rows (gsl_spmatrix_ushort * m, const gsl_vector_ushort * x);
-int gsl_spmatrix_ushort_minmax (const gsl_spmatrix_ushort * m, unsigned short * min_out, unsigned short * max_out);
 int gsl_spmatrix_ushort_add (gsl_spmatrix_ushort * c, const gsl_spmatrix_ushort * a, const gsl_spmatrix_ushort * b);
 int gsl_spmatrix_ushort_add_to_dense (gsl_matrix_ushort * a, const gsl_spmatrix_ushort * b);
 int gsl_spmatrix_ushort_d2sp (gsl_spmatrix_ushort * T, const gsl_matrix_ushort * A);
