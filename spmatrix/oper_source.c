@@ -146,38 +146,6 @@ FUNCTION (gsl_spmatrix, scale_rows) (TYPE (gsl_spmatrix) * m, const TYPE (gsl_ve
     }
 }
 
-int
-FUNCTION (gsl_spmatrix, minmax) (const TYPE (gsl_spmatrix) * m,
-                                 ATOMIC * min_out, ATOMIC * max_out)
-{
-  ATOMIC min, max;
-  size_t n;
-
-  if (m->nz == 0)
-    {
-      GSL_ERROR("matrix is empty", GSL_EINVAL);
-    }
-
-  min = m->data[0];
-  max = m->data[0];
-
-  for (n = 1; n < m->nz; ++n)
-    {
-      ATOMIC x = m->data[n];
-
-      if (x < min)
-        min = x;
-
-      if (x > max)
-        max = x;
-    }
-
-  *min_out = min;
-  *max_out = max;
-
-  return GSL_SUCCESS;
-}
-
 /*
 gsl_spmatrix_add()
   Add two sparse matrices

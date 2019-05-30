@@ -1983,6 +1983,18 @@
     <ClCompile Include="..\..\linalg\ldlt_band.c">
       <Filter>linalg</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\spmatrix\minmax.c">
+      <Filter>spmatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\multilarge_nlinear\mcholesky.c">
+      <Filter>multilarge_nlinear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\multifit_nlinear\mcholesky.c">
+      <Filter>multifit_nlinear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\linalg\trimult.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\integration\qng.h">

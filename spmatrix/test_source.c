@@ -632,8 +632,12 @@ FUNCTION (test, minmax) (const size_t M, const size_t N, const int sptype,
   TYPE (gsl_spmatrix) * A = FUNCTION (test, random) (M, N, density, 5.0, 20.0, r);
   TYPE (gsl_spmatrix) * B;
   BASE min, max;
+  size_t imin, jmin;
 
-  FUNCTION (gsl_spmatrix, set) (A, 0, 1, (BASE) 2);
+  FUNCTION (gsl_spmatrix, set) (A, 4, 3, (BASE) 12);
+  FUNCTION (gsl_spmatrix, set) (A, 3, 5, (BASE) 5);
+  FUNCTION (gsl_spmatrix, set) (A, 1, 1, (BASE) 10);
+  FUNCTION (gsl_spmatrix, set) (A, 7, 3, (BASE) 2);
   FUNCTION (gsl_spmatrix, set) (A, 1, 0, (BASE) 30);
 
   B = FUNCTION (gsl_spmatrix, compress) (A, sptype);
@@ -646,6 +650,16 @@ FUNCTION (test, minmax) (const size_t M, const size_t N, const int sptype,
 
   status = max != (BASE) 30;
   gsl_test (status, NAME (gsl_spmatrix) "_minmax[%zu,%zu](%s) maximum",
+            M, N, FUNCTION (gsl_spmatrix, type) (B));
+
+  FUNCTION (gsl_spmatrix, min_index) (B, &imin, &jmin);
+
+  status = imin != 7;
+  gsl_test (status, NAME (gsl_spmatrix) "_min_index[%zu,%zu](%s) imin",
+            M, N, FUNCTION (gsl_spmatrix, type) (B));
+
+  status = jmin != 3;
+  gsl_test (status, NAME (gsl_spmatrix) "_min_index[%zu,%zu](%s) jmin",
             M, N, FUNCTION (gsl_spmatrix, type) (B));
 
   FUNCTION (gsl_spmatrix, free) (A);
