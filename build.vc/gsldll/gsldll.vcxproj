@@ -244,11 +244,14 @@
     <ClCompile Include="..\..\linalg\cod.c" />
     <ClCompile Include="..\..\linalg\condest.c" />
     <ClCompile Include="..\..\linalg\invtri.c" />
+    <ClCompile Include="..\..\linalg\invtri_complex.c" />
     <ClCompile Include="..\..\linalg\ldlt.c" />
     <ClCompile Include="..\..\linalg\ldlt_band.c" />
     <ClCompile Include="..\..\linalg\mcholesky.c" />
     <ClCompile Include="..\..\linalg\pcholesky.c" />
+    <ClCompile Include="..\..\linalg\rqr.c" />
     <ClCompile Include="..\..\linalg\trimult.c" />
+    <ClCompile Include="..\..\linalg\trimult_complex.c" />
     <ClCompile Include="..\..\movstat\alloc.c" />
     <ClCompile Include="..\..\movstat\apply.c" />
     <ClCompile Include="..\..\movstat\fill.c" />
@@ -824,6 +827,7 @@
     <ClCompile Include="..\..\bspline\bspline.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\eigen\recurse.h" />
     <ClInclude Include="..\..\gsl\gsl_blas.h" />
     <ClInclude Include="..\..\gsl\gsl_blas_types.h" />
     <ClInclude Include="..\..\gsl\gsl_block.h" />
@@ -1048,6 +1052,7 @@
     <ClInclude Include="..\..\gsl\gsl_wavelet2d.h" />
     <ClInclude Include="..\..\integration\qng.h" />
     <ClInclude Include="..\..\interpolation\integ_eval.h" />
+    <ClInclude Include="..\..\linalg\recurse.h" />
     <ClInclude Include="..\..\matrix\view.h" />
     <ClInclude Include="..\..\specfunc\bessel.h" />
     <ClInclude Include="..\..\specfunc\bessel_amp_phase.h" />

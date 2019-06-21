@@ -28,50 +28,31 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 
+#include "recurse.h"
+
 static int triangular_inverse_L2(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_matrix * T);
 static int triangular_inverse_L3(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_matrix * T);
 static int triangular_singular(const gsl_matrix * T);
 
-#define CROSSOVER_INVTRI       24
-
 int
-gsl_linalg_tri_upper_invert(gsl_matrix * T)
+gsl_linalg_tri_invert(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_matrix * T)
 {
-  int status = triangular_singular(T);
-  if (status)
-    return status;
-  
-  return triangular_inverse_L3(CblasUpper, CblasNonUnit, T);
-}
+  const size_t N = T->size1;
 
-int
-gsl_linalg_tri_lower_invert(gsl_matrix * T)
-{
-  int status = triangular_singular(T);
-  if (status)
-    return status;
+  if (N != T->size2)
+    {
+      GSL_ERROR ("matrix must be square", GSL_ENOTSQR);
+    }
+  else
+    {
+      int status;
+      
+      status = triangular_singular(T);
+      if (status)
+        return status;
 
-  return triangular_inverse_L3(CblasLower, CblasNonUnit, T);
-}
-
-int
-gsl_linalg_tri_upper_unit_invert(gsl_matrix * T)
-{
-  int status = triangular_singular(T);
-  if (status)
-    return status;
-
-  return triangular_inverse_L3(CblasUpper, CblasUnit, T);
-}
-
-int
-gsl_linalg_tri_lower_unit_invert(gsl_matrix * T)
-{
-  int status = triangular_singular(T);
-  if (status)
-    return status;
-
-  return triangular_inverse_L3(CblasLower, CblasUnit, T);
+      return triangular_inverse_L3(Uplo, Diag, T);
+    }
 }
 
 /*
@@ -200,7 +181,8 @@ triangular_inverse_L3(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_matrix * T)
     }
   else
     {
-      /* partition matrix:
+      /*
+       * partition matrix:
        *
        * T11 T12
        * T21 T22
@@ -260,3 +242,47 @@ triangular_singular(const gsl_matrix * T)
 
   return GSL_SUCCESS;
 }
+
+#ifndef GSL_DISABLE_DEPRECATED
+
+int
+gsl_linalg_tri_upper_invert(gsl_matrix * T)
+{
+  int status = triangular_singular(T);
+  if (status)
+    return status;
+  
+  return triangular_inverse_L3(CblasUpper, CblasNonUnit, T);
+}
+
+int
+gsl_linalg_tri_lower_invert(gsl_matrix * T)
+{
+  int status = triangular_singular(T);
+  if (status)
+    return status;
+
+  return triangular_inverse_L3(CblasLower, CblasNonUnit, T);
+}
+
+int
+gsl_linalg_tri_upper_unit_invert(gsl_matrix * T)
+{
+  int status = triangular_singular(T);
+  if (status)
+    return status;
+
+  return triangular_inverse_L3(CblasUpper, CblasUnit, T);
+}
+
+int
+gsl_linalg_tri_lower_unit_invert(gsl_matrix * T)
+{
+  int status = triangular_singular(T);
+  if (status)
+    return status;
+
+  return triangular_inverse_L3(CblasLower, CblasUnit, T);
+}
+
+#endif

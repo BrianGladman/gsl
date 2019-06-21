@@ -46,18 +46,12 @@ gsl_matrix * create_sparse_matrix(unsigned long m, unsigned long n);
 
 int test_matmult(void);
 int test_matmult_mod(void);
-int test_LU_solve_dim(const gsl_matrix * m, const double * actual, double eps);
-int test_LU_solve(void);
-int test_LUc_solve_dim(const gsl_matrix_complex * m, const double * actual, double eps);
-int test_LUc_solve(void);
 int test_QR_solve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_QR_solve(void);
 int test_QR_QRsolve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_QR_QRsolve(void);
 int test_QR_lssolve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_QR_lssolve(void);
-int test_QR_decomp_dim(const gsl_matrix * m, double eps);
-int test_QR_decomp(void);
 int test_QRPT_solve_dim(const gsl_matrix * m, const double * actual, double eps);
 int test_QRPT_solve(void);
 int test_QRPT_QRsolve_dim(const gsl_matrix * m, const double * actual, double eps);
@@ -394,163 +388,13 @@ gsl_matrix * moler10;
 
 #include "test_common.c"
 #include "test_cholesky.c"
+#include "test_choleskyc.c"
 #include "test_cod.c"
 #include "test_ldlt.c"
+#include "test_lu.c"
+#include "test_luc.c"
 #include "test_lq.c"
-
-int
-test_LU_solve_dim(const gsl_matrix * m, const double * actual, double eps)
-{
-  int s = 0;
-  int signum;
-  unsigned long i, dim = m->size1;
-
-  gsl_permutation * perm = gsl_permutation_alloc(dim);
-  gsl_vector * rhs = gsl_vector_alloc(dim);
-  gsl_matrix * lu  = gsl_matrix_alloc(dim,dim);
-  gsl_vector * x = gsl_vector_alloc(dim);
-  gsl_vector * residual = gsl_vector_alloc(dim);
-  gsl_matrix_memcpy(lu,m);
-  for(i=0; i<dim; i++) gsl_vector_set(rhs, i, i+1.0);
-  s += gsl_linalg_LU_decomp(lu, perm, &signum);
-  s += gsl_linalg_LU_solve(lu, perm, rhs, x);
-
-  for(i=0; i<dim; i++) {
-    int foo = check(gsl_vector_get(x, i),actual[i],eps);
-    if(foo) {
-      printf("%3lu[%lu]: %22.18g   %22.18g\n", dim, i, gsl_vector_get(x, i), actual[i]);
-    }
-    s += foo;
-  }
-
-  s += gsl_linalg_LU_refine(m, lu, perm, rhs, x, residual);
-
-  for(i=0; i<dim; i++) {
-    int foo = check(gsl_vector_get(x, i),actual[i],eps);
-    if(foo) {
-      printf("%3lu[%lu]: %22.18g   %22.18g (improved)\n", dim, i, gsl_vector_get(x, i), actual[i]);
-    }
-    s += foo;
-  }
-
-  gsl_vector_free(residual);
-  gsl_vector_free(x);
-  gsl_matrix_free(lu);
-  gsl_vector_free(rhs);
-  gsl_permutation_free(perm);
-
-  return s;
-}
-
-
-int test_LU_solve(void)
-{
-  int f;
-  int s = 0;
-
-  f = test_LU_solve_dim(hilb2, hilb2_solution, 8.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  LU_solve hilbert(2)");
-  s += f;
-
-  f = test_LU_solve_dim(hilb3, hilb3_solution, 64.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  LU_solve hilbert(3)");
-  s += f;
-
-  f = test_LU_solve_dim(hilb4, hilb4_solution, 2048.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  LU_solve hilbert(4)");
-  s += f;
-
-  f = test_LU_solve_dim(hilb12, hilb12_solution, 0.5);
-  gsl_test(f, "  LU_solve hilbert(12)");
-  s += f;
-
-  f = test_LU_solve_dim(vander2, vander2_solution, 8.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  LU_solve vander(2)");
-  s += f;
-
-  f = test_LU_solve_dim(vander3, vander3_solution, 64.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  LU_solve vander(3)");
-  s += f;
-
-  f = test_LU_solve_dim(vander4, vander4_solution, 1024.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  LU_solve vander(4)");
-  s += f;
-
-  f = test_LU_solve_dim(vander12, vander12_solution, 0.05);
-  gsl_test(f, "  LU_solve vander(12)");
-  s += f;
-
-  return s;
-}
-
-
-int
-test_LUc_solve_dim(const gsl_matrix_complex * m, const double * actual, double eps)
-{
-  int s = 0;
-  int signum;
-  unsigned long i, dim = m->size1;
-
-  gsl_permutation * perm = gsl_permutation_alloc(dim);
-  gsl_vector_complex * rhs = gsl_vector_complex_alloc(dim);
-  gsl_matrix_complex * lu  = gsl_matrix_complex_alloc(dim,dim);
-  gsl_vector_complex * x = gsl_vector_complex_alloc(dim);
-  gsl_vector_complex * residual = gsl_vector_complex_alloc(dim);
-  gsl_matrix_complex_memcpy(lu,m);
-  for(i=0; i<dim; i++) 
-    {
-      gsl_complex z = gsl_complex_rect (2.0*i+1.0, 2.0*i+2.0);
-      gsl_vector_complex_set(rhs, i, z);
-    }
-  s += gsl_linalg_complex_LU_decomp(lu, perm, &signum);
-  s += gsl_linalg_complex_LU_solve(lu, perm, rhs, x);
-
-  for(i=0; i<dim; i++) {
-    gsl_complex z = gsl_vector_complex_get(x, i);
-    int foo_r = check(GSL_REAL(z),actual[2*i],eps);
-    int foo_i = check(GSL_IMAG(z),actual[2*i+1],eps);
-    if(foo_r || foo_i) {
-      printf("%3lu[%lu]: %22.18g   %22.18g\n", dim, i, GSL_REAL(z), actual[2*i]);
-      printf("%3lu[%lu]: %22.18g   %22.18g\n", dim, i, GSL_IMAG(z), actual[2*i+1]);
-    }
-    s += foo_r + foo_i;
-  }
-
-  s += gsl_linalg_complex_LU_refine(m, lu, perm, rhs, x, residual);
-
-  for(i=0; i<dim; i++) {
-    gsl_complex z = gsl_vector_complex_get(x, i);
-    int foo_r = check(GSL_REAL(z),actual[2*i],eps);
-    int foo_i = check(GSL_IMAG(z),actual[2*i+1],eps);
-    if(foo_r || foo_i) {
-      printf("%3lu[%lu]: %22.18g   %22.18g (improved)\n", dim, i, GSL_REAL(z), actual[2*i]);
-      printf("%3lu[%lu]: %22.18g   %22.18g (improved)\n", dim, i, GSL_IMAG(z), actual[2*i+1]);
-    }
-    s += foo_r + foo_i;
-  }
-
-  gsl_vector_complex_free(residual);
-  gsl_vector_complex_free(x);
-  gsl_matrix_complex_free(lu);
-  gsl_vector_complex_free(rhs);
-  gsl_permutation_free(perm);
-
-  return s;
-}
-
-
-int test_LUc_solve(void)
-{
-  int f;
-  int s = 0;
-
-  f = test_LUc_solve_dim(c7, c7_solution, 1024.0 * 1024.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  complex_LU_solve complex(7)");
-  s += f;
-
-  return s;
-}
-
+#include "test_qr.c"
 
 int
 test_QR_solve_dim(const gsl_matrix * m, const double * actual, double eps)
@@ -791,96 +635,6 @@ int test_QR_lssolve(void)
 
   f = test_QR_lssolve_dim(vander12, vander12_solution, 0.05);
   gsl_test(f, "  QR_lssolve vander(12)");
-  s += f;
-
-  return s;
-}
-
-
-int
-test_QR_decomp_dim(const gsl_matrix * m, double eps)
-{
-  int s = 0;
-  unsigned long i,j, M = m->size1, N = m->size2;
-
-  gsl_matrix * qr = gsl_matrix_alloc(M,N);
-  gsl_matrix * a  = gsl_matrix_alloc(M,N);
-  gsl_matrix * q  = gsl_matrix_alloc(M,M);
-  gsl_matrix * r  = gsl_matrix_alloc(M,N);
-  gsl_vector * d = gsl_vector_alloc(GSL_MIN(M,N));
-
-  gsl_matrix_memcpy(qr,m);
-
-  s += gsl_linalg_QR_decomp(qr, d);
-  s += gsl_linalg_QR_unpack(qr, d, q, r);
-  
-  /* compute a = q r */
-  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, q, r, 0.0, a);
-
-  for(i=0; i<M; i++) {
-    for(j=0; j<N; j++) {
-      double aij = gsl_matrix_get(a, i, j);
-      double mij = gsl_matrix_get(m, i, j);
-      int foo = check(aij, mij, eps);
-      if(foo) {
-        printf("(%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", M, N, i,j, aij, mij);
-      }
-      s += foo;
-    }
-  }
-
-  gsl_vector_free(d);
-  gsl_matrix_free(qr);
-  gsl_matrix_free(a);
-  gsl_matrix_free(q);
-  gsl_matrix_free(r);
-
-  return s;
-}
-
-int test_QR_decomp(void)
-{
-  int f;
-  int s = 0;
-
-  f = test_QR_decomp_dim(m35, 2 * 8.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  QR_decomp m(3,5)");
-  s += f;
-
-  f = test_QR_decomp_dim(m53, 2 * 64.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  QR_decomp m(5,3)");
-  s += f;
-
-  f = test_QR_decomp_dim(hilb2, 2 * 8.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  QR_decomp hilbert(2)");
-  s += f;
-
-  f = test_QR_decomp_dim(hilb3, 2 * 64.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  QR_decomp hilbert(3)");
-  s += f;
-
-  f = test_QR_decomp_dim(hilb4, 2 * 1024.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  QR_decomp hilbert(4)");
-  s += f;
-
-  f = test_QR_decomp_dim(hilb12, 2 * 1024.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  QR_decomp hilbert(12)");
-  s += f;
-
-  f = test_QR_decomp_dim(vander2, 8.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  QR_decomp vander(2)");
-  s += f;
-
-  f = test_QR_decomp_dim(vander3, 64.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  QR_decomp vander(3)");
-  s += f;
-
-  f = test_QR_decomp_dim(vander4, 1024.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  QR_decomp vander(4)");
-  s += f;
-
-  f = test_QR_decomp_dim(vander12, 0.0005); /* FIXME: bad accuracy */
-  gsl_test(f, "  QR_decomp vander(12)");
   s += f;
 
   return s;
@@ -2846,191 +2600,6 @@ test_choleskyc_solve(void)
   s += f;
 
   return s;
-} /* test_choleskyc_solve() */
-
-int
-test_choleskyc_decomp_dim(const gsl_matrix_complex * m, double eps)
-{
-  int s = 0;
-  unsigned long i,j, M = m->size1, N = m->size2;
-
-  gsl_matrix_complex * v  = gsl_matrix_complex_alloc(M,N);
-  gsl_matrix_complex * a  = gsl_matrix_complex_alloc(M,N);
-  gsl_matrix_complex * l  = gsl_matrix_complex_alloc(M,N);
-  gsl_matrix_complex * lh  = gsl_matrix_complex_alloc(N,N);
-
-  gsl_matrix_complex_memcpy(v, m);
-  gsl_matrix_complex_set_zero(l);
-  gsl_matrix_complex_set_zero(lh);
-
-  s += gsl_linalg_complex_cholesky_decomp(v);
-
-  /* Compute L L^H */
-  
-  for (i = 0; i < N ; i++)
-    {
-      for (j = 0; j <= i; j++)
-        {
-          gsl_complex vij = gsl_matrix_complex_get(v, i, j);
-          gsl_matrix_complex_set (l, i, j, vij);
-          gsl_matrix_complex_set (lh, j, i, gsl_complex_conjugate(vij));
-        }
-    }
-            
-  /* compute a = l lh */
-  gsl_blas_zgemm (CblasNoTrans,
-                  CblasNoTrans,
-                  GSL_COMPLEX_ONE,
-                  l,
-                  lh,
-                  GSL_COMPLEX_ZERO,
-                  a);
-
-  for(i=0; i<M; i++) {
-    for(j=0; j<N; j++) {
-      gsl_complex aij = gsl_matrix_complex_get(a, i, j);
-      gsl_complex mij = gsl_matrix_complex_get(m, i, j);
-      int foo_r = check(GSL_REAL(aij), GSL_REAL(mij), eps);
-      int foo_i = check(GSL_IMAG(aij), GSL_IMAG(mij), eps);
-      if(foo_r || foo_i) {
-        printf("(%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", M, N, i,j, GSL_REAL(aij), GSL_REAL(mij));
-        printf("(%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", M, N, i,j, GSL_IMAG(aij), GSL_IMAG(mij));
-      }
-      s += foo_r + foo_i;
-    }
-  }
-
-  gsl_matrix_complex_free(v);
-  gsl_matrix_complex_free(a);
-  gsl_matrix_complex_free(l);
-  gsl_matrix_complex_free(lh);
-
-  return s;
-}
-
-int
-test_choleskyc_decomp(void)
-{
-  int f;
-  int s = 0;
-  double dat3[] = { 59.75,0,       49.25,172.25, 66.75,-162.75,
-                    49.25,-172.25, 555.5,0,      -429,-333.5,
-                    66.75,162.75,  -429,333.5,   536.5,0 };
-  gsl_matrix_complex_view p3 = gsl_matrix_complex_view_array(dat3, 3, 3);
-
-  f = test_choleskyc_decomp_dim(&p3.matrix, 2 * 8.0 * GSL_DBL_EPSILON);
-  gsl_test(f, "  complex_cholesky_decomp complex(3)");
-  s += f;
-
-  return s;
-}
-
-
-
-int
-test_choleskyc_invert_dim(const gsl_matrix_complex * m, double eps)
-{
-  int s = 0;
-  unsigned long i, j, N = m->size1;
-  gsl_complex af, bt;
-  gsl_matrix_complex * v  = gsl_matrix_complex_alloc(N, N);
-  gsl_matrix_complex * c  = gsl_matrix_complex_alloc(N, N);
-
-  gsl_matrix_complex_memcpy(v, m);
-
-  s += gsl_linalg_complex_cholesky_decomp(v);
-  s += gsl_linalg_complex_cholesky_invert(v);
-
-  GSL_SET_COMPLEX(&af, 1.0, 0.0);
-  GSL_SET_COMPLEX(&bt, 0.0, 0.0);
-  gsl_blas_zhemm(CblasLeft, CblasUpper, af, m, v, bt, c);
-
-  /* c should be the identity matrix */
-
-  for (i = 0; i < N; ++i)
-    {
-      for (j = 0; j < N; ++j)
-        {
-          int foo;
-          gsl_complex cij = gsl_matrix_complex_get(c, i, j);
-          double expected, actual;
-
-          /* check real part */
-          if (i == j)
-            expected = 1.0;
-          else
-            expected = 0.0;
-          actual = GSL_REAL(cij);
-          foo = check(actual, expected, eps);
-          if (foo)
-            printf("REAL(%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", 
-                   N, N, i,j, actual, expected);
-          s += foo;
-
-          /* check imaginary part */
-          expected = 0.0;
-          actual = GSL_IMAG(cij);
-          foo = check(actual, expected, eps);
-          if (foo)
-            printf("IMAG(%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", 
-                   N, N, i,j, actual, expected);
-          s += foo;
-
-        }
-    }
-
-  gsl_matrix_complex_free(v);
-  gsl_matrix_complex_free(c);
-
-  return s;
-}
-
-int
-test_choleskyc_invert(void)
-{
-  int f;
-  int s = 0;
-
-  double dat2[] = { 
-      92.303, 0.000,    10.858, 1.798,    
-      10.858, -1.798,    89.027, 0.000 
-  }; 
-
-  double dat3[] = { 
-      59.75,0,       49.25,172.25, 66.75,-162.75,
-      49.25,-172.25, 555.5,0,      -429,-333.5,
-      66.75,162.75,  -429,333.5,   536.5,0 
-  };
-
-  double dat4[] = { 
-      102.108, 0.000,    14.721, 1.343,    -17.480, 15.591,    3.308, -2.936,    
-      14.721, -1.343,    101.970, 0.000,    11.671, -6.776,    -5.009, -2.665,    
-      -17.480, -15.591,    11.671, 6.776,    105.071, 0.000,    3.396, 6.276,    
-      3.308, 2.936,    -5.009, 2.665,    3.396, -6.276,    107.128, 0.000 
-  }; 
-
-  {
-    gsl_matrix_complex_view rv2 = gsl_matrix_complex_view_array(dat2, 2, 2);
-    f = test_choleskyc_invert_dim(&rv2.matrix, 2 * 8.0 * GSL_DBL_EPSILON);
-    gsl_test(f, "  choleskyc_invert 2x2 Hermitian");
-    s += f;
-  }
-
-  { 
-    gsl_matrix_complex_view rv3 = gsl_matrix_complex_view_array(dat3, 3, 3);
-    f = test_choleskyc_invert_dim(&rv3.matrix, 2 * 1024.0 * GSL_DBL_EPSILON);
-    gsl_test(f, "  choleskyc_invert 3x3 Hermitian");
-    s += f;
-  }
-
-  {
-    gsl_matrix_complex_view rv4 = gsl_matrix_complex_view_array(dat4, 4, 4);
-    f = test_choleskyc_invert_dim(&rv4.matrix, 2 * 64.0 * GSL_DBL_EPSILON);
-    gsl_test(f, "  choleskyc_invert 4x4 Hermitian");
-    s += f;
-  }
-
-  return s;
 }
 
 int
@@ -3525,16 +3094,6 @@ test_tri_invert2(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_rng * r, const double
   const size_t N_max = 200;
   int s = 0;
   size_t n, i, j;
-  int (*invert_func) (gsl_matrix * T) = NULL;
-
-  if (Uplo == CblasUpper && Diag == CblasNonUnit)
-    invert_func = gsl_linalg_tri_upper_invert;
-  else if (Uplo == CblasLower && Diag == CblasNonUnit)
-    invert_func = gsl_linalg_tri_lower_invert;
-  else if (Uplo == CblasUpper && Diag == CblasUnit)
-    invert_func = gsl_linalg_tri_upper_unit_invert;
-  else if (Uplo == CblasLower && Diag == CblasUnit)
-    invert_func = gsl_linalg_tri_lower_unit_invert;
 
   for (n = 1; n <= N_max; ++n)
     {
@@ -3546,7 +3105,7 @@ test_tri_invert2(CBLAS_UPLO_t Uplo, CBLAS_DIAG_t Diag, gsl_rng * r, const double
 
       /* compute B = T^{-1} */
       gsl_matrix_memcpy(B, T);
-      (invert_func)(B);
+      gsl_linalg_tri_invert(Uplo, Diag, B);
 
       /* compute B = T * T^{-1} */
       gsl_blas_dtrmm(CblasLeft, Uplo, CblasNoTrans, Diag, 1.0, T, B);
@@ -3688,12 +3247,21 @@ main(void)
   gsl_test(test_tri_invert(r),           "Triangular Inverse");
 
   gsl_test(test_bidiag_decomp(),         "Bidiagonal Decomposition");
-  gsl_test(test_LU_solve(),              "LU Decomposition and Solve");
-  gsl_test(test_LUc_solve(),             "Complex LU Decomposition and Solve");
+  gsl_test(test_LU_decomp(r),            "LU Decomposition");
+  gsl_test(test_LU_solve(r),             "LU Solve");
+  gsl_test(test_LU_invert(r),            "LU Inverse");
+  gsl_test(test_LUc_decomp(r),           "Complex LU Decomposition");
+  gsl_test(test_LUc_solve(r),            "Complex LU Solve");
+  gsl_test(test_LUc_invert(r),           "Complex LU Inverse");
   gsl_test(test_QR_decomp(),             "QR Decomposition");
   gsl_test(test_QR_solve(),              "QR Solve");
   gsl_test(test_LQ_solve(),              "LQ Solve");
   gsl_test(test_PTLQ_solve(),            "PTLQ Solve");
+
+  gsl_test(test_QR_decomp_r(r),          "QR Decomposition (recursive)");
+  gsl_test(test_QR_QTmat_r(r),           "QR QTmat (recursive)");
+  gsl_test(test_QR_solve_r(r),           "QR Solve (recursive)");
+  gsl_test(test_QR_lssolve_r(r),         "QR LS Solve (recursive)");
 
   gsl_test(test_LQ_decomp(),             "LQ Decomposition");
   gsl_test(test_LQ_LQsolve(),            "LQ LQ Solve");
@@ -3735,9 +3303,9 @@ main(void)
   gsl_test(test_mcholesky_solve(r),      "Modified Cholesky Solve");
   gsl_test(test_mcholesky_invert(r),     "Modified Cholesky Inverse");
 
-  gsl_test(test_choleskyc_decomp(),      "Complex Cholesky Decomposition");
+  gsl_test(test_choleskyc_decomp(r),     "Complex Cholesky Decomposition");
   gsl_test(test_choleskyc_solve(),       "Complex Cholesky Solve");
-  gsl_test(test_choleskyc_invert(),      "Complex Cholesky Inverse");
+  gsl_test(test_choleskyc_invert(r),     "Complex Cholesky Inverse");
 
   gsl_test(test_cholesky_band_decomp(r), "Banded Cholesky Decomposition");
   gsl_test(test_cholesky_band_solve(r),  "Banded Cholesky Solve");

@@ -163,6 +163,8 @@ gsl_multilarge_linear_wstdform1 (const gsl_vector * L,
   const size_t n = X->size1;
   const size_t p = X->size2;
 
+  (void) work;
+
   if (L != NULL && p != L->size)
     {
       GSL_ERROR("L vector does not match X", GSL_EBADLEN);
@@ -263,6 +265,8 @@ gsl_multilarge_linear_wstdform2 (const gsl_matrix * LQR,
   const size_t m = LQR->size1;
   const size_t n = X->size1;
   const size_t p = X->size2;
+
+  (void) Ltau;
 
   if (p != work->p)
     {
@@ -375,6 +379,9 @@ gsl_multilarge_linear_genform2 (const gsl_matrix * LQR,
 {
   const size_t m = LQR->size1;
   const size_t p = LQR->size2;
+
+  (void) Ltau;
+  (void) work;
 
   if (p != c->size)
     {

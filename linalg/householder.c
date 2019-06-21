@@ -72,7 +72,7 @@ gsl_linalg_householder_transform (gsl_vector * v)
         }
       
       alpha = gsl_vector_get (v, 0) ;
-      beta = - (alpha >= 0.0 ? +1.0 : -1.0) * hypot(alpha, xnorm) ;
+      beta = - GSL_SIGN(alpha) * hypot(alpha, xnorm);
       tau = (beta - alpha) / beta ;
       
       {

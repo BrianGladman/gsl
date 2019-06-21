@@ -1998,6 +1998,15 @@
     <ClCompile Include="..\..\spmatrix\minmax.c">
       <Filter>spmatrix</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\linalg\invtri_complex.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\linalg\rqr.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\linalg\trimult_complex.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\integration\qng.h">
@@ -2690,6 +2699,12 @@
     <ClInclude Include="..\config.h" />
     <ClInclude Include="..\..\gsl\gsl_sf_sincos_pi.h">
       <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\eigen\recurse.h">
+      <Filter>eigen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\linalg\recurse.h">
+      <Filter>linalg</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

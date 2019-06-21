@@ -393,7 +393,7 @@ gsl_linalg_pcholesky_invert(const gsl_matrix * LDLT, const gsl_permutation * p,
 
       /* invert the lower triangle of LDLT */
       gsl_matrix_memcpy(Ainv, LDLT);
-      gsl_linalg_tri_lower_unit_invert(Ainv);
+      gsl_linalg_tri_invert(CblasLower, CblasUnit, Ainv);
 
       /* compute sqrt(D^{-1}) L^{-1} in the lower triangle of Ainv */
       for (i = 0; i < N; ++i)

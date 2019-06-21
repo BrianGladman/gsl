@@ -1,6 +1,7 @@
 /* linalg/qr.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2007 Gerard Jungman, Brian Gough
+ * Copyright (C) 2019 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,12 +119,10 @@ gsl_linalg_QR_solve (const gsl_matrix * QR, const gsl_vector * tau, const gsl_ve
     }
   else
     {
-      /* Copy x <- b */
-
+      /* copy x <- b */
       gsl_vector_memcpy (x, b);
 
-      /* Solve for x */
-
+      /* solve for x */
       gsl_linalg_QR_svx (QR, tau, x);
 
       return GSL_SUCCESS;
@@ -152,11 +151,9 @@ gsl_linalg_QR_svx (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector * x
   else
     {
       /* compute rhs = Q^T b */
-
       gsl_linalg_QR_QTvec (QR, tau, x);
 
       /* Solve R x = rhs, storing x in-place */
-
       gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, QR, x);
 
       return GSL_SUCCESS;
@@ -201,17 +198,14 @@ gsl_linalg_QR_lssolve (const gsl_matrix * QR, const gsl_vector * tau, const gsl_
       gsl_vector_memcpy(residual, b);
 
       /* compute rhs = Q^T b */
-
       gsl_linalg_QR_QTvec (QR, tau, residual);
 
       /* Solve R x = rhs */
-
       gsl_vector_memcpy(x, &(c.vector));
 
       gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, &(R.matrix), x);
 
       /* Compute residual = b - A x = Q (Q^T b - R x) */
-      
       gsl_vector_set_zero(&(c.vector));
 
       gsl_linalg_QR_Qvec(QR, tau, residual);
@@ -238,12 +232,10 @@ gsl_linalg_QR_Rsolve (const gsl_matrix * QR, const gsl_vector * b, gsl_vector * 
     }
   else
     {
-      /* Copy x <- b */
-
+      /* copy x <- b */
       gsl_vector_memcpy (x, b);
 
-      /* Solve R x = b, storing x in-place */
-
+      /* solve R x = b, storing x in-place */
       gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, QR, x);
 
       return GSL_SUCCESS;
@@ -264,8 +256,7 @@ gsl_linalg_QR_Rsvx (const gsl_matrix * QR, gsl_vector * x)
     }
   else
     {
-      /* Solve R x = b, storing x in-place */
-
+      /* solve R x = b, storing x in-place */
       gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, QR, x);
 
       return GSL_SUCCESS;
@@ -289,12 +280,10 @@ gsl_linalg_R_solve (const gsl_matrix * R, const gsl_vector * b, gsl_vector * x)
     }
   else
     {
-      /* Copy x <- b */
-
+      /* copy x <- b */
       gsl_vector_memcpy (x, b);
 
-      /* Solve R x = b, storing x inplace in b */
-
+      /* solve R x = b, storing x inplace in b */
       gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, R, x);
 
       return GSL_SUCCESS;
@@ -314,8 +303,7 @@ gsl_linalg_R_svx (const gsl_matrix * R, gsl_vector * x)
     }
   else
     {
-      /* Solve R x = b, storing x inplace in b */
-
+      /* solve R x = b, storing x inplace in b */
       gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, R, x);
 
       return GSL_SUCCESS;
@@ -324,8 +312,7 @@ gsl_linalg_R_svx (const gsl_matrix * R, gsl_vector * x)
 
 
 
-/* Form the product Q^T v  from a QR factorized matrix 
- */
+/* Form the product Q^T v  from a QR factorized matrix */
 
 int
 gsl_linalg_QR_QTvec (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector * v)
@@ -346,7 +333,6 @@ gsl_linalg_QR_QTvec (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector *
       size_t i;
 
       /* compute Q^T v */
-
       for (i = 0; i < GSL_MIN (M, N); i++)
         {
           gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
@@ -355,6 +341,7 @@ gsl_linalg_QR_QTvec (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector *
           double ti = gsl_vector_get (tau, i);
           gsl_linalg_householder_hv (ti, &(h.vector), &(w.vector));
         }
+
       return GSL_SUCCESS;
     }
 }
@@ -379,7 +366,6 @@ gsl_linalg_QR_Qvec (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector * 
       size_t i;
 
       /* compute Q v */
-
       for (i = GSL_MIN (M, N); i-- > 0;)
         {
           gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
@@ -389,6 +375,7 @@ gsl_linalg_QR_Qvec (const gsl_matrix * QR, const gsl_vector * tau, gsl_vector * 
           double ti = gsl_vector_get (tau, i);
           gsl_linalg_householder_hv (ti, &h.vector, &w.vector);
         }
+
       return GSL_SUCCESS;
     }
 }
@@ -414,7 +401,6 @@ gsl_linalg_QR_QTmat (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix *
       size_t i;
 
       /* compute Q^T A */
-
       for (i = 0; i < GSL_MIN (M, N); i++)
         {
           gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
@@ -423,6 +409,7 @@ gsl_linalg_QR_QTmat (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix *
           double ti = gsl_vector_get (tau, i);
           gsl_linalg_householder_hm (ti, &(h.vector), &(m.matrix));
         }
+
       return GSL_SUCCESS;
     }
 }
@@ -447,7 +434,6 @@ gsl_linalg_QR_matQ (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix * 
       size_t i;
 
       /* compute A Q */
-
       for (i = 0; i < GSL_MIN (M, N); i++)
         {
           gsl_vector_const_view c = gsl_matrix_const_column (QR, i);
@@ -456,6 +442,7 @@ gsl_linalg_QR_matQ (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix * 
           double ti = gsl_vector_get (tau, i);
           gsl_linalg_householder_mh (ti, &(h.vector), &(m.matrix));
         }
+
       return GSL_SUCCESS;
     }
 }
@@ -485,7 +472,6 @@ gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix 
       size_t i, j;
 
       /* Initialize Q to the identity */
-
       gsl_matrix_set_identity (Q);
 
       for (i = GSL_MIN (M, N); i-- > 0;)
@@ -499,7 +485,6 @@ gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix 
         }
 
       /*  Form the right triangular matrix R from a packed QR matrix */
-
       for (i = 0; i < M; i++)
         {
           for (j = 0; j < i && j < N; j++)
@@ -615,11 +600,9 @@ gsl_linalg_QR_QRsolve (gsl_matrix * Q, gsl_matrix * R, const gsl_vector * b, gsl
   else
     {
       /* compute sol = Q^T b */
-
       gsl_blas_dgemv (CblasTrans, 1.0, Q, b, 0.0, x);
 
-      /* Solve R x = sol, storing x in-place */
-
+      /* solve R x = sol, storing x in-place */
       gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, R, x);
 
       return GSL_SUCCESS;

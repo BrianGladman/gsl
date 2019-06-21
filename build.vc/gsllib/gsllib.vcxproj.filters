@@ -1995,6 +1995,15 @@
     <ClCompile Include="..\..\linalg\trimult.c">
       <Filter>linalg</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\linalg\invtri_complex.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\linalg\rqr.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\linalg\trimult_complex.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\integration\qng.h">
@@ -2756,6 +2765,12 @@
     </ClInclude>
     <ClInclude Include="..\..\gsl\gsl_sf_hermite.h">
       <Filter>gsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\linalg\recurse.h">
+      <Filter>linalg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\eigen\recurse.h">
+      <Filter>eigen</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
