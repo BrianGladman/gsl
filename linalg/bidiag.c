@@ -90,53 +90,47 @@ gsl_linalg_bidiag_decomp (gsl_matrix * A, gsl_vector * tau_U, gsl_vector * tau_V
     {
       const size_t M = A->size1;
       const size_t N = A->size2;
-      size_t i;
+      gsl_vector * tmp = gsl_vector_alloc(M);
+      size_t j;
   
-      for (i = 0 ; i < N; i++)
+      for (j = 0 ; j < N; j++)
         {
-          /* Apply Householder transformation to current column */
-          
-          {
-            gsl_vector_view c = gsl_matrix_column (A, i);
-            gsl_vector_view v = gsl_vector_subvector (&c.vector, i, M - i);
-            double tau_i = gsl_linalg_householder_transform (&v.vector);
-            
-            /* Apply the transformation to the remaining columns */
-            
-            if (i + 1 < N)
-              {
-                gsl_matrix_view m = 
-                  gsl_matrix_submatrix (A, i, i + 1, M - i, N - (i + 1));
-                gsl_linalg_householder_hm (tau_i, &v.vector, &m.matrix);
-              }
+          /* apply Householder transformation to current column */
+          gsl_vector_view v = gsl_matrix_subcolumn(A, j, j, M - j);
+          double tau_j = gsl_linalg_householder_transform (&v.vector);
 
-            gsl_vector_set (tau_U, i, tau_i);            
-
-          }
-
-          /* Apply Householder transformation to current row */
-          
-          if (i + 1 < N)
+          /* apply the transformation to the remaining columns */
+          if (j + 1 < N)
             {
-              gsl_vector_view r = gsl_matrix_row (A, i);
-              gsl_vector_view v = gsl_vector_subvector (&r.vector, i + 1, N - (i + 1));
-              double tau_i = gsl_linalg_householder_transform (&v.vector);
+              gsl_matrix_view m = gsl_matrix_submatrix (A, j, j + 1, M - j, N - j - 1);
+              gsl_vector_view work = gsl_vector_subvector(tau_U, j, N - j - 1);
+              gsl_linalg_householder_left (tau_j, &v.vector, &m.matrix, &work.vector);
+            }
+
+          gsl_vector_set (tau_U, j, tau_j);            
+
+          /* apply Householder transformation to current row */
+          if (j + 1 < N)
+            {
+              v = gsl_matrix_subrow (A, j, j + 1, N - j - 1);
+              tau_j = gsl_linalg_householder_transform (&v.vector);
               
-              /* Apply the transformation to the remaining rows */
-              
-              if (i + 1 < M)
+              /* apply the transformation to the remaining rows */
+              if (j + 1 < M)
                 {
-                  gsl_matrix_view m = 
-                    gsl_matrix_submatrix (A, i+1, i+1, M - (i+1), N - (i+1));
-                  gsl_linalg_householder_mh (tau_i, &v.vector, &m.matrix);
+                  gsl_matrix_view m = gsl_matrix_submatrix (A, j + 1, j + 1, M - j - 1, N - j - 1);
+                  gsl_vector_view work = gsl_vector_subvector(tmp, 0, M - j - 1);
+                  gsl_linalg_householder_right (tau_j, &v.vector, &m.matrix, &work.vector);
                 }
 
-              gsl_vector_set (tau_V, i, tau_i);
+              gsl_vector_set (tau_V, j, tau_j);
             }
         }
+
+      gsl_vector_free(tmp);
+
+      return GSL_SUCCESS;
     }
-        
-  return GSL_SUCCESS;
 }
 
 /* Form the orthogonal matrices U, V, diagonal d and superdiagonal sd

@@ -52,14 +52,14 @@ Inputs: A - matrix to be factored, M-by-N with M >= N
 Return: success/error
 
 Notes:
-1) on output, diag(T) contains tau vector
+1) on output, upper triangle of A contains R; elements below the diagonal
+are columns of V. The matrix Q is
 
-2) on output, upper triangle of A contains R; elements below the diagonal
-are columns of V, where the block reflector H is:
+Q = I - V T V^T
 
-H = I - V T V^T
+where T is upper triangular. Note that diag(T) = tau
 
-3) implementation provided by Julien Langou
+2) implementation provided by Julien Langou
 */
 
 int
@@ -80,80 +80,114 @@ gsl_linalg_QR_decomp_r (gsl_matrix * A, gsl_matrix * T)
     {
       GSL_ERROR ("T matrix does not match dimensions of A", GSL_EBADLEN);
     }
+  else if (N == 1)
+    {
+      /* base case, compute householder transform for single column matrix */
+
+      double * T00 = gsl_matrix_ptr(T, 0, 0);
+      gsl_vector_view v = gsl_matrix_column(A, 0);
+
+      *T00 = gsl_linalg_householder_transform(&v.vector);
+      return GSL_SUCCESS;
+    }
   else
     {
-      if (N == 1)
+      /*
+       * partition matrices:
+       *
+       *       N1  N2              N1  N2
+       * N1 [ A11 A12 ] and  N1 [ T11 T12 ]
+       * M2 [ A21 A22 ]      N2 [  0  T22 ]
+       */
+      int status;
+      const size_t N1 = N / 2;
+      const size_t N2 = N - N1;
+      const size_t M2 = M - N1;
+
+      gsl_matrix_view A11 = gsl_matrix_submatrix(A, 0, 0, N1, N1);
+      gsl_matrix_view A12 = gsl_matrix_submatrix(A, 0, N1, N1, N2);
+      gsl_matrix_view A21 = gsl_matrix_submatrix(A, N1, 0, M2, N1);
+      gsl_matrix_view A22 = gsl_matrix_submatrix(A, N1, N1, M2, N2);
+
+      gsl_matrix_view T11 = gsl_matrix_submatrix(T, 0, 0, N1, N1);
+      gsl_matrix_view T12 = gsl_matrix_submatrix(T, 0, N1, N1, N2);
+      gsl_matrix_view T22 = gsl_matrix_submatrix(T, N1, N1, N2, N2);
+
+      gsl_matrix_view m;
+
+      /*
+       * Eq. 2: recursively factor
+       *
+       * [ A11 ] = Q1 [ R11 ]
+       * [ A21 ]      [  0  ]
+       *                                          N1
+       * Note: Q1 = I - V1 T11 V1^T, where V1 = [ V11 ] N1
+       *                                        [ V21 ] M2
+       */
+      m = gsl_matrix_submatrix(A, 0, 0, M, N1);
+      status = gsl_linalg_QR_decomp_r(&m.matrix, &T11.matrix);
+      if (status)
+        return status;
+
+      /*
+       * Eq. 3:
+       *
+       * [ R12 ] := Q1^T [ A12 ] = [ A12 ] - [ V11 W ]
+       * [ A22 ]         [ A22 ]   [ A22 ]   [ V21 W ]
+       *
+       * where W = T11^T (V11^T A12 + V21^T A22), and using T12 as temporary storage
+       */
+      gsl_matrix_memcpy(&T12.matrix, &A12.matrix);                                                       /* W := A12 */
+      gsl_blas_dtrmm(CblasLeft, CblasLower, CblasTrans, CblasUnit, 1.0, &A11.matrix, &T12.matrix);       /* W := V11^T * A12 */
+      gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &A21.matrix, &A22.matrix, 1.0, &T12.matrix);         /* W := W + V21^T * A22 */
+      gsl_blas_dtrmm(CblasLeft, CblasUpper, CblasTrans, CblasNonUnit, 1.0, &T11.matrix, &T12.matrix);    /* W := T11^T * W */
+      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, -1.0, &A21.matrix, &T12.matrix, 1.0, &A22.matrix);      /* A22 = A22 - V21 * W */
+      gsl_blas_dtrmm(CblasLeft, CblasLower, CblasNoTrans, CblasUnit, 1.0, &A11.matrix, &T12.matrix);     /* tmp = V11 * W */
+      gsl_matrix_sub(&A12.matrix, &T12.matrix);                                                          /* R12 := A12 - V11 * W */
+
+      /*
+       * Eq. 4: recursively factor
+       *
+       * A22 = Q2~ R22
+       *
+       *              N1 M2
+       * Note: Q2 = [ I   0  ] N1
+       *            [ 0  Q2~ ] M2
+       */
+      status = gsl_linalg_QR_decomp_r(&A22.matrix, &T22.matrix);
+      if (status)
+        return status;
+
+      /*
+       * Eq. 13: update T12 := -T11 * V1^T * V2 * T22
+       *
+       * where:
+       *
+       *        N1                N2
+       * V1 = [ V11 ] N1   V2 = [  0  ] N1
+       *      [ V21 ] N2        [ V22 ] N2
+       *      [ V31 ] M-N       [ V32 ] M-N
+       *
+       * Note: V1^T V2 = V21^T V22 + V31^T V32
+       * Also, V11, V22 are unit lower triangular
+       */
+
+      m = gsl_matrix_submatrix(&A21.matrix, 0, 0, N2, N1);                                               /* V21 */
+      gsl_matrix_transpose_memcpy(&T12.matrix, &m.matrix);                                               /* T12 := V21^T */
+
+      m = gsl_matrix_submatrix(A, N1, N1, N2, N2);                                                       /* V22 */
+      gsl_blas_dtrmm(CblasRight, CblasLower, CblasNoTrans, CblasUnit, 1.0, &m.matrix, &T12.matrix);      /* T12 := V21^T * V22 */
+
+      if (M > N)
         {
-          /* base case, compute householder transform for single column matrix */
+          gsl_matrix_view V31 = gsl_matrix_submatrix(A, N, 0, M - N, N1);
+          gsl_matrix_view V32 = gsl_matrix_submatrix(A, N, N1, M - N, N2);
 
-          double * T00 = gsl_matrix_ptr(T, 0, 0);
-          gsl_vector_view v = gsl_matrix_column(A, 0);
-
-          *T00 = gsl_linalg_householder_transform(&v.vector);
+          gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &V31.matrix, &V32.matrix, 1.0, &T12.matrix);     /* T12 := T12 + V31^T * V32 */
         }
-      else
-        {
-          /*
-           * partition matrices:
-           *
-           *       N1  N2              N1  N2
-           * N1 [ A11 A12 ] and  N1 [ T11 T12 ]
-           * M2 [ A21 A22 ]      N2 [  0  T22 ]
-           */
-          int status;
-          const size_t N1 = N / 2;
-          const size_t N2 = N - N1;
-          const size_t M2 = M - N1;
 
-          gsl_matrix_view A11 = gsl_matrix_submatrix(A, 0, 0, N1, N1);
-          gsl_matrix_view A12 = gsl_matrix_submatrix(A, 0, N1, N1, N2);
-          gsl_matrix_view A21 = gsl_matrix_submatrix(A, N1, 0, M2, N1);
-          gsl_matrix_view A22 = gsl_matrix_submatrix(A, N1, N1, M2, N2);
-
-          gsl_matrix_view T11 = gsl_matrix_submatrix(T, 0, 0, N1, N1);
-          gsl_matrix_view T12 = gsl_matrix_submatrix(T, 0, N1, N1, N2);
-          gsl_matrix_view T22 = gsl_matrix_submatrix(T, N1, N1, N2, N2);
-
-          gsl_matrix_view m;
-
-          /* recursion on (A(1:m,1:N1), T11) */
-          m = gsl_matrix_submatrix(A, 0, 0, M, N1);
-          status = gsl_linalg_QR_decomp_r(&m.matrix, &T11.matrix);
-          if (status)
-            return status;
-
-          gsl_matrix_memcpy(&T12.matrix, &A12.matrix);
-
-          gsl_blas_dtrmm(CblasLeft, CblasLower, CblasTrans, CblasUnit, 1.0, &A11.matrix, &T12.matrix);       /* T12 = lower(A11)' * T12 */
-          gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &A21.matrix, &A22.matrix, 1.0, &T12.matrix);         /* T12 = T12 + A21' * A22 */
-          gsl_blas_dtrmm(CblasLeft, CblasUpper, CblasTrans, CblasNonUnit, 1.0, &T11.matrix, &T12.matrix);    /* T12 = T11' * T12 */
-          gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, -1.0, &A21.matrix, &T12.matrix, 1.0, &A22.matrix);      /* A22 = A22 - A21 * T12 */
-          gsl_blas_dtrmm(CblasLeft, CblasLower, CblasNoTrans, CblasUnit, 1.0, &A11.matrix, &T12.matrix);     /* T12 = lower(A11) * T12 */
-
-          gsl_matrix_sub(&A12.matrix, &T12.matrix);
-
-          /* recursion on (A22, T22) */
-          status = gsl_linalg_QR_decomp_r(&A22.matrix, &T22.matrix);
-          if (status)
-            return status;
-
-          m = gsl_matrix_submatrix(&A21.matrix, 0, 0, N2, N1);
-          gsl_matrix_transpose_memcpy(&T12.matrix, &m.matrix);
-
-          A22 = gsl_matrix_submatrix(A, N1, N1, N2, N2);
-          gsl_blas_dtrmm(CblasRight, CblasLower, CblasNoTrans, CblasUnit, 1.0, &A22.matrix, &T12.matrix);    /* T12 = T12 * lower(A22) */
-
-          if (M > N)
-            {
-              gsl_matrix_view A31 = gsl_matrix_submatrix(A, N, 0, M - N, N1);
-              gsl_matrix_view A32 = gsl_matrix_submatrix(A, N, N1, M - N, N2);
-
-              gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &A31.matrix, &A32.matrix, 1.0, &T12.matrix);     /* T12 = T12 + A31' * A32 */
-            }
-
-          gsl_blas_dtrmm(CblasLeft, CblasUpper, CblasNoTrans, CblasNonUnit, -1.0, &T11.matrix, &T12.matrix); /* T12 = -T11 * T12 */
-          gsl_blas_dtrmm(CblasRight, CblasUpper, CblasNoTrans, CblasNonUnit, 1.0, &T22.matrix, &T12.matrix); /* T12 = T12 * T22 */
-        }
+      gsl_blas_dtrmm(CblasLeft, CblasUpper, CblasNoTrans, CblasNonUnit, -1.0, &T11.matrix, &T12.matrix); /* T12 := -T11 * T12 */
+      gsl_blas_dtrmm(CblasRight, CblasUpper, CblasNoTrans, CblasNonUnit, 1.0, &T22.matrix, &T12.matrix); /* T12 := T12 * T22 */
 
       return GSL_SUCCESS;
     }
@@ -354,7 +388,7 @@ gsl_linalg_QR_QTvec_r()
 
 Inputs: QR   - [R; V] matrix encoded by gsl_linalg_QR_decomp_r
         T    - block reflector matrix
-        b    - M-by-1 matrix replaced by Q^T b on output
+        b    - M-by-1 vector replaced by Q^T b on output
         work - workspace, length N
 
 Notes:
@@ -507,6 +541,13 @@ unpack_Q1()
 Inputs: Q  - on input, contains T in upper triangle and V in lower trapezoid
              on output, contains Q_1
              M-by-N
+
+Return: success/error
+
+Notes:
+1)                                                         N
+Q1 = [ Q1 Q2 ] [ I_n ] = (I - V T V^T) [ I; 0 ] = [ I - V1 T V1^T ] N
+               [  0  ]                            [   - V2 T V1^T ] M - N
 */
 
 static int
@@ -515,29 +556,28 @@ unpack_Q1(gsl_matrix * Q)
   int status;
   const size_t M = Q->size1;
   const size_t N = Q->size2;
-  gsl_matrix_view T = gsl_matrix_submatrix(Q, 0, 0, N, N);
-  size_t i;
+  gsl_matrix_view Q1 = gsl_matrix_submatrix(Q, 0, 0, N, N);
+  gsl_vector_view diag = gsl_matrix_diagonal(&Q1.matrix);
 
-  /* T := T V1^T */
-  status = aux_ULT(&T.matrix, &T.matrix);
+  /* Q1 := T V1^T */
+  status = aux_ULT(&Q1.matrix, &Q1.matrix);
   if (status)
     return status;
 
   if (M > N)
     {
-      gsl_matrix_view m = gsl_matrix_submatrix(Q, N, 0, M - N, N);
-      gsl_blas_dtrmm(CblasRight, CblasUpper, CblasNoTrans, CblasNonUnit, -1.0, &T.matrix, &m.matrix);
+      /* compute Q2 := - V2 T V1^T */
+      gsl_matrix_view V2 = gsl_matrix_submatrix(Q, N, 0, M - N, N);
+      gsl_blas_dtrmm(CblasRight, CblasUpper, CblasNoTrans, CblasNonUnit, -1.0, &Q1.matrix, &V2.matrix);
     }
 
-  status = aux_mLU(&T.matrix);
+  /* Q1 := - V1 T V1^T */
+  status = aux_mLU(&Q1.matrix);
   if (status)
     return status;
 
-  for (i = 0; i < N; ++i)
-    {
-      double * ptr = gsl_matrix_ptr(Q, i, i);
-      *ptr += 1.0;
-    }
+  /* Q1 := I - V1 T V1^T */
+  gsl_vector_add_constant(&diag.vector, 1.0);
 
   return GSL_SUCCESS;
 }

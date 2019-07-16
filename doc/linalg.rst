@@ -220,7 +220,7 @@ where :math:`V` is an :math:`M`-by-:math:`N` matrix of the column vectors :math:
 and :math:`T` is an :math:`N`-by-:math:`N` upper triangular matrix, whose diagonal elements
 are the :math:`\tau_i`. Computing the full :math:`T`, while requiring more flops than
 the Level 2 approach, offers the advantage that all standard operations can take advantage
-of cache efficient Level 3 BLAS operations, and so this method often performs far better
+of cache efficient Level 3 BLAS operations, and so this method often performs faster
 than the Level 2 approach. The functions for the recursive block algorithm have a
 :code:`_r` suffix, and it is recommended to use this interface for performance
 critical applications.
@@ -248,7 +248,9 @@ critical applications.
 
    This function factors the :math:`M`-by-:math:`N` matrix :data:`A` into
    the :math:`QR` decomposition :math:`A = Q R` using the recursive Level 3 BLAS
-   algorithm of Elmroth and Gustavson. The :math:`N`-by-:math:`N`
+   algorithm of Elmroth and Gustavson.  On output the diagonal and
+   upper triangular part of :data:`A` contain the matrix
+   :math:`R`.  The :math:`N`-by-:math:`N`
    matrix :data:`T` stores the upper triangular factor appearing in :math:`Q`.
    The matrix :math:`Q` is given by :math:`Q = I - V T V^T`, where the elements
    below the diagonal of :data:`A` contain the columns of :math:`V` on output.
@@ -383,6 +385,13 @@ critical applications.
    This function solves the triangular system :math:`R x = b` in-place. On
    input :data:`x` should contain the right-hand side :math:`b`, which is
    replaced by the solution on output.
+
+.. function:: int gsl_linalg_QR_rcond (const gsl_matrix * QR, double * rcond, gsl_vector * work)
+
+   This function estimates the reciprocal condition number (using the 1-norm) of the :math:`R` factor,
+   stored in the upper triangle of :data:`QR`. The reciprocal condition number estimate, defined as
+   :math:`1 / (||R||_1 \cdot ||R^{-1}||_1)`, is stored in :data:`rcond`.
+   Additional workspace of size :math:`3 N` is required in :data:`work`.
 
 .. index:: QR decomposition with column pivoting
 
@@ -1561,9 +1570,9 @@ Householder Transformations
 
 A Householder transformation is a rank-1 modification of the identity
 matrix which can be used to zero out selected elements of a vector.  A
-Householder matrix :math:`P` takes the form,
+Householder matrix :math:`H` takes the form,
 
-.. math:: P = I - \tau v v^T
+.. math:: H = I - \tau v v^T
 
 where :math:`v` is a vector (called the *Householder vector*) and
 :math:`\tau = 2/(v^T v)`. The functions described in this section use the
@@ -1573,36 +1582,36 @@ Householder transformations efficiently.
 .. function:: double gsl_linalg_householder_transform (gsl_vector * w)
               gsl_complex gsl_linalg_complex_householder_transform (gsl_vector_complex * w)
 
-   This function prepares a Householder transformation :math:`P = I - \tau v v^T`
+   This function prepares a Householder transformation :math:`H = I - \tau v v^T`
    which can be used to zero all the elements of the input vector :data:`w`
    except the first. On output the Householder vector :data:`v` is stored in
    :data:`w` and the scalar :math:`\tau` is returned. The householder vector
    :data:`v` is normalized so that :code:`v[0] = 1`, however this 1 is not
    stored in the output vector. Instead, :code:`w[0]` is set to
    the first element of the transformed vector, so that if
-   :math:`u = P w`, :code:`w[0] = u[0]` on output and the remainder
+   :math:`u = H w`, :code:`w[0] = u[0]` on output and the remainder
    of :math:`u` is zero.
 
 .. function:: int gsl_linalg_householder_hm (double tau, const gsl_vector * v, gsl_matrix * A)
               int gsl_linalg_complex_householder_hm (gsl_complex tau, const gsl_vector_complex * v, gsl_matrix_complex * A)
 
-   This function applies the Householder matrix :math:`P` defined by the
+   This function applies the Householder matrix :math:`H` defined by the
    scalar :data:`tau` and the vector :data:`v` to the left-hand side of the
-   matrix :data:`A`. On output the result :math:`P A` is stored in :data:`A`.
+   matrix :data:`A`. On output the result :math:`H A` is stored in :data:`A`.
 
 .. function:: int gsl_linalg_householder_mh (double tau, const gsl_vector * v, gsl_matrix * A)
               int gsl_linalg_complex_householder_mh (gsl_complex tau, const gsl_vector_complex * v, gsl_matrix_complex * A)
 
-   This function applies the Householder matrix :math:`P` defined by the
+   This function applies the Householder matrix :math:`H` defined by the
    scalar :data:`tau` and the vector :data:`v` to the right-hand side of the
-   matrix :data:`A`. On output the result :math:`A P` is stored in :data:`A`.
+   matrix :data:`A`. On output the result :math:`A H` is stored in :data:`A`.
 
 .. function:: int gsl_linalg_householder_hv (double tau, const gsl_vector * v, gsl_vector * w)
               int gsl_linalg_complex_householder_hv (gsl_complex tau, const gsl_vector_complex * v, gsl_vector_complex * w)
 
-   This function applies the Householder transformation :math:`P` defined by
+   This function applies the Householder transformation :math:`H` defined by
    the scalar :data:`tau` and the vector :data:`v` to the vector :data:`w`.  On
-   output the result :math:`P w` is stored in :data:`w`.
+   output the result :math:`H w` is stored in :data:`w`.
 
 .. @deftypefun int gsl_linalg_householder_hm1 (double tau, gsl_matrix * A)
 .. This function applies the Householder transform, defined by the scalar
@@ -1783,14 +1792,6 @@ Triangular Systems
    when :data:`Uplo` = :code:`CblasUpper`. The parameter :data:`Diag` = :code:`CblasUnit`, :code:`CblasNonUnit`
    specifies whether the matrix is unit triangular.
 
-.. function:: int gsl_linalg_tri_upper_rcond (const gsl_matrix * T, double * rcond, gsl_vector * work)
-              int gsl_linalg_tri_lower_rcond (const gsl_matrix * T, double * rcond, gsl_vector * work)
-
-   These functions estimate the reciprocal condition number, in the 1-norm, of the upper or lower
-   :math:`N`-by-:math:`N` triangular matrix :data:`T`. The reciprocal condition number
-   is stored in :data:`rcond` on output, and is defined by :math:`1 / (||T||_1 \cdot ||T^{-1}||_1)`.
-   Additional workspace of size :math:`3 N` is required in :data:`work`.
-
 .. function:: int gsl_linalg_tri_LTL (gsl_matrix * L)
               int gsl_linalg_complex_tri_LHL (gsl_matrix_complex * L)
 
@@ -1805,10 +1806,76 @@ Triangular Systems
    computed by :func:`gsl_linalg_LU_decomp` or :func:`gsl_linalg_complex_LU_decomp`.
    The product is computed in-place using Level 3 BLAS.
 
-.. index:: banded matrices
+.. function:: int gsl_linalg_tri_rcond (CBLAS_UPLO_t Uplo, const gsl_matrix * A, double * rcond, gsl_vector * work)
+
+   This function estimates the 1-norm reciprocal condition number of the triangular matrix :data:`A`,
+   using the lower triangle when :data:`Uplo` is :code:`CblasLower` and upper triangle when
+   :data:`Uplo` is :code:`CblasUpper`. The reciprocal condition number
+   :math:`1 / \left( \left|\left| A \right|\right|_1 \left|\left| A^{-1} \right|\right|_1 \right)`
+   is stored in :data:`rcond` on output. Additional workspace of size :math:`3N` is required
+   in :data:`work`.
+
+.. index::
+   single: banded matrices
+   single: matrices, banded
 
 Banded Systems
 ==============
+
+Band matrices are sparse matrices whose non-zero entries are confined to a diagonal
+*band*. From a storage point of view, significant savings can be achieved by
+storing only the non-zero diagonals of a banded matrix. Algorithms such as LU and
+Cholesky factorizations preserve the band structure of these matrices. Computationally,
+working with compact banded matrices is preferable to working on the full dense
+matrix with many zero entries.
+
+.. index::
+   single: banded general matrices
+
+General Banded Format
+---------------------
+
+An example of a general banded matrix is given below.
+
+.. math::
+
+   A = \begin{pmatrix}
+         \alpha_1 & \beta_1 & \gamma_1 & 0 & 0 & 0 \\
+         \delta_1 & \alpha_2 & \beta_2 & \gamma_2 & 0 & 0 \\
+         0 & \delta_2 & \alpha_3 & \beta_3 & \gamma_3 & 0 \\
+         0 & 0 & \delta_3 & \alpha_4 & \beta_4 & \gamma_4 \\
+         0 & 0 & 0 & \delta_4 & \alpha_5 & \beta_5 \\
+         0 & 0 & 0 & 0 & \delta_5 & \alpha_6
+       \end{pmatrix}
+
+This matrix has a *lower bandwidth* of 1 and an *upper bandwidth* of 2.
+The lower bandwidth is the number of non-zero subdiagonals, and the
+upper bandwidth is the number of non-zero superdiagonals. A
+:math:`(p,q)` banded matrix has a lower bandwidth :math:`p` and
+upper bandwidth :math:`q`. For example, diagonal matrices are
+:math:`(0,0)`, tridiagonal matrices are :math:`(1,1)`, and
+upper triangular matrices are :math:`(0,N-1)` banded matrices.
+
+The corresponding :math:`6`-by-:math:`4` packed banded matrix looks like
+
+.. math::
+
+   AB = \begin{pmatrix}
+          * & * & \alpha_1 & \delta_1 \\
+          * & \beta_1 & \alpha_2 & \delta_2 \\
+          \gamma_1 & \beta_2 & \alpha_3 & \delta_3 \\
+          \gamma_2 & \beta_3 & \alpha_4 & \delta_4 \\
+          \gamma_3 & \beta_4 & \alpha_5 & \delta_5 \\
+          \gamma_4 & \beta_5 & \alpha_6 & *
+        \end{pmatrix}
+
+where the superdiagonals are stored in columns, followed by the diagonal,
+followed by the subdiagonals.
+The entries marked by :math:`*` are not referenced by the banded
+routines. With this format, each row of :math:`AB` corresponds to
+the non-zero entries of the corresponding column of :math:`A`.
+For an :math:`N`-by-:math:`N` matrix :math:`A`, the dimension
+of :math:`AB` will be :math:`N`-by-:math:`(p+q+1)`.
 
 .. index::
    single: banded symmetric matrices
@@ -1819,9 +1886,7 @@ Banded Systems
 Symmetric Banded Format
 -----------------------
 
-Routines which operate on symmetric banded matrices require an input matrix
-with the following format.
-
+Symmetric banded matrices allow for additional storage savings.
 As an example, consider the following :math:`6 \times 6` symmetric banded matrix
 with lower bandwidth :math:`p = 2`:
 

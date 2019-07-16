@@ -395,7 +395,7 @@ normal_solve_system(const double lambda, gsl_vector * x, normal_state_t *state)
   gsl_matrix_tricpy('L', 1, state->work_ATA, state->ATA);
   gsl_vector_add_constant(&d.vector, lambda_sq);
 
-  /* solve with LDL decomposition */
+  /* solve with Cholesky decomposition */
   status = normal_solve_cholesky(state->work_ATA, state->ATb, x, state);
   if (status)
     return status;

@@ -134,15 +134,15 @@ set title "Not regularized ({/Symbol \154} = 0)"
 plot file us 1:2 index 0 w p pt 7 ps 0.5 lc rgb "black" ti "Data", \
      file us 1:2 index 3 w li lw 6 ti "Exact", \
      file us 1:3 index 3 w li lw 6 ti "TSQR", \
-     file us 1:4 index 3 w li lw 6 ti "Normal"
+     file us 1:4 index 3 w li lw 4 ti "Normal"
 
 unset key
 
-set title "Regularized ({/Symbol \154} = 1e-6)"
+set title "Regularized ({/Symbol \154} = 1e-5)"
 plot file2 us 1:2 index 0 w p pt 7 ps 0.5 lc rgb "black" ti "Data", \
      file2 us 1:2 index 3 w li lw 6 ti "Exact", \
      file2 us 1:3 index 3 w li lw 6 ti "TSQR", \
-     file2 us 1:4 index 3 w li lw 6 ti "Normal"
+     file2 us 1:4 index 3 w li lw 4 ti "Normal"
 
 set xrange [1e1:1e3]
 set yrange [1e-1:1e10]
