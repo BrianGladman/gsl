@@ -136,7 +136,7 @@ cholesky_init(const void * vtrust_state, void * vstate)
   cholesky_state_t *state = (cholesky_state_t *) vstate;
 
   /* store J^T J normal equations matrix */
-  gsl_matrix_tricpy('L', 1, state->JTJ, trust_state->JTJ);
+  gsl_matrix_tricpy(CblasLower, CblasNonUnit, state->JTJ, trust_state->JTJ);
 
   return GSL_SUCCESS;
 }
@@ -166,7 +166,7 @@ cholesky_presolve(const double mu, const void * vtrust_state, void * vstate)
   int status;
 
   /* copy lower triangle of A to workspace */
-  gsl_matrix_tricpy('L', 1, JTJ, state->JTJ);
+  gsl_matrix_tricpy(CblasLower, CblasNonUnit, JTJ, state->JTJ);
 
   /* augment normal equations: A -> A + mu D^T D */
   status = cholesky_regularize(mu, diag, JTJ, state);
@@ -225,7 +225,7 @@ cholesky_rcond(double * rcond, const gsl_matrix * JTJ, void * vstate)
    * iteration so do a new one to be sure we use the right Jacobian */
 
   /* copy lower triangle of JTJ to workspace */
-  gsl_matrix_tricpy('L', 1, state->work_JTJ, JTJ);
+  gsl_matrix_tricpy(CblasLower, CblasNonUnit, state->work_JTJ, JTJ);
 
   /* compute Cholesky decomposition, turning off error handler */
   err_handler = gsl_set_error_handler_off();
@@ -258,7 +258,7 @@ cholesky_covar(const gsl_matrix * JTJ, gsl_matrix * covar, void * vstate)
    * iteration so do a new one to be sure we use the right Jacobian */
 
   /* copy lower triangle of JTJ to workspace */
-  gsl_matrix_tricpy('L', 1, covar, JTJ);
+  gsl_matrix_tricpy(CblasLower, CblasNonUnit, covar, JTJ);
 
   /* compute Cholesky decomposition, turning off error handler */
   err_handler = gsl_set_error_handler_off();

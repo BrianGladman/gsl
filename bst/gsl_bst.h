@@ -1,6 +1,6 @@
 /* bst/gsl_bst.h
  * 
- * Copyright (C) 2018 Patrick Alken
+ * Copyright (C) 2018, 2019 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,9 @@
 #define __GSL_BST_H__
 
 #include <gsl/gsl_math.h>
+#include <gsl/gsl_bst_avl.h>
+#include <gsl/gsl_bst_rb.h>
+#include <gsl/gsl_bst_types.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -33,18 +36,6 @@
 #endif
 
 __BEGIN_DECLS
-
-typedef int gsl_bst_cmp_function (const void * a, const void * b, void * params);
-
-/* allocation routines */
-typedef struct
-{
-  void * (*alloc) (size_t size, void * params);
-  void (*free) (void * block, void * params);
-} gsl_bst_allocator;
-
-#include <gsl/gsl_bst_avl.h>
-#include <gsl/gsl_bst_rb.h>
 
 /* type of binary search tree */
 typedef struct

@@ -205,16 +205,12 @@ gsl_linalg_bidiag_unpack (const gsl_matrix * A,
       for (i = N - 1; i-- > 0;)
         {
           /* Householder row transformation to accumulate V */
-          gsl_vector_const_view r = gsl_matrix_const_row (A, i);
-          gsl_vector_const_view h = 
-            gsl_vector_const_subvector (&r.vector, i + 1, N - (i+1));
-          
+          gsl_vector_const_view h = gsl_matrix_const_subrow (A, i, i + 1, N - i - 1);
           double ti = gsl_vector_get (tau_V, i);
+          gsl_matrix_view m = gsl_matrix_submatrix (V, i + 1, i + 1, N- i - 1, N - i - 1);
+          gsl_vector_view work = gsl_matrix_subrow(U, 0, 0, N - i - 1);
           
-          gsl_matrix_view m = 
-            gsl_matrix_submatrix (V, i + 1, i + 1, N-(i+1), N-(i+1));
-          
-          gsl_linalg_householder_hm (ti, &h.vector, &m.matrix);
+          gsl_linalg_householder_left (ti, &h.vector, &m.matrix, &work.vector);
         }
 
       /* Initialize U to the identity */
@@ -224,12 +220,9 @@ gsl_linalg_bidiag_unpack (const gsl_matrix * A,
       for (j = N; j-- > 0;)
         {
           /* Householder column transformation to accumulate U */
-          gsl_vector_const_view c = gsl_matrix_const_column (A, j);
-          gsl_vector_const_view h = gsl_vector_const_subvector (&c.vector, j, M - j);
+          gsl_vector_const_view h = gsl_matrix_const_subcolumn (A, j, j, M - j);
           double tj = gsl_vector_get (tau_U, j);
-          
-          gsl_matrix_view m = 
-            gsl_matrix_submatrix (U, j, j, M-j, N-j);
+          gsl_matrix_view m = gsl_matrix_submatrix (U, j, j, M - j, N - j);
           
           gsl_linalg_householder_hm (tj, &h.vector, &m.matrix);
         }

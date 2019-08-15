@@ -192,7 +192,7 @@ if they are called with the wrong format string, and these don't show up otherwi
 * Regenerate everything. make dist, unpack somewhere and then
 configure, make, make check.  Try running make check under ulimit -v
 65536 to be sure that excessive memory is not required to do the
-compilation.
+compilation. Also cd doc ; make html
 
 * Test with bounds checking version of GCC and valgrind (belt and braces)
 Note that you can run all the test under valgrind with the TESTS_ENVIRONMENT

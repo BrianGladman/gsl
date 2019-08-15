@@ -134,8 +134,6 @@ int gsl_vector_ulong_fprintf (FILE * stream, const gsl_vector_ulong * v,
                               const char *format);
 
 int gsl_vector_ulong_memcpy (gsl_vector_ulong * dest, const gsl_vector_ulong * src);
-int gsl_vector_ulong_memcpy_scale (gsl_vector_ulong * dest, const gsl_vector_ulong * src,
-                                   const unsigned long alpha);
 
 int gsl_vector_ulong_reverse (gsl_vector_ulong * v);
 
@@ -154,8 +152,9 @@ int gsl_vector_ulong_add (gsl_vector_ulong * a, const gsl_vector_ulong * b);
 int gsl_vector_ulong_sub (gsl_vector_ulong * a, const gsl_vector_ulong * b);
 int gsl_vector_ulong_mul (gsl_vector_ulong * a, const gsl_vector_ulong * b);
 int gsl_vector_ulong_div (gsl_vector_ulong * a, const gsl_vector_ulong * b);
-int gsl_vector_ulong_scale (gsl_vector_ulong * a, const double x);
+int gsl_vector_ulong_scale (gsl_vector_ulong * a, const unsigned long x);
 int gsl_vector_ulong_add_constant (gsl_vector_ulong * a, const double x);
+int gsl_vector_ulong_axpby (const unsigned long alpha, const gsl_vector_ulong * x, const unsigned long beta, gsl_vector_ulong * y);
 
 int gsl_vector_ulong_equal (const gsl_vector_ulong * u, 
                             const gsl_vector_ulong * v);

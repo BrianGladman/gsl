@@ -93,8 +93,8 @@ test_cholesky_decomp_eps(const int scale, const gsl_matrix * m,
     s += gsl_linalg_cholesky_decomp1(V);
 
   /* compute L and LT */
-  gsl_matrix_tricpy('L', 1, L, V);
-  gsl_matrix_transpose_tricpy('L', 1, LT, L);
+  gsl_matrix_tricpy(CblasLower, CblasNonUnit, L, V);
+  gsl_matrix_transpose_tricpy(CblasLower, CblasNonUnit, LT, L);
   
   if (scale)
     {
@@ -309,8 +309,8 @@ test_mcholesky_decomp_eps(const int posdef, const int scale, const gsl_matrix * 
   gsl_matrix_set_identity(L);
   gsl_matrix_set_identity(LT);
 
-  gsl_matrix_tricpy('L', 0, L, LDLT);
-  gsl_matrix_transpose_tricpy('L', 0, LT, L);
+  gsl_matrix_tricpy(CblasLower, CblasUnit, L, LDLT);
+  gsl_matrix_transpose_tricpy(CblasLower, CblasUnit, LT, L);
 
   /* compute (L sqrt(D)) and (sqrt(D) LT) */
   for (i = 0; i < N; ++i)
@@ -335,7 +335,7 @@ test_mcholesky_decomp_eps(const int posdef, const int scale, const gsl_matrix * 
   if (scale)
     {
       gsl_linalg_cholesky_scale_apply(V, S);
-      gsl_matrix_transpose_tricpy('L', 0, V, V);
+      gsl_matrix_transpose_tricpy(CblasLower, CblasUnit, V, V);
     }
 
   /* compute S M S + E */
@@ -630,8 +630,8 @@ test_pcholesky_decomp_eps(const int scale, const gsl_matrix * m,
   gsl_matrix_set_identity(L);
   gsl_matrix_set_identity(LT);
 
-  gsl_matrix_tricpy('L', 0, L, LDLT);
-  gsl_matrix_transpose_tricpy('L', 0, LT, L);
+  gsl_matrix_tricpy(CblasLower, CblasUnit, L, LDLT);
+  gsl_matrix_transpose_tricpy(CblasLower, CblasUnit, LT, L);
 
   /* compute (L sqrt(D)) and (sqrt(D) LT) */
   for (i = 0; i < N; ++i)
@@ -655,7 +655,7 @@ test_pcholesky_decomp_eps(const int scale, const gsl_matrix * m,
   if (scale)
     {
       gsl_linalg_cholesky_scale_apply(V, S);
-      gsl_matrix_transpose_tricpy('L', 0, V, V);
+      gsl_matrix_transpose_tricpy(CblasLower, CblasUnit, V, V);
     }
 
   /* compute M P^T */
@@ -910,7 +910,7 @@ test_cholesky_band_decomp_eps(const size_t p, const gsl_matrix * m, const double
 
   /* compute L and LT */
   gsl_linalg_cholesky_band_unpack(V, L);
-  gsl_matrix_transpose_tricpy('L', 1, LT, L);
+  gsl_matrix_transpose_tricpy(CblasLower, CblasNonUnit, LT, L);
   
   /* compute A = L LT */
   gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, L, LT, 0.0, A);

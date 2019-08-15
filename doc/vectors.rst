@@ -615,13 +615,6 @@ functions fall into this category.
    This function copies the elements of the vector :data:`src` into the
    vector :data:`dest`.  The two vectors must have the same length.
 
-.. function:: int gsl_vector_memcpy_scale (gsl_vector * dest, const gsl_vector * src, const double alpha)
-
-   This function scales the elements of the vector :data:`src` by :data:`alpha`
-   and copies the result into the vector :data:`dest`. The operation is
-   :math:`y \leftarrow \alpha x` where :math:`y` is :data:`dest` and
-   :math:`x` is :data:`src`. The two vectors must have the same length.
-
 .. function:: int gsl_vector_swap (gsl_vector * v, gsl_vector * w)
 
    This function exchanges the elements of the vectors :data:`v` and :data:`w`
@@ -684,6 +677,11 @@ Vector operations
    This function adds the constant value :data:`x` to the elements of the
    vector :data:`a`.  The result :math:`a_i \leftarrow a_i + x` is stored in
    :data:`a`.
+
+.. function:: int gsl_vector_axpby (const double alpha, const gsl_vector * x, const double beta, gsl_vector * y)
+
+   This function performs the operation :math:`y \leftarrow \alpha x + \beta y`. The
+   vectors :data:`x` and :data:`y` must have the same length.
 
 Finding maximum and minimum elements of vectors
 -----------------------------------------------

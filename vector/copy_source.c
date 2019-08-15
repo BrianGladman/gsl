@@ -21,6 +21,24 @@ int
 FUNCTION (gsl_vector, memcpy) (TYPE (gsl_vector) * dest,
                                const TYPE (gsl_vector) * src)
 {
+#if defined(BASE_DOUBLE)
+
+  gsl_blas_dcopy(src, dest);
+
+#elif defined(BASE_FLOAT)
+
+  gsl_blas_scopy(src, dest);
+
+#elif defined(BASE_GSL_COMPLEX)
+
+  gsl_blas_zcopy(src, dest);
+
+#elif defined(BASE_GSL_COMPLEX_FLOAT)
+
+  gsl_blas_ccopy(src, dest);
+
+#else
+
   const size_t src_size = src->size;
   const size_t dest_size = dest->size;
 
@@ -46,38 +64,7 @@ FUNCTION (gsl_vector, memcpy) (TYPE (gsl_vector) * dest,
       }
   }
 
-  return GSL_SUCCESS;
-}
-
-int
-FUNCTION (gsl_vector, memcpy_scale) (TYPE (gsl_vector) * dest,
-                                     const TYPE (gsl_vector) * src,
-                                     const ATOMIC alpha)
-{
-  const size_t src_size = src->size;
-  const size_t dest_size = dest->size;
-
-  if (src_size != dest_size)
-    {
-      GSL_ERROR ("vector lengths are not equal", GSL_EBADLEN);
-    }
-
-  {
-    const size_t src_stride = src->stride ;
-    const size_t dest_stride = dest->stride ;
-    size_t j;
-
-    for (j = 0; j < src_size; j++)
-      {
-        size_t k;
-
-        for (k = 0; k < MULTIPLICITY; k++) 
-          {
-            dest->data[MULTIPLICITY * dest_stride * j + k] 
-              = alpha * src->data[MULTIPLICITY * src_stride * j + k];
-          }
-      }
-  }
+#endif
 
   return GSL_SUCCESS;
 }

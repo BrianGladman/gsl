@@ -357,8 +357,8 @@ gsl_linalg_QR_unpack_r(const gsl_matrix * QR, const gsl_matrix * T, gsl_matrix *
        *          [ V ]
        */
       m = gsl_matrix_submatrix(Q, 0, 0, N, N);
-      gsl_matrix_tricpy('U', 1, &m.matrix, T);
-      gsl_matrix_tricpy('L', 0, &m.matrix, &RV.matrix);
+      gsl_matrix_tricpy(CblasUpper, CblasNonUnit, &m.matrix, T);
+      gsl_matrix_tricpy(CblasLower, CblasUnit, &m.matrix, &RV.matrix);
 
       if (M > N)
         {
@@ -376,7 +376,7 @@ gsl_linalg_QR_unpack_r(const gsl_matrix * QR, const gsl_matrix * T, gsl_matrix *
         }
 
       /* copy R */
-      gsl_matrix_tricpy('U', 1, R, &RV.matrix);
+      gsl_matrix_tricpy(CblasUpper, CblasNonUnit, R, &RV.matrix);
 
       return GSL_SUCCESS;
     }

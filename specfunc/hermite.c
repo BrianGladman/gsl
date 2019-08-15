@@ -1,6 +1,6 @@
 /* specfunc/hermite.c
  * 
- * Copyright (C) 2011, 2012, 2013, 2014 Konrad Griessinger (konradg(at)gmx.net)
+ * Copyright (C) 2011, 2012, 2013, 2014, 2019 Konrad Griessinger (konradg(at)gmx.net)
  * Copyright (C) 2019 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
@@ -42,6 +42,7 @@
 #include "eval.h"
 
 #define pow2(n) (gsl_sf_pow_int(2,n))
+#define RND(x)  ((double) ((x >= 0) ? (int) (x + 0.5) : (int) (x - 0.5)))
 
 /* evaluates the probabilists' Hermite polynomial of order n at position x */
 int 
@@ -421,7 +422,7 @@ gsl_sf_hermite_func_e(const int n, const double x, gsl_sf_result * result)
           abshi = fabs(hi);
           if (abshi > 1.0)
             {
-              double log_scale = round(log(abshi));
+              double log_scale = RND(log(abshi));
               double scale = exp(-log_scale);
 
               hi *= scale;
@@ -505,7 +506,7 @@ gsl_sf_hermite_func_fast_e(const int n, const double x, gsl_sf_result * result)
           sn = sin(t);
           sn2 = sin(2*t);
           cs = cos(2*x*k*sn - 0.5*n*sn2 - n*t);
-          cs_e = fmin(1.0+fabs(cs), GSL_DBL_EPSILON*(fabs(cs) + (fabs(2*x*k*sn) + fabs(0.5*n*sn2) + n*t)*fabs(sin(2*x*k*sn - 0.5*n*sn2 - n*t))));
+          cs_e = GSL_MIN(1.0+fabs(cs), GSL_DBL_EPSILON*(fabs(cs) + (fabs(2*x*k*sn) + fabs(0.5*n*sn2) + n*t)*fabs(sin(2*x*k*sn - 0.5*n*sn2 - n*t))));
           result->val += ex*cs;
           result->err += ex*cs_e + ex_e*fabs(cs) + GSL_DBL_EPSILON*fabs(ex*cs);
         }
@@ -1094,7 +1095,7 @@ gsl_sf_hermite_func_array(const int nmax, const double x, double * result_array)
           abshi = fabs(hi);
           if (abshi > 1.0)
             {
-              double log_scale = round(log(abshi));
+              double log_scale = RND(log(abshi));
               double scale = exp(-log_scale);
 
               hi *= scale;
@@ -1203,7 +1204,7 @@ gsl_sf_hermite_func_der_e(const int m, const int n, const double x, gsl_sf_resul
           abshi = fabs(hi);
           if (abshi > 1.0)
             {
-              double log_scale = round(log(abshi));
+              double log_scale = RND(log(abshi));
               double scale = exp(-log_scale);
 
               hi *= scale;

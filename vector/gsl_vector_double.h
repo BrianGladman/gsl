@@ -134,8 +134,6 @@ int gsl_vector_fprintf (FILE * stream, const gsl_vector * v,
                               const char *format);
 
 int gsl_vector_memcpy (gsl_vector * dest, const gsl_vector * src);
-int gsl_vector_memcpy_scale (gsl_vector * dest, const gsl_vector * src,
-                                   const double alpha);
 
 int gsl_vector_reverse (gsl_vector * v);
 
@@ -156,6 +154,7 @@ int gsl_vector_mul (gsl_vector * a, const gsl_vector * b);
 int gsl_vector_div (gsl_vector * a, const gsl_vector * b);
 int gsl_vector_scale (gsl_vector * a, const double x);
 int gsl_vector_add_constant (gsl_vector * a, const double x);
+int gsl_vector_axpby (const double alpha, const gsl_vector * x, const double beta, gsl_vector * y);
 
 int gsl_vector_equal (const gsl_vector * u, 
                             const gsl_vector * v);

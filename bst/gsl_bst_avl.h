@@ -20,7 +20,7 @@
 #ifndef __GSL_BST_AVL_H__
 #define __GSL_BST_AVL_H__
 
-#include <gsl/gsl_math.h>
+#include <gsl/gsl_bst_types.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS

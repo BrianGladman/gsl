@@ -64,7 +64,7 @@ gsl_linalg_cholesky_decomp (gsl_matrix * A)
   status = gsl_linalg_cholesky_decomp1(A);
   if (status == GSL_SUCCESS)
     {
-      gsl_matrix_transpose_tricpy('L', 0, A, A);
+      gsl_matrix_transpose_tricpy(CblasLower, CblasUnit, A, A);
     }
 
   return status;
@@ -96,7 +96,7 @@ gsl_linalg_cholesky_decomp1 (gsl_matrix * A)
   else
     {
       /* save original matrix in upper triangle for later rcond calculation */
-      gsl_matrix_transpose_tricpy('L', 0, A, A);
+      gsl_matrix_transpose_tricpy(CblasLower, CblasUnit, A, A);
 
       return cholesky_decomp_L3(A);
     }
@@ -245,7 +245,7 @@ gsl_linalg_cholesky_invert(gsl_matrix * LLT)
         return status;
 
       /* copy lower triangle to upper */
-      gsl_matrix_transpose_tricpy('L', 0, LLT, LLT);
+      gsl_matrix_transpose_tricpy(CblasLower, CblasUnit, LLT, LLT);
 
       return GSL_SUCCESS;
     }

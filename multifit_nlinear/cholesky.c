@@ -165,7 +165,7 @@ cholesky_presolve(const double mu, const void * vtrust_state, void * vstate)
   int status;
 
   /* copy lower triangle of A to workspace */
-  gsl_matrix_tricpy('L', 1, JTJ, state->JTJ);
+  gsl_matrix_tricpy(CblasLower, CblasNonUnit, JTJ, state->JTJ);
 
   /* augment normal equations: A -> A + mu D^T D */
   status = cholesky_regularize(mu, diag, JTJ, state);
@@ -217,6 +217,13 @@ cholesky_rcond(double * rcond, void * vstate)
   cholesky_state_t *state = (cholesky_state_t *) vstate;
   double rcond_JTJ;
 
+  if (state->mu < 0.0)
+    {
+      /* iteration has not started yet */
+      *rcond = 0.0;
+      return GSL_EFAILED;
+    }
+
   if (state->mu != 0)
     {
       /*
@@ -225,7 +232,7 @@ cholesky_rcond(double * rcond, void * vstate)
        */
 
       /* copy lower triangle of JTJ to workspace */
-      gsl_matrix_tricpy('L', 1, state->work_JTJ, state->JTJ);
+      gsl_matrix_tricpy(CblasLower, CblasNonUnit, state->work_JTJ, state->JTJ);
 
       /* compute Cholesky decomposition */
       status = gsl_linalg_cholesky_decomp1(state->work_JTJ);

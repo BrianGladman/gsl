@@ -392,7 +392,7 @@ normal_solve_system(const double lambda, gsl_vector * x, normal_state_t *state)
   gsl_vector_view d = gsl_matrix_diagonal(state->work_ATA);
 
   /* copy ATA matrix to temporary workspace and regularize */
-  gsl_matrix_tricpy('L', 1, state->work_ATA, state->ATA);
+  gsl_matrix_tricpy(CblasLower, CblasNonUnit, state->work_ATA, state->ATA);
   gsl_vector_add_constant(&d.vector, lambda_sq);
 
   /* solve with Cholesky decomposition */
@@ -471,7 +471,7 @@ normal_eigen(normal_state_t *state)
   int status;
 
   /* copy lower triangle of ATA to temporary workspace */
-  gsl_matrix_tricpy('L', 1, state->work_ATA, state->ATA);
+  gsl_matrix_tricpy(CblasLower, CblasNonUnit, state->work_ATA, state->ATA);
 
   /* compute eigenvalues of ATA */
   status = gsl_eigen_symm(state->work_ATA, state->workp, state->eigen_p);

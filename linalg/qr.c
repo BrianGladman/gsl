@@ -482,7 +482,7 @@ gsl_linalg_QR_unpack (const gsl_matrix * QR, const gsl_vector * tau, gsl_matrix 
           gsl_linalg_householder_hm (ti, &h.vector, &m.matrix);
         }
 
-      /*  Form the right triangular matrix R from a packed QR matrix */
+      /*  form the right triangular matrix R from a packed QR matrix */
       for (i = 0; i < M; i++)
         {
           for (j = 0; j < i && j < N; j++)

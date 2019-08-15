@@ -394,6 +394,7 @@ gsl_matrix * moler10;
 #include "test_lu.c"
 #include "test_luc.c"
 #include "test_lq.c"
+#include "test_tri.c"
 #include "test_qr.c"
 
 int
@@ -3263,6 +3264,8 @@ main(void)
   gsl_test(test_QR_solve_r(r),           "QR Solve (recursive)");
   gsl_test(test_QR_lssolve_r(r),         "QR LS Solve (recursive)");
 
+  gsl_test(test_QR_TR_decomp(r),         "QR_TR Decomposition");
+
   gsl_test(test_LQ_decomp(),             "LQ Decomposition");
   gsl_test(test_LQ_LQsolve(),            "LQ LQ Solve");
   gsl_test(test_LQ_lssolve_T(),          "LQ LS Solve_T");
@@ -3316,6 +3319,9 @@ main(void)
 
   gsl_test(test_ldlt_band_decomp(r),     "Banded LDLT Decomposition");
   gsl_test(test_ldlt_band_solve(r),      "Banded LDLT Solve");
+
+  gsl_test(test_symmtd_decomp(r),        "Symmetric Tridiagonal Decomposition");
+  gsl_test(test_hermtd_decomp(r),        "Hermitian Tridiagonal Decomposition");
 
   gsl_test(test_HH_solve(),              "Householder solve");
   gsl_test(test_TDS_solve(),             "Tridiagonal symmetric solve");

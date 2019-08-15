@@ -13,4 +13,4 @@ noinst_HEADERS = compress_source.c copy_source.c file_source.c getset_source.c g
 TESTS = $(check_PROGRAMS)
 
 test_SOURCES = test.c
-test_LDADD = libgslspmatrix.la ../bst/libgslbst.la ../test/libgsltest.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../block/libgslblock.la  ../sys/libgslsys.la ../err/libgslerr.la ../utils/libutils.la ../rng/libgslrng.la
+test_LDADD = libgslspmatrix.la ../bst/libgslbst.la ../test/libgsltest.la ../matrix/libgslmatrix.la ../vector/libgslvector.la ../blas/libgslblas.la ../cblas/libgslcblas.la ../block/libgslblock.la  ../sys/libgslsys.la ../err/libgslerr.la ../utils/libutils.la ../rng/libgslrng.la

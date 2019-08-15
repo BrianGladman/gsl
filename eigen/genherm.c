@@ -1,6 +1,6 @@
 /* eigen/genherm.c
  * 
- * Copyright (C) 2007 Patrick Alken
+ * Copyright (C) 2007, 2019 Patrick Alken
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@
  * B are hermitian, and B is positive-definite.
  */
 
-int genherm_standardize_L2(gsl_matrix_complex *A, const gsl_matrix_complex *B);
-int genherm_standardize_L3(gsl_matrix_complex *A, const gsl_matrix_complex *B);
+static int genherm_standardize_L2(gsl_matrix_complex *A, const gsl_matrix_complex *B);
+static int genherm_standardize_L3(gsl_matrix_complex *A, const gsl_matrix_complex *B);
 
 /*
 gsl_eigen_genherm_alloc()
@@ -199,7 +199,7 @@ Notes:
 2) Based on LAPACK ZHEGS2 using Level 2 BLAS
 */
 
-int
+static int
 genherm_standardize_L2(gsl_matrix_complex *A, const gsl_matrix_complex *B)
 {
   const size_t N = A->size1;
@@ -276,7 +276,7 @@ Notes:
 2) Based on ReLAPACK using Level 3 BLAS
 */
 
-int
+static int
 genherm_standardize_L3(gsl_matrix_complex *A, const gsl_matrix_complex *B)
 {
   const size_t N = A->size1;

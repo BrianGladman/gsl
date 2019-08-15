@@ -165,6 +165,18 @@ main (void)
   test_uchar_ops (M, N);
   test_char_ops (M, N);
 
+  test_ops (N, M);
+  test_float_ops (N, M);
+  test_long_double_ops (N, M);
+  test_ulong_ops (N, M);
+  test_long_ops (N, M);
+  test_uint_ops (N, M);
+  test_int_ops (N, M);
+  test_ushort_ops (N, M);
+  test_short_ops (N, M);
+  test_uchar_ops (N, M);
+  test_char_ops (N, M);
+
   /* Must use smaller dimensions to prevent approximation of floats in
      float_mul_elements test*/
   

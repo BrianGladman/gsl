@@ -89,7 +89,7 @@ pcholesky_decomp (const int copy_uplo, gsl_matrix * A, gsl_permutation * p)
       if (copy_uplo)
         {
           /* save a copy of A in upper triangle (for later rcond calculation) */
-          gsl_matrix_transpose_tricpy('L', 0, A, A);
+          gsl_matrix_transpose_tricpy(CblasLower, CblasUnit, A, A);
         }
 
       gsl_permutation_init(p);
@@ -251,7 +251,7 @@ gsl_linalg_pcholesky_decomp2(gsl_matrix * A, gsl_permutation * p,
       int status;
 
       /* save a copy of A in upper triangle (for later rcond calculation) */
-      gsl_matrix_transpose_tricpy('L', 0, A, A);
+      gsl_matrix_transpose_tricpy(CblasLower, CblasUnit, A, A);
 
       /* compute scaling factors to reduce cond(A) */
       status = gsl_linalg_cholesky_scale(A, S);
@@ -414,7 +414,7 @@ gsl_linalg_pcholesky_invert(const gsl_matrix * LDLT, const gsl_permutation * p,
       gsl_linalg_tri_LTL(Ainv);
 
       /* copy lower triangle to upper */
-      gsl_matrix_transpose_tricpy('L', 0, Ainv, Ainv);
+      gsl_matrix_transpose_tricpy(CblasLower, CblasUnit, Ainv, Ainv);
 
       /* now apply permutation p to the matrix */
 

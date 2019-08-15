@@ -393,6 +393,53 @@ critical applications.
    :math:`1 / (||R||_1 \cdot ||R^{-1}||_1)`, is stored in :data:`rcond`.
    Additional workspace of size :math:`3 N` is required in :data:`work`.
 
+Triangle on Top of Rectangle
+----------------------------
+
+This section provides routines for computing the :math:`QR` decomposition of the
+specialized matrix
+
+.. only:: not texinfo
+
+   .. math:: \begin{pmatrix} S \\ A \end{pmatrix} = Q R
+
+.. only:: texinfo
+
+   ::
+
+     [ S ] = Q R
+     [ A ]
+
+where :math:`S` is an :math:`N`-by-:math:`N` upper triangular matrix, and :math:`A` is
+an :math:`M`-by-:math:`N` dense matrix. This type of matrix arises, for example,
+in the sequential TSQR algorithm. The Elmroth and Gustavson algorithm is used to
+efficiently factor this matrix. Due to the upper triangular factor, the :math:`Q`
+matrix takes the form
+
+.. math:: Q = I - V T V^T
+
+with
+
+.. only:: not texinfo
+
+   .. math:: V = \begin{pmatrix} I \\ Y \end{pmatrix}
+
+.. only:: texinfo
+
+   ::
+
+     V = [ I ]
+         [ Y ]
+
+and :math:`Y` is dense and of the same dimensions as :math:`A`.
+
+.. function:: int gsl_linalg_QR_TR_decomp (gsl_matrix * S, gsl_matrix * A, gsl_matrix * T)
+
+   This function computes the :math:`QR` decomposition of the matrix :math:`(S ; A)`, where
+   :math:`S` is :math:`N`-by-:math:`N` upper triangular and :math:`A` is :math:`M`-by-:math:`N`
+   dense. On output, :math:`S` is replaced by the :math:`R` factor, and :math:`A` is replaced
+   by :math:`Y`.
+
 .. index:: QR decomposition with column pivoting
 
 .. _linalg-qrpt:

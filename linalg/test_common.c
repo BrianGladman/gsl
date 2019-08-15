@@ -120,7 +120,7 @@ create_symm_matrix(gsl_matrix * m, gsl_rng * r)
     }
 
   /* copy lower triangle to upper */
-  gsl_matrix_transpose_tricpy('L', 0, m, m);
+  gsl_matrix_transpose_tricpy(CblasLower, CblasUnit, m, m);
 
   return GSL_SUCCESS;
 }

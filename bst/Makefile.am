@@ -2,7 +2,7 @@ noinst_LTLIBRARIES = libgslbst.la
 
 check_PROGRAMS = test
 
-pkginclude_HEADERS = gsl_bst.h gsl_bst_avl.h gsl_bst_rb.h
+pkginclude_HEADERS = gsl_bst.h gsl_bst_types.h gsl_bst_avl.h gsl_bst_rb.h
 
 libgslbst_la_SOURCES = avl.c bst.c rb.c trav.c
 

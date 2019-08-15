@@ -1,5 +1,18 @@
 * What is new in gsl-2.6:
 
+** add BLAS calls for the following functions:
+     - gsl_vector_memcpy
+     - gsl_vector_scale
+     - gsl_matrix_memcpy
+     - gsl_matrix_transpose_memcpy
+     - gsl_matrix_tricpy
+     - gsl_matrix_transpose_tricpy
+
+** deprecated functions gsl_linalg_complex_householder_hm and
+   gsl_linalg_complex_householder_mh
+
+** add unit tests for gsl_linalg_symmtd and gsl_linalg_hermtd
+
 ** multilarge TSQR algorithm has been converted to use the new Level 3 QR decomposition
 
 ** nonlinear least squares Cholesky solver now uses the new Level 3 BLAS
@@ -26,7 +39,7 @@
    gsl_sf_hermite_func_fast() which uses the faster Cauchy integral
    algorithm in the same paper by Bunck
 
-** add gsl_vector_memcpy_scale()
+** add gsl_vector_axpby()
 
 ** add un-pivoted LDLT decomposition and its banded
    variant (gsl_linalg_ldlt_* and gsl_linalg_ldlt_band_*)

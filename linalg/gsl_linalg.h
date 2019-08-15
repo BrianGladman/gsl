@@ -130,6 +130,11 @@ int gsl_linalg_complex_householder_hv (gsl_complex tau,
                                        const gsl_vector_complex * v, 
                                        gsl_vector_complex * w);
 
+int gsl_linalg_complex_householder_left (const gsl_complex tau,
+                                         const gsl_vector_complex * v,
+                                         gsl_matrix_complex * A,
+                                         gsl_vector_complex * work);
+
 /* Hessenberg reduction */
 
 int gsl_linalg_hessenberg_decomp(gsl_matrix *A, gsl_vector *tau);
@@ -357,6 +362,10 @@ int gsl_linalg_QRPT_update (gsl_matrix * Q,
 size_t gsl_linalg_QRPT_rank (const gsl_matrix * QR, const double tol);
 
 int gsl_linalg_QRPT_rcond(const gsl_matrix * QR, double * rcond, gsl_vector * work);
+
+/* triangle on top of rectangle QR decomposition */
+
+int gsl_linalg_QR_TR_decomp (gsl_matrix * S, gsl_matrix * A, gsl_matrix * T);
 
 /* COD decomposition */
 

@@ -85,8 +85,6 @@ static int tsqr_solve(const double lambda, gsl_vector * x,
 static int tsqr_rcond(double * rcond, void * vstate);
 static int tsqr_lcurve(gsl_vector * reg_param, gsl_vector * rho,
                        gsl_vector * eta, void * vstate);
-static double tsqr_householder_transform (double *v0, gsl_vector * v);
-static int tsqr_QR_decomp (gsl_matrix * S, gsl_matrix * A, gsl_matrix * T);
 static int tsqr_svd(tsqr_state_t * state);
 
 /*
@@ -94,7 +92,7 @@ tsqr_alloc()
   Allocate workspace for solving large linear least squares
 problems using the TSQR approach
 
-Inputs: p    - number of columns of LS matrix
+Inputs: p - number of columns of LS matrix
 
 Return: pointer to workspace
 */
@@ -258,7 +256,7 @@ tsqr_accumulate(gsl_matrix * A, gsl_vector * b, void * vstate)
         return status;
 
       /* store upper triangular R factor in state->R */
-      gsl_matrix_tricpy('U', 1, state->R, &R.matrix);
+      gsl_matrix_tricpy(CblasUpper, CblasNonUnit, state->R, &R.matrix);
 
       /* compute Q^T b and keep the first p elements */
       gsl_linalg_QR_QTvec_r(A, state->T, b, state->work);
@@ -282,7 +280,7 @@ tsqr_accumulate(gsl_matrix * A, gsl_vector * b, void * vstate)
 
       /* compute QR decomposition of [ R_{i-1} ; A_i ], accounting for
        * sparse structure */
-      status = tsqr_QR_decomp(state->R, A, state->T);
+      status = gsl_linalg_QR_TR_decomp(state->R, A, state->T);
       if (status)
         return status;
 
@@ -425,204 +423,6 @@ tsqr_rcond(double * rcond, void * vstate)
 {
   tsqr_state_t *state = (tsqr_state_t *) vstate;
   return gsl_linalg_tri_rcond(CblasUpper, state->R, rcond, state->work3);
-}
-
-/*
-tsqr_householder_transform()
-  This routine is an optimized version of
-gsl_linalg_householder_transform(), designed for the QR
-decomposition of M-by-N matrices of the form:
-
-T = [ R ]
-    [ A ]
-
-where R is N-by-N upper triangular, and A is (M-N)-by-N dense.
-This routine computes a householder transformation (tau,v) of a 
-x so that P x = [ I - tau*v*v' ] x annihilates x(1:n-1). x will
-be a subcolumn of the matrix T, and so its structure will be:
-
-x = [ x0 ] <- 1 nonzero value for the diagonal element of R
-    [ 0  ] <- N - j - 1 zeros, where j is column of matrix in [0,N-1]
-    [ x  ] <- M-N nonzero values for the dense part A
-
-Inputs: v0 - pointer to diagonal element of R
-             on input, v0 = x0;
-        v  - on input, x vector
-             on output, householder vector v
-*/
-
-static double
-tsqr_householder_transform (double *v0, gsl_vector * v)
-{
-  /* replace v[0:M-1] with a householder vector (v[0:M-1]) and
-     coefficient tau that annihilate v[1:M-1] */
-
-  double alpha, beta, tau ;
-  
-  /* compute xnorm = || [ 0 ; v ] ||, ignoring zero part of vector */
-  double xnorm = gsl_blas_dnrm2(v);
-
-  if (xnorm == 0) 
-    {
-      return 0.0; /* tau = 0 */
-    }
-
-  alpha = *v0;
-  beta = - GSL_SIGN(alpha) * hypot(alpha, xnorm) ;
-  tau = (beta - alpha) / beta ;
-  
-  {
-    double s = (alpha - beta);
-    
-    if (fabs(s) > GSL_DBL_MIN) 
-      {
-        gsl_blas_dscal (1.0 / s, v);
-        *v0 = beta;
-      }
-    else
-      {
-        gsl_blas_dscal (GSL_DBL_EPSILON / s, v);
-        gsl_blas_dscal (1.0 / GSL_DBL_EPSILON, v);
-        *v0 = beta;
-      }
-  }
-  
-  return tau;
-}
-
-/*
-tsqr_QR_decomp()
-  Compute the QR decomposition of the matrix
-
-  [ S ] = Q [ R ]
-  [ A ]     [ 0 ]
-
-where S is N-by-N upper triangular and A is M-by-N dense.
-
-Inputs: S   - on input, upper triangular N-by-N matrix
-              on output, R factor in upper triangle
-        A   - dense M-by-N matrix
-        T   - (output) block reflector matrix, N-by-N
-
-Notes:
-1) Based on the Elmroth/Gustavson algorithm, taking into account the
-sparse structure of the S matrix
-*/
-
-static int
-tsqr_QR_decomp (gsl_matrix * S, gsl_matrix * A, gsl_matrix * T)
-{
-  const size_t M = A->size1;
-  const size_t N = S->size1;
-
-  if (N != S->size2)
-    {
-      GSL_ERROR ("S matrix must be square", GSL_ENOTSQR);
-    }
-  else if (N != A->size2)
-    {
-      GSL_ERROR ("S and A have different number of columns", GSL_EBADLEN);
-    }
-  else if (T->size1 != N || T->size2 != N)
-    {
-      GSL_ERROR ("T matrix has wrong dimensions", GSL_EBADLEN);
-    }
-  else if (N == 1)
-    {
-      /* base case, compute Householder transform for single column matrix */
-      double * T00 = gsl_matrix_ptr(T, 0, 0);
-      double * S00 = gsl_matrix_ptr(S, 0, 0);
-      gsl_vector_view v = gsl_matrix_column(A, 0);
-      *T00 = tsqr_householder_transform(S00, &v.vector);
-      return GSL_SUCCESS;
-    }
-  else
-    {
-      /*
-       * partition matrices:
-       *
-       *       N1  N2              N1  N2
-       * N1 [ S11 S12 ] and  N1 [ T11 T12 ]
-       * N2 [  0  S22 ]      N2 [  0  T22 ]
-       * M  [  A1  A2 ]
-       */
-      int status;
-      const size_t N1 = N / 2;
-      const size_t N2 = N - N1;
-
-      gsl_matrix_view S11 = gsl_matrix_submatrix(S, 0, 0, N1, N1);
-      gsl_matrix_view S12 = gsl_matrix_submatrix(S, 0, N1, N1, N2);
-      gsl_matrix_view S22 = gsl_matrix_submatrix(S, N1, N1, N2, N2);
-
-      gsl_matrix_view A1 = gsl_matrix_submatrix(A, 0, 0, M, N1);
-      gsl_matrix_view A2 = gsl_matrix_submatrix(A, 0, N1, M, N2);
-
-      gsl_matrix_view T11 = gsl_matrix_submatrix(T, 0, 0, N1, N1);
-      gsl_matrix_view T12 = gsl_matrix_submatrix(T, 0, N1, N1, N2);
-      gsl_matrix_view T22 = gsl_matrix_submatrix(T, N1, N1, N2, N2);
-
-      /*
-       * Eq. 2: recursively factor
-       *
-       *       N1           N1
-       * N1 [ S11 ] = Q1 [ R11 ] N1
-       * N2 [  0  ]      [  0  ] N2
-       * M  [  A1 ]      [  0  ] M
-       */
-      status = tsqr_QR_decomp(&S11.matrix, &A1.matrix, &T11.matrix);
-      if (status)
-        return status;
-
-      /*
-       * Eq. 3:
-       *
-       *    N2                 N2           N2
-       * N1 [ R12  ] = Q1^T [ S12 ] = [   S12 - W  ] N1
-       * N2 [ S22~ ]        [ S22 ]   [     S22    ] N2
-       * M  [  A2~ ]        [  A2 ]   [ A2 - V1~ W ] M
-       *
-       * where W = T11^T ( S12 + V1~^T A2 ), using T12 as temporary storage, and
-       *
-       *        N1
-       * V1 = [  I  ] N1
-       *      [  0  ] N2
-       *      [ V1~ ] M
-       */
-      gsl_matrix_memcpy(&T12.matrix, &S12.matrix);                                                    /* W := S12 */
-      gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &A1.matrix, &A2.matrix, 1.0, &T12.matrix);        /* W := S12 + V1~^T A2 */
-      gsl_blas_dtrmm(CblasLeft, CblasUpper, CblasTrans, CblasNonUnit, 1.0, &T11.matrix, &T12.matrix); /* W := T11^T W */
-      gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, -1.0, &A1.matrix, &T12.matrix, 1.0, &A2.matrix);     /* A2 := A2 - V1~ W */
-      gsl_matrix_sub(&S12.matrix, &T12.matrix);                                                       /* R12 := S12 - W */
-
-      /*
-       * Eq. 4: recursively factor
-       *
-       * [ S22~ ] = Q2~ [ R22 ]
-       * [  A2~ ]       [  0  ]
-       */
-      status = tsqr_QR_decomp(&S22.matrix, &A2.matrix, &T22.matrix);
-      if (status)
-        return status;
-
-      /*
-       * Eq. 13: update T12 := -T11 * V1^T * V2 * T22
-       *
-       * where:
-       *
-       *        N1                N2
-       * V1 = [  I  ] N1   V2 = [  0  ] N1
-       *      [  0  ] N2        [  I  ] N2
-       *      [ V1~ ] M         [ V2~ ] M
-       *
-       * Note: V1^T V2 = V1~^T V2~
-       */
-
-      gsl_blas_dgemm(CblasTrans, CblasNoTrans, 1.0, &A1.matrix, &A2.matrix, 0.0, &T12.matrix);           /* T12 := V1~^T * V2~ */
-      gsl_blas_dtrmm(CblasLeft, CblasUpper, CblasNoTrans, CblasNonUnit, -1.0, &T11.matrix, &T12.matrix); /* T12 := -T11 * T12 */
-      gsl_blas_dtrmm(CblasRight, CblasUpper, CblasNoTrans, CblasNonUnit, 1.0, &T22.matrix, &T12.matrix); /* T12 := T12 * T22 */
-
-      return GSL_SUCCESS;
-    }
 }
 
 /*

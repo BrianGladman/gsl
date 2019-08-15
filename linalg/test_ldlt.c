@@ -61,10 +61,10 @@ test_ldlt_decomp_eps(const gsl_matrix * m, const double expected_rcond,
   s += gsl_linalg_ldlt_decomp(V);
 
   /* compute L and LT */
-  gsl_matrix_tricpy('L', 0, L, V);
+  gsl_matrix_tricpy(CblasLower, CblasUnit, L, V);
   d = gsl_matrix_diagonal(L);
   gsl_vector_set_all(&d.vector, 1.0);
-  gsl_matrix_transpose_tricpy('L', 1, LT, L);
+  gsl_matrix_transpose_tricpy(CblasLower, CblasNonUnit, LT, L);
 
   /* compute L <- L D */
   d = gsl_matrix_diagonal(V);
@@ -231,7 +231,7 @@ test_ldlt_band_decomp_eps(const size_t p, const gsl_matrix * m, const double eps
 
   /* compute L and LT */
   gsl_linalg_ldlt_band_unpack(V, L, D);
-  gsl_matrix_transpose_tricpy('L', 1, LT, L);
+  gsl_matrix_transpose_tricpy(CblasLower, CblasNonUnit, LT, L);
 
   /* compute L <- L D */
   for (i = 0; i < N; ++i)

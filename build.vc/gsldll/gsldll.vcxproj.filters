@@ -2007,6 +2007,9 @@
     <ClCompile Include="..\..\linalg\trimult_complex.c">
       <Filter>linalg</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\linalg\qr_tr.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\integration\qng.h">
