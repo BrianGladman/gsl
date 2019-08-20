@@ -190,9 +190,9 @@ The basic structure is called :type:`gsl_spmatrix`.
       {
         size_t size1;
         size_t size2;
-        size_t *i;
+        int *i;
         double *data;
-        size_t *p;
+        int *p;
         size_t nzmax;
         size_t nz;
         gsl_spmatrix_tree *tree_data;

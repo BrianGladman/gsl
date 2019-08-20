@@ -547,7 +547,7 @@ singular (const gsl_matrix * LU)
       if (u == 0) return 1;
     }
  
- return 0;
+  return 0;
 }
 
 static int

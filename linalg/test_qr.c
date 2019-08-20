@@ -282,7 +282,7 @@ test_QR_QTmat_r(gsl_rng * r)
 
           create_random_matrix(A, r);
           create_random_matrix(B, r);
-          s += test_QR_QTmat_r_eps(A, B, 1.0e5 * M * GSL_DBL_EPSILON, "QR_QTmat_r random");
+          s += test_QR_QTmat_r_eps(A, B, 1.0e6 * M * GSL_DBL_EPSILON, "QR_QTmat_r random");
 
           gsl_matrix_free(A);
           gsl_matrix_free(B);

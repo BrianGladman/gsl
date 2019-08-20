@@ -1926,9 +1926,6 @@
     <ClCompile Include="..\..\statistics\wvariance.c">
       <Filter>statistics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\statistics\wcovar.c">
-      <Filter>statistics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\randist\wishart.c">
       <Filter>randist</Filter>
     </ClCompile>

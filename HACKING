@@ -129,7 +129,7 @@ for HAVE_INLINE use in installed headers.
 * Make a master gsl header file and try compiling it to test all possible conflicts
 > cat gsl/*.h > tmp.c
 > gcc -g -Wall -W -c tmp.c
-> g++ -g -Wall -W -c tmp.c
+> g++ -g -Wall -W -I. -c tmp.c
 
 * #undef GSL_DISABLE_DEPRECATED in config.h and
 > make clean && make && make check

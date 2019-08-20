@@ -285,7 +285,6 @@
     <ClCompile Include="..\..\statistics\select.c" />
     <ClCompile Include="..\..\statistics\Sn.c" />
     <ClCompile Include="..\..\statistics\variance.c" />
-    <ClCompile Include="..\..\statistics\wcovar.c" />
     <ClCompile Include="..\..\statistics\wvariance.c" />
     <ClCompile Include="..\..\version.c" />
     <ClCompile Include="..\..\blas\blas.c" />

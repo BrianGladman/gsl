@@ -1,11 +1,11 @@
 This is gsl-ref.info, produced by makeinfo version 6.4 from
 gsl-ref.texi.
 
-     GSL 2.5, Aug 04, 2019
+     GSL 2.6, Aug 16, 2019
 
      The GSL Team
 
-     Copyright © 1996-2018 The GSL Team
+     Copyright © 1996-2019 The GSL Team
 
 INFO-DIR-SECTION Miscellaneous
 START-INFO-DIR-ENTRY
@@ -21,11 +21,11 @@ File: gsl-ref.info,  Node: Top,  Next: Introduction,  Up: (dir)
 GNU Scientific Library
 **********************
 
-     GSL 2.5, Aug 04, 2019
+     GSL 2.6, Aug 16, 2019
 
      The GSL Team
 
-     Copyright © 1996-2018 The GSL Team
+     Copyright © 1996-2019 The GSL Team
 
 * Menu:
 
