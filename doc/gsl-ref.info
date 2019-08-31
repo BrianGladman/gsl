@@ -1,7 +1,7 @@
 This is gsl-ref.info, produced by makeinfo version 6.4 from
 gsl-ref.texi.
 
-     GSL 2.6, Aug 16, 2019
+     GSL 2.6, Aug 20, 2019
 
      The GSL Team
 
@@ -21,7 +21,7 @@ File: gsl-ref.info,  Node: Top,  Next: Introduction,  Up: (dir)
 GNU Scientific Library
 **********************
 
-     GSL 2.6, Aug 16, 2019
+     GSL 2.6, Aug 20, 2019
 
      The GSL Team
 
@@ -36982,9 +36982,9 @@ basic structure is called *note gsl_spmatrix: bf4.
           {
             size_t size1;
             size_t size2;
-            size_t *i;
+            int *i;
             double *data;
-            size_t *p;
+            int *p;
             size_t nzmax;
             size_t nz;
             gsl_spmatrix_tree *tree_data;
@@ -54257,833 +54257,833 @@ Ref: spmatrix overview1475708
 Ref: bf31475708
 Ref: spmatrix c gsl_spmatrix1475930
 Ref: bf41475930
-Node: Allocation1478237
-Ref: spmatrix allocation1478354
-Ref: bf51478354
-Ref: spmatrix c gsl_spmatrix_alloc1478736
-Ref: bf61478736
-Ref: spmatrix c gsl_spmatrix_alloc_nzmax1479598
-Ref: bf71479598
-Ref: spmatrix c GSL_SPMATRIX_COO1480549
-Ref: bf91480549
-Ref: spmatrix c GSL_SPMATRIX_CSC1480644
-Ref: bfa1480644
-Ref: spmatrix c GSL_SPMATRIX_CSR1480743
-Ref: bfb1480743
-Ref: spmatrix c gsl_spmatrix_realloc1480920
-Ref: bf81480920
-Ref: spmatrix c gsl_spmatrix_free1481399
-Ref: bfd1481399
-Node: Accessing Matrix Elements1481632
-Ref: spmatrix accessing-matrix-elements1481766
-Ref: bfe1481766
-Ref: spmatrix c gsl_spmatrix_get1481829
-Ref: bff1481829
-Ref: spmatrix c gsl_spmatrix_set1482104
-Ref: bfc1482104
-Ref: spmatrix c gsl_spmatrix_ptr1482372
-Ref: c001482372
-Node: Initializing Matrix Elements1482773
-Ref: spmatrix initializing-matrix-elements1482925
-Ref: c011482925
-Ref: spmatrix c gsl_spmatrix_set_zero1483252
-Ref: c021483252
-Node: Reading and Writing Matrices1483653
-Ref: spmatrix reading-and-writing-matrices1483796
-Ref: c031483796
-Ref: spmatrix c gsl_spmatrix_fwrite1483865
-Ref: c041483865
-Ref: spmatrix c gsl_spmatrix_fread1484384
-Ref: c051484384
-Ref: spmatrix c gsl_spmatrix_fprintf1485092
-Ref: c061485092
-Ref: spmatrix c gsl_spmatrix_fscanf1485779
-Ref: c071485779
-Node: Copying Matrices1486233
-Ref: spmatrix copying-matrices1486375
-Ref: c081486375
-Ref: spmatrix c gsl_spmatrix_memcpy1486420
-Ref: c091486420
-Node: Exchanging Rows and Columns1486789
-Ref: spmatrix exchanging-rows-and-columns1486920
-Ref: c0a1486920
-Ref: spmatrix c gsl_spmatrix_transpose_memcpy1486987
-Ref: c0b1486987
-Ref: spmatrix c gsl_spmatrix_transpose1487431
-Ref: c0c1487431
-Node: Matrix Operations1488127
-Ref: spmatrix matrix-operations1488259
-Ref: c0d1488259
-Ref: spmatrix c gsl_spmatrix_scale1488308
-Ref: c0e1488308
-Ref: spmatrix c gsl_spmatrix_scale_columns1488637
-Ref: c0f1488637
-Ref: spmatrix c gsl_spmatrix_scale_rows1489112
-Ref: c101489112
-Ref: spmatrix c gsl_spmatrix_add1489578
-Ref: c111489578
-Ref: spmatrix c gsl_spmatrix_add_to_dense1489865
-Ref: c121489865
-Node: Matrix Properties1490326
-Ref: spmatrix matrix-properties1490467
-Ref: c131490467
-Ref: spmatrix c gsl_spmatrix_type1490516
-Ref: c141490516
-Ref: spmatrix c gsl_spmatrix_nnz1490934
-Ref: c151490934
-Ref: spmatrix c gsl_spmatrix_equal1491161
-Ref: c161491161
-Node: Finding Maximum and Minimum Elements1491578
-Ref: spmatrix finding-maximum-and-minimum-elements1491719
-Ref: c171491719
-Ref: spmatrix c gsl_spmatrix_minmax1491806
-Ref: c181491806
-Ref: spmatrix c gsl_spmatrix_min_index1492190
-Ref: c191492190
-Node: Compressed Format1492659
-Ref: spmatrix compressed-format1492827
-Ref: c1a1492827
-Ref: spmatrix c gsl_spmatrix_csc1492956
-Ref: c1b1492956
-Ref: spmatrix c gsl_spmatrix_csr1493321
-Ref: c1c1493321
-Ref: spmatrix c gsl_spmatrix_compress1493683
-Ref: c1d1493683
-Node: Conversion Between Sparse and Dense Matrices1494176
-Ref: spmatrix conversion-between-sparse-and-dense-matrices1494320
-Ref: c1e1494320
-Ref: spmatrix c gsl_spmatrix_d2sp1494569
-Ref: c1f1494569
-Ref: spmatrix c gsl_spmatrix_sp2d1494827
-Ref: c201494827
-Node: Examples<34>1495120
-Ref: spmatrix examples1495281
-Ref: c211495281
-Node: References and Further Reading<36>1498868
-Ref: spmatrix references-and-further-reading1498976
-Ref: c221498976
-Node: Sparse BLAS Support1499297
-Ref: spblas doc1499411
-Ref: c231499411
-Ref: spblas sparse-blas-support1499411
-Ref: c241499411
-Node: Sparse BLAS operations1499955
-Ref: spblas sparse-blas-operations1500077
-Ref: c251500077
-Ref: spblas c gsl_spblas_dgemv1500134
-Ref: c261500134
-Ref: spblas c gsl_spblas_dgemm1500675
-Ref: c271500675
-Node: References and Further Reading<37>1500934
-Ref: spblas references-and-further-reading1501056
-Ref: c281501056
-Node: Sparse Linear Algebra1501375
-Ref: splinalg doc1501492
-Ref: c291501492
-Ref: splinalg sparse-linear-algebra1501492
-Ref: c2a1501492
-Node: Overview<9>1502017
-Ref: splinalg overview1502120
-Ref: c2b1502120
-Node: Sparse Iterative Solvers1502746
-Ref: splinalg sparse-iterative-solvers1502870
-Ref: c2c1502870
-Node: Overview<10>1503044
-Ref: splinalg id11503160
-Ref: c2d1503160
-Node: Types of Sparse Iterative Solvers1503888
-Ref: splinalg types-of-sparse-iterative-solvers1504047
-Ref: c2e1504047
-Ref: splinalg c gsl_splinalg_itersolve_type1504216
-Ref: c2f1504216
-Ref: splinalg c gsl_splinalg_itersolve_gmres1504255
-Ref: c301504255
-Node: Iterating the Sparse Linear System1506227
-Ref: splinalg iterating-the-sparse-linear-system1506365
-Ref: c321506365
-Ref: splinalg c gsl_splinalg_itersolve_alloc1506576
-Ref: c331506576
-Ref: splinalg c gsl_splinalg_itersolve_free1507100
-Ref: c341507100
-Ref: splinalg c gsl_splinalg_itersolve_name1507263
-Ref: c351507263
-Ref: splinalg c gsl_splinalg_itersolve_iterate1507436
-Ref: c311507436
-Ref: splinalg c gsl_splinalg_itersolve_normr1508552
-Ref: c361508552
-Node: Examples<35>1508814
-Ref: splinalg examples1508961
-Ref: c371508961
-Ref: splinalg fig-splinalg-poisson1510000
-Ref: c381510000
-Node: References and Further Reading<38>1513296
-Ref: splinalg references-and-further-reading1513410
-Ref: c391513410
-Node: Physical Constants1513793
-Ref: const doc1513921
-Ref: c3a1513921
-Ref: const physical-constants1513921
-Ref: c3b1513921
-Node: Fundamental Constants1515250
-Ref: const fundamental-constants1515362
-Ref: c3c1515362
-Ref: const c GSL_CONST_MKSA_SPEED_OF_LIGHT1515417
-Ref: c3d1515417
-Ref: const c GSL_CONST_MKSA_VACUUM_PERMEABILITY1515498
-Ref: c3e1515498
-Ref: const c GSL_CONST_MKSA_VACUUM_PERMITTIVITY1515646
-Ref: c3f1515646
-Ref: const c GSL_CONST_MKSA_PLANCKS_CONSTANT_H1515799
-Ref: c401515799
-Ref: const c GSL_CONST_MKSA_PLANCKS_CONSTANT_HBAR1515875
-Ref: c411515875
-Ref: const c GSL_CONST_NUM_AVOGADRO1515974
-Ref: c421515974
-Ref: const c GSL_CONST_MKSA_FARADAY1516041
-Ref: c431516041
-Ref: const c GSL_CONST_MKSA_BOLTZMANN1516113
-Ref: c441516113
-Ref: const c GSL_CONST_MKSA_MOLAR_GAS1516183
-Ref: c451516183
-Ref: const c GSL_CONST_MKSA_STANDARD_GAS_VOLUME1516255
-Ref: c461516255
-Ref: const c GSL_CONST_MKSA_STEFAN_BOLTZMANN_CONSTANT1516338
-Ref: c471516338
-Ref: const c GSL_CONST_MKSA_GAUSS1516446
-Ref: c481516446
-Node: Astronomy and Astrophysics1516516
-Ref: const astronomy-and-astrophysics1516663
-Ref: c491516663
-Ref: const c GSL_CONST_MKSA_ASTRONOMICAL_UNIT1516728
-Ref: c4a1516728
-Ref: const c GSL_CONST_MKSA_GRAVITATIONAL_CONSTANT1516844
-Ref: c4b1516844
-Ref: const c GSL_CONST_MKSA_LIGHT_YEAR1516931
-Ref: c4c1516931
-Ref: const c GSL_CONST_MKSA_PARSEC1517009
-Ref: c4d1517009
-Ref: const c GSL_CONST_MKSA_GRAV_ACCEL1517079
-Ref: c4e1517079
-Ref: const c GSL_CONST_MKSA_SOLAR_MASS1517176
-Ref: c4f1517176
-Node: Atomic and Nuclear Physics1517241
-Ref: const atomic-and-nuclear-physics1517386
-Ref: c501517386
-Ref: const c GSL_CONST_MKSA_ELECTRON_CHARGE1517451
-Ref: c511517451
-Ref: const c GSL_CONST_MKSA_ELECTRON_VOLT1517531
-Ref: c521517531
-Ref: const c GSL_CONST_MKSA_UNIFIED_ATOMIC_MASS1517613
-Ref: c531517613
-Ref: const c GSL_CONST_MKSA_MASS_ELECTRON1517696
-Ref: c541517696
-Ref: const c GSL_CONST_MKSA_MASS_MUON1517774
-Ref: c551517774
-Ref: const c GSL_CONST_MKSA_MASS_PROTON1517846
-Ref: c561517846
-Ref: const c GSL_CONST_MKSA_MASS_NEUTRON1517920
-Ref: c571517920
-Ref: const c GSL_CONST_NUM_FINE_STRUCTURE1517996
-Ref: c581517996
-Ref: const c GSL_CONST_MKSA_RYDBERG1518095
-Ref: c591518095
-Ref: const c GSL_CONST_MKSA_BOHR_RADIUS1518269
-Ref: c5a1518269
-Ref: const c GSL_CONST_MKSA_ANGSTROM1518336
-Ref: c5b1518336
-Ref: const c GSL_CONST_MKSA_BARN1518404
-Ref: c5c1518404
-Ref: const c GSL_CONST_MKSA_BOHR_MAGNETON1518462
-Ref: c5d1518462
-Ref: const c GSL_CONST_MKSA_NUCLEAR_MAGNETON1518535
-Ref: c5e1518535
-Ref: const c GSL_CONST_MKSA_ELECTRON_MAGNETIC_MOMENT1518614
-Ref: c5f1518614
-Ref: const c GSL_CONST_MKSA_PROTON_MAGNETIC_MOMENT1518801
-Ref: c601518801
-Ref: const c GSL_CONST_MKSA_THOMSON_CROSS_SECTION1518899
-Ref: c611518899
-Ref: const c GSL_CONST_MKSA_DEBYE1518991
-Ref: c621518991
-Node: Measurement of Time1519072
-Ref: const measurement-of-time1519205
-Ref: c631519205
-Ref: const c GSL_CONST_MKSA_MINUTE1519256
-Ref: c641519256
-Ref: const c GSL_CONST_MKSA_HOUR1519331
-Ref: c651519331
-Ref: const c GSL_CONST_MKSA_DAY1519402
-Ref: c661519402
-Ref: const c GSL_CONST_MKSA_WEEK1519471
-Ref: c671519471
-Node: Imperial Units1519542
-Ref: const imperial-units1519673
-Ref: c681519673
-Ref: const c GSL_CONST_MKSA_INCH1519714
-Ref: c691519714
-Ref: const c GSL_CONST_MKSA_FOOT1519774
-Ref: c6a1519774
-Ref: const c GSL_CONST_MKSA_YARD1519834
-Ref: c6b1519834
-Ref: const c GSL_CONST_MKSA_MILE1519894
-Ref: c6c1519894
-Ref: const c GSL_CONST_MKSA_MIL1519954
-Ref: c6d1519954
-Node: Speed and Nautical Units1520034
-Ref: const speed-and-nautical-units1520160
-Ref: c6e1520160
-Ref: const c GSL_CONST_MKSA_KILOMETERS_PER_HOUR1520221
-Ref: c6f1520221
-Ref: const c GSL_CONST_MKSA_MILES_PER_HOUR1520309
-Ref: c701520309
-Ref: const c GSL_CONST_MKSA_NAUTICAL_MILE1520387
-Ref: c711520387
-Ref: const c GSL_CONST_MKSA_FATHOM1520465
-Ref: c721520465
-Ref: const c GSL_CONST_MKSA_KNOT1520529
-Ref: c731520529
-Node: Printers Units1520588
-Ref: const printers-units1520722
-Ref: c741520722
-Ref: const c GSL_CONST_MKSA_POINT1520763
-Ref: c751520763
-Ref: const c GSL_CONST_MKSA_TEXPOINT1520849
-Ref: c761520849
-Node: Volume Area and Length1520933
-Ref: const volume-area-and-length1521058
-Ref: c771521058
-Ref: const c GSL_CONST_MKSA_MICRON1521117
-Ref: c781521117
-Ref: const c GSL_CONST_MKSA_HECTARE1521181
-Ref: c791521181
-Ref: const c GSL_CONST_MKSA_ACRE1521245
-Ref: c7a1521245
-Ref: const c GSL_CONST_MKSA_LITER1521303
-Ref: c7b1521303
-Ref: const c GSL_CONST_MKSA_US_GALLON1521365
-Ref: c7c1521365
-Ref: const c GSL_CONST_MKSA_CANADIAN_GALLON1521435
-Ref: c7d1521435
-Ref: const c GSL_CONST_MKSA_UK_GALLON1521517
-Ref: c7e1521517
-Ref: const c GSL_CONST_MKSA_QUART1521587
-Ref: c7f1521587
-Ref: const c GSL_CONST_MKSA_PINT1521649
-Ref: c801521649
-Node: Mass and Weight1521709
-Ref: const mass-and-weight1521844
-Ref: c811521844
-Ref: const c GSL_CONST_MKSA_POUND_MASS1521887
-Ref: c821521887
-Ref: const c GSL_CONST_MKSA_OUNCE_MASS1521952
-Ref: c831521952
-Ref: const c GSL_CONST_MKSA_TON1522017
-Ref: c841522017
-Ref: const c GSL_CONST_MKSA_METRIC_TON1522073
-Ref: c851522073
-Ref: const c GSL_CONST_MKSA_UK_TON1522153
-Ref: c861522153
-Ref: const c GSL_CONST_MKSA_TROY_OUNCE1522215
-Ref: c871522215
-Ref: const c GSL_CONST_MKSA_CARAT1522285
-Ref: c881522285
-Ref: const c GSL_CONST_MKSA_GRAM_FORCE1522345
-Ref: c891522345
-Ref: const c GSL_CONST_MKSA_POUND_FORCE1522417
-Ref: c8a1522417
-Ref: const c GSL_CONST_MKSA_KILOPOUND_FORCE1522491
-Ref: c8b1522491
-Ref: const c GSL_CONST_MKSA_POUNDAL1522573
-Ref: c8c1522573
-Node: Thermal Energy and Power1522638
-Ref: const thermal-energy-and-power1522759
-Ref: c8d1522759
-Ref: const c GSL_CONST_MKSA_CALORIE1522822
-Ref: c8e1522822
-Ref: const c GSL_CONST_MKSA_BTU1522888
-Ref: c8f1522888
-Ref: const c GSL_CONST_MKSA_THERM1522968
-Ref: c901522968
-Ref: const c GSL_CONST_MKSA_HORSEPOWER1523030
-Ref: c911523030
-Node: Pressure1523101
-Ref: const pressure1523216
-Ref: c921523216
-Ref: const c GSL_CONST_MKSA_BAR1523247
-Ref: c931523247
-Ref: const c GSL_CONST_MKSA_STD_ATMOSPHERE1523307
-Ref: c941523307
-Ref: const c GSL_CONST_MKSA_TORR1523394
-Ref: c951523394
-Ref: const c GSL_CONST_MKSA_METER_OF_MERCURY1523456
-Ref: c961523456
-Ref: const c GSL_CONST_MKSA_INCH_OF_MERCURY1523542
-Ref: c971523542
-Ref: const c GSL_CONST_MKSA_INCH_OF_WATER1523626
-Ref: c981523626
-Ref: const c GSL_CONST_MKSA_PSI1523706
-Ref: c991523706
-Node: Viscosity1523784
-Ref: const viscosity1523897
-Ref: c9a1523897
-Ref: const c GSL_CONST_MKSA_POISE1523930
-Ref: c9b1523930
-Ref: const c GSL_CONST_MKSA_STOKES1524003
-Ref: c9c1524003
-Node: Light and Illumination1524080
-Ref: const light-and-illumination1524198
-Ref: c9d1524198
-Ref: const c GSL_CONST_MKSA_STILB1524257
-Ref: c9e1524257
-Ref: const c GSL_CONST_MKSA_LUMEN1524322
-Ref: c9f1524322
-Ref: const c GSL_CONST_MKSA_LUX1524391
-Ref: ca01524391
-Ref: const c GSL_CONST_MKSA_PHOT1524454
-Ref: ca11524454
-Ref: const c GSL_CONST_MKSA_FOOTCANDLE1524519
-Ref: ca21524519
-Ref: const c GSL_CONST_MKSA_LAMBERT1524596
-Ref: ca31524596
-Ref: const c GSL_CONST_MKSA_FOOTLAMBERT1524665
-Ref: ca41524665
-Node: Radioactivity1524742
-Ref: const radioactivity1524867
-Ref: ca51524867
-Ref: const c GSL_CONST_MKSA_CURIE1524908
-Ref: ca61524908
-Ref: const c GSL_CONST_MKSA_ROENTGEN1524972
-Ref: ca71524972
-Ref: const c GSL_CONST_MKSA_RAD1525042
-Ref: ca81525042
-Node: Force and Energy1525107
-Ref: const force-and-energy1525218
-Ref: ca91525218
-Ref: const c GSL_CONST_MKSA_NEWTON1525265
-Ref: caa1525265
-Ref: const c GSL_CONST_MKSA_DYNE1525337
-Ref: cab1525337
-Ref: const c GSL_CONST_MKSA_JOULE1525413
-Ref: cac1525413
-Ref: const c GSL_CONST_MKSA_ERG1525484
-Ref: cad1525484
-Node: Prefixes1525555
-Ref: const prefixes1525665
-Ref: cae1525665
-Ref: const c GSL_CONST_NUM_YOTTA1525748
-Ref: caf1525748
-Ref: const c GSL_CONST_NUM_ZETTA1525794
-Ref: cb01525794
-Ref: const c GSL_CONST_NUM_EXA1525840
-Ref: cb11525840
-Ref: const c GSL_CONST_NUM_PETA1525884
-Ref: cb21525884
-Ref: const c GSL_CONST_NUM_TERA1525929
-Ref: cb31525929
-Ref: const c GSL_CONST_NUM_GIGA1525974
-Ref: cb41525974
-Ref: const c GSL_CONST_NUM_MEGA1526016
-Ref: cb51526016
-Ref: const c GSL_CONST_NUM_KILO1526058
-Ref: cb61526058
-Ref: const c GSL_CONST_NUM_MILLI1526100
-Ref: cb71526100
-Ref: const c GSL_CONST_NUM_MICRO1526146
-Ref: cb81526146
-Ref: const c GSL_CONST_NUM_NANO1526192
-Ref: cb91526192
-Ref: const c GSL_CONST_NUM_PICO1526237
-Ref: cba1526237
-Ref: const c GSL_CONST_NUM_FEMTO1526283
-Ref: cbb1526283
-Ref: const c GSL_CONST_NUM_ATTO1526330
-Ref: cbc1526330
-Ref: const c GSL_CONST_NUM_ZEPTO1526376
-Ref: cbd1526376
-Ref: const c GSL_CONST_NUM_YOCTO1526423
-Ref: cbe1526423
-Node: Examples<36>1526470
-Ref: const examples1526598
-Ref: cbf1526598
-Node: References and Further Reading<39>1528228
-Ref: const references-and-further-reading1528339
-Ref: cc01528339
-Node: IEEE floating-point arithmetic1528946
-Ref: ieee754 doc1529081
-Ref: cc11529081
-Ref: ieee754 chap-ieee1529081
-Ref: cc21529081
-Ref: ieee754 ieee-floating-point-arithmetic1529081
-Ref: cc31529081
-Node: Representation of floating point numbers1529566
-Ref: ieee754 representation-of-floating-point-numbers1529715
-Ref: cc41529715
-Ref: ieee754 c gsl_ieee_fprintf_float1531744
-Ref: cc51531744
-Ref: ieee754 c gsl_ieee_fprintf_double1531829
-Ref: cc61531829
-Ref: ieee754 c gsl_ieee_printf_float1532700
-Ref: cc71532700
-Ref: ieee754 c gsl_ieee_printf_double1532759
-Ref: cc81532759
-Node: Setting up your IEEE environment1534123
-Ref: ieee754 setting-up-your-ieee-environment1534315
-Ref: cc91534315
-Ref: ieee754 c GSL_IEEE_MODE1535384
-Ref: cca1535384
-Ref: ieee754 c gsl_ieee_env_setup1535464
-Ref: ccb1535464
-Node: References and Further Reading<40>1541258
-Ref: ieee754 references-and-further-reading1541401
-Ref: ccc1541401
-Node: Debugging Numerical Programs1542428
-Ref: debug doc1542564
-Ref: ccd1542564
-Ref: debug debugging-numerical-programs1542564
-Ref: cce1542564
-Node: Using gdb1542941
-Ref: debug using-gdb1543059
-Ref: ccf1543059
-Node: Examining floating point registers1546353
-Ref: debug examining-floating-point-registers1546514
-Ref: cd01546514
-Node: Handling floating point exceptions1547656
-Ref: debug handling-floating-point-exceptions1547850
-Ref: cd11547850
-Node: GCC warning options for numerical programs1549112
-Ref: debug gcc-warning-options-for-numerical-programs1549306
-Ref: cd21549306
-Node: References and Further Reading<41>1553239
-Ref: debug references-and-further-reading1553390
-Ref: cd31553390
-Node: Contributors to GSL1554032
-Ref: contrib doc1554153
-Ref: cd41554153
-Ref: contrib contributors-to-gsl1554153
-Ref: cd51554153
-Node: Autoconf Macros1558628
-Ref: autoconf doc1558738
-Ref: cd61558738
-Ref: autoconf autoconf-macros1558738
-Ref: cd71558738
-Ref: autoconf chap-autoconf-macros1558738
-Ref: 161558738
-Node: GSL CBLAS Library1562808
-Ref: cblas doc1562925
-Ref: cd81562925
-Ref: cblas chap-cblas1562925
-Ref: 4711562925
-Ref: cblas gsl-cblas-library1562925
-Ref: cd91562925
-Node: Level 1<2>1563307
-Ref: cblas level-11563391
-Ref: cda1563391
-Ref: cblas c cblas_sdsdot1563418
-Ref: cdb1563418
-Ref: cblas c cblas_dsdot1563561
-Ref: cdc1563561
-Ref: cblas c cblas_sdot1563685
-Ref: cdd1563685
-Ref: cblas c cblas_ddot1563807
-Ref: cde1563807
-Ref: cblas c cblas_cdotu_sub1563932
-Ref: cdf1563932
-Ref: cblas c cblas_cdotc_sub1564069
-Ref: ce01564069
-Ref: cblas c cblas_zdotu_sub1564206
-Ref: ce11564206
-Ref: cblas c cblas_zdotc_sub1564343
-Ref: ce21564343
-Ref: cblas c cblas_snrm21564480
-Ref: ce31564480
-Ref: cblas c cblas_sasum1564570
-Ref: ce41564570
-Ref: cblas c cblas_dnrm21564660
-Ref: ce51564660
-Ref: cblas c cblas_dasum1564752
-Ref: ce61564752
-Ref: cblas c cblas_scnrm21564844
-Ref: ce71564844
-Ref: cblas c cblas_scasum1564934
-Ref: ce81564934
-Ref: cblas c cblas_dznrm21565024
-Ref: ce91565024
-Ref: cblas c cblas_dzasum1565115
-Ref: cea1565115
-Ref: cblas c cblas_isamax1565206
-Ref: ceb1565206
-Ref: cblas c cblas_idamax1565303
-Ref: cec1565303
-Ref: cblas c cblas_icamax1565401
-Ref: ced1565401
-Ref: cblas c cblas_izamax1565497
-Ref: cee1565497
-Ref: cblas c cblas_sswap1565593
-Ref: cef1565593
-Ref: cblas c cblas_scopy1565703
-Ref: cf01565703
-Ref: cblas c cblas_saxpy1565819
-Ref: cf11565819
-Ref: cblas c cblas_dswap1565954
-Ref: cf21565954
-Ref: cblas c cblas_dcopy1566066
-Ref: cf31566066
-Ref: cblas c cblas_daxpy1566184
-Ref: cf41566184
-Ref: cblas c cblas_cswap1566322
-Ref: cf51566322
-Ref: cblas c cblas_ccopy1566430
-Ref: cf61566430
-Ref: cblas c cblas_caxpy1566544
-Ref: cf71566544
-Ref: cblas c cblas_zswap1566678
-Ref: cf81566678
-Ref: cblas c cblas_zcopy1566786
-Ref: cf91566786
-Ref: cblas c cblas_zaxpy1566900
-Ref: cfa1566900
-Ref: cblas c cblas_srotg1567034
-Ref: cfb1567034
-Ref: cblas c cblas_srotmg1567121
-Ref: cfc1567121
-Ref: cblas c cblas_srot1567228
-Ref: cfd1567228
-Ref: cblas c cblas_srotm1567367
-Ref: cfe1567367
-Ref: cblas c cblas_drotg1567494
-Ref: cff1567494
-Ref: cblas c cblas_drotmg1567585
-Ref: d001567585
-Ref: cblas c cblas_drot1567697
-Ref: d011567697
-Ref: cblas c cblas_drotm1567840
-Ref: d021567840
-Ref: cblas c cblas_sscal1567970
-Ref: d031567970
-Ref: cblas c cblas_dscal1568072
-Ref: d041568072
-Ref: cblas c cblas_cscal1568176
-Ref: d051568176
-Ref: cblas c cblas_zscal1568278
-Ref: d061568278
-Ref: cblas c cblas_csscal1568380
-Ref: d071568380
-Ref: cblas c cblas_zdscal1568482
-Ref: d081568482
-Node: Level 2<2>1568585
-Ref: cblas level-21568688
-Ref: d091568688
-Ref: cblas c cblas_sgemv1568715
-Ref: d0a1568715
-Ref: cblas c cblas_sgbmv1568998
-Ref: d0b1568998
-Ref: cblas c cblas_strmv1569319
-Ref: d0c1569319
-Ref: cblas c cblas_stbmv1569575
-Ref: d0d1569575
-Ref: cblas c cblas_stpmv1569844
-Ref: d0e1569844
-Ref: cblas c cblas_strsv1570086
-Ref: d0f1570086
-Ref: cblas c cblas_stbsv1570342
-Ref: d101570342
-Ref: cblas c cblas_stpsv1570611
-Ref: d111570611
-Ref: cblas c cblas_dgemv1570853
-Ref: d121570853
-Ref: cblas c cblas_dgbmv1571151
-Ref: d131571151
-Ref: cblas c cblas_dtrmv1571477
-Ref: d141571477
-Ref: cblas c cblas_dtbmv1571735
-Ref: d151571735
-Ref: cblas c cblas_dtpmv1572006
-Ref: d161572006
-Ref: cblas c cblas_dtrsv1572250
-Ref: d171572250
-Ref: cblas c cblas_dtbsv1572508
-Ref: d181572508
-Ref: cblas c cblas_dtpsv1572779
-Ref: d191572779
-Ref: cblas c cblas_cgemv1573023
-Ref: d1a1573023
-Ref: cblas c cblas_cgbmv1573305
-Ref: d1b1573305
-Ref: cblas c cblas_ctrmv1573625
-Ref: d1c1573625
-Ref: cblas c cblas_ctbmv1573879
-Ref: d1d1573879
-Ref: cblas c cblas_ctpmv1574146
-Ref: d1e1574146
-Ref: cblas c cblas_ctrsv1574386
-Ref: d1f1574386
-Ref: cblas c cblas_ctbsv1574640
-Ref: d201574640
-Ref: cblas c cblas_ctpsv1574907
-Ref: d211574907
-Ref: cblas c cblas_zgemv1575147
-Ref: d221575147
-Ref: cblas c cblas_zgbmv1575429
-Ref: d231575429
-Ref: cblas c cblas_ztrmv1575749
-Ref: d241575749
-Ref: cblas c cblas_ztbmv1576003
-Ref: d251576003
-Ref: cblas c cblas_ztpmv1576270
-Ref: d261576270
-Ref: cblas c cblas_ztrsv1576510
-Ref: d271576510
-Ref: cblas c cblas_ztbsv1576764
-Ref: d281576764
-Ref: cblas c cblas_ztpsv1577031
-Ref: d291577031
-Ref: cblas c cblas_ssymv1577271
-Ref: d2a1577271
-Ref: cblas c cblas_ssbmv1577534
-Ref: d2b1577534
-Ref: cblas c cblas_sspmv1577810
-Ref: d2c1577810
-Ref: cblas c cblas_sger1578059
-Ref: d2d1578059
-Ref: cblas c cblas_ssyr1578288
-Ref: d2e1578288
-Ref: cblas c cblas_sspr1578489
-Ref: d2f1578489
-Ref: cblas c cblas_ssyr21578676
-Ref: d301578676
-Ref: cblas c cblas_sspr21578921
-Ref: d311578921
-Ref: cblas c cblas_dsymv1579151
-Ref: d321579151
-Ref: cblas c cblas_dsbmv1579419
-Ref: d331579419
-Ref: cblas c cblas_dspmv1579700
-Ref: d341579700
-Ref: cblas c cblas_dger1579954
-Ref: d351579954
-Ref: cblas c cblas_dsyr1580187
-Ref: d361580187
-Ref: cblas c cblas_dspr1580391
-Ref: d371580391
-Ref: cblas c cblas_dsyr21580581
-Ref: d381580581
-Ref: cblas c cblas_dspr21580830
-Ref: d391580830
-Ref: cblas c cblas_chemv1581064
-Ref: d3a1581064
-Ref: cblas c cblas_chbmv1581326
-Ref: d3b1581326
-Ref: cblas c cblas_chpmv1581601
-Ref: d3c1581601
-Ref: cblas c cblas_cgeru1581849
-Ref: d3d1581849
-Ref: cblas c cblas_cgerc1582077
-Ref: d3e1582077
-Ref: cblas c cblas_cher1582305
-Ref: d3f1582305
-Ref: cblas c cblas_chpr1582504
-Ref: d401582504
-Ref: cblas c cblas_cher21582688
-Ref: d411582688
-Ref: cblas c cblas_chpr21582931
-Ref: d421582931
-Ref: cblas c cblas_zhemv1583160
-Ref: d431583160
-Ref: cblas c cblas_zhbmv1583422
-Ref: d441583422
-Ref: cblas c cblas_zhpmv1583697
-Ref: d451583697
-Ref: cblas c cblas_zgeru1583945
-Ref: d461583945
-Ref: cblas c cblas_zgerc1584173
-Ref: d471584173
-Ref: cblas c cblas_zher1584401
-Ref: d481584401
-Ref: cblas c cblas_zhpr1584601
-Ref: d491584601
-Ref: cblas c cblas_zher21584786
-Ref: d4a1584786
-Ref: cblas c cblas_zhpr21585029
-Ref: d4b1585029
-Node: Level 3<2>1585258
-Ref: cblas level-31585363
-Ref: d4c1585363
-Ref: cblas c cblas_sgemm1585390
-Ref: d4d1585390
-Ref: cblas c cblas_ssymm1585729
-Ref: d4e1585729
-Ref: cblas c cblas_ssyrk1586041
-Ref: d4f1586041
-Ref: cblas c cblas_ssyr2k1586317
-Ref: d501586317
-Ref: cblas c cblas_strmm1586636
-Ref: d511586636
-Ref: cblas c cblas_strsm1586961
-Ref: d521586961
-Ref: cblas c cblas_dgemm1587286
-Ref: d531587286
-Ref: cblas c cblas_dsymm1587630
-Ref: d541587630
-Ref: cblas c cblas_dsyrk1587947
-Ref: d551587947
-Ref: cblas c cblas_dsyr2k1588227
-Ref: d561588227
-Ref: cblas c cblas_dtrmm1588551
-Ref: d571588551
-Ref: cblas c cblas_dtrsm1588879
-Ref: d581588879
-Ref: cblas c cblas_cgemm1589207
-Ref: d591589207
-Ref: cblas c cblas_csymm1589545
-Ref: d5a1589545
-Ref: cblas c cblas_csyrk1589856
-Ref: d5b1589856
-Ref: cblas c cblas_csyr2k1590132
-Ref: d5c1590132
-Ref: cblas c cblas_ctrmm1590450
-Ref: d5d1590450
-Ref: cblas c cblas_ctrsm1590774
-Ref: d5e1590774
-Ref: cblas c cblas_zgemm1591098
-Ref: d5f1591098
-Ref: cblas c cblas_zsymm1591436
-Ref: d601591436
-Ref: cblas c cblas_zsyrk1591747
-Ref: d611591747
-Ref: cblas c cblas_zsyr2k1592023
-Ref: d621592023
-Ref: cblas c cblas_ztrmm1592341
-Ref: d631592341
-Ref: cblas c cblas_ztrsm1592665
-Ref: d641592665
-Ref: cblas c cblas_chemm1592989
-Ref: d651592989
-Ref: cblas c cblas_cherk1593300
-Ref: d661593300
-Ref: cblas c cblas_cher2k1593574
-Ref: d671593574
-Ref: cblas c cblas_zhemm1593891
-Ref: d681593891
-Ref: cblas c cblas_zherk1594202
-Ref: d691594202
-Ref: cblas c cblas_zher2k1594478
-Ref: d6a1594478
-Ref: cblas c cblas_xerbla1594796
-Ref: d6b1594796
-Node: Examples<37>1594890
-Ref: cblas examples1594976
-Ref: d6c1594976
-Node: GNU General Public License1596441
-Ref: gpl doc1596573
-Ref: d6d1596573
-Ref: gpl gnu-general-public-license1596573
-Ref: d6e1596573
-Node: GNU Free Documentation License1634547
-Ref: fdl doc1634667
-Ref: d6f1634667
-Ref: fdl gnu-free-documentation-license1634667
-Ref: d701634667
-Node: Index1659570
+Node: Allocation1478231
+Ref: spmatrix allocation1478348
+Ref: bf51478348
+Ref: spmatrix c gsl_spmatrix_alloc1478730
+Ref: bf61478730
+Ref: spmatrix c gsl_spmatrix_alloc_nzmax1479592
+Ref: bf71479592
+Ref: spmatrix c GSL_SPMATRIX_COO1480543
+Ref: bf91480543
+Ref: spmatrix c GSL_SPMATRIX_CSC1480638
+Ref: bfa1480638
+Ref: spmatrix c GSL_SPMATRIX_CSR1480737
+Ref: bfb1480737
+Ref: spmatrix c gsl_spmatrix_realloc1480914
+Ref: bf81480914
+Ref: spmatrix c gsl_spmatrix_free1481393
+Ref: bfd1481393
+Node: Accessing Matrix Elements1481626
+Ref: spmatrix accessing-matrix-elements1481760
+Ref: bfe1481760
+Ref: spmatrix c gsl_spmatrix_get1481823
+Ref: bff1481823
+Ref: spmatrix c gsl_spmatrix_set1482098
+Ref: bfc1482098
+Ref: spmatrix c gsl_spmatrix_ptr1482366
+Ref: c001482366
+Node: Initializing Matrix Elements1482767
+Ref: spmatrix initializing-matrix-elements1482919
+Ref: c011482919
+Ref: spmatrix c gsl_spmatrix_set_zero1483246
+Ref: c021483246
+Node: Reading and Writing Matrices1483647
+Ref: spmatrix reading-and-writing-matrices1483790
+Ref: c031483790
+Ref: spmatrix c gsl_spmatrix_fwrite1483859
+Ref: c041483859
+Ref: spmatrix c gsl_spmatrix_fread1484378
+Ref: c051484378
+Ref: spmatrix c gsl_spmatrix_fprintf1485086
+Ref: c061485086
+Ref: spmatrix c gsl_spmatrix_fscanf1485773
+Ref: c071485773
+Node: Copying Matrices1486227
+Ref: spmatrix copying-matrices1486369
+Ref: c081486369
+Ref: spmatrix c gsl_spmatrix_memcpy1486414
+Ref: c091486414
+Node: Exchanging Rows and Columns1486783
+Ref: spmatrix exchanging-rows-and-columns1486914
+Ref: c0a1486914
+Ref: spmatrix c gsl_spmatrix_transpose_memcpy1486981
+Ref: c0b1486981
+Ref: spmatrix c gsl_spmatrix_transpose1487425
+Ref: c0c1487425
+Node: Matrix Operations1488121
+Ref: spmatrix matrix-operations1488253
+Ref: c0d1488253
+Ref: spmatrix c gsl_spmatrix_scale1488302
+Ref: c0e1488302
+Ref: spmatrix c gsl_spmatrix_scale_columns1488631
+Ref: c0f1488631
+Ref: spmatrix c gsl_spmatrix_scale_rows1489106
+Ref: c101489106
+Ref: spmatrix c gsl_spmatrix_add1489572
+Ref: c111489572
+Ref: spmatrix c gsl_spmatrix_add_to_dense1489859
+Ref: c121489859
+Node: Matrix Properties1490320
+Ref: spmatrix matrix-properties1490461
+Ref: c131490461
+Ref: spmatrix c gsl_spmatrix_type1490510
+Ref: c141490510
+Ref: spmatrix c gsl_spmatrix_nnz1490928
+Ref: c151490928
+Ref: spmatrix c gsl_spmatrix_equal1491155
+Ref: c161491155
+Node: Finding Maximum and Minimum Elements1491572
+Ref: spmatrix finding-maximum-and-minimum-elements1491713
+Ref: c171491713
+Ref: spmatrix c gsl_spmatrix_minmax1491800
+Ref: c181491800
+Ref: spmatrix c gsl_spmatrix_min_index1492184
+Ref: c191492184
+Node: Compressed Format1492653
+Ref: spmatrix compressed-format1492821
+Ref: c1a1492821
+Ref: spmatrix c gsl_spmatrix_csc1492950
+Ref: c1b1492950
+Ref: spmatrix c gsl_spmatrix_csr1493315
+Ref: c1c1493315
+Ref: spmatrix c gsl_spmatrix_compress1493677
+Ref: c1d1493677
+Node: Conversion Between Sparse and Dense Matrices1494170
+Ref: spmatrix conversion-between-sparse-and-dense-matrices1494314
+Ref: c1e1494314
+Ref: spmatrix c gsl_spmatrix_d2sp1494563
+Ref: c1f1494563
+Ref: spmatrix c gsl_spmatrix_sp2d1494821
+Ref: c201494821
+Node: Examples<34>1495114
+Ref: spmatrix examples1495275
+Ref: c211495275
+Node: References and Further Reading<36>1498862
+Ref: spmatrix references-and-further-reading1498970
+Ref: c221498970
+Node: Sparse BLAS Support1499291
+Ref: spblas doc1499405
+Ref: c231499405
+Ref: spblas sparse-blas-support1499405
+Ref: c241499405
+Node: Sparse BLAS operations1499949
+Ref: spblas sparse-blas-operations1500071
+Ref: c251500071
+Ref: spblas c gsl_spblas_dgemv1500128
+Ref: c261500128
+Ref: spblas c gsl_spblas_dgemm1500669
+Ref: c271500669
+Node: References and Further Reading<37>1500928
+Ref: spblas references-and-further-reading1501050
+Ref: c281501050
+Node: Sparse Linear Algebra1501369
+Ref: splinalg doc1501486
+Ref: c291501486
+Ref: splinalg sparse-linear-algebra1501486
+Ref: c2a1501486
+Node: Overview<9>1502011
+Ref: splinalg overview1502114
+Ref: c2b1502114
+Node: Sparse Iterative Solvers1502740
+Ref: splinalg sparse-iterative-solvers1502864
+Ref: c2c1502864
+Node: Overview<10>1503038
+Ref: splinalg id11503154
+Ref: c2d1503154
+Node: Types of Sparse Iterative Solvers1503882
+Ref: splinalg types-of-sparse-iterative-solvers1504041
+Ref: c2e1504041
+Ref: splinalg c gsl_splinalg_itersolve_type1504210
+Ref: c2f1504210
+Ref: splinalg c gsl_splinalg_itersolve_gmres1504249
+Ref: c301504249
+Node: Iterating the Sparse Linear System1506221
+Ref: splinalg iterating-the-sparse-linear-system1506359
+Ref: c321506359
+Ref: splinalg c gsl_splinalg_itersolve_alloc1506570
+Ref: c331506570
+Ref: splinalg c gsl_splinalg_itersolve_free1507094
+Ref: c341507094
+Ref: splinalg c gsl_splinalg_itersolve_name1507257
+Ref: c351507257
+Ref: splinalg c gsl_splinalg_itersolve_iterate1507430
+Ref: c311507430
+Ref: splinalg c gsl_splinalg_itersolve_normr1508546
+Ref: c361508546
+Node: Examples<35>1508808
+Ref: splinalg examples1508955
+Ref: c371508955
+Ref: splinalg fig-splinalg-poisson1509994
+Ref: c381509994
+Node: References and Further Reading<38>1513290
+Ref: splinalg references-and-further-reading1513404
+Ref: c391513404
+Node: Physical Constants1513787
+Ref: const doc1513915
+Ref: c3a1513915
+Ref: const physical-constants1513915
+Ref: c3b1513915
+Node: Fundamental Constants1515244
+Ref: const fundamental-constants1515356
+Ref: c3c1515356
+Ref: const c GSL_CONST_MKSA_SPEED_OF_LIGHT1515411
+Ref: c3d1515411
+Ref: const c GSL_CONST_MKSA_VACUUM_PERMEABILITY1515492
+Ref: c3e1515492
+Ref: const c GSL_CONST_MKSA_VACUUM_PERMITTIVITY1515640
+Ref: c3f1515640
+Ref: const c GSL_CONST_MKSA_PLANCKS_CONSTANT_H1515793
+Ref: c401515793
+Ref: const c GSL_CONST_MKSA_PLANCKS_CONSTANT_HBAR1515869
+Ref: c411515869
+Ref: const c GSL_CONST_NUM_AVOGADRO1515968
+Ref: c421515968
+Ref: const c GSL_CONST_MKSA_FARADAY1516035
+Ref: c431516035
+Ref: const c GSL_CONST_MKSA_BOLTZMANN1516107
+Ref: c441516107
+Ref: const c GSL_CONST_MKSA_MOLAR_GAS1516177
+Ref: c451516177
+Ref: const c GSL_CONST_MKSA_STANDARD_GAS_VOLUME1516249
+Ref: c461516249
+Ref: const c GSL_CONST_MKSA_STEFAN_BOLTZMANN_CONSTANT1516332
+Ref: c471516332
+Ref: const c GSL_CONST_MKSA_GAUSS1516440
+Ref: c481516440
+Node: Astronomy and Astrophysics1516510
+Ref: const astronomy-and-astrophysics1516657
+Ref: c491516657
+Ref: const c GSL_CONST_MKSA_ASTRONOMICAL_UNIT1516722
+Ref: c4a1516722
+Ref: const c GSL_CONST_MKSA_GRAVITATIONAL_CONSTANT1516838
+Ref: c4b1516838
+Ref: const c GSL_CONST_MKSA_LIGHT_YEAR1516925
+Ref: c4c1516925
+Ref: const c GSL_CONST_MKSA_PARSEC1517003
+Ref: c4d1517003
+Ref: const c GSL_CONST_MKSA_GRAV_ACCEL1517073
+Ref: c4e1517073
+Ref: const c GSL_CONST_MKSA_SOLAR_MASS1517170
+Ref: c4f1517170
+Node: Atomic and Nuclear Physics1517235
+Ref: const atomic-and-nuclear-physics1517380
+Ref: c501517380
+Ref: const c GSL_CONST_MKSA_ELECTRON_CHARGE1517445
+Ref: c511517445
+Ref: const c GSL_CONST_MKSA_ELECTRON_VOLT1517525
+Ref: c521517525
+Ref: const c GSL_CONST_MKSA_UNIFIED_ATOMIC_MASS1517607
+Ref: c531517607
+Ref: const c GSL_CONST_MKSA_MASS_ELECTRON1517690
+Ref: c541517690
+Ref: const c GSL_CONST_MKSA_MASS_MUON1517768
+Ref: c551517768
+Ref: const c GSL_CONST_MKSA_MASS_PROTON1517840
+Ref: c561517840
+Ref: const c GSL_CONST_MKSA_MASS_NEUTRON1517914
+Ref: c571517914
+Ref: const c GSL_CONST_NUM_FINE_STRUCTURE1517990
+Ref: c581517990
+Ref: const c GSL_CONST_MKSA_RYDBERG1518089
+Ref: c591518089
+Ref: const c GSL_CONST_MKSA_BOHR_RADIUS1518263
+Ref: c5a1518263
+Ref: const c GSL_CONST_MKSA_ANGSTROM1518330
+Ref: c5b1518330
+Ref: const c GSL_CONST_MKSA_BARN1518398
+Ref: c5c1518398
+Ref: const c GSL_CONST_MKSA_BOHR_MAGNETON1518456
+Ref: c5d1518456
+Ref: const c GSL_CONST_MKSA_NUCLEAR_MAGNETON1518529
+Ref: c5e1518529
+Ref: const c GSL_CONST_MKSA_ELECTRON_MAGNETIC_MOMENT1518608
+Ref: c5f1518608
+Ref: const c GSL_CONST_MKSA_PROTON_MAGNETIC_MOMENT1518795
+Ref: c601518795
+Ref: const c GSL_CONST_MKSA_THOMSON_CROSS_SECTION1518893
+Ref: c611518893
+Ref: const c GSL_CONST_MKSA_DEBYE1518985
+Ref: c621518985
+Node: Measurement of Time1519066
+Ref: const measurement-of-time1519199
+Ref: c631519199
+Ref: const c GSL_CONST_MKSA_MINUTE1519250
+Ref: c641519250
+Ref: const c GSL_CONST_MKSA_HOUR1519325
+Ref: c651519325
+Ref: const c GSL_CONST_MKSA_DAY1519396
+Ref: c661519396
+Ref: const c GSL_CONST_MKSA_WEEK1519465
+Ref: c671519465
+Node: Imperial Units1519536
+Ref: const imperial-units1519667
+Ref: c681519667
+Ref: const c GSL_CONST_MKSA_INCH1519708
+Ref: c691519708
+Ref: const c GSL_CONST_MKSA_FOOT1519768
+Ref: c6a1519768
+Ref: const c GSL_CONST_MKSA_YARD1519828
+Ref: c6b1519828
+Ref: const c GSL_CONST_MKSA_MILE1519888
+Ref: c6c1519888
+Ref: const c GSL_CONST_MKSA_MIL1519948
+Ref: c6d1519948
+Node: Speed and Nautical Units1520028
+Ref: const speed-and-nautical-units1520154
+Ref: c6e1520154
+Ref: const c GSL_CONST_MKSA_KILOMETERS_PER_HOUR1520215
+Ref: c6f1520215
+Ref: const c GSL_CONST_MKSA_MILES_PER_HOUR1520303
+Ref: c701520303
+Ref: const c GSL_CONST_MKSA_NAUTICAL_MILE1520381
+Ref: c711520381
+Ref: const c GSL_CONST_MKSA_FATHOM1520459
+Ref: c721520459
+Ref: const c GSL_CONST_MKSA_KNOT1520523
+Ref: c731520523
+Node: Printers Units1520582
+Ref: const printers-units1520716
+Ref: c741520716
+Ref: const c GSL_CONST_MKSA_POINT1520757
+Ref: c751520757
+Ref: const c GSL_CONST_MKSA_TEXPOINT1520843
+Ref: c761520843
+Node: Volume Area and Length1520927
+Ref: const volume-area-and-length1521052
+Ref: c771521052
+Ref: const c GSL_CONST_MKSA_MICRON1521111
+Ref: c781521111
+Ref: const c GSL_CONST_MKSA_HECTARE1521175
+Ref: c791521175
+Ref: const c GSL_CONST_MKSA_ACRE1521239
+Ref: c7a1521239
+Ref: const c GSL_CONST_MKSA_LITER1521297
+Ref: c7b1521297
+Ref: const c GSL_CONST_MKSA_US_GALLON1521359
+Ref: c7c1521359
+Ref: const c GSL_CONST_MKSA_CANADIAN_GALLON1521429
+Ref: c7d1521429
+Ref: const c GSL_CONST_MKSA_UK_GALLON1521511
+Ref: c7e1521511
+Ref: const c GSL_CONST_MKSA_QUART1521581
+Ref: c7f1521581
+Ref: const c GSL_CONST_MKSA_PINT1521643
+Ref: c801521643
+Node: Mass and Weight1521703
+Ref: const mass-and-weight1521838
+Ref: c811521838
+Ref: const c GSL_CONST_MKSA_POUND_MASS1521881
+Ref: c821521881
+Ref: const c GSL_CONST_MKSA_OUNCE_MASS1521946
+Ref: c831521946
+Ref: const c GSL_CONST_MKSA_TON1522011
+Ref: c841522011
+Ref: const c GSL_CONST_MKSA_METRIC_TON1522067
+Ref: c851522067
+Ref: const c GSL_CONST_MKSA_UK_TON1522147
+Ref: c861522147
+Ref: const c GSL_CONST_MKSA_TROY_OUNCE1522209
+Ref: c871522209
+Ref: const c GSL_CONST_MKSA_CARAT1522279
+Ref: c881522279
+Ref: const c GSL_CONST_MKSA_GRAM_FORCE1522339
+Ref: c891522339
+Ref: const c GSL_CONST_MKSA_POUND_FORCE1522411
+Ref: c8a1522411
+Ref: const c GSL_CONST_MKSA_KILOPOUND_FORCE1522485
+Ref: c8b1522485
+Ref: const c GSL_CONST_MKSA_POUNDAL1522567
+Ref: c8c1522567
+Node: Thermal Energy and Power1522632
+Ref: const thermal-energy-and-power1522753
+Ref: c8d1522753
+Ref: const c GSL_CONST_MKSA_CALORIE1522816
+Ref: c8e1522816
+Ref: const c GSL_CONST_MKSA_BTU1522882
+Ref: c8f1522882
+Ref: const c GSL_CONST_MKSA_THERM1522962
+Ref: c901522962
+Ref: const c GSL_CONST_MKSA_HORSEPOWER1523024
+Ref: c911523024
+Node: Pressure1523095
+Ref: const pressure1523210
+Ref: c921523210
+Ref: const c GSL_CONST_MKSA_BAR1523241
+Ref: c931523241
+Ref: const c GSL_CONST_MKSA_STD_ATMOSPHERE1523301
+Ref: c941523301
+Ref: const c GSL_CONST_MKSA_TORR1523388
+Ref: c951523388
+Ref: const c GSL_CONST_MKSA_METER_OF_MERCURY1523450
+Ref: c961523450
+Ref: const c GSL_CONST_MKSA_INCH_OF_MERCURY1523536
+Ref: c971523536
+Ref: const c GSL_CONST_MKSA_INCH_OF_WATER1523620
+Ref: c981523620
+Ref: const c GSL_CONST_MKSA_PSI1523700
+Ref: c991523700
+Node: Viscosity1523778
+Ref: const viscosity1523891
+Ref: c9a1523891
+Ref: const c GSL_CONST_MKSA_POISE1523924
+Ref: c9b1523924
+Ref: const c GSL_CONST_MKSA_STOKES1523997
+Ref: c9c1523997
+Node: Light and Illumination1524074
+Ref: const light-and-illumination1524192
+Ref: c9d1524192
+Ref: const c GSL_CONST_MKSA_STILB1524251
+Ref: c9e1524251
+Ref: const c GSL_CONST_MKSA_LUMEN1524316
+Ref: c9f1524316
+Ref: const c GSL_CONST_MKSA_LUX1524385
+Ref: ca01524385
+Ref: const c GSL_CONST_MKSA_PHOT1524448
+Ref: ca11524448
+Ref: const c GSL_CONST_MKSA_FOOTCANDLE1524513
+Ref: ca21524513
+Ref: const c GSL_CONST_MKSA_LAMBERT1524590
+Ref: ca31524590
+Ref: const c GSL_CONST_MKSA_FOOTLAMBERT1524659
+Ref: ca41524659
+Node: Radioactivity1524736
+Ref: const radioactivity1524861
+Ref: ca51524861
+Ref: const c GSL_CONST_MKSA_CURIE1524902
+Ref: ca61524902
+Ref: const c GSL_CONST_MKSA_ROENTGEN1524966
+Ref: ca71524966
+Ref: const c GSL_CONST_MKSA_RAD1525036
+Ref: ca81525036
+Node: Force and Energy1525101
+Ref: const force-and-energy1525212
+Ref: ca91525212
+Ref: const c GSL_CONST_MKSA_NEWTON1525259
+Ref: caa1525259
+Ref: const c GSL_CONST_MKSA_DYNE1525331
+Ref: cab1525331
+Ref: const c GSL_CONST_MKSA_JOULE1525407
+Ref: cac1525407
+Ref: const c GSL_CONST_MKSA_ERG1525478
+Ref: cad1525478
+Node: Prefixes1525549
+Ref: const prefixes1525659
+Ref: cae1525659
+Ref: const c GSL_CONST_NUM_YOTTA1525742
+Ref: caf1525742
+Ref: const c GSL_CONST_NUM_ZETTA1525788
+Ref: cb01525788
+Ref: const c GSL_CONST_NUM_EXA1525834
+Ref: cb11525834
+Ref: const c GSL_CONST_NUM_PETA1525878
+Ref: cb21525878
+Ref: const c GSL_CONST_NUM_TERA1525923
+Ref: cb31525923
+Ref: const c GSL_CONST_NUM_GIGA1525968
+Ref: cb41525968
+Ref: const c GSL_CONST_NUM_MEGA1526010
+Ref: cb51526010
+Ref: const c GSL_CONST_NUM_KILO1526052
+Ref: cb61526052
+Ref: const c GSL_CONST_NUM_MILLI1526094
+Ref: cb71526094
+Ref: const c GSL_CONST_NUM_MICRO1526140
+Ref: cb81526140
+Ref: const c GSL_CONST_NUM_NANO1526186
+Ref: cb91526186
+Ref: const c GSL_CONST_NUM_PICO1526231
+Ref: cba1526231
+Ref: const c GSL_CONST_NUM_FEMTO1526277
+Ref: cbb1526277
+Ref: const c GSL_CONST_NUM_ATTO1526324
+Ref: cbc1526324
+Ref: const c GSL_CONST_NUM_ZEPTO1526370
+Ref: cbd1526370
+Ref: const c GSL_CONST_NUM_YOCTO1526417
+Ref: cbe1526417
+Node: Examples<36>1526464
+Ref: const examples1526592
+Ref: cbf1526592
+Node: References and Further Reading<39>1528222
+Ref: const references-and-further-reading1528333
+Ref: cc01528333
+Node: IEEE floating-point arithmetic1528940
+Ref: ieee754 doc1529075
+Ref: cc11529075
+Ref: ieee754 chap-ieee1529075
+Ref: cc21529075
+Ref: ieee754 ieee-floating-point-arithmetic1529075
+Ref: cc31529075
+Node: Representation of floating point numbers1529560
+Ref: ieee754 representation-of-floating-point-numbers1529709
+Ref: cc41529709
+Ref: ieee754 c gsl_ieee_fprintf_float1531738
+Ref: cc51531738
+Ref: ieee754 c gsl_ieee_fprintf_double1531823
+Ref: cc61531823
+Ref: ieee754 c gsl_ieee_printf_float1532694
+Ref: cc71532694
+Ref: ieee754 c gsl_ieee_printf_double1532753
+Ref: cc81532753
+Node: Setting up your IEEE environment1534117
+Ref: ieee754 setting-up-your-ieee-environment1534309
+Ref: cc91534309
+Ref: ieee754 c GSL_IEEE_MODE1535378
+Ref: cca1535378
+Ref: ieee754 c gsl_ieee_env_setup1535458
+Ref: ccb1535458
+Node: References and Further Reading<40>1541252
+Ref: ieee754 references-and-further-reading1541395
+Ref: ccc1541395
+Node: Debugging Numerical Programs1542422
+Ref: debug doc1542558
+Ref: ccd1542558
+Ref: debug debugging-numerical-programs1542558
+Ref: cce1542558
+Node: Using gdb1542935
+Ref: debug using-gdb1543053
+Ref: ccf1543053
+Node: Examining floating point registers1546347
+Ref: debug examining-floating-point-registers1546508
+Ref: cd01546508
+Node: Handling floating point exceptions1547650
+Ref: debug handling-floating-point-exceptions1547844
+Ref: cd11547844
+Node: GCC warning options for numerical programs1549106
+Ref: debug gcc-warning-options-for-numerical-programs1549300
+Ref: cd21549300
+Node: References and Further Reading<41>1553233
+Ref: debug references-and-further-reading1553384
+Ref: cd31553384
+Node: Contributors to GSL1554026
+Ref: contrib doc1554147
+Ref: cd41554147
+Ref: contrib contributors-to-gsl1554147
+Ref: cd51554147
+Node: Autoconf Macros1558622
+Ref: autoconf doc1558732
+Ref: cd61558732
+Ref: autoconf autoconf-macros1558732
+Ref: cd71558732
+Ref: autoconf chap-autoconf-macros1558732
+Ref: 161558732
+Node: GSL CBLAS Library1562802
+Ref: cblas doc1562919
+Ref: cd81562919
+Ref: cblas chap-cblas1562919
+Ref: 4711562919
+Ref: cblas gsl-cblas-library1562919
+Ref: cd91562919
+Node: Level 1<2>1563301
+Ref: cblas level-11563385
+Ref: cda1563385
+Ref: cblas c cblas_sdsdot1563412
+Ref: cdb1563412
+Ref: cblas c cblas_dsdot1563555
+Ref: cdc1563555
+Ref: cblas c cblas_sdot1563679
+Ref: cdd1563679
+Ref: cblas c cblas_ddot1563801
+Ref: cde1563801
+Ref: cblas c cblas_cdotu_sub1563926
+Ref: cdf1563926
+Ref: cblas c cblas_cdotc_sub1564063
+Ref: ce01564063
+Ref: cblas c cblas_zdotu_sub1564200
+Ref: ce11564200
+Ref: cblas c cblas_zdotc_sub1564337
+Ref: ce21564337
+Ref: cblas c cblas_snrm21564474
+Ref: ce31564474
+Ref: cblas c cblas_sasum1564564
+Ref: ce41564564
+Ref: cblas c cblas_dnrm21564654
+Ref: ce51564654
+Ref: cblas c cblas_dasum1564746
+Ref: ce61564746
+Ref: cblas c cblas_scnrm21564838
+Ref: ce71564838
+Ref: cblas c cblas_scasum1564928
+Ref: ce81564928
+Ref: cblas c cblas_dznrm21565018
+Ref: ce91565018
+Ref: cblas c cblas_dzasum1565109
+Ref: cea1565109
+Ref: cblas c cblas_isamax1565200
+Ref: ceb1565200
+Ref: cblas c cblas_idamax1565297
+Ref: cec1565297
+Ref: cblas c cblas_icamax1565395
+Ref: ced1565395
+Ref: cblas c cblas_izamax1565491
+Ref: cee1565491
+Ref: cblas c cblas_sswap1565587
+Ref: cef1565587
+Ref: cblas c cblas_scopy1565697
+Ref: cf01565697
+Ref: cblas c cblas_saxpy1565813
+Ref: cf11565813
+Ref: cblas c cblas_dswap1565948
+Ref: cf21565948
+Ref: cblas c cblas_dcopy1566060
+Ref: cf31566060
+Ref: cblas c cblas_daxpy1566178
+Ref: cf41566178
+Ref: cblas c cblas_cswap1566316
+Ref: cf51566316
+Ref: cblas c cblas_ccopy1566424
+Ref: cf61566424
+Ref: cblas c cblas_caxpy1566538
+Ref: cf71566538
+Ref: cblas c cblas_zswap1566672
+Ref: cf81566672
+Ref: cblas c cblas_zcopy1566780
+Ref: cf91566780
+Ref: cblas c cblas_zaxpy1566894
+Ref: cfa1566894
+Ref: cblas c cblas_srotg1567028
+Ref: cfb1567028
+Ref: cblas c cblas_srotmg1567115
+Ref: cfc1567115
+Ref: cblas c cblas_srot1567222
+Ref: cfd1567222
+Ref: cblas c cblas_srotm1567361
+Ref: cfe1567361
+Ref: cblas c cblas_drotg1567488
+Ref: cff1567488
+Ref: cblas c cblas_drotmg1567579
+Ref: d001567579
+Ref: cblas c cblas_drot1567691
+Ref: d011567691
+Ref: cblas c cblas_drotm1567834
+Ref: d021567834
+Ref: cblas c cblas_sscal1567964
+Ref: d031567964
+Ref: cblas c cblas_dscal1568066
+Ref: d041568066
+Ref: cblas c cblas_cscal1568170
+Ref: d051568170
+Ref: cblas c cblas_zscal1568272
+Ref: d061568272
+Ref: cblas c cblas_csscal1568374
+Ref: d071568374
+Ref: cblas c cblas_zdscal1568476
+Ref: d081568476
+Node: Level 2<2>1568579
+Ref: cblas level-21568682
+Ref: d091568682
+Ref: cblas c cblas_sgemv1568709
+Ref: d0a1568709
+Ref: cblas c cblas_sgbmv1568992
+Ref: d0b1568992
+Ref: cblas c cblas_strmv1569313
+Ref: d0c1569313
+Ref: cblas c cblas_stbmv1569569
+Ref: d0d1569569
+Ref: cblas c cblas_stpmv1569838
+Ref: d0e1569838
+Ref: cblas c cblas_strsv1570080
+Ref: d0f1570080
+Ref: cblas c cblas_stbsv1570336
+Ref: d101570336
+Ref: cblas c cblas_stpsv1570605
+Ref: d111570605
+Ref: cblas c cblas_dgemv1570847
+Ref: d121570847
+Ref: cblas c cblas_dgbmv1571145
+Ref: d131571145
+Ref: cblas c cblas_dtrmv1571471
+Ref: d141571471
+Ref: cblas c cblas_dtbmv1571729
+Ref: d151571729
+Ref: cblas c cblas_dtpmv1572000
+Ref: d161572000
+Ref: cblas c cblas_dtrsv1572244
+Ref: d171572244
+Ref: cblas c cblas_dtbsv1572502
+Ref: d181572502
+Ref: cblas c cblas_dtpsv1572773
+Ref: d191572773
+Ref: cblas c cblas_cgemv1573017
+Ref: d1a1573017
+Ref: cblas c cblas_cgbmv1573299
+Ref: d1b1573299
+Ref: cblas c cblas_ctrmv1573619
+Ref: d1c1573619
+Ref: cblas c cblas_ctbmv1573873
+Ref: d1d1573873
+Ref: cblas c cblas_ctpmv1574140
+Ref: d1e1574140
+Ref: cblas c cblas_ctrsv1574380
+Ref: d1f1574380
+Ref: cblas c cblas_ctbsv1574634
+Ref: d201574634
+Ref: cblas c cblas_ctpsv1574901
+Ref: d211574901
+Ref: cblas c cblas_zgemv1575141
+Ref: d221575141
+Ref: cblas c cblas_zgbmv1575423
+Ref: d231575423
+Ref: cblas c cblas_ztrmv1575743
+Ref: d241575743
+Ref: cblas c cblas_ztbmv1575997
+Ref: d251575997
+Ref: cblas c cblas_ztpmv1576264
+Ref: d261576264
+Ref: cblas c cblas_ztrsv1576504
+Ref: d271576504
+Ref: cblas c cblas_ztbsv1576758
+Ref: d281576758
+Ref: cblas c cblas_ztpsv1577025
+Ref: d291577025
+Ref: cblas c cblas_ssymv1577265
+Ref: d2a1577265
+Ref: cblas c cblas_ssbmv1577528
+Ref: d2b1577528
+Ref: cblas c cblas_sspmv1577804
+Ref: d2c1577804
+Ref: cblas c cblas_sger1578053
+Ref: d2d1578053
+Ref: cblas c cblas_ssyr1578282
+Ref: d2e1578282
+Ref: cblas c cblas_sspr1578483
+Ref: d2f1578483
+Ref: cblas c cblas_ssyr21578670
+Ref: d301578670
+Ref: cblas c cblas_sspr21578915
+Ref: d311578915
+Ref: cblas c cblas_dsymv1579145
+Ref: d321579145
+Ref: cblas c cblas_dsbmv1579413
+Ref: d331579413
+Ref: cblas c cblas_dspmv1579694
+Ref: d341579694
+Ref: cblas c cblas_dger1579948
+Ref: d351579948
+Ref: cblas c cblas_dsyr1580181
+Ref: d361580181
+Ref: cblas c cblas_dspr1580385
+Ref: d371580385
+Ref: cblas c cblas_dsyr21580575
+Ref: d381580575
+Ref: cblas c cblas_dspr21580824
+Ref: d391580824
+Ref: cblas c cblas_chemv1581058
+Ref: d3a1581058
+Ref: cblas c cblas_chbmv1581320
+Ref: d3b1581320
+Ref: cblas c cblas_chpmv1581595
+Ref: d3c1581595
+Ref: cblas c cblas_cgeru1581843
+Ref: d3d1581843
+Ref: cblas c cblas_cgerc1582071
+Ref: d3e1582071
+Ref: cblas c cblas_cher1582299
+Ref: d3f1582299
+Ref: cblas c cblas_chpr1582498
+Ref: d401582498
+Ref: cblas c cblas_cher21582682
+Ref: d411582682
+Ref: cblas c cblas_chpr21582925
+Ref: d421582925
+Ref: cblas c cblas_zhemv1583154
+Ref: d431583154
+Ref: cblas c cblas_zhbmv1583416
+Ref: d441583416
+Ref: cblas c cblas_zhpmv1583691
+Ref: d451583691
+Ref: cblas c cblas_zgeru1583939
+Ref: d461583939
+Ref: cblas c cblas_zgerc1584167
+Ref: d471584167
+Ref: cblas c cblas_zher1584395
+Ref: d481584395
+Ref: cblas c cblas_zhpr1584595
+Ref: d491584595
+Ref: cblas c cblas_zher21584780
+Ref: d4a1584780
+Ref: cblas c cblas_zhpr21585023
+Ref: d4b1585023
+Node: Level 3<2>1585252
+Ref: cblas level-31585357
+Ref: d4c1585357
+Ref: cblas c cblas_sgemm1585384
+Ref: d4d1585384
+Ref: cblas c cblas_ssymm1585723
+Ref: d4e1585723
+Ref: cblas c cblas_ssyrk1586035
+Ref: d4f1586035
+Ref: cblas c cblas_ssyr2k1586311
+Ref: d501586311
+Ref: cblas c cblas_strmm1586630
+Ref: d511586630
+Ref: cblas c cblas_strsm1586955
+Ref: d521586955
+Ref: cblas c cblas_dgemm1587280
+Ref: d531587280
+Ref: cblas c cblas_dsymm1587624
+Ref: d541587624
+Ref: cblas c cblas_dsyrk1587941
+Ref: d551587941
+Ref: cblas c cblas_dsyr2k1588221
+Ref: d561588221
+Ref: cblas c cblas_dtrmm1588545
+Ref: d571588545
+Ref: cblas c cblas_dtrsm1588873
+Ref: d581588873
+Ref: cblas c cblas_cgemm1589201
+Ref: d591589201
+Ref: cblas c cblas_csymm1589539
+Ref: d5a1589539
+Ref: cblas c cblas_csyrk1589850
+Ref: d5b1589850
+Ref: cblas c cblas_csyr2k1590126
+Ref: d5c1590126
+Ref: cblas c cblas_ctrmm1590444
+Ref: d5d1590444
+Ref: cblas c cblas_ctrsm1590768
+Ref: d5e1590768
+Ref: cblas c cblas_zgemm1591092
+Ref: d5f1591092
+Ref: cblas c cblas_zsymm1591430
+Ref: d601591430
+Ref: cblas c cblas_zsyrk1591741
+Ref: d611591741
+Ref: cblas c cblas_zsyr2k1592017
+Ref: d621592017
+Ref: cblas c cblas_ztrmm1592335
+Ref: d631592335
+Ref: cblas c cblas_ztrsm1592659
+Ref: d641592659
+Ref: cblas c cblas_chemm1592983
+Ref: d651592983
+Ref: cblas c cblas_cherk1593294
+Ref: d661593294
+Ref: cblas c cblas_cher2k1593568
+Ref: d671593568
+Ref: cblas c cblas_zhemm1593885
+Ref: d681593885
+Ref: cblas c cblas_zherk1594196
+Ref: d691594196
+Ref: cblas c cblas_zher2k1594472
+Ref: d6a1594472
+Ref: cblas c cblas_xerbla1594790
+Ref: d6b1594790
+Node: Examples<37>1594884
+Ref: cblas examples1594970
+Ref: d6c1594970
+Node: GNU General Public License1596435
+Ref: gpl doc1596567
+Ref: d6d1596567
+Ref: gpl gnu-general-public-license1596567
+Ref: d6e1596567
+Node: GNU Free Documentation License1634541
+Ref: fdl doc1634661
+Ref: d6f1634661
+Ref: fdl gnu-free-documentation-license1634661
+Ref: d701634661
+Node: Index1659564
 
 End Tag Table
 

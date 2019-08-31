@@ -248,7 +248,7 @@ na.digest@na-net.ornl.gov or freshmeat.net
     $ cd doc
     *edit conf.py and make sure version number and copyright years are correct*
     $ make clean ; make html ; make latexpdf
-    $ rsync -av _build/ /path/to/www/gsl/doc/
+    $ rsync -av --delete --cvs-exclude _build/ /path/to/www/gsl/doc/
 
     # Remove any deleted/renamed files
     $ cd /path/to/www/gsl
@@ -257,6 +257,11 @@ na.digest@na-net.ornl.gov or freshmeat.net
     # Add any new files; first add directories not called CVS; then
     # add all the files in the directories
     $ cd /path/to/www/gsl/doc/html
+    $ find . -type d \! -name CVS -exec cvs add '{}' \;
+    $ find . \( -type d -name CVS -prune \) -o \( -type f -exec cvs add '{}' \; \)
+
+    # same for doctrees directory
+    $ cd /path/to/www/gsl/doc/doctrees
     $ find . -type d \! -name CVS -exec cvs add '{}' \;
     $ find . \( -type d -name CVS -prune \) -o \( -type f -exec cvs add '{}' \; \)
 

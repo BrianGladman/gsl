@@ -145,6 +145,8 @@
     <ClCompile Include="..\..\bst\bst.c" />
     <ClCompile Include="..\..\bst\rb.c" />
     <ClCompile Include="..\..\bst\trav.c" />
+    <ClCompile Include="..\..\combination\inline.c" />
+    <ClCompile Include="..\..\complex\inline.c" />
     <ClCompile Include="..\..\filter\gaussian.c" />
     <ClCompile Include="..\..\filter\impulse.c" />
     <ClCompile Include="..\..\filter\median.c" />
@@ -164,12 +166,14 @@
     <ClCompile Include="..\..\integration\romberg.c" />
     <ClCompile Include="..\..\interpolation\bicubic.c" />
     <ClCompile Include="..\..\interpolation\bilinear.c" />
+    <ClCompile Include="..\..\interpolation\inline.c" />
     <ClCompile Include="..\..\interpolation\interp2d.c" />
     <ClCompile Include="..\..\interpolation\spline2d.c" />
     <ClCompile Include="..\..\interpolation\steffen.c" />
     <ClCompile Include="..\..\linalg\cholesky_band.c" />
     <ClCompile Include="..\..\linalg\cod.c" />
     <ClCompile Include="..\..\linalg\condest.c" />
+    <ClCompile Include="..\..\linalg\inline.c" />
     <ClCompile Include="..\..\linalg\invtri.c" />
     <ClCompile Include="..\..\linalg\invtri_complex.c" />
     <ClCompile Include="..\..\linalg\ldlt.c" />
@@ -239,6 +243,7 @@
     <ClCompile Include="..\..\multilarge_nlinear\trust.c" />
     <ClCompile Include="..\..\multiset\file.c" />
     <ClCompile Include="..\..\multiset\init.c" />
+    <ClCompile Include="..\..\multiset\inline.c" />
     <ClCompile Include="..\..\multiset\multiset.c" />
     <ClCompile Include="..\..\ode-initval2\bsimp.c" />
     <ClCompile Include="..\..\ode-initval2\control.c" />
@@ -257,6 +262,9 @@
     <ClCompile Include="..\..\ode-initval2\rkck.c" />
     <ClCompile Include="..\..\ode-initval2\rkf45.c" />
     <ClCompile Include="..\..\ode-initval2\step.c" />
+    <ClCompile Include="..\..\permutation\inline.c" />
+    <ClCompile Include="..\..\poly\inline.c" />
+    <ClCompile Include="..\..\qrng\inline.c" />
     <ClCompile Include="..\..\randist\mvgauss.c" />
     <ClCompile Include="..\..\randist\wishart.c" />
     <ClCompile Include="..\..\rng\inline.c" />
@@ -265,6 +273,7 @@
     <ClCompile Include="..\..\spblas\spdgemm.c" />
     <ClCompile Include="..\..\spblas\spdgemv.c" />
     <ClCompile Include="..\..\specfunc\hermite.c" />
+    <ClCompile Include="..\..\specfunc\inline.c" />
     <ClCompile Include="..\..\specfunc\legendre_P.c" />
     <ClCompile Include="..\..\specfunc\sincos_pi.c" />
     <ClCompile Include="..\..\splinalg\gmres.c" />

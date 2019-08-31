@@ -265,6 +265,10 @@ specifies the type of normalization to use. The possible values are
    to :math:`P_l^m(x)`, :math:`P_l^{'m}(x)`, or :math:`P_l^{''m}(x)`. The
    index is given by :math:`l(l+1)/2 + m`.
 
+   This function is defined in :file:`gsl_sf_legendre.h` and declared
+   :code:`inline` if your program is compiled with :macro:`HAVE_INLINE`
+   defined.
+
 .. function:: double gsl_sf_legendre_Plm (int l, int m, double x)
               int gsl_sf_legendre_Plm_e (int l, int m, double x, gsl_sf_result * result)
 

@@ -2004,6 +2004,33 @@
     <ClCompile Include="..\..\linalg\qr_tr.c">
       <Filter>linalg</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\combination\inline.c">
+      <Filter>combination</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\complex\inline.c">
+      <Filter>complex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\interpolation\inline.c">
+      <Filter>interpolation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\linalg\inline.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\multiset\inline.c">
+      <Filter>multiset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\permutation\inline.c">
+      <Filter>permutation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\poly\inline.c">
+      <Filter>poly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\qrng\inline.c">
+      <Filter>qrng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\specfunc\inline.c">
+      <Filter>specfunc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\integration\qng.h">

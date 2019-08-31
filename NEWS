@@ -1,4 +1,8 @@
-* What is new in gsl-2.6:
+* What is new in gsl-2.7:
+
+** made gsl_sf_legendre_array_index() inline
+
+* What was new in gsl-2.6:
 
 ** add BLAS calls for the following functions:
      - gsl_vector_memcpy
