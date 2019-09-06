@@ -1,4 +1,4 @@
-## Copyright (C) 2010 Pedro Gonnet
+## Copyright (C) 2010 Pedro Gonnet <pedro.gonnet@gmail.com>
 ##
 ## This file is part of Octave.
 ##
@@ -83,7 +83,7 @@
 ## @seealso{triplequad, dblquad, quadgk, quadl, quadv, trapz}
 ## @end deftypefn
 
-## Author: Pedro G. Gonnet <gonnet@maths.ox.ac.uk>
+## Author: Pedro G. Gonnet <pedro.gonnet@gmail.com>
 ## Keywords: Quadrature, Integration
 
 function [ int , err , nr_points ] = cquad ( f , a , b , tol , sing )

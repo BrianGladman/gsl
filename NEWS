@@ -1,6 +1,7 @@
 * What is new in gsl-2.7:
 
-** made gsl_sf_legendre_array_index() inline
+** made gsl_sf_legendre_array_index() inline and documented
+   gsl_sf_legendre_nlm()
 
 * What was new in gsl-2.6:
 

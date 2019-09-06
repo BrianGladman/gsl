@@ -81,7 +81,7 @@ gsl_sf_legendre_array_n(const size_t lmax)
   size_t nsqrt = 2 * lmax + 2; /* extra room to precompute sqrt factors */
 
   return (nlm + nsqrt);
-} /* gsl_sf_legendre_array_n() */
+}
 
 /*********************************************************
  *                 INTERNAL ROUTINES                     *
