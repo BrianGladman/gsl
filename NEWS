@@ -1,5 +1,7 @@
 * What is new in gsl-2.7:
 
+** bug fix in checking vector lengths in gsl_vector_memcpy (dieggsy@pm.me)
+
 ** made gsl_sf_legendre_array_index() inline and documented
    gsl_sf_legendre_nlm()
 
