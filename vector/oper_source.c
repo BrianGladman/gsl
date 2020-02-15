@@ -200,3 +200,19 @@ FUNCTION (gsl_vector, axpby) (const BASE alpha,
       return GSL_SUCCESS;
     }
 }
+
+BASE 
+FUNCTION(gsl_vector, sum) (const TYPE(gsl_vector) * a)
+{
+  const size_t N = a->size;
+  const size_t stride = a->stride;
+  BASE sum = (BASE) 0;
+  size_t i;
+  
+  for (i = 0; i < N; i++)
+    {
+      sum += a->data[i * stride];
+    }
+  
+  return sum;
+}

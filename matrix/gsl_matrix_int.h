@@ -246,6 +246,8 @@ int gsl_matrix_int_sub (gsl_matrix_int * a, const gsl_matrix_int * b);
 int gsl_matrix_int_mul_elements (gsl_matrix_int * a, const gsl_matrix_int * b);
 int gsl_matrix_int_div_elements (gsl_matrix_int * a, const gsl_matrix_int * b);
 int gsl_matrix_int_scale (gsl_matrix_int * a, const double x);
+int gsl_matrix_int_scale_rows (gsl_matrix_int * a, const gsl_vector_int * x);
+int gsl_matrix_int_scale_columns (gsl_matrix_int * a, const gsl_vector_int * x);
 int gsl_matrix_int_add_constant (gsl_matrix_int * a, const double x);
 int gsl_matrix_int_add_diagonal (gsl_matrix_int * a, const double x);
 

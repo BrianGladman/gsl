@@ -482,10 +482,19 @@ Matrix Operations
 
    Input matrix formats supported: :ref:`CSC <sec_spmatrix-csc>`, :ref:`CSR <sec_spmatrix-csr>`
 
-.. function:: int gsl_spmatrix_add_to_dense (gsl_matrix * a, const gsl_spmatrix * b)
+.. function:: int gsl_spmatrix_dense_add (gsl_matrix * a, const gsl_spmatrix * b)
 
    This function adds the elements of the sparse matrix :data:`b` to the elements of
    the dense matrix :data:`a`. The result :math:`a(i,j) \leftarrow a(i,j) + b(i,j)` is
+   stored in :data:`a` and :data:`b` remains unchanged. The two matrices must have
+   the same dimensions.
+
+   Input matrix formats supported: :ref:`COO <sec_spmatrix-coo>`, :ref:`CSC <sec_spmatrix-csc>`, :ref:`CSR <sec_spmatrix-csr>`
+
+.. function:: int gsl_spmatrix_dense_sub (gsl_matrix * a, const gsl_spmatrix * b)
+
+   This function subtracts the elements of the sparse matrix :data:`b` from the elements of
+   the dense matrix :data:`a`. The result :math:`a(i,j) \leftarrow a(i,j) - b(i,j)` is
    stored in :data:`a` and :data:`b` remains unchanged. The two matrices must have
    the same dimensions.
 

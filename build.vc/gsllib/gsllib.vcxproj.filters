@@ -2031,6 +2031,9 @@
     <ClCompile Include="..\..\specfunc\inline.c">
       <Filter>specfunc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\linalg\ql.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\integration\qng.h">

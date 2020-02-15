@@ -395,6 +395,7 @@ gsl_matrix * moler10;
 #include "test_luc.c"
 #include "test_lq.c"
 #include "test_tri.c"
+#include "test_ql.c"
 #include "test_qr.c"
 
 int
@@ -3265,6 +3266,8 @@ main(void)
   gsl_test(test_QR_lssolve_r(r),         "QR LS Solve (recursive)");
 
   gsl_test(test_QR_TR_decomp(r),         "QR_TR Decomposition");
+
+  gsl_test(test_QL_decomp(r),            "QL Decomposition");
 
   gsl_test(test_LQ_decomp(),             "LQ Decomposition");
   gsl_test(test_LQ_LQsolve(),            "LQ LQ Solve");

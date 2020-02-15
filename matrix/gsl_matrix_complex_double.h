@@ -239,6 +239,8 @@ int gsl_matrix_complex_sub (gsl_matrix_complex * a, const gsl_matrix_complex * b
 int gsl_matrix_complex_mul_elements (gsl_matrix_complex * a, const gsl_matrix_complex * b);
 int gsl_matrix_complex_div_elements (gsl_matrix_complex * a, const gsl_matrix_complex * b);
 int gsl_matrix_complex_scale (gsl_matrix_complex * a, const gsl_complex x);
+int gsl_matrix_complex_scale_rows (gsl_matrix_complex * a, const gsl_vector_complex * x);
+int gsl_matrix_complex_scale_columns (gsl_matrix_complex * a, const gsl_vector_complex * x);
 int gsl_matrix_complex_add_constant (gsl_matrix_complex * a, const gsl_complex x);
 int gsl_matrix_complex_add_diagonal (gsl_matrix_complex * a, const gsl_complex x);
 

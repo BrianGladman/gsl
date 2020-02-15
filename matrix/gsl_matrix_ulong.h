@@ -246,6 +246,8 @@ int gsl_matrix_ulong_sub (gsl_matrix_ulong * a, const gsl_matrix_ulong * b);
 int gsl_matrix_ulong_mul_elements (gsl_matrix_ulong * a, const gsl_matrix_ulong * b);
 int gsl_matrix_ulong_div_elements (gsl_matrix_ulong * a, const gsl_matrix_ulong * b);
 int gsl_matrix_ulong_scale (gsl_matrix_ulong * a, const double x);
+int gsl_matrix_ulong_scale_rows (gsl_matrix_ulong * a, const gsl_vector_ulong * x);
+int gsl_matrix_ulong_scale_columns (gsl_matrix_ulong * a, const gsl_vector_ulong * x);
 int gsl_matrix_ulong_add_constant (gsl_matrix_ulong * a, const double x);
 int gsl_matrix_ulong_add_diagonal (gsl_matrix_ulong * a, const double x);
 

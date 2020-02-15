@@ -91,6 +91,7 @@ int gsl_linalg_exponential_ss(
 /* Householder Transformations */
 
 double gsl_linalg_householder_transform (gsl_vector * v);
+double gsl_linalg_householder_transform2 (double * alpha, gsl_vector * v);
 gsl_complex gsl_linalg_complex_householder_transform (gsl_vector_complex * v);
 
 int gsl_linalg_householder_hm (double tau, 
@@ -366,6 +367,12 @@ int gsl_linalg_QRPT_rcond(const gsl_matrix * QR, double * rcond, gsl_vector * wo
 /* triangle on top of rectangle QR decomposition */
 
 int gsl_linalg_QR_TR_decomp (gsl_matrix * S, gsl_matrix * A, gsl_matrix * T);
+
+/* QL decomposition */
+
+int gsl_linalg_QL_decomp (gsl_matrix * A, gsl_vector * tau);
+
+int gsl_linalg_QL_unpack (const gsl_matrix * QL, const gsl_vector * tau, gsl_matrix * Q, gsl_matrix * L);
 
 /* COD decomposition */
 

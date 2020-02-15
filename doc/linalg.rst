@@ -691,6 +691,59 @@ an underdetermined system of equations :math:`A x = b`, where :math:`A` is
    This function applies :math:`Q^T` to the vector :data:`v`, storing the result :math:`Q^T v` in
    :data:`v` on output.
 
+.. index:: QL decomposition
+
+QL Decomposition
+================
+
+A general rectangular :math:`M`-by-:math:`N` matrix :math:`A` has a
+:math:`QL` decomposition into the product of an orthogonal
+:math:`M`-by-:math:`M` square matrix :math:`Q` (where :math:`Q^T Q = I`) and
+an :math:`M`-by-:math:`N` left-triangular matrix :math:`L`.
+
+When :math:`M \ge N`, the decomposition is given by
+
+.. only:: not texinfo
+
+   .. math:: A = Q \begin{pmatrix} 0 \\ L_1 \end{pmatrix}
+
+.. only:: texinfo
+
+   ::
+
+     A = [ 0 ; L_1 ]
+
+where :math:`L_1` is :math:`N`-by-:math:`N` lower triangular. When
+:math:`M \le N`, the decomposition is given by
+
+.. only:: not texinfo
+
+   .. math:: A = Q \begin{pmatrix} L_1 & L_2 \end{pmatrix}
+
+.. only:: texinfo
+
+   ::
+
+     A = [ L_1 L_2 ]
+
+where :math:`L_1` is a dense :math:`M`-by-:math:`N-M` matrix and
+:math:`L_2` is a lower triangular :math:`M`-by-:math:`M` matrix.
+
+.. function:: int gsl_linalg_QL_decomp (gsl_matrix * A, gsl_vector * tau)
+
+   This function factorizes the :math:`M`-by-:math:`N` matrix :data:`A` into
+   the :math:`QL` decomposition :math:`A = Q L`.
+   The vector :data:`tau` must be of length :math:`N` and contains the Householder
+   coefficients on output.
+   The matrix :math:`Q` is stored in packed form in :data:`A` on output, using the
+   same storage scheme as |lapack|.
+
+.. function:: int gsl_linalg_QL_unpack (const gsl_matrix * QL, const gsl_vector * tau, gsl_matrix * Q, gsl_matrix * L)
+
+   This function unpacks the encoded :math:`QL` decomposition
+   (:data:`QL`, :data:`tau`) into the matrices :data:`Q` and :data:`L`, where
+   :data:`Q` is :math:`M`-by-:math:`M` and :data:`L` is :math:`M`-by-:math:`N`. 
+
 .. index:: complete orthogonal decomposition
 
 .. _linalg-cod:

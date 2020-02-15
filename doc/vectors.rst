@@ -678,6 +678,10 @@ Vector operations
    vector :data:`a`.  The result :math:`a_i \leftarrow a_i + x` is stored in
    :data:`a`.
 
+.. function:: double gsl_vector_sum (const gsl_vector * a)
+
+   This function returns the sum of the elements of :data:`a`, defined as :math:`\sum_{i=1}^n a_i`
+
 .. function:: int gsl_vector_axpby (const double alpha, const gsl_vector * x, const double beta, gsl_vector * y)
 
    This function performs the operation :math:`y \leftarrow \alpha x + \beta y`. The
@@ -1449,6 +1453,28 @@ The following operations are defined for real and complex matrices.
    This function multiplies the elements of matrix :data:`a` by the
    constant factor :data:`x`.  The result :math:`a(i,j) \leftarrow x a(i,j)`
    is stored in :data:`a`.
+
+.. function:: int gsl_matrix_scale_columns (gsl_matrix * A, const gsl_vector * x)
+
+   This function scales the columns of the :math:`M`-by-:math:`N` matrix
+   :data:`A` by the elements of the vector :data:`x`, of length :math:`N`. The
+   :math:`j`-th column of :data:`A` is multiplied by :math:`x_j`. This is equivalent to
+   forming
+
+   .. math:: A \rightarrow A X
+
+   where :math:`X = \textrm{diag}(x)`.
+
+.. function:: int gsl_matrix_scale_rows (gsl_matrix * A, const gsl_vector * x)
+
+   This function scales the rows of the :math:`M`-by-:math:`N` matrix
+   :data:`A` by the elements of the vector :data:`x`, of length :math:`M`. The
+   :math:`i`-th row of :data:`A` is multiplied by :math:`x_i`. This is equivalent to
+   forming
+
+   .. math:: A \rightarrow X A
+
+   where :math:`X = \textrm{diag}(x)`.
 
 .. function:: int gsl_matrix_add_constant (gsl_matrix * a, const double x)
 
