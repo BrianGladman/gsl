@@ -1,5 +1,14 @@
 * What is new in gsl-2.7:
 
+** New functions added to the library:
+      - gsl_linalg_QL_decomp
+      - gsl_linalg_QL_unpack
+      - gsl_vector_sum
+      - gsl_matrix_scale_rows
+      - gsl_matrix_scale_columns
+      - gsl_spmatrix_dense_add (renamed from gsl_spmatrix_add_to_dense)
+      - gsl_spmatrix_dense_sub
+
 ** bug fix in checking vector lengths in gsl_vector_memcpy (dieggsy@pm.me)
 
 ** made gsl_sf_legendre_array_index() inline and documented
