@@ -407,3 +407,15 @@ gsl_multilarge_linear_genform2 (const gsl_matrix * LQR,
       return s;
     }
 }
+
+const gsl_matrix *
+gsl_multilarge_linear_matrix_ptr (const gsl_multilarge_linear_workspace * work)
+{
+  return work->type->matrix_ptr(work->state);
+}
+
+const gsl_vector *
+gsl_multilarge_linear_rhs_ptr (const gsl_multilarge_linear_workspace * work)
+{
+  return work->type->rhs_ptr(work->state);
+}

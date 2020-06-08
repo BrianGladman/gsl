@@ -240,8 +240,10 @@
     <ClCompile Include="..\..\linalg\mcholesky.c" />
     <ClCompile Include="..\..\linalg\pcholesky.c" />
     <ClCompile Include="..\..\linalg\ql.c" />
+    <ClCompile Include="..\..\linalg\qrc.c" />
     <ClCompile Include="..\..\linalg\qr_tr.c" />
     <ClCompile Include="..\..\linalg\rqr.c" />
+    <ClCompile Include="..\..\linalg\rqrc.c" />
     <ClCompile Include="..\..\linalg\trimult.c" />
     <ClCompile Include="..\..\linalg\trimult_complex.c" />
     <ClCompile Include="..\..\movstat\alloc.c" />

@@ -887,6 +887,29 @@ FUNCTION (test, ops) (const size_t P, const size_t Q)
   }
 
   {
+    FUNCTION (gsl_matrix, conjtrans_memcpy) (c, a);
+
+    k = 0;
+    status = 0;
+
+    for (i = 0; i < P; i++)
+      {
+        for (j = 0; j < Q; j++)
+          {
+            BASE x = FUNCTION (gsl_matrix, get) (a, i, j);
+            BASE y = FUNCTION (gsl_matrix, get) (c, j, i);
+            if (GSL_REAL (x) != GSL_REAL (y) || GSL_IMAG (x) != -GSL_IMAG (y))
+              {
+                status = 1;
+              }
+            k++;
+          }
+      }
+
+    gsl_test (status, NAME (gsl_matrix) "_conjtrans_memcpy");
+  }
+
+  {
     FUNCTION (gsl_matrix, set_zero) (m);
     FUNCTION (gsl_matrix, tricpy) (CblasLower, CblasUnit, m, a);
 

@@ -2013,6 +2013,12 @@
     <ClCompile Include="..\..\linalg\ql.c">
       <Filter>linalg</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\linalg\qrc.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\linalg\rqrc.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\integration\qng.h">

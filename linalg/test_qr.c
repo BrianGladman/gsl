@@ -32,15 +32,17 @@ static int
 test_QR_decomp_dim(const gsl_matrix * m, double eps)
 {
   int s = 0;
-  unsigned long i,j, M = m->size1, N = m->size2;
+  const size_t M = m->size1;
+  const size_t N = m->size2;
+  size_t i, j;
 
-  gsl_matrix * qr = gsl_matrix_alloc(M,N);
-  gsl_matrix * a  = gsl_matrix_alloc(M,N);
-  gsl_matrix * q  = gsl_matrix_alloc(M,M);
-  gsl_matrix * r  = gsl_matrix_alloc(M,N);
-  gsl_vector * d = gsl_vector_alloc(GSL_MIN(M,N));
+  gsl_matrix * qr = gsl_matrix_alloc(M, N);
+  gsl_matrix * a  = gsl_matrix_alloc(M, N);
+  gsl_matrix * q  = gsl_matrix_alloc(M, M);
+  gsl_matrix * r  = gsl_matrix_alloc(M, N);
+  gsl_vector * d = gsl_vector_alloc(N);
 
-  gsl_matrix_memcpy(qr,m);
+  gsl_matrix_memcpy(qr, m);
 
   s += gsl_linalg_QR_decomp(qr, d);
   s += gsl_linalg_QR_unpack(qr, d, q, r);
@@ -201,7 +203,7 @@ test_QR_decomp_r(gsl_rng * r)
           gsl_matrix * A = gsl_matrix_alloc(M, N);
 
           create_random_matrix(A, r);
-          s += test_QR_decomp_r_eps(A, 1.0e5 * M * GSL_DBL_EPSILON, "QR_decomp_r random");
+          s += test_QR_decomp_r_eps(A, 1.0e6 * M * GSL_DBL_EPSILON, "QR_decomp_r random");
 
           gsl_matrix_free(A);
         }
@@ -527,7 +529,7 @@ test_QR_TR_decomp(gsl_rng * r)
 
           create_random_matrix(A, r);
           create_random_matrix(S, r);
-          s += test_QR_TR_decomp_eps(S, A, 1.0e5 * M * GSL_DBL_EPSILON, "QR_TR_decomp random");
+          s += test_QR_TR_decomp_eps(S, A, 1.0e6 * M * GSL_DBL_EPSILON, "QR_TR_decomp random");
 
           gsl_matrix_free(S);
           gsl_matrix_free(A);

@@ -227,6 +227,8 @@ int gsl_matrix_complex_long_double_transpose (gsl_matrix_complex_long_double * m
 int gsl_matrix_complex_long_double_transpose_memcpy (gsl_matrix_complex_long_double * dest, const gsl_matrix_complex_long_double * src);
 int gsl_matrix_complex_long_double_transpose_tricpy(CBLAS_UPLO_t Uplo_src, CBLAS_DIAG_t Diag, gsl_matrix_complex_long_double * dest, const gsl_matrix_complex_long_double * src);
 
+int gsl_matrix_complex_long_double_conjtrans_memcpy (gsl_matrix_complex_long_double * dest, const gsl_matrix_complex_long_double * src);
+
 int gsl_matrix_complex_long_double_equal (const gsl_matrix_complex_long_double * a, const gsl_matrix_complex_long_double * b);
 
 int gsl_matrix_complex_long_double_isnull (const gsl_matrix_complex_long_double * m);

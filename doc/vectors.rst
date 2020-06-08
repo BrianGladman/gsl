@@ -1415,6 +1415,13 @@ a matrix.
    the elements of the matrix in-place.  The matrix must be square for this
    operation to be possible.
 
+.. function:: int gsl_matrix_complex_conjtrans_memcpy (gsl_matrix * dest, const gsl_matrix * src)
+
+   This function makes the matrix :data:`dest` the conjugate transpose of the matrix
+   :data:`src` by copying the complex conjugate elements of :data:`src` into :data:`dest`.  This
+   function works for all complex matrices provided that the dimensions of the matrix
+   :data:`dest` match the transposed dimensions of the matrix :data:`src`.
+
 Matrix operations
 -----------------
 

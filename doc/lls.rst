@@ -1525,6 +1525,16 @@ Large Dense Linear Least Squares Routines
    equations method, they are estimated from the eigenvalues of the
    :math:`X^T X` matrix.
 
+.. function:: const gsl_matrix * gsl_multilarge_linear_matrix_ptr (const gsl_multilarge_linear_workspace * work)
+
+   For the normal equations method, this function returns a pointer to the :math:`X^T X` matrix. For
+   the TSQR method, this function returns a pointer to the upper triangular :math:`R` matrix.
+
+.. function:: const gsl_vector * gsl_multilarge_linear_rhs_ptr (const gsl_multilarge_linear_workspace * work)
+
+   For the normal equations method, this function returns a pointer to the :math:`X^T y` right hand side
+   vector. For the TSQR method, this function returns a pointer to the :math:`Q^T y` right hand side vector.
+
 .. function:: int gsl_multilarge_linear_rcond (double * rcond, gsl_multilarge_linear_workspace * work)
 
    This function computes the reciprocal condition number, stored in
