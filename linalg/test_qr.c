@@ -437,7 +437,7 @@ test_QR_lssolve_r(gsl_rng * r)
           create_random_matrix(A, r);
           create_random_vector(b, r);
 
-          s += test_QR_lssolve_r_eps(A, b, 1.0e4 * M * GSL_DBL_EPSILON, "QR_lssolve_r random");
+          s += test_QR_lssolve_r_eps(A, b, 1.0e5 * M * GSL_DBL_EPSILON, "QR_lssolve_r random");
 
           gsl_matrix_free(A);
           gsl_vector_free(b);
