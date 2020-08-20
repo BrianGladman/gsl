@@ -1,9 +1,12 @@
 * What is new in gsl-2.7:
 
+** added banded LU decomposition and solver (gsl_linalg_LU_band)
+
 ** New functions added to the library:
-      - gsl_matrix_conjtrans_memcpy
-      - gsl_linalg_QL_decomp
-      - gsl_linalg_QL_unpack
+      - gsl_matrix_norm1
+      - gsl_spmatrix_norm1
+      - gsl_matrix_complex_conjtrans_memcpy
+      - gsl_linalg_QL: decomp, unpack
       - gsl_linalg_complex_QR_* (thanks to Christian Krueger)
       - gsl_vector_sum
       - gsl_matrix_scale_rows
@@ -12,6 +15,7 @@
       - gsl_multilarge_linear_rhs_ptr
       - gsl_spmatrix_dense_add (renamed from gsl_spmatrix_add_to_dense)
       - gsl_spmatrix_dense_sub
+      - gsl_linalg_cholesky_band: solvem, svxm
 
 ** bug fix in checking vector lengths in gsl_vector_memcpy (dieggsy@pm.me)
 

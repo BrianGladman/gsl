@@ -393,11 +393,13 @@ gsl_matrix * moler10;
 #include "test_ldlt.c"
 #include "test_lu.c"
 #include "test_luc.c"
+#include "test_lu_band.c"
 #include "test_lq.c"
 #include "test_tri.c"
 #include "test_ql.c"
 #include "test_qr.c"
 #include "test_qrc.c"
+#include "test_qr_band.c"
 
 int
 test_QR_solve_dim(const gsl_matrix * m, const double * actual, double eps)
@@ -3272,6 +3274,11 @@ main(void)
   gsl_test(test_QRc_decomp_r(r),         "Complex QR Decomposition (recursive)");
   gsl_test(test_QRc_solve_r(r),          "Complex QR Solve (recursive)");
   gsl_test(test_QRc_lssolve_r(r),        "Complex QR LS Solve (recursive)");
+
+  gsl_test(test_LU_band_decomp(r),       "Banded LU Decomposition");
+  gsl_test(test_LU_band_solve(r),        "Banded LU Solve");
+
+  gsl_test(test_QR_band_decomp(r),       "Banded QR Decomposition");
 
   gsl_test(test_QR_TR_decomp(r),         "QR_TR Decomposition");
 

@@ -81,6 +81,15 @@ FUNCTION (test, func) (const size_t M, const size_t N)
     gsl_test (status, NAME (gsl_matrix) "_get reads from array");
   }
 
+#if !defined(UNSIGNED) && !defined(BASE_CHAR)
+  {
+    ATOMIC norm1 = FUNCTION (gsl_matrix, norm1) (m);
+    ATOMIC norm1_expected = N*M*(M+1)/2;
+    status = (norm1 != norm1_expected);
+    gsl_test (status, NAME (gsl_matrix) "_norm1");
+  }
+#endif
+
 
   FUNCTION (gsl_matrix, free) (m);      /* free whatever is in m */
 

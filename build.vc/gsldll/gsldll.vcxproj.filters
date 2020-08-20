@@ -2019,6 +2019,12 @@
     <ClCompile Include="..\..\linalg\rqrc.c">
       <Filter>linalg</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\linalg\lu_band.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\linalg\qr_band.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\integration\qng.h">

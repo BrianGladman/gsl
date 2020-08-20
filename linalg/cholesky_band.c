@@ -1,6 +1,6 @@
 /* linalg/cholesky_band.c
  *
- * Copyright (C) 2018 Patrick Alken
+ * Copyright (C) 2018, 2019, 2020 Patrick Alken
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -171,6 +171,62 @@ gsl_linalg_cholesky_band_svx (const gsl_matrix * LLT, gsl_vector * x)
       cblas_dtbsv(CblasColMajor, CblasLower, CblasTrans, CblasNonUnit,
                   (int) LLT->size1, (int) (LLT->size2 - 1), LLT->data, LLT->tda,
                   x->data, x->stride);
+
+      return GSL_SUCCESS;
+    }
+}
+
+int
+gsl_linalg_cholesky_band_solvem (const gsl_matrix * LLT,
+                                 const gsl_matrix * B,
+                                 gsl_matrix * X)
+{
+  if (LLT->size1 != B->size1)
+    {
+      GSL_ERROR ("LLT size1 must match B size1", GSL_EBADLEN);
+    }
+  else if (LLT->size1 != X->size1)
+    {
+      GSL_ERROR ("LLT size1 must match solution size1", GSL_EBADLEN);
+    }
+  else if (B->size2 != X->size2)
+    {
+      GSL_ERROR ("B size2 must match X size2", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+
+      /* copy X <- B */
+      gsl_matrix_memcpy (X, B);
+
+      status = gsl_linalg_cholesky_band_svxm(LLT, X);
+
+      return status;
+    }
+}
+
+int
+gsl_linalg_cholesky_band_svxm (const gsl_matrix * LLT, gsl_matrix * X)
+{
+  if (LLT->size1 != X->size1)
+    {
+      GSL_ERROR ("LLT size1 must match solution size1", GSL_EBADLEN);
+    }
+  else
+    {
+      int status;
+      const size_t nrhs = X->size2;
+      size_t j;
+
+      for (j = 0; j < nrhs; ++j)
+        {
+          gsl_vector_view xj = gsl_matrix_column(X, j);
+
+          status = gsl_linalg_cholesky_band_svx (LLT, &xj.vector);
+          if (status)
+            return status;
+        }
 
       return GSL_SUCCESS;
     }

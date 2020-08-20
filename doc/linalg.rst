@@ -21,6 +21,8 @@ The functions described in this chapter are declared in the header file
 
 .. index:: LU decomposition
 
+.. _sec_lu-decomposition:
+
 LU Decomposition
 ================
 
@@ -2044,7 +2046,15 @@ The packed symmetric banded :math:`6 \times 3` matrix will look like:
         \end{pmatrix}
 
 The entries marked by :math:`*` are not referenced by the symmetric banded
-routines.
+routines. The relationship between the packed format and original matrix is,
+
+.. math:: AB(i,j) = A(i, i + j) = A(i + j, i)
+
+for :math:`i = 0, \dots, N - 1, j = 0, \dots, p`. Conversely,
+
+.. math:: A(i,j) = AB(j, i - j)
+
+for :math:`i = 0, \dots, N - 1, j = \textrm{max}(0,i-p), \dots, i`.
 
 .. warning::
 
@@ -2053,6 +2063,91 @@ routines.
    it helps to have the nonzero elements in each column in contiguous memory locations.
    Since C uses row-major order, GSL stores the columns in the rows of the packed
    banded format, while |LAPACK|, written in Fortran, uses the transposed format.
+
+.. index::
+   single: LU decomposition, banded
+   single: banded LU Decomposition
+
+Banded LU Decomposition
+-----------------------
+
+The routines in this section are designed to factor banded
+:math:`M`-by-:math:`N` matrices with an LU factorization,
+:math:`P A = L U`. The matrix :math:`A` is banded of type
+:math:`(p,q)`, i.e. a lower bandwidth of :math:`p` and an upper
+bandwidth of :math:`q`. See :ref:`LU Decomposition <sec_lu-decomposition>`
+for more information on the factorization. For banded :math:`(p,q)`
+matrices, the :math:`U` factor will have an upper bandwidth of
+:math:`p + q`, while the :math:`L` factor will have a lower bandwidth of
+at most :math:`p`. Therefore, additional storage is needed to store the
+:math:`p` additional bands of :math:`U`.
+
+As an example, consider the :math:`M = N = 7` matrix with
+lower bandwidth :math:`p = 3` and upper bandwidth :math:`q = 2`,
+
+.. math::
+
+   A = \begin{pmatrix}
+         \alpha_1   & \beta_1    & \gamma_1   & 0          & 0          & 0        & 0 \\
+         \delta_1   & \alpha_2   & \beta_2    & \gamma_2   & 0          & 0        & 0 \\
+         \epsilon_1 & \delta_2   & \alpha_3   & \beta_3    & \gamma_3   & 0        & 0 \\
+         \zeta_1    & \epsilon_2 & \delta_3   & \alpha_4   & \beta_4    & \gamma_4 & 0 \\
+         0          & \zeta_2    & \epsilon_3 & \delta_4   & \alpha_5   & \beta_5  & \gamma_5 \\
+         0          & 0          & \zeta_3    & \epsilon_4 & \delta_5   & \alpha_6 & \beta_6 \\
+         0          & 0          & 0          & \zeta_4    & \epsilon_5 & \delta_6 & \alpha_7
+       \end{pmatrix}
+
+The corresponding :math:`N`-by-:math:`2p + q + 1` packed banded matrix looks like
+
+.. math::
+
+   AB = \begin{pmatrix}
+          * & * & * & * & * & \alpha_1 & \delta_1 & \epsilon_1 & \zeta_1 \\
+          * & * & * & * & \beta_1 & \alpha_2 & \delta_2 & \epsilon_2 & \zeta_2 \\
+          * & * & * & \gamma_1 & \beta_2 & \alpha_3 & \delta_3 & \epsilon_3 & \zeta_3 \\
+          * & * & - & \gamma_2 & \beta_3 & \alpha_4 & \delta_4 & \epsilon_4 & \zeta_4 \\
+          * & - & - & \gamma_3 & \beta_4 & \alpha_5 & \delta_5 & \epsilon_5 & * \\
+          - & - & - & \gamma_4 & \beta_5 & \alpha_6 & \delta_6 & * & * \\
+          \undermat{p}{- & - & -} & \undermat{q}{\gamma_5 & \beta_6} & \alpha_7 & \undermat{p}{* & * & * & }
+        \end{pmatrix}
+
+Entries marked with :math:`-` are used to store the additional :math:`p` diagonals of the
+:math:`U` factor. Entries marked with :math:`*` are not referenced by the banded routines.
+
+.. function:: int gsl_linalg_LU_band_decomp (const size_t M, const size_t lb, const size_t ub, gsl_matrix * AB, gsl_vector_uint * piv)
+
+   This function computes the LU factorization of the banded matrix :data:`AB` which
+   is stored in packed band format (see above) and has dimension :math:`N`-by-:math:`2p + q + 1`. The
+   number of rows :math:`M` of the original matrix is provided in :data:`M`.
+   The lower bandwidth :math:`p` is provided in :data:`lb` and
+   the upper bandwidth :math:`q` is provided in :data:`ub`. The vector :data:`piv` has length :math:`\textrm{min}(M,N)`
+   and stores the pivot indices on output (for :math:`0 \le i < \textrm{min}(M,N)`, row :math:`i` of the matrix
+   was interchanged with row :code:`piv[i]`). On output, :data:`AB` contains both the :math:`L` and :math:`U` factors
+   in packed format.
+
+.. function:: int gsl_linalg_LU_band_solve (const size_t lb, const size_t ub, const gsl_matrix * LUB, const gsl_vector_uint * piv, const gsl_vector * b, gsl_vector * x)
+
+   This function solves the square system :math:`Ax = b` using the banded LU factorization
+   (:data:`LUB`, :data:`piv`) computed by :func:`gsl_linalg_LU_band_decomp`. The lower and
+   upper bandwidths are provided in :data:`lb` and :data:`ub` respectively. The right
+   hand side vector is provided in :data:`b`. The solution vector is stored in
+   :data:`x` on output.
+
+.. function:: int gsl_linalg_LU_band_svx (const size_t lb, const size_t ub, const gsl_matrix * LUB, const gsl_vector_uint * piv, gsl_vector * x)
+
+   This function solves the square system :math:`Ax = b` in-place, using the banded LU factorization
+   (:data:`LUB`, :data:`piv`) computed by :func:`gsl_linalg_LU_band_decomp`. The lower and
+   upper bandwidths are provided in :data:`lb` and :data:`ub` respectively. On input,
+   the right hand side vector :math:`b` is provided in :data:`x`, which is replaced by the
+   solution vector :math:`x` on output.
+
+.. function:: int gsl_linalg_LU_band_unpack (const size_t M, const size_t lb, const size_t ub, const gsl_matrix * LUB, const gsl_vector_uint * piv, gsl_matrix * L, gsl_matrix * U)
+
+   This function unpacks the banded LU factorization (:data:`LUB`, :data:`piv`) previously
+   computed by :func:`gsl_linalg_LU_band_decomp` into the matrices :data:`L` and :data:`U`.
+   The matrix :data:`U` has dimension :math:`\textrm{min}(M,N)`-by-:math:`N` and stores
+   the upper triangular factor on output. The matrix :data:`L` has dimension
+   :math:`M`-by-:math:`\textrm{min}(M,N)` and stores the matrix :math:`P^T L` on output.
 
 .. index::
    single: Cholesky decomposition, banded
@@ -2088,18 +2183,20 @@ algorithm which overwrites the original matrix with the
    handler first to avoid triggering an error.
 
 .. function:: int gsl_linalg_cholesky_band_solve (const gsl_matrix * LLT, const gsl_vector * b, gsl_vector * x)
+              int gsl_linalg_cholesky_band_solvem (const gsl_matrix * LLT, const gsl_matrix * B, gsl_matrix * X)
 
-   This function solves the symmetric banded system :math:`A x = b` using the Cholesky
+   This function solves the symmetric banded system :math:`A x = b` (or :math:`A X = B`) using the Cholesky
    decomposition of :math:`A` held in the matrix :data:`LLT` which must
    have been previously computed by :func:`gsl_linalg_cholesky_band_decomp`.
 
 .. function:: int gsl_linalg_cholesky_band_svx (const gsl_matrix * LLT, gsl_vector * x)
+              int gsl_linalg_cholesky_band_svxm (const gsl_matrix * LLT, gsl_matrix * X)
 
-   This function solves the symmetric banded system :math:`A x = b` in-place using the
+   This function solves the symmetric banded system :math:`A x = b` (or :math:`A X = B`) in-place using the
    Cholesky decomposition of :math:`A` held in the matrix :data:`LLT`
    which must have been previously computed by :func:`gsl_linalg_cholesky_band_decomp`.
-   On input :data:`x` should contain the right-hand side :math:`b`, which is replaced by the
-   solution on output.
+   On input :data:`x` (or :data:`X`) should contain the right-hand side :math:`b` (or :math:`B`),
+   which is replaced by the solution on output.
 
 .. function:: int gsl_linalg_cholesky_band_invert (const gsl_matrix * LLT, gsl_matrix * Ainv)
 

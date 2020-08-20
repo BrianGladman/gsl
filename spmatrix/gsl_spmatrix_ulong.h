@@ -172,6 +172,7 @@ int gsl_spmatrix_ulong_add_to_dense (gsl_matrix_ulong * a, const gsl_spmatrix_ul
 /* properties */
 
 int gsl_spmatrix_ulong_equal (const gsl_spmatrix_ulong * a, const gsl_spmatrix_ulong * b);
+unsigned long gsl_spmatrix_ulong_norm1 (const gsl_spmatrix_ulong * a);
 
 /* swap */
 

@@ -241,6 +241,8 @@ int gsl_matrix_ulong_ispos (const gsl_matrix_ulong * m);
 int gsl_matrix_ulong_isneg (const gsl_matrix_ulong * m);
 int gsl_matrix_ulong_isnonneg (const gsl_matrix_ulong * m);
 
+unsigned long gsl_matrix_ulong_norm1 (const gsl_matrix_ulong * m);
+
 int gsl_matrix_ulong_add (gsl_matrix_ulong * a, const gsl_matrix_ulong * b);
 int gsl_matrix_ulong_sub (gsl_matrix_ulong * a, const gsl_matrix_ulong * b);
 int gsl_matrix_ulong_mul_elements (gsl_matrix_ulong * a, const gsl_matrix_ulong * b);

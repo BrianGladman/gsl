@@ -130,7 +130,8 @@ my_latex_preamble = '\\DeclareMathOperator\\arccosh{arccosh} \
                      \\DeclareMathOperator\\sgn{sgn} \
                      \\DeclareMathOperator\\sinc{sinc} \
                      \\DeclareMathOperator\\Var{Var} \
-                     \\DeclareMathOperator\\diag{diag}'
+                     \\DeclareMathOperator\\diag{diag} \
+                     \\newcommand\\undermat[2]{\\makebox[0pt][l]{$\\smash{\\underbrace{\\phantom{\\begin{matrix}#2\\end{matrix}}}_{\\text{$#1$}}}$}#2}'
 
 my_latex_authors = 'Mark Galassi \\\\ \
                     Jim Davies \\\\ \

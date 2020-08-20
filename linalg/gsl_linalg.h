@@ -215,6 +215,19 @@ double gsl_linalg_LU_det (gsl_matrix * LU, int signum);
 double gsl_linalg_LU_lndet (gsl_matrix * LU);
 int gsl_linalg_LU_sgndet (gsl_matrix * lu, int signum);
 
+/* Banded LU decomposition */
+
+int gsl_linalg_LU_band_decomp (const size_t M, const size_t lb, const size_t ub, gsl_matrix * AB, gsl_vector_uint * piv);
+
+int gsl_linalg_LU_band_solve (const size_t lb, const size_t ub, const gsl_matrix * LUB,
+                              const gsl_vector_uint * piv, const gsl_vector * b, gsl_vector * x);
+
+int gsl_linalg_LU_band_svx (const size_t lb, const size_t ub, const gsl_matrix * LUB,
+                            const gsl_vector_uint * piv, gsl_vector * x);
+
+int gsl_linalg_LU_band_unpack (const size_t M, const size_t lb, const size_t ub, const gsl_matrix * LUB,
+                               const gsl_vector_uint * piv, gsl_matrix * L, gsl_matrix * U);
+
 /* Complex LU Decomposition */
 
 int gsl_linalg_complex_LU_decomp (gsl_matrix_complex * A, 
@@ -333,6 +346,14 @@ int gsl_linalg_complex_QR_unpack (const gsl_matrix_complex * QR, const gsl_vecto
 
 int gsl_linalg_complex_QR_unpack_r(const gsl_matrix_complex * QR, const gsl_matrix_complex * T,
                                    gsl_matrix_complex * Q, gsl_matrix_complex * R);
+
+/* banded QR decomposition */
+
+int gsl_linalg_QR_band_decomp_L2 (const size_t M, const size_t p, const size_t q,
+                                  gsl_matrix * AB, gsl_vector * tau);
+
+int gsl_linalg_QR_band_unpack_L2 (const size_t p, const size_t q, const gsl_matrix * QRB,
+                                  const gsl_vector * tau, gsl_matrix * Q, gsl_matrix * R);
 
 /* Q R P^T decomposition */
 
@@ -634,6 +655,11 @@ int gsl_linalg_cholesky_band_solve (const gsl_matrix * LLT, const gsl_vector * b
                                     gsl_vector * x);
 
 int gsl_linalg_cholesky_band_svx (const gsl_matrix * LLT, gsl_vector * x);
+
+int gsl_linalg_cholesky_band_solvem (const gsl_matrix * LLT, const gsl_matrix * B,
+                                     gsl_matrix * X);
+
+int gsl_linalg_cholesky_band_svxm (const gsl_matrix * LLT, gsl_matrix * X);
 
 int gsl_linalg_cholesky_band_invert (const gsl_matrix * LLT, gsl_matrix * Ainv);
 

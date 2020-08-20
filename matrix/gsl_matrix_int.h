@@ -241,6 +241,8 @@ int gsl_matrix_int_ispos (const gsl_matrix_int * m);
 int gsl_matrix_int_isneg (const gsl_matrix_int * m);
 int gsl_matrix_int_isnonneg (const gsl_matrix_int * m);
 
+int gsl_matrix_int_norm1 (const gsl_matrix_int * m);
+
 int gsl_matrix_int_add (gsl_matrix_int * a, const gsl_matrix_int * b);
 int gsl_matrix_int_sub (gsl_matrix_int * a, const gsl_matrix_int * b);
 int gsl_matrix_int_mul_elements (gsl_matrix_int * a, const gsl_matrix_int * b);

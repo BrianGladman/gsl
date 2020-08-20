@@ -1551,6 +1551,13 @@ the conditions.
    This function returns 1 if the matrices :data:`a` and :data:`b` are equal
    (by comparison of element values) and 0 otherwise.
 
+.. function:: double gsl_matrix_norm1 (const gsl_matrix * A)
+
+   This function returns the 1-norm of the :math:`m`-by-:math:`n` matrix :data:`A`, defined as
+   the maximum column sum,
+
+   .. math:: ||A||_1 = \textrm{max}_{1 \le j \le n} \sum_{i=1}^m |A_{ij}|
+
 Example programs for matrices
 -----------------------------
 

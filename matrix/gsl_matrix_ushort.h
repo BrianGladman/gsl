@@ -241,6 +241,8 @@ int gsl_matrix_ushort_ispos (const gsl_matrix_ushort * m);
 int gsl_matrix_ushort_isneg (const gsl_matrix_ushort * m);
 int gsl_matrix_ushort_isnonneg (const gsl_matrix_ushort * m);
 
+unsigned short gsl_matrix_ushort_norm1 (const gsl_matrix_ushort * m);
+
 int gsl_matrix_ushort_add (gsl_matrix_ushort * a, const gsl_matrix_ushort * b);
 int gsl_matrix_ushort_sub (gsl_matrix_ushort * a, const gsl_matrix_ushort * b);
 int gsl_matrix_ushort_mul_elements (gsl_matrix_ushort * a, const gsl_matrix_ushort * b);

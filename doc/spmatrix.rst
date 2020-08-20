@@ -533,6 +533,15 @@ Matrix Properties
 
    Input matrix formats supported: :ref:`COO <sec_spmatrix-coo>`, :ref:`CSC <sec_spmatrix-csc>`, :ref:`CSR <sec_spmatrix-csr>`
 
+.. function:: double gsl_spmatrix_norm1 (const gsl_spmatrix * A)
+
+   This function returns the 1-norm of the :math:`m`-by-:math:`n` matrix :data:`A`, defined as
+   the maximum column sum,
+
+   .. math:: ||A||_1 = \textrm{max}_{1 \le j \le n} \sum_{i=1}^m |A_{ij}|
+
+   Input matrix formats supported: :ref:`COO <sec_spmatrix-coo>`, :ref:`CSC <sec_spmatrix-csc>`, :ref:`CSR <sec_spmatrix-csr>`
+
 .. index::
    single: sparse matrices, min/max elements
 

@@ -172,6 +172,7 @@ int gsl_spmatrix_ushort_add_to_dense (gsl_matrix_ushort * a, const gsl_spmatrix_
 /* properties */
 
 int gsl_spmatrix_ushort_equal (const gsl_spmatrix_ushort * a, const gsl_spmatrix_ushort * b);
+unsigned short gsl_spmatrix_ushort_norm1 (const gsl_spmatrix_ushort * a);
 
 /* swap */
 

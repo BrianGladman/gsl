@@ -178,10 +178,12 @@
     <ClCompile Include="..\..\linalg\invtri_complex.c" />
     <ClCompile Include="..\..\linalg\ldlt.c" />
     <ClCompile Include="..\..\linalg\ldlt_band.c" />
+    <ClCompile Include="..\..\linalg\lu_band.c" />
     <ClCompile Include="..\..\linalg\mcholesky.c" />
     <ClCompile Include="..\..\linalg\pcholesky.c" />
     <ClCompile Include="..\..\linalg\ql.c" />
     <ClCompile Include="..\..\linalg\qrc.c" />
+    <ClCompile Include="..\..\linalg\qr_band.c" />
     <ClCompile Include="..\..\linalg\qr_tr.c" />
     <ClCompile Include="..\..\linalg\rqr.c" />
     <ClCompile Include="..\..\linalg\rqrc.c" />

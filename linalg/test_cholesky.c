@@ -1095,7 +1095,7 @@ test_cholesky_band_invert(gsl_rng * r)
       for (p = 0; p < GSL_MIN(N, 10); ++p)
         {
           create_posdef_band_matrix(p, m, r);
-          test_cholesky_band_invert_eps(p, m, N * GSL_DBL_EPSILON, "cholesky_band_invert random");
+          test_cholesky_band_invert_eps(p, m, N * 1.0e1 * GSL_DBL_EPSILON, "cholesky_band_invert random");
         }
 
       gsl_matrix_free(m);

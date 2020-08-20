@@ -704,6 +704,40 @@ FUNCTION (test, minmax) (const size_t M, const size_t N, const int sptype,
   FUNCTION (gsl_spmatrix, free) (B);
 }
 
+#if !defined(UNSIGNED) && !defined(BASE_CHAR)
+
+static void
+FUNCTION (test, norm) (const size_t M, const size_t N, const int sptype)
+{
+  TYPE (gsl_spmatrix) * A = FUNCTION (gsl_spmatrix, alloc) (M, N);
+  TYPE (gsl_spmatrix) * B;
+  ATOMIC norm, norm_expected;
+  size_t i, j, k = 0;
+
+  for (i = 0; i < M; i++)
+    {
+      for (j = 0; j < N; j++)
+        {
+          k++;
+          FUNCTION (gsl_spmatrix, set) (A, i, j, (BASE) k);
+        }
+    }
+
+  B = FUNCTION (gsl_spmatrix, compress) (A, sptype);
+
+  norm = FUNCTION (gsl_spmatrix, norm1) (B);
+  norm_expected = N*M*(M+1)/2;
+
+  status = norm != norm_expected;
+  gsl_test (status, NAME (gsl_spmatrix) "_norm1[%zu,%zu](%s)",
+            M, N, FUNCTION (gsl_spmatrix, type) (B));
+
+  FUNCTION (gsl_spmatrix, free) (A);
+  FUNCTION (gsl_spmatrix, free) (B);
+}
+
+#endif
+
 static void
 FUNCTION (test, io_ascii) (const size_t M, const size_t N, const int sptype,
                            const double density, gsl_rng * r)
@@ -805,6 +839,12 @@ FUNCTION (test, all) (const size_t M, const size_t N, const double density, gsl_
   FUNCTION (test, minmax) (M, N, GSL_SPMATRIX_COO, density, r);
   FUNCTION (test, minmax) (M, N, GSL_SPMATRIX_CSC, density, r);
   FUNCTION (test, minmax) (M, N, GSL_SPMATRIX_CSR, density, r);
+
+#if !defined(UNSIGNED) && !defined(BASE_CHAR)
+  FUNCTION (test, norm) (M, N, GSL_SPMATRIX_COO);
+  FUNCTION (test, norm) (M, N, GSL_SPMATRIX_CSC);
+  FUNCTION (test, norm) (M, N, GSL_SPMATRIX_CSR);
+#endif
 
   FUNCTION (test, io_ascii) (M, N, GSL_SPMATRIX_COO, density, r);
   FUNCTION (test, io_ascii) (M, N, GSL_SPMATRIX_CSC, density, r);
