@@ -490,13 +490,14 @@ FUNCTION (test, scale) (const size_t M, const size_t N, const int sptype,
                       GSL_REAL(aij)*GSL_REAL(xj) - GSL_IMAG(aij)*GSL_IMAG(xj),
                       GSL_IMAG(aij)*GSL_REAL(xj) + GSL_REAL(aij)*GSL_IMAG(xj));
 
-      if (GSL_REAL(bij) != GSL_REAL(cij) ||
-          GSL_IMAG(bij) != GSL_IMAG(cij))
-        status = 1;
-    }
+      gsl_test_rel(GSL_REAL(bij), GSL_REAL(cij), 10.0 * GSL_DBL_EPSILON,
+                   NAME (gsl_spmatrix) "_scale_columns[%zu,%zu](%s) real",
+                   M, N, FUNCTION (gsl_spmatrix, type) (B));
 
-  gsl_test (status, NAME (gsl_spmatrix) "_scale_columns[%zu,%zu](%s)",
-            M, N, FUNCTION (gsl_spmatrix, type) (B));
+      gsl_test_rel(GSL_IMAG(bij), GSL_IMAG(cij), 10.0 * GSL_DBL_EPSILON,
+                   NAME (gsl_spmatrix) "_scale_columns[%zu,%zu](%s) imag",
+                   M, N, FUNCTION (gsl_spmatrix, type) (B));
+    }
 
   FUNCTION (gsl_vector, free) (x);
 
@@ -522,13 +523,14 @@ FUNCTION (test, scale) (const size_t M, const size_t N, const int sptype,
                       GSL_REAL(aij)*GSL_REAL(xi) - GSL_IMAG(aij)*GSL_IMAG(xi),
                       GSL_IMAG(aij)*GSL_REAL(xi) + GSL_REAL(aij)*GSL_IMAG(xi));
 
-      if (GSL_REAL(bij) != GSL_REAL(cij) ||
-          GSL_IMAG(bij) != GSL_IMAG(cij))
-        status = 1;
-    }
+      gsl_test_rel(GSL_REAL(bij), GSL_REAL(cij), 10.0 * GSL_DBL_EPSILON,
+                   NAME (gsl_spmatrix) "_scale_rows[%zu,%zu](%s) real",
+                   M, N, FUNCTION (gsl_spmatrix, type) (B));
 
-  gsl_test (status, NAME (gsl_spmatrix) "_scale_rows[%zu,%zu](%s)",
-            M, N, FUNCTION (gsl_spmatrix, type) (B));
+      gsl_test_rel(GSL_IMAG(bij), GSL_IMAG(cij), 10.0 * GSL_DBL_EPSILON,
+                   NAME (gsl_spmatrix) "_scale_rows[%zu,%zu](%s) imag",
+                   M, N, FUNCTION (gsl_spmatrix, type) (B));
+    }
 
   FUNCTION (gsl_vector, free) (x);
   FUNCTION (gsl_spmatrix, free) (A);
