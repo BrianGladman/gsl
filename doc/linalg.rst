@@ -432,16 +432,16 @@ specialized matrix
 
 .. only:: not texinfo
 
-   .. math:: \begin{pmatrix} S \\ A \end{pmatrix} = Q R
+   .. math:: \begin{pmatrix} U \\ A \end{pmatrix} = Q R
 
 .. only:: texinfo
 
    ::
 
-     [ S ] = Q R
+     [ U ] = Q R
      [ A ]
 
-where :math:`S` is an :math:`N`-by-:math:`N` upper triangular matrix, and :math:`A` is
+where :math:`U` is an :math:`N`-by-:math:`N` upper triangular matrix, and :math:`A` is
 an :math:`M`-by-:math:`N` dense matrix. This type of matrix arises, for example,
 in the sequential TSQR algorithm. The Elmroth and Gustavson algorithm is used to
 efficiently factor this matrix. Due to the upper triangular factor, the :math:`Q`
@@ -464,12 +464,216 @@ with
 
 and :math:`Y` is dense and of the same dimensions as :math:`A`.
 
-.. function:: int gsl_linalg_QR_TR_decomp (gsl_matrix * S, gsl_matrix * A, gsl_matrix * T)
+.. function:: int gsl_linalg_QR_TR_decomp (gsl_matrix * U, gsl_matrix * A, gsl_matrix * T)
 
-   This function computes the :math:`QR` decomposition of the matrix :math:`(S ; A)`, where
-   :math:`S` is :math:`N`-by-:math:`N` upper triangular and :math:`A` is :math:`M`-by-:math:`N`
-   dense. On output, :math:`S` is replaced by the :math:`R` factor, and :math:`A` is replaced
-   by :math:`Y`.
+   This function computes the :math:`QR` decomposition of the matrix :math:`(U ; A)`, where
+   :math:`U` is :math:`N`-by-:math:`N` upper triangular and :math:`A` is :math:`M`-by-:math:`N`
+   dense. On output, :math:`U` is replaced by the :math:`R` factor, and :math:`A` is replaced
+   by :math:`Y`.  The :math:`N`-by-:math:`N` upper triangular block reflector is
+   stored in :data:`T` on output.
+
+Triangle on Top of Triangle
+---------------------------
+
+This section provides routines for computing the :math:`QR` decomposition of the
+specialized matrix
+
+.. only:: not texinfo
+
+   .. math:: \begin{pmatrix} U_1 \\ U_2 \end{pmatrix} = Q R
+
+.. only:: texinfo
+
+   ::
+
+     [ U_1 ] = Q R
+     [ U_2 ]
+
+where :math:`U_1,U_2` are :math:`N`-by-:math:`N` upper triangular matrices.
+The Elmroth and Gustavson algorithm is used to efficiently factor this matrix.
+The :math:`Q` matrix takes the form
+
+.. math:: Q = I - V T V^T
+
+with
+
+.. only:: not texinfo
+
+   .. math:: V = \begin{pmatrix} I \\ Y \end{pmatrix}
+
+.. only:: texinfo
+
+   ::
+
+     V = [ I ]
+         [ Y ]
+
+and :math:`Y` is :math:`N`-by-:math:`N` upper triangular.
+
+.. function:: int gsl_linalg_QR_TT_decomp (gsl_matrix * U1, gsl_matrix * U2, gsl_matrix * T)
+
+   This function computes the :math:`QR` decomposition of the matrix :math:`(U_1 ; U_2)`, where
+   :math:`U_1,U_2` are :math:`N`-by-:math:`N` upper triangular. On output, :data:`U1`
+   is replaced by the :math:`R` factor, and :data:`U2` is replaced by :math:`Y`. The
+   :math:`N`-by-:math:`N` upper triangular block reflector is stored in :data:`T` on output.
+
+.. function:: int gsl_linalg_QR_TT_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_matrix * T, const gsl_vector * b, gsl_vector * x, gsl_vector * work)
+
+   This function find the least squares solution to the overdetermined
+   system,
+   
+   .. math:: \begin{pmatrix} U_1 \\ U_2 \end{pmatrix} x = b
+      
+   where :math:`U_1,U_2` are :math:`N`-by-:math:`N` upper triangular matrices.
+   The least squares solution minimizes the Euclidean norm of the
+   residual, :math:`||b - (U_1; U_2) x||`. The routine requires as input 
+   the :math:`QR` decomposition
+   of :math:`(U_1; U_2)` into (:data:`R`, :data:`Y`) given by
+   :func:`gsl_linalg_QR_TT_decomp`.
+   The parameter :data:`x` is of length :math:`2N`.
+   The solution :math:`x` is returned in the first :math:`N` rows of :data:`x`,
+   i.e. :math:`x =` :code:`x[0], x[1], ..., x[N-1]`. The last :math:`N` rows
+   of :data:`x` contain a vector whose norm is equal to the residual norm
+   :math:`|| b - (U_1; U_2) x ||`. This similar to the behavior of LAPACK DGELS.
+   Additional workspace of length :math:`N` is required in :data:`work`.
+
+.. function:: int gsl_linalg_QR_TT_QTec (const gsl_matrix * Y, const gsl_matrix * T, gsl_vector * b, gsl_vector * work)
+
+   This function computes :math:`Q^T b` using the decomposition
+   (:data:`Y`, :data:`T`) previously computed by :func:`gsl_linalg_QR_TT_decomp`.
+   On input, :data:`b` contains the vector :math:`b`, and on output it will contain
+   :math:`Q^T b`. Additional workspace of length :math:`N` is required in :data:`work`.
+
+Triangle on Top of Trapezoidal
+------------------------------
+
+This section provides routines for computing the :math:`QR` decomposition of the
+specialized matrix
+
+.. only:: not texinfo
+
+   .. math:: \begin{pmatrix} U \\ A \end{pmatrix} = Q R
+
+.. only:: texinfo
+
+   ::
+
+     [ U ] = Q R
+     [ A ]
+
+where :math:`U` is an :math:`N`-by-:math:`N` upper triangular matrix, and :math:`A` is
+an :math:`M`-by-:math:`N` upper trapezoidal matrix with :math:`M \ge N`. :math:`A` has
+the structure,
+
+.. only:: not texinfo
+
+   .. math:: A = \begin{pmatrix} A_d \\ A_u \end{pmatrix}
+
+.. only:: texinfo
+
+   ::
+
+     A = [ A_d ]
+         [ A_u ]
+
+where :math:`A_d` is :math:`(M-N)`-by-:math:`N` dense, and :math:`A_u` is
+:math:`N`-by-:math:`N` upper triangular.
+The Elmroth and Gustavson algorithm is used to efficiently factor this matrix.
+The :math:`Q` matrix takes the form
+
+.. math:: Q = I - V T V^T
+
+with
+
+.. only:: not texinfo
+
+   .. math:: V = \begin{pmatrix} I \\ Y \end{pmatrix}
+
+.. only:: texinfo
+
+   ::
+
+     V = [ I ]
+         [ Y ]
+
+and :math:`Y` is upper trapezoidal and of the same dimensions as :math:`A`.
+
+.. function:: int gsl_linalg_QR_TZ_decomp (gsl_matrix * U, gsl_matrix * A, gsl_matrix * T)
+
+   This function computes the :math:`QR` decomposition of the matrix :math:`(U ; A)`, where
+   :math:`U` is :math:`N`-by-:math:`N` upper triangular and :math:`A` is :math:`M`-by-:math:`N`
+   upper trapezoidal. On output, :math:`U` is replaced by the :math:`R` factor, and :math:`A`
+   is replaced by :math:`Y`. The :math:`N`-by-:math:`N` upper triangular block reflector is
+   stored in :data:`T` on output.
+
+Triangle on Top of Diagonal
+---------------------------
+
+This section provides routines for computing the :math:`QR` decomposition of the
+specialized matrix
+
+.. only:: not texinfo
+
+   .. math:: \begin{pmatrix} U \\ D \end{pmatrix} = Q R
+
+.. only:: texinfo
+
+   ::
+
+     [ U ] = Q R
+     [ D ]
+
+where :math:`U` is an :math:`N`-by-:math:`N` upper triangular matrix and
+:math:`D` is an :math:`N`-by-:math:`N` diagonal matrix. This type of matrix
+arises in regularized least squares problems.
+The Elmroth and Gustavson algorithm is used to efficiently factor this matrix.
+The :math:`Q` matrix takes the form
+
+.. math:: Q = I - V T V^T
+
+with
+
+.. only:: not texinfo
+
+   .. math:: V = \begin{pmatrix} I \\ Y \end{pmatrix}
+
+.. only:: texinfo
+
+   ::
+
+     V = [ I ]
+         [ Y ]
+
+and :math:`Y` is :math:`N`-by-:math:`N` upper triangular.
+
+.. function:: int gsl_linalg_QR_TD_decomp (gsl_matrix * U, const gsl_vector * D, gsl_matrix * Y, gsl_matrix * T)
+
+   This function computes the :math:`QR` decomposition of the matrix :math:`(U ; D)`, where
+   :math:`U` is :math:`N`-by-:math:`N` upper triangular and :math:`D` is
+   :math:`N`-by-:math:`N` diagonal. On output, :data:`U`
+   is replaced by the :math:`R` factor and :math:`Y` is stored in :data:`Y`. The
+   :math:`N`-by-:math:`N` upper triangular block reflector is stored in :data:`T` on output.
+
+.. function:: int gsl_linalg_QR_TD_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_matrix * T, const gsl_vector * b, gsl_vector * x, gsl_vector * work)
+
+   This function find the least squares solution to the overdetermined
+   system,
+   
+   .. math:: \begin{pmatrix} U \\ D \end{pmatrix} x = b
+      
+   where :math:`U` is :math:`N`-by-:math:`N` upper triangular and :math:`D` is
+   :math:`N`-by-:math:`N` diagonal.
+   The least squares solution minimizes the Euclidean norm of the
+   residual, :math:`||b - (U; D) x||`. The routine requires as input 
+   the :math:`QR` decomposition
+   of :math:`(U; D)` into (:data:`R`, :data:`Y`) given by
+   :func:`gsl_linalg_QR_TD_decomp`.
+   The parameter :data:`x` is of length :math:`2N`.
+   The solution :math:`x` is returned in the first :math:`N` rows of :data:`x`,
+   i.e. :math:`x =` :code:`x[0], x[1], ..., x[N-1]`. The last :math:`N` rows
+   of :data:`x` contain a vector whose norm is equal to the residual norm
+   :math:`|| b - (U; D) x ||`. This similar to the behavior of LAPACK DGELS.
+   Additional workspace of length :math:`N` is required in :data:`work`.
 
 .. index:: QR decomposition with column pivoting
 
@@ -2210,6 +2414,23 @@ algorithm which overwrites the original matrix with the
    This function unpacks the lower triangular Cholesky factor from :data:`LLT` and stores
    it in the lower triangular portion of the :math:`N`-by-:math:`N` matrix :data:`L`. The
    upper triangular portion of :data:`L` is not referenced.
+
+.. function:: int gsl_linalg_cholesky_band_scale (const gsl_matrix * A, gsl_vector * S)
+
+   This function calculates a diagonal scaling transformation of the
+   symmetric, positive definite banded matrix :data:`A`, such that
+   :math:`S A S` has a condition number within a factor of :math:`N`
+   of the matrix of smallest possible condition number over all
+   possible diagonal scalings. On output, :data:`S` contains the
+   scale factors, given by :math:`S_i = 1/\sqrt{A_{ii}}`.
+   For any :math:`A_{ii} \le 0`, the corresponding scale factor :math:`S_i`
+   is set to :math:`1`.
+
+.. function:: int gsl_linalg_cholesky_band_scale_apply (gsl_matrix * A, const gsl_vector * S)
+
+   This function applies the scaling transformation :data:`S` to the banded symmetric
+   positive definite matrix :data:`A`. On output,
+   :data:`A` is replaced by :math:`S A S`.
 
 .. function:: int gsl_linalg_cholesky_band_rcond (const gsl_matrix * LLT, double * rcond, gsl_vector * work)
 

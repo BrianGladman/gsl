@@ -2046,6 +2046,15 @@
     <ClCompile Include="..\..\linalg\qr_band.c">
       <Filter>linalg</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\linalg\qr_td.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\linalg\qr_tt.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\linalg\qr_tz.c">
+      <Filter>linalg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\integration\qng.h">

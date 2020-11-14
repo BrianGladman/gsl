@@ -344,6 +344,102 @@ gsl_linalg_cholesky_band_rcond (const gsl_matrix * LLT, double * rcond, gsl_vect
     }
 }
 
+/*
+gsl_linalg_cholesky_band_scale()
+  This function computes scale factors diag(S), such that
+
+diag(S) A diag(S)
+
+has a condition number within a factor N of the matrix
+with the smallest condition number over all possible
+diagonal scalings. See Corollary 7.6 of:
+
+N. J. Higham, Accuracy and Stability of Numerical Algorithms (2nd Edition),
+SIAM, 2002.
+
+Inputs: A - symmetric positive definite matrix
+        S - (output) scale factors, S_i = 1 / sqrt(A_ii)
+*/
+
+int
+gsl_linalg_cholesky_band_scale(const gsl_matrix * A, gsl_vector * S)
+{
+  const size_t N = A->size1;     /* size of matrix */
+  const size_t ndiag = A->size2; /* number of diagonals in band, including main diagonal */
+
+  if (ndiag > N)
+    {
+      GSL_ERROR ("invalid matrix dimensions", GSL_EBADLEN);
+    }
+  else if (N != S->size)
+    {
+      GSL_ERROR("S must have length N", GSL_EBADLEN);
+    }
+  else
+    {
+      size_t i;
+
+      /* compute S_i = 1/sqrt(A_{ii}) */
+      for (i = 0; i < N; ++i)
+        {
+          double Aii = gsl_matrix_get(A, i, 0);
+
+          if (Aii <= 0.0)
+            gsl_vector_set(S, i, 1.0); /* matrix not positive definite */
+          else
+            gsl_vector_set(S, i, 1.0 / sqrt(Aii));
+        }
+
+      return GSL_SUCCESS;
+    }
+}
+
+/*
+gsl_linalg_cholesky_band_scale_apply()
+  This function applies scale transformation to A:
+
+A <- diag(S) A diag(S)
+
+Inputs: A - (input/output)
+            on input, symmetric positive definite matrix in banded format
+            on output, diag(S) * A * diag(S) in banded format
+        S - (input) scale factors
+*/
+
+int
+gsl_linalg_cholesky_band_scale_apply(gsl_matrix * A, const gsl_vector * S)
+{
+  const size_t N = A->size1;     /* size of matrix */
+  const size_t ndiag = A->size2; /* number of diagonals in band, including main diagonal */
+
+  if (ndiag > N)
+    {
+      GSL_ERROR ("invalid matrix dimensions", GSL_EBADLEN);
+    }
+  else if (N != S->size)
+    {
+      GSL_ERROR("S must have length N", GSL_EBADLEN);
+    }
+  else
+    {
+      size_t i, j;
+
+      for (j = 0; j < N; ++j)
+        {
+          double sj = gsl_vector_get(S, j);
+
+          for (i = j; i < GSL_MIN(N, j + ndiag); ++i)
+            {
+              double si = gsl_vector_get(S, i);
+              double * ptr = gsl_matrix_ptr(A, j, i - j);
+              *ptr *= sj * si;
+            }
+        }
+
+      return GSL_SUCCESS;
+    }
+}
+
 /* compute 1-norm of symmetric banded matrix */
 static double
 cholesky_band_norm1(const gsl_matrix * A)

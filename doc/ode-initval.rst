@@ -207,7 +207,10 @@ step-size :math:`h` and estimate the resulting local error.
    case the user must call :func:`gsl_odeiv2_step_reset` before calling
    this function again.
 
-The following algorithms are available,
+The following algorithms are available. Please note that algorithms
+which use step doubling for error estimation apply the more accurate
+values from two half steps instead of values from a single step for
+the new state :data:`y`.
 
 .. type:: gsl_odeiv2_step_type
 

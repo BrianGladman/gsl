@@ -421,9 +421,29 @@ size_t gsl_linalg_QRPT_rank (const gsl_matrix * QR, const double tol);
 
 int gsl_linalg_QRPT_rcond(const gsl_matrix * QR, double * rcond, gsl_vector * work);
 
+/* triangle on top of diagonal QR decomposition */
+
+int gsl_linalg_QR_TD_decomp (gsl_matrix * U, const gsl_vector * D, gsl_matrix * Y, gsl_matrix * T);
+
+int gsl_linalg_QR_TD_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_matrix * T,
+                              const gsl_vector * b, gsl_vector * x, gsl_vector * work);
+
 /* triangle on top of rectangle QR decomposition */
 
 int gsl_linalg_QR_TR_decomp (gsl_matrix * S, gsl_matrix * A, gsl_matrix * T);
+
+/* triangle on top of triangle QR decomposition */
+
+int gsl_linalg_QR_TT_decomp (gsl_matrix * U, gsl_matrix * S, gsl_matrix * T);
+
+int gsl_linalg_QR_TT_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_matrix * T,
+                              const gsl_vector * b, gsl_vector * x, gsl_vector * work);
+
+int gsl_linalg_QR_TT_QTvec(const gsl_matrix * Y, const gsl_matrix * T, gsl_vector * b, gsl_vector * work);
+
+/* triangle on top of trapezoidal QR decomposition */
+
+int gsl_linalg_QR_TZ_decomp (gsl_matrix * S, gsl_matrix * A, gsl_matrix * T);
 
 /* QL decomposition */
 
@@ -664,6 +684,10 @@ int gsl_linalg_cholesky_band_svxm (const gsl_matrix * LLT, gsl_matrix * X);
 int gsl_linalg_cholesky_band_invert (const gsl_matrix * LLT, gsl_matrix * Ainv);
 
 int gsl_linalg_cholesky_band_unpack (const gsl_matrix * LLT, gsl_matrix * L);
+
+int gsl_linalg_cholesky_band_scale(const gsl_matrix * A, gsl_vector * S);
+
+int gsl_linalg_cholesky_band_scale_apply(gsl_matrix * A, const gsl_vector * S);
 
 int gsl_linalg_cholesky_band_rcond (const gsl_matrix * LLT, double * rcond, gsl_vector * work);
 
