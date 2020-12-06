@@ -282,7 +282,7 @@ tsqr_accumulate(gsl_matrix * A, gsl_vector * b, void * vstate)
 
       /* compute QR decomposition of [ R_{i-1} ; A_i ], accounting for
        * sparse structure */
-      status = gsl_linalg_QR_TR_decomp(state->R, A, state->T);
+      status = gsl_linalg_QR_UR_decomp(state->R, A, state->T);
       if (status)
         return status;
 

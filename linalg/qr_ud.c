@@ -1,4 +1,4 @@
-/* linalg/qr_td.c
+/* linalg/qr_ud.c
  * 
  * Copyright (C) 2020 Patrick Alken
  * 
@@ -37,7 +37,7 @@ static double qrtd_householder_transform (double *v0, double *v1);
 static double qrtrd_householder_transform (double *v0, gsl_vector * v, double *d);
 
 /*
-gsl_linalg_QR_TD_decomp()
+gsl_linalg_QR_UD_decomp()
   Compute the QR decomposition of the "triangle on top of diagonal" matrix
 
   [ U ] = Q [ R ]
@@ -69,7 +69,7 @@ Q = I - V T V^T
 */
 
 int
-gsl_linalg_QR_TD_decomp (gsl_matrix * U, const gsl_vector * D, gsl_matrix * Y, gsl_matrix * T)
+gsl_linalg_QR_UD_decomp (gsl_matrix * U, const gsl_vector * D, gsl_matrix * Y, gsl_matrix * T)
 {
   const size_t N = U->size1;
 
@@ -143,7 +143,7 @@ gsl_linalg_QR_TD_decomp (gsl_matrix * U, const gsl_vector * D, gsl_matrix * Y, g
        * N1 [ D11 ]      [  0  ] N1
        * N2 [  0  ]      [  0  ] N2
        */
-      status = gsl_linalg_QR_TD_decomp(&U11.matrix, &D1.vector, &Y11.matrix, &T11.matrix);
+      status = gsl_linalg_QR_UD_decomp(&U11.matrix, &D1.vector, &Y11.matrix, &T11.matrix);
       if (status)
         return status;
 
@@ -223,7 +223,7 @@ gsl_linalg_QR_TD_decomp (gsl_matrix * U, const gsl_vector * D, gsl_matrix * Y, g
  */
 
 int
-gsl_linalg_QR_TD_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_matrix * T,
+gsl_linalg_QR_UD_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_matrix * T,
                           const gsl_vector * b, gsl_vector * x, gsl_vector * work)
 {
   const size_t N = R->size1;
@@ -259,7 +259,7 @@ gsl_linalg_QR_TD_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_
     }
   else
     {
-      return gsl_linalg_QR_TT_lssolve(R, Y, T, b, x, work);
+      return gsl_linalg_QR_UU_lssolve(R, Y, T, b, x, work);
     }
 }
 

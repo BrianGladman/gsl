@@ -1,4 +1,4 @@
-/* linalg/qr_tt.c
+/* linalg/qr_uu.c
  * 
  * Copyright (C) 2020 Patrick Alken
  * 
@@ -35,7 +35,7 @@
 static double qrtt_householder_transform (double *v0, double *v1);
 
 /*
-gsl_linalg_QR_TT_decomp()
+gsl_linalg_QR_UU_decomp()
   Compute the QR decomposition of the "triangle on top of triangle" matrix
 
   [ U ] = Q [ R ]
@@ -68,7 +68,7 @@ Q = I - V T V^T
 */
 
 int
-gsl_linalg_QR_TT_decomp (gsl_matrix * U, gsl_matrix * S, gsl_matrix * T)
+gsl_linalg_QR_UU_decomp (gsl_matrix * U, gsl_matrix * S, gsl_matrix * T)
 {
   const size_t N = U->size1;
 
@@ -134,7 +134,7 @@ gsl_linalg_QR_TT_decomp (gsl_matrix * U, gsl_matrix * S, gsl_matrix * T)
        * N1 [ S11 ]      [  0  ] N1
        * N2 [  0  ]      [  0  ] N2
        */
-      status = gsl_linalg_QR_TT_decomp(&U11.matrix, &S11.matrix, &T11.matrix);
+      status = gsl_linalg_QR_UU_decomp(&U11.matrix, &S11.matrix, &T11.matrix);
       if (status)
         return status;
 
@@ -171,7 +171,7 @@ gsl_linalg_QR_TT_decomp (gsl_matrix * U, gsl_matrix * S, gsl_matrix * T)
        * N2 [ S22  ]       [  0  ] N2
        */
       m = gsl_matrix_submatrix(S, 0, N1, N, N2);
-      status = gsl_linalg_QR_TZ_decomp(&U22.matrix, &m.matrix, &T22.matrix);
+      status = gsl_linalg_QR_UZ_decomp(&U22.matrix, &m.matrix, &T22.matrix);
       if (status)
         return status;
 
@@ -216,7 +216,7 @@ gsl_linalg_QR_TT_decomp (gsl_matrix * U, gsl_matrix * S, gsl_matrix * T)
  */
 
 int
-gsl_linalg_QR_TT_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_matrix * T,
+gsl_linalg_QR_UU_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_matrix * T,
                           const gsl_vector * b, gsl_vector * x, gsl_vector * work)
 {
   const size_t N = R->size1;
@@ -256,7 +256,7 @@ gsl_linalg_QR_TT_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_
 
       /* compute x = Q^T b */
       gsl_vector_memcpy(x, b);
-      gsl_linalg_QR_TT_QTvec (Y, T, x, work);
+      gsl_linalg_QR_UU_QTvec (Y, T, x, work);
 
       /* Solve R x = Q^T b */
       gsl_blas_dtrsv (CblasUpper, CblasNoTrans, CblasNonUnit, R, &x1.vector);
@@ -266,10 +266,10 @@ gsl_linalg_QR_TT_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_
 }
 
 /*
-gsl_linalg_QR_TT_QTvec()
+gsl_linalg_QR_UU_QTvec()
   Apply 2N-by-2N Q^T to the 2N-by-1 vector b
 
-Inputs: Y    - upper triangular Y matrix encoded by gsl_linalg_QR_TT_decomp, N-by-N
+Inputs: Y    - upper triangular Y matrix encoded by gsl_linalg_QR_UU_decomp, N-by-N
         T    - block reflector matrix, N-by-N
         b    - 2N-by-1 vector replaced by Q^T b on output
         work - workspace, length N
@@ -286,7 +286,7 @@ where w = T^T ( b1 + Y^T b2 )
 */
 
 int
-gsl_linalg_QR_TT_QTvec(const gsl_matrix * Y, const gsl_matrix * T, gsl_vector * b, gsl_vector * work)
+gsl_linalg_QR_UU_QTvec(const gsl_matrix * Y, const gsl_matrix * T, gsl_vector * b, gsl_vector * work)
 {
   const size_t N = Y->size1;
   const size_t M = 2 * N;

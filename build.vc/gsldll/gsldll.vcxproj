@@ -243,10 +243,10 @@
     <ClCompile Include="..\..\linalg\ql.c" />
     <ClCompile Include="..\..\linalg\qrc.c" />
     <ClCompile Include="..\..\linalg\qr_band.c" />
-    <ClCompile Include="..\..\linalg\qr_td.c" />
-    <ClCompile Include="..\..\linalg\qr_tr.c" />
-    <ClCompile Include="..\..\linalg\qr_tt.c" />
-    <ClCompile Include="..\..\linalg\qr_tz.c" />
+    <ClCompile Include="..\..\linalg\qr_ud.c" />
+    <ClCompile Include="..\..\linalg\qr_ur.c" />
+    <ClCompile Include="..\..\linalg\qr_uu.c" />
+    <ClCompile Include="..\..\linalg\qr_uz.c" />
     <ClCompile Include="..\..\linalg\rqr.c" />
     <ClCompile Include="..\..\linalg\rqrc.c" />
     <ClCompile Include="..\..\linalg\trimult.c" />

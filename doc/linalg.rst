@@ -464,7 +464,7 @@ with
 
 and :math:`Y` is dense and of the same dimensions as :math:`A`.
 
-.. function:: int gsl_linalg_QR_TR_decomp (gsl_matrix * U, gsl_matrix * A, gsl_matrix * T)
+.. function:: int gsl_linalg_QR_UR_decomp (gsl_matrix * U, gsl_matrix * A, gsl_matrix * T)
 
    This function computes the :math:`QR` decomposition of the matrix :math:`(U ; A)`, where
    :math:`U` is :math:`N`-by-:math:`N` upper triangular and :math:`A` is :math:`M`-by-:math:`N`
@@ -510,26 +510,24 @@ with
 
 and :math:`Y` is :math:`N`-by-:math:`N` upper triangular.
 
-.. function:: int gsl_linalg_QR_TT_decomp (gsl_matrix * U1, gsl_matrix * U2, gsl_matrix * T)
+.. function:: int gsl_linalg_QR_UU_decomp (gsl_matrix * U1, gsl_matrix * U2, gsl_matrix * T)
 
    This function computes the :math:`QR` decomposition of the matrix :math:`(U_1 ; U_2)`, where
    :math:`U_1,U_2` are :math:`N`-by-:math:`N` upper triangular. On output, :data:`U1`
    is replaced by the :math:`R` factor, and :data:`U2` is replaced by :math:`Y`. The
    :math:`N`-by-:math:`N` upper triangular block reflector is stored in :data:`T` on output.
 
-.. function:: int gsl_linalg_QR_TT_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_matrix * T, const gsl_vector * b, gsl_vector * x, gsl_vector * work)
+.. function:: int gsl_linalg_QR_UU_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_matrix * T, const gsl_vector * b, gsl_vector * x, gsl_vector * work)
 
    This function find the least squares solution to the overdetermined
    system,
    
-   .. math:: \begin{pmatrix} U_1 \\ U_2 \end{pmatrix} x = b
+   .. math:: \min_x \left| \left| b - \begin{pmatrix} U_1 \\ U_2 \end{pmatrix} x \right| \right|^2
       
    where :math:`U_1,U_2` are :math:`N`-by-:math:`N` upper triangular matrices.
-   The least squares solution minimizes the Euclidean norm of the
-   residual, :math:`||b - (U_1; U_2) x||`. The routine requires as input 
-   the :math:`QR` decomposition
-   of :math:`(U_1; U_2)` into (:data:`R`, :data:`Y`) given by
-   :func:`gsl_linalg_QR_TT_decomp`.
+   The routine requires as input the :math:`QR` decomposition
+   of :math:`(U_1; U_2)` into (:data:`R`, :data:`Y`, :data:`T`) given by
+   :func:`gsl_linalg_QR_UU_decomp`.
    The parameter :data:`x` is of length :math:`2N`.
    The solution :math:`x` is returned in the first :math:`N` rows of :data:`x`,
    i.e. :math:`x =` :code:`x[0], x[1], ..., x[N-1]`. The last :math:`N` rows
@@ -537,10 +535,10 @@ and :math:`Y` is :math:`N`-by-:math:`N` upper triangular.
    :math:`|| b - (U_1; U_2) x ||`. This similar to the behavior of LAPACK DGELS.
    Additional workspace of length :math:`N` is required in :data:`work`.
 
-.. function:: int gsl_linalg_QR_TT_QTec (const gsl_matrix * Y, const gsl_matrix * T, gsl_vector * b, gsl_vector * work)
+.. function:: int gsl_linalg_QR_UU_QTec (const gsl_matrix * Y, const gsl_matrix * T, gsl_vector * b, gsl_vector * work)
 
    This function computes :math:`Q^T b` using the decomposition
-   (:data:`Y`, :data:`T`) previously computed by :func:`gsl_linalg_QR_TT_decomp`.
+   (:data:`Y`, :data:`T`) previously computed by :func:`gsl_linalg_QR_UU_decomp`.
    On input, :data:`b` contains the vector :math:`b`, and on output it will contain
    :math:`Q^T b`. Additional workspace of length :math:`N` is required in :data:`work`.
 
@@ -598,7 +596,7 @@ with
 
 and :math:`Y` is upper trapezoidal and of the same dimensions as :math:`A`.
 
-.. function:: int gsl_linalg_QR_TZ_decomp (gsl_matrix * U, gsl_matrix * A, gsl_matrix * T)
+.. function:: int gsl_linalg_QR_UZ_decomp (gsl_matrix * U, gsl_matrix * A, gsl_matrix * T)
 
    This function computes the :math:`QR` decomposition of the matrix :math:`(U ; A)`, where
    :math:`U` is :math:`N`-by-:math:`N` upper triangular and :math:`A` is :math:`M`-by-:math:`N`
@@ -646,7 +644,7 @@ with
 
 and :math:`Y` is :math:`N`-by-:math:`N` upper triangular.
 
-.. function:: int gsl_linalg_QR_TD_decomp (gsl_matrix * U, const gsl_vector * D, gsl_matrix * Y, gsl_matrix * T)
+.. function:: int gsl_linalg_QR_UD_decomp (gsl_matrix * U, const gsl_vector * D, gsl_matrix * Y, gsl_matrix * T)
 
    This function computes the :math:`QR` decomposition of the matrix :math:`(U ; D)`, where
    :math:`U` is :math:`N`-by-:math:`N` upper triangular and :math:`D` is
@@ -654,20 +652,17 @@ and :math:`Y` is :math:`N`-by-:math:`N` upper triangular.
    is replaced by the :math:`R` factor and :math:`Y` is stored in :data:`Y`. The
    :math:`N`-by-:math:`N` upper triangular block reflector is stored in :data:`T` on output.
 
-.. function:: int gsl_linalg_QR_TD_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_matrix * T, const gsl_vector * b, gsl_vector * x, gsl_vector * work)
+.. function:: int gsl_linalg_QR_UD_lssolve (const gsl_matrix * R, const gsl_matrix * Y, const gsl_matrix * T, const gsl_vector * b, gsl_vector * x, gsl_vector * work)
 
    This function find the least squares solution to the overdetermined
    system,
    
-   .. math:: \begin{pmatrix} U \\ D \end{pmatrix} x = b
+   .. math:: \min_x \left| \left| b - \begin{pmatrix} U \\ D \end{pmatrix} x \right| \right|^2
       
    where :math:`U` is :math:`N`-by-:math:`N` upper triangular and :math:`D` is
-   :math:`N`-by-:math:`N` diagonal.
-   The least squares solution minimizes the Euclidean norm of the
-   residual, :math:`||b - (U; D) x||`. The routine requires as input 
-   the :math:`QR` decomposition
-   of :math:`(U; D)` into (:data:`R`, :data:`Y`) given by
-   :func:`gsl_linalg_QR_TD_decomp`.
+   :math:`N`-by-:math:`N` diagonal.  The routine requires as input 
+   the :math:`QR` decomposition of :math:`(U; D)` into (:data:`R`, :data:`Y`, :data:`T`)
+   given by :func:`gsl_linalg_QR_UD_decomp`.
    The parameter :data:`x` is of length :math:`2N`.
    The solution :math:`x` is returned in the first :math:`N` rows of :data:`x`,
    i.e. :math:`x =` :code:`x[0], x[1], ..., x[N-1]`. The last :math:`N` rows

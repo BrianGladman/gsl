@@ -448,7 +448,7 @@ test_QR_lssolve_r(gsl_rng * r)
 }
 
 static int
-test_QR_TR_decomp_eps(const gsl_matrix * S, const gsl_matrix * A, const double eps, const char * desc)
+test_QR_UR_decomp_eps(const gsl_matrix * S, const gsl_matrix * A, const double eps, const char * desc)
 {
   int s = 0;
   const size_t M = A->size1;
@@ -464,7 +464,7 @@ test_QR_TR_decomp_eps(const gsl_matrix * S, const gsl_matrix * A, const double e
   gsl_matrix_tricpy(CblasUpper, CblasNonUnit, R, S);
   gsl_matrix_memcpy(V, A);
 
-  s += gsl_linalg_QR_TR_decomp(R, V, T);
+  s += gsl_linalg_QR_UR_decomp(R, V, T);
   
   /*
    * compute B = Q R = [ R - T R ]
@@ -515,7 +515,7 @@ test_QR_TR_decomp_eps(const gsl_matrix * S, const gsl_matrix * A, const double e
 }
 
 static int
-test_QR_TR_decomp(gsl_rng * r)
+test_QR_UR_decomp(gsl_rng * r)
 {
   int s = 0;
   size_t M, N;
@@ -529,7 +529,7 @@ test_QR_TR_decomp(gsl_rng * r)
 
           create_random_matrix(A, r);
           create_random_matrix(S, r);
-          s += test_QR_TR_decomp_eps(S, A, 1.0e6 * M * GSL_DBL_EPSILON, "QR_TR_decomp random");
+          s += test_QR_UR_decomp_eps(S, A, 1.0e6 * M * GSL_DBL_EPSILON, "QR_UR_decomp random");
 
           gsl_matrix_free(S);
           gsl_matrix_free(A);
@@ -540,7 +540,7 @@ test_QR_TR_decomp(gsl_rng * r)
 }
 
 static int
-test_QR_TZ_decomp_eps(const gsl_matrix * S, const gsl_matrix * A, const double eps, const char * desc)
+test_QR_UZ_decomp_eps(const gsl_matrix * S, const gsl_matrix * A, const double eps, const char * desc)
 {
   int s = 0;
   const size_t M = A->size1;
@@ -556,7 +556,7 @@ test_QR_TZ_decomp_eps(const gsl_matrix * S, const gsl_matrix * A, const double e
   gsl_matrix_tricpy(CblasUpper, CblasNonUnit, R, S);
   gsl_matrix_memcpy(V, A);
 
-  s += gsl_linalg_QR_TZ_decomp(R, V, T);
+  s += gsl_linalg_QR_UZ_decomp(R, V, T);
 
   /*
    * compute B = Q R = [ R - T R ]
@@ -606,7 +606,7 @@ test_QR_TZ_decomp_eps(const gsl_matrix * S, const gsl_matrix * A, const double e
 }
 
 static int
-test_QR_TZ_decomp(gsl_rng * r)
+test_QR_UZ_decomp(gsl_rng * r)
 {
   int s = 0;
   const size_t N_max = 20;
@@ -638,8 +638,8 @@ test_QR_TZ_decomp(gsl_rng * r)
           create_random_matrix(&T.matrix, r);
           gsl_matrix_tricpy(CblasUpper, CblasNonUnit, &Bu.matrix, &T.matrix);
 
-          s += test_QR_TZ_decomp_eps(&S.matrix, &B.matrix, 1.0e6 * M * GSL_DBL_EPSILON,
-                                     "QR_TZ_decomp random");
+          s += test_QR_UZ_decomp_eps(&S.matrix, &B.matrix, 1.0e6 * M * GSL_DBL_EPSILON,
+                                     "QR_UZ_decomp random");
         }
     }
 
@@ -651,7 +651,7 @@ test_QR_TZ_decomp(gsl_rng * r)
 }
 
 static int
-test_QR_TT_decomp_eps(const gsl_matrix * U, const gsl_matrix * S, const double eps, const char * desc)
+test_QR_UU_decomp_eps(const gsl_matrix * U, const gsl_matrix * S, const double eps, const char * desc)
 {
   int s = 0;
   const size_t N = U->size2;
@@ -666,7 +666,7 @@ test_QR_TT_decomp_eps(const gsl_matrix * U, const gsl_matrix * S, const double e
   gsl_matrix_tricpy(CblasUpper, CblasNonUnit, R, U);
   gsl_matrix_tricpy(CblasUpper, CblasNonUnit, V, S);
 
-  s += gsl_linalg_QR_TT_decomp(R, V, T);
+  s += gsl_linalg_QR_UU_decomp(R, V, T);
 
   /*
    * compute B = Q R = [ R - T R ]
@@ -717,7 +717,7 @@ test_QR_TT_decomp_eps(const gsl_matrix * U, const gsl_matrix * S, const double e
 }
 
 static int
-test_QR_TT_decomp(gsl_rng * r)
+test_QR_UU_decomp(gsl_rng * r)
 {
   int s = 0;
   const size_t N_max = 50;
@@ -740,8 +740,8 @@ test_QR_TT_decomp(gsl_rng * r)
       gsl_matrix_set_zero(&b.matrix);
       gsl_matrix_tricpy(CblasUpper, CblasNonUnit, &b.matrix, &c.matrix);
 
-      s += test_QR_TT_decomp_eps(&a.matrix, &b.matrix, 1.0e6 * N * GSL_DBL_EPSILON,
-                                 "QR_TT_decomp random");
+      s += test_QR_UU_decomp_eps(&a.matrix, &b.matrix, 1.0e6 * N * GSL_DBL_EPSILON,
+                                 "QR_UU_decomp random");
     }
 
   gsl_matrix_free(U);
@@ -752,7 +752,7 @@ test_QR_TT_decomp(gsl_rng * r)
 }
 
 static int
-test_QR_TT_lssolve_eps(const gsl_matrix * U, const gsl_matrix * S, const gsl_vector * b,
+test_QR_UU_lssolve_eps(const gsl_matrix * U, const gsl_matrix * S, const gsl_vector * b,
                        const double eps, const char * desc)
 {
   int s = 0;
@@ -779,8 +779,8 @@ test_QR_TT_lssolve_eps(const gsl_matrix * U, const gsl_matrix * S, const gsl_vec
   gsl_matrix_tricpy(CblasUpper, CblasNonUnit, R, U);
   gsl_matrix_tricpy(CblasUpper, CblasNonUnit, Y, S);
 
-  s += gsl_linalg_QR_TT_decomp(R, Y, T);
-  s += gsl_linalg_QR_TT_lssolve(R, Y, T, b, x, work);
+  s += gsl_linalg_QR_UU_decomp(R, Y, T);
+  s += gsl_linalg_QR_UU_lssolve(R, Y, T, b, x, work);
 
   tmp = gsl_matrix_submatrix(A, 0, 0, N, N);
   gsl_matrix_tricpy(CblasUpper, CblasNonUnit, &tmp.matrix, U);
@@ -834,7 +834,7 @@ test_QR_TT_lssolve_eps(const gsl_matrix * U, const gsl_matrix * S, const gsl_vec
 }
 
 static int
-test_QR_TT_lssolve(gsl_rng * r)
+test_QR_UU_lssolve(gsl_rng * r)
 {
   int s = 0;
   const size_t N_max = 30;
@@ -861,8 +861,8 @@ test_QR_TT_lssolve(gsl_rng * r)
       gsl_matrix_set_zero(&b.matrix);
       gsl_matrix_tricpy(CblasUpper, CblasNonUnit, &b.matrix, &c.matrix);
 
-      s += test_QR_TT_lssolve_eps(&a.matrix, &b.matrix, &rhsv.vector, 1.0e4 * N * GSL_DBL_EPSILON,
-                                  "QR_TT_lssolve random");
+      s += test_QR_UU_lssolve_eps(&a.matrix, &b.matrix, &rhsv.vector, 1.0e4 * N * GSL_DBL_EPSILON,
+                                  "QR_UU_lssolve random");
     }
 
   gsl_matrix_free(U);
@@ -874,7 +874,7 @@ test_QR_TT_lssolve(gsl_rng * r)
 }
 
 static int
-test_QR_TD_decomp_eps(const gsl_matrix * U, const gsl_vector * D, const double eps, const char * desc)
+test_QR_UD_decomp_eps(const gsl_matrix * U, const gsl_vector * D, const double eps, const char * desc)
 {
   int s = 0;
   const size_t N = U->size2;
@@ -888,7 +888,7 @@ test_QR_TD_decomp_eps(const gsl_matrix * U, const gsl_vector * D, const double e
 
   gsl_matrix_tricpy(CblasUpper, CblasNonUnit, R, U);
 
-  s += gsl_linalg_QR_TD_decomp(R, D, V, T);
+  s += gsl_linalg_QR_UD_decomp(R, D, V, T);
 
   /*
    * compute B = Q R = [ R - T R ]
@@ -939,7 +939,7 @@ test_QR_TD_decomp_eps(const gsl_matrix * U, const gsl_vector * D, const double e
 }
 
 static int
-test_QR_TD_decomp(gsl_rng * r)
+test_QR_UD_decomp(gsl_rng * r)
 {
   int s = 0;
   const size_t N_max = 30;
@@ -960,8 +960,8 @@ test_QR_TD_decomp(gsl_rng * r)
 
       create_random_vector(&diag.vector, r);
 
-      s += test_QR_TD_decomp_eps(&a.matrix, &diag.vector, 1.0e4 * N * GSL_DBL_EPSILON,
-                                 "QR_TD_decomp random");
+      s += test_QR_UD_decomp_eps(&a.matrix, &diag.vector, 1.0e4 * N * GSL_DBL_EPSILON,
+                                 "QR_UD_decomp random");
     }
 
   gsl_matrix_free(U);
@@ -972,7 +972,7 @@ test_QR_TD_decomp(gsl_rng * r)
 }
 
 static int
-test_QR_TD_lssolve_eps(const gsl_matrix * U, const gsl_vector * D, const gsl_vector * b,
+test_QR_UD_lssolve_eps(const gsl_matrix * U, const gsl_vector * D, const gsl_vector * b,
                        const double eps, const char * desc)
 {
   int s = 0;
@@ -999,8 +999,8 @@ test_QR_TD_lssolve_eps(const gsl_matrix * U, const gsl_vector * D, const gsl_vec
 
   gsl_matrix_tricpy(CblasUpper, CblasNonUnit, R, U);
 
-  s += gsl_linalg_QR_TD_decomp(R, D, Y, T);
-  s += gsl_linalg_QR_TD_lssolve(R, Y, T, b, x, work);
+  s += gsl_linalg_QR_UD_decomp(R, D, Y, T);
+  s += gsl_linalg_QR_UD_lssolve(R, Y, T, b, x, work);
 
   tmp = gsl_matrix_submatrix(A, 0, 0, N, N);
   gsl_matrix_tricpy(CblasUpper, CblasNonUnit, &tmp.matrix, U);
@@ -1055,7 +1055,7 @@ test_QR_TD_lssolve_eps(const gsl_matrix * U, const gsl_vector * D, const gsl_vec
 }
 
 static int
-test_QR_TD_lssolve(gsl_rng * r)
+test_QR_UD_lssolve(gsl_rng * r)
 {
   int s = 0;
   const size_t N_max = 30;
@@ -1079,8 +1079,8 @@ test_QR_TD_lssolve(gsl_rng * r)
       gsl_matrix_set_zero(&a.matrix);
       gsl_matrix_tricpy(CblasUpper, CblasNonUnit, &a.matrix, &b.matrix);
 
-      s += test_QR_TD_lssolve_eps(&a.matrix, &diag.vector, &rhsv.vector, 1.0e4 * N * GSL_DBL_EPSILON,
-                                  "QR_TD_lssolve random");
+      s += test_QR_UD_lssolve_eps(&a.matrix, &diag.vector, &rhsv.vector, 1.0e4 * N * GSL_DBL_EPSILON,
+                                  "QR_UD_lssolve random");
     }
 
   gsl_matrix_free(U);
