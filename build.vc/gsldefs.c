@@ -105,17 +105,23 @@ void process_file(FILE *inf, FILE *gslf, FILE *blsf)
             {
                 if(!strncmp(p_sym[n_sym - 1], "gsl_", 4))
                 {
-                    if(q_sym[n_sym - 2] - p_sym[n_sym - 2] != 2
-                        || strncmp(p_sym[n_sym - 2], "do", 2))
+                    /* a hack to avoid a false function match in gsl_multilarge.h */
+                    char *p1 = strstr(nl0, "const gsl_matrix * (*matrix_ptr) (const void *)");
+                    char* p2 = strstr(nl0, "const gsl_vector * (*rhs_ptr) (const void *)");
+                    if(!p1 && !p2)
                     {
-                        fprintf(gslf, "\n\t");
-                        b0 = p_sym[n_sym - 1];
-                        b1 = q_sym[n_sym - 1];
-                        while(b0 < b1)
-                            fputc(*b0++, gslf);
-                        if(in_data)
-                            fprintf(gslf, " DATA");
-                    }
+	                    if(q_sym[n_sym - 2] - p_sym[n_sym - 2] != 2
+	                        || strncmp(p_sym[n_sym - 2], "do", 2))
+	                    {
+	                        fprintf(gslf, "\n\t");
+	                        b0 = p_sym[n_sym - 1];
+	                        b1 = q_sym[n_sym - 1];
+	                        while(b0 < b1)
+	                            fputc(*b0++, gslf);
+	                        if(in_data)
+	                            fprintf(gslf, " DATA");
+                        }
+	                }
                 }
                 if(!strncmp(p_sym[n_sym - 1], "cblas_", 6))
                 {
