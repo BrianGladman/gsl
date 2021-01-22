@@ -1,5 +1,18 @@
 * What is new in gsl-2.7:
 
+** fixed bug #45521 (erroneous GSL_ERROR_NULL in ode-initval2, thanks to M. Sitte)
+
+** fixed doc bug #59758
+
+** fixed bug #58202 (rstat median for n=5)
+
+** added support for native C complex number types in gsl_complex
+   when using a C11 compiler
+
+** upgraded to autoconf 2.70, automake 1.16.3, libtool 2.4.6
+
+** updated exponential fitting example for nonlinear least squares
+
 ** added banded LU decomposition and solver (gsl_linalg_LU_band)
 
 ** New functions added to the library:

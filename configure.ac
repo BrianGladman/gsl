@@ -161,6 +161,7 @@ fi
 
 dnl Checks for header files.
 AC_CHECK_HEADERS(ieeefp.h)
+AC_CHECK_HEADERS(complex.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 
