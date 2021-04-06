@@ -80,7 +80,7 @@ typedef const long double *  gsl_const_complex_packed_long_double_ptr ;
      defined(__STDC_VERSION__) &&   \
      (__STDC_VERSION__ >= 201112L) /* C11 */
 
-#  define GSL_COMPLEX_DEFINE(R, C) typedef R _Complex C
+#  define GSL_COMPLEX_DEFINE(R, C) typedef R _Complex C ;
 
 #  define GSL_COMPLEX_P(zp)        (&(zp))
 #  define GSL_COMPLEX_EQ(z1,z2)    ((z1) == (z2))
@@ -113,7 +113,7 @@ typedef const long double *  gsl_const_complex_packed_long_double_ptr ;
  */
 
 /*#  define GSL_COMPLEX_DEFINE(R, C) typedef R C[2]*/
-#  define GSL_COMPLEX_DEFINE(R, C) typedef struct { R dat[2]; } C;
+#  define GSL_COMPLEX_DEFINE(R, C) typedef struct { R dat[2]; } C ;
 
 #  define GSL_REAL(z)              ((z).dat[0])
 #  define GSL_IMAG(z)              ((z).dat[1])
@@ -128,9 +128,9 @@ typedef const long double *  gsl_const_complex_packed_long_double_ptr ;
 
 #endif
 
-GSL_COMPLEX_DEFINE(double, gsl_complex);
-GSL_COMPLEX_DEFINE(long double, gsl_complex_long_double);
-GSL_COMPLEX_DEFINE(float, gsl_complex_float);
+GSL_COMPLEX_DEFINE(double, gsl_complex)
+GSL_COMPLEX_DEFINE(long double, gsl_complex_long_double)
+GSL_COMPLEX_DEFINE(float, gsl_complex_float)
 
 #define GSL_SET_COMPLEX_PACKED(zp,n,x,y) do {*((zp)+2*(n))=(x); *((zp)+(2*(n)+1))=(y);} while(0)
 

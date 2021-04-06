@@ -171,7 +171,10 @@ which is a kind of iterator for interpolation lookups.
    This function returns a pointer to an accelerator object, which is a
    kind of iterator for interpolation lookups.  It tracks the state of
    lookups, thus allowing for application of various acceleration
-   strategies.
+   strategies. When multiple interpolants are in use, the same accelerator
+   object may be used for all datasets with the same domain
+   (:data:`x_array`), but different accelerators should be used for data
+   defined on different domains.
 
 .. function:: size_t gsl_interp_accel_find (gsl_interp_accel * a, const double x_array[], size_t size, double x)
 

@@ -146,7 +146,7 @@ FUNCTION(gsl_vector, scale) (TYPE(gsl_vector) * a, const ATOMIC x)
 }
 
 int 
-FUNCTION(gsl_vector, add_constant) (TYPE(gsl_vector) * a, const double x)
+FUNCTION(gsl_vector, add_constant) (TYPE(gsl_vector) * a, const ATOMIC x)
 {
   const size_t N = a->size;
   const size_t stride = a->stride;

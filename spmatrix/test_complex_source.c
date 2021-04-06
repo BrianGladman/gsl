@@ -437,7 +437,7 @@ static void
 FUNCTION (test, scale) (const size_t M, const size_t N, const int sptype,
                         const double density, gsl_rng * r)
 {
-  TYPE (gsl_spmatrix) * A = FUNCTION (test, random) (M, N, density, 1.0, 20.0, r);
+  TYPE (gsl_spmatrix) * A = FUNCTION (test, random_int) (M, N, density, 1.0, 20.0, r);
   TYPE (gsl_spmatrix) * B = FUNCTION (gsl_spmatrix, compress) (A, sptype);
   TYPE (gsl_vector) * x;
   BASE s;

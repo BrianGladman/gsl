@@ -58,8 +58,8 @@ test_QRc_decomp_eps(const gsl_matrix_complex * m, const double eps, const char *
       int foo_i = check(GSL_IMAG(aij), GSL_IMAG(mij), eps);
       if (foo_r || foo_i)
         {
-          printf("%s (%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", desc, M, N, i, j, GSL_REAL(aij), GSL_REAL(mij));
-          printf("%s (%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", desc, M, N, i, j, GSL_IMAG(aij), GSL_IMAG(mij));
+          printf("%s (%3zu,%3zu)[%zu,%zu]: %22.18g   %22.18g\n", desc, M, N, i, j, GSL_REAL(aij), GSL_REAL(mij));
+          printf("%s (%3zu,%3zu)[%zu,%zu]: %22.18g   %22.18g\n", desc, M, N, i, j, GSL_IMAG(aij), GSL_IMAG(mij));
         }
       s += foo_r + foo_i;
     }

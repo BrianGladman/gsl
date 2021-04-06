@@ -134,7 +134,7 @@ FUNCTION(gsl_matrix, div_elements) (TYPE(gsl_matrix) * a, const TYPE(gsl_matrix)
 }
 
 int
-FUNCTION(gsl_matrix, scale) (TYPE(gsl_matrix) * a, const double x)
+FUNCTION(gsl_matrix, scale) (TYPE(gsl_matrix) * a, const ATOMIC x)
 {
   const size_t M = a->size1;
   const size_t N = a->size2;
@@ -202,7 +202,7 @@ FUNCTION(gsl_matrix, scale_columns) (TYPE(gsl_matrix) * a, const TYPE(gsl_vector
 }
 
 int 
-FUNCTION(gsl_matrix, add_constant) (TYPE(gsl_matrix) * a, const double x)
+FUNCTION(gsl_matrix, add_constant) (TYPE(gsl_matrix) * a, const ATOMIC x)
 {
   const size_t M = a->size1;
   const size_t N = a->size2;
@@ -223,7 +223,7 @@ FUNCTION(gsl_matrix, add_constant) (TYPE(gsl_matrix) * a, const double x)
 
 
 int 
-FUNCTION(gsl_matrix, add_diagonal) (TYPE(gsl_matrix) * a, const double x)
+FUNCTION(gsl_matrix, add_diagonal) (TYPE(gsl_matrix) * a, const ATOMIC x)
 {
   const size_t M = a->size1;
   const size_t N = a->size2;

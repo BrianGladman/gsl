@@ -354,7 +354,7 @@ evaluation point.
       :data:`p` are orthogonal.  The line minimization terminates when
       :math:`p\cdot g < tol |p| |g|`. The
       search direction is updated  using the Fletcher-Reeves formula
-      :math:`p' = g' - \beta g` where :math:`\beta=-|g'|^2/|g|^2`, and
+      :math:`p' = g' - \beta p` where :math:`\beta=-|g'|^2/|g|^2`, and
       the line minimization is then repeated for the new search
       direction.
 

@@ -1,5 +1,11 @@
 * What is new in gsl-2.7:
 
+** fixed bug #60335 (spmatrix test failure, J. Lamb)
+
+** fixed bug #36577
+
+** clarified documentation on interpolation accelerators (V. Krishnan)
+
 ** fixed bug #45521 (erroneous GSL_ERROR_NULL in ode-initval2, thanks to M. Sitte)
 
 ** fixed doc bug #59758

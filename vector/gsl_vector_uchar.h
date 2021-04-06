@@ -153,7 +153,7 @@ int gsl_vector_uchar_sub (gsl_vector_uchar * a, const gsl_vector_uchar * b);
 int gsl_vector_uchar_mul (gsl_vector_uchar * a, const gsl_vector_uchar * b);
 int gsl_vector_uchar_div (gsl_vector_uchar * a, const gsl_vector_uchar * b);
 int gsl_vector_uchar_scale (gsl_vector_uchar * a, const unsigned char x);
-int gsl_vector_uchar_add_constant (gsl_vector_uchar * a, const double x);
+int gsl_vector_uchar_add_constant (gsl_vector_uchar * a, const unsigned char x);
 int gsl_vector_uchar_axpby (const unsigned char alpha, const gsl_vector_uchar * x, const unsigned char beta, gsl_vector_uchar * y);
 unsigned char gsl_vector_uchar_sum (const gsl_vector_uchar * a);
 

@@ -7,9 +7,9 @@ set pointsize 1
 ## exponential fitting example
 
 # best fit curve
-A = 4.80085
-lambda = 0.09488
-b = 0.99249
+A = 4.79653
+lambda = 1.43937
+b = 1.00368
 f(x) = A * exp(-lambda*x) + b
 
 load 'grid.cfg'
