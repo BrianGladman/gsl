@@ -56,7 +56,7 @@ test_QR_decomp_dim(const gsl_matrix * m, double eps)
       double mij = gsl_matrix_get(m, i, j);
       int foo = check(aij, mij, eps);
       if(foo) {
-        printf("(%3zu,%3zu)[%zu,%zu]: %22.18g   %22.18g\n", M, N, i,j, aij, mij);
+        printf("(%3lu,%3lu)[%lu,%lu]: %22.18g   %22.18g\n", M, N, i,j, aij, mij);
       }
       s += foo;
     }

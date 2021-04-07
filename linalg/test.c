@@ -674,7 +674,7 @@ test_QRPT_lssolve_dim(const gsl_matrix * m, const double * actual, double eps)
       int foo = check(gsl_vector_get(x, i), actual[i], eps);
       if(foo)
         {
-          printf("(%3zu,%3zu)[%zu]: %22.18g   %22.18g\n", M, N, i, gsl_vector_get(x, i), actual[i]);
+          printf("(%3lu,%3lu)[%lu]: %22.18g   %22.18g\n", M, N, i, gsl_vector_get(x, i), actual[i]);
         }
       s += foo;
     }
@@ -792,7 +792,7 @@ test_QRPT_lssolve2_dim(const gsl_matrix * m, const double * actual, double eps)
           int foo = check(gsl_vector_get(x, i), actual[i], eps);
           if(foo)
             {
-              printf("(%3zu,%3zu)[%zu]: %22.18g   %22.18g\n", M, N, i, gsl_vector_get(x, i), actual[i]);
+              printf("(%3lu,%3lu)[%lu]: %22.18g   %22.18g\n", M, N, i, gsl_vector_get(x, i), actual[i]);
             }
           s += foo;
         }
