@@ -1,5 +1,7 @@
 * What is new in gsl-2.7:
 
+** fixed doc bug for gsl_histogram_min_bin (lhcsky at 163.com)
+
 ** fixed bug #60335 (spmatrix test failure, J. Lamb)
 
 ** fixed bug #36577
@@ -15,7 +17,7 @@
 ** added support for native C complex number types in gsl_complex
    when using a C11 compiler
 
-** upgraded to autoconf 2.70, automake 1.16.3, libtool 2.4.6
+** upgraded to autoconf 2.71, automake 1.16.3, libtool 2.4.6
 
 ** updated exponential fitting example for nonlinear least squares
 
@@ -39,6 +41,7 @@
       - gsl_linalg_QR_UU: decomp, lssolve, QTvec
       - gsl_linalg_QR_UZ: decomp
       - gsl_multifit_linear_lcurvature
+      - gsl_spline2d_eval_extrap
 
 ** bug fix in checking vector lengths in gsl_vector_memcpy (dieggsy@pm.me)
 

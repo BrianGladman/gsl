@@ -555,6 +555,9 @@ defined in the header file :file:`gsl_spline2d.h`.
 .. function:: double gsl_spline2d_eval (const gsl_spline2d * spline, const double x, const double y, gsl_interp_accel * xacc, gsl_interp_accel * yacc)
               int gsl_spline2d_eval_e (const gsl_spline2d * spline, const double x, const double y, gsl_interp_accel * xacc, gsl_interp_accel * yacc, double * z)
 
+.. function:: double gsl_spline2d_eval_extrap (const gsl_spline2d * spline, const double x, const double y, gsl_interp_accel * xacc, gsl_interp_accel * yacc)
+              int gsl_spline2d_eval_extrap_e (const gsl_spline2d * spline, const double x, const double y, gsl_interp_accel * xacc, gsl_interp_accel * yacc, double * z)
+
 .. function:: double gsl_spline2d_eval_deriv_x (const gsl_spline2d * spline, const double x, const double y, gsl_interp_accel * xacc, gsl_interp_accel * yacc)
               int gsl_spline2d_eval_deriv_x_e (const gsl_spline2d * spline, const double x, const double y, gsl_interp_accel * xacc, gsl_interp_accel * yacc, double * d)
 
