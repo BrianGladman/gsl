@@ -2477,7 +2477,7 @@ algorithm which overwrites the original matrix with the
    On input :data:`x` should contain the right-hand side :math:`b`, which is replaced by the
    solution on output.
 
-.. function:: gsl_linalg_ldlt_band_unpack (const gsl_matrix * LDLT, gsl_matrix * L, gsl_vector * D)
+.. function:: int gsl_linalg_ldlt_band_unpack (const gsl_matrix * LDLT, gsl_matrix * L, gsl_vector * D)
 
    This function unpacks the unit lower triangular factor :math:`L` from :data:`LDLT` and stores
    it in the lower triangular portion of the :math:`N`-by-:math:`N` matrix :data:`L`. The

@@ -195,8 +195,7 @@ The basic structure is called :type:`gsl_spmatrix`.
         int *p;
         size_t nzmax;
         size_t nz;
-        gsl_spmatrix_tree *tree_data;
-        void *work;
+        [ ... variables for binary tree and memory management ... ]
         size_t sptype;
       } gsl_spmatrix;
 
@@ -218,12 +217,13 @@ The basic structure is called :type:`gsl_spmatrix`.
    to the index in :data:`data` of the start of row :data:`i`. Thus, if
    :math:`data[k] = A(i,j)`, then :math:`j = i[k]` and :math:`p[i] <= k < p[i+1]`.
 
-   The parameter :data:`tree_data` is a binary tree structure used in the triplet
-   representation, specifically a balanced AVL tree. This speeds up element
-   searches and duplicate detection during the matrix assembly process.
-   The parameter :data:`work` is additional workspace needed for various operations like
-   converting from triplet to compressed storage. :data:`sptype` indicates
-   the type of storage format being used (COO, CSC or CSR).
+   There are additional variables in the :type:`gsl_spmatrix` structure related
+   to binary tree storage and memory management. The GSL implementation of sparse
+   matrices uses balanced AVL trees to sort matrix elements in the triplet representation.
+   This speeds up element searches and duplicate detection during the matrix assembly process.
+   The :type:`gsl_spmatrix` structure also contains additional workspace variables needed
+   for various operations like converting from triplet to compressed storage.
+   :data:`sptype` indicates the type of storage format being used (COO, CSC or CSR).
 
    The compressed storage format defined above makes it very simple
    to interface with sophisticated external linear solver libraries

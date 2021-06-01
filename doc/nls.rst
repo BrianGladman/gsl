@@ -503,33 +503,33 @@ Each of these parameters is discussed in further detail below.
    The parameter :data:`trs` determines the method used to solve the trust region
    subproblem, and may be selected from the following choices,
 
-   .. var:: gsl_multifit_nlinear_trs_lm
-            gsl_multilarge_nlinear_trs_lm
+   .. var:: gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_lm
+            gsl_multilarge_nlinear_trs * gsl_multilarge_nlinear_trs_lm
 
       This selects the Levenberg-Marquardt algorithm.
 
-   .. var:: gsl_multifit_nlinear_trs_lmaccel
-            gsl_multilarge_nlinear_trs_lmaccel
+   .. var:: gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_lmaccel
+            gsl_multilarge_nlinear_trs * gsl_multilarge_nlinear_trs_lmaccel
 
       This selects the Levenberg-Marquardt algorithm with geodesic
       acceleration.
 
-   .. var:: gsl_multifit_nlinear_trs_dogleg
-            gsl_multilarge_nlinear_trs_dogleg
+   .. var:: gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_dogleg
+            gsl_multilarge_nlinear_trs * gsl_multilarge_nlinear_trs_dogleg
 
       This selects the dogleg algorithm.
 
-   .. var:: gsl_multifit_nlinear_trs_ddogleg
-            gsl_multilarge_nlinear_trs_ddogleg
+   .. var:: gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_ddogleg
+            gsl_multilarge_nlinear_trs * gsl_multilarge_nlinear_trs_ddogleg
 
       This selects the double dogleg algorithm.
 
-   .. var:: gsl_multifit_nlinear_trs_subspace2D
-            gsl_multilarge_nlinear_trs_subspace2D
+   .. var:: gsl_multifit_nlinear_trs * gsl_multifit_nlinear_trs_subspace2D
+            gsl_multilarge_nlinear_trs * gsl_multilarge_nlinear_trs_subspace2D
 
       This selects the 2D subspace algorithm.
 
-   .. var:: gsl_multilarge_nlinear_trs_cgst
+   .. var:: gsl_multilarge_nlinear_trs * gsl_multilarge_nlinear_trs_cgst
 
       This selects the Steihaug-Toint conjugate gradient algorithm. This
       method is available only for large systems.
@@ -540,8 +540,8 @@ Each of these parameters is discussed in further detail below.
    The parameter :data:`scale` determines the diagonal scaling matrix :math:`D` and
    may be selected from the following choices,
 
-   .. var:: gsl_multifit_nlinear_scale_more
-            gsl_multilarge_nlinear_scale_more
+   .. var:: gsl_multifit_nlinear_scale * gsl_multifit_nlinear_scale_more
+            gsl_multilarge_nlinear_scale * gsl_multilarge_nlinear_scale_more
 
       This damping strategy was suggested by |More|, and
       corresponds to :math:`D^T D = \max(\diag(J^T J))`,
@@ -558,8 +558,8 @@ Each of these parameters is discussed in further detail below.
       effective on a large class of problems and so it is the library
       default, but it may not be the best choice for all problems.
 
-   .. var:: gsl_multifit_nlinear_scale_levenberg
-            gsl_multilarge_nlinear_scale_levenberg
+   .. var:: gsl_multifit_nlinear_scale * gsl_multifit_nlinear_scale_levenberg
+            gsl_multilarge_nlinear_scale * gsl_multilarge_nlinear_scale_levenberg
 
       This damping strategy was originally suggested by Levenberg, and
       corresponds to :math:`D^T D = I`. This method has also proven
@@ -568,8 +568,8 @@ Each of these parameters is discussed in further detail below.
       that this choice is better for problems which are susceptible
       to parameter evaporation (ie: parameters go to infinity)
 
-   .. var:: gsl_multifit_nlinear_scale_marquardt
-            gsl_multilarge_nlinear_scale_marquardt
+   .. var:: gsl_multifit_nlinear_scale * gsl_multifit_nlinear_scale_marquardt
+            gsl_multilarge_nlinear_scale * gsl_multilarge_nlinear_scale_marquardt
 
       This damping strategy was suggested by Marquardt, and
       corresponds to :math:`D^T D = \diag(J^T J)`. This
@@ -611,7 +611,7 @@ Each of these parameters is discussed in further detail below.
    The :data:`solver` parameter determines how the system is
    solved and can be selected from the following choices:
 
-   .. var:: gsl_multifit_nlinear_solver_qr
+   .. var:: gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_qr
 
       This method solves the system using a rank revealing QR
       decomposition of the Jacobian :math:`J`. This method will
@@ -620,8 +620,8 @@ Each of these parameters is discussed in further detail below.
       twice as many operations as the Cholesky method discussed
       below.
 
-   .. var:: gsl_multifit_nlinear_solver_cholesky
-            gsl_multilarge_nlinear_solver_cholesky
+   .. var:: gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_cholesky
+            gsl_multilarge_nlinear_solver * gsl_multilarge_nlinear_solver_cholesky
 
       This method solves the alternate normal equations problem
 
@@ -645,8 +645,8 @@ Each of these parameters is discussed in further detail below.
       known that the Jacobian matrix is well conditioned, this method
       is accurate and will perform faster than the QR approach.
 
-   .. var:: gsl_multifit_nlinear_solver_mcholesky
-            gsl_multilarge_nlinear_solver_mcholesky
+   .. var:: gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_mcholesky
+            gsl_multilarge_nlinear_solver * gsl_multilarge_nlinear_solver_mcholesky
 
       This method solves the alternate normal equations problem
 
@@ -668,7 +668,7 @@ Each of these parameters is discussed in further detail below.
       and is thus slower than the standard Cholesky decomposition, which
       is based on Level 3 BLAS.
 
-   .. var:: gsl_multifit_nlinear_solver_svd
+   .. var:: gsl_multifit_nlinear_solver * gsl_multifit_nlinear_solver_svd
 
       This method solves the system using a singular value
       decomposition of the Jacobian :math:`J`. This method will
@@ -792,7 +792,7 @@ Initializing the Solver
    to solve a nonlinear least squares problem. It may be selected from the
    following choices,
 
-   .. var:: gsl_multifit_nlinear_trust
+   .. var:: gsl_multifit_nlinear_type * gsl_multifit_nlinear_trust
 
       This specifies a trust region method. It is currently the only implemented
       nonlinear least squares method.

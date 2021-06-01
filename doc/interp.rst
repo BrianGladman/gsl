@@ -71,14 +71,14 @@ The interpolation library provides the following interpolation types:
 
    .. index:: linear interpolation
 
-   .. var:: gsl_interp_linear
+   .. var:: gsl_interp_type * gsl_interp_linear
 
       Linear interpolation.  This interpolation method does not require any
       additional memory.
 
    .. index:: polynomial interpolation
 
-   .. var:: gsl_interp_polynomial
+   .. var:: gsl_interp_type * gsl_interp_polynomial
 
       Polynomial interpolation.  This method should only be used for
       interpolating small numbers of points because polynomial interpolation
@@ -88,14 +88,14 @@ The interpolation library provides the following interpolation types:
 
    .. index:: cubic splines
 
-   .. var:: gsl_interp_cspline
+   .. var:: gsl_interp_type * gsl_interp_cspline
 
       Cubic spline with natural boundary conditions.  The resulting curve is
       piecewise cubic on each interval, with matching first and second
       derivatives at the supplied data-points.  The second derivative is
       chosen to be zero at the first point and last point.
 
-   .. var:: gsl_interp_cspline_periodic
+   .. var:: gsl_interp_type * gsl_interp_cspline_periodic
 
       Cubic spline with periodic boundary conditions.  The resulting curve
       is piecewise cubic on each interval, with matching first and second
@@ -107,17 +107,17 @@ The interpolation library provides the following interpolation types:
 
    .. index:: Akima splines
 
-   .. var:: gsl_interp_akima
+   .. var:: gsl_interp_type * gsl_interp_akima
 
       Non-rounded Akima spline with natural boundary conditions.  This method
       uses the non-rounded corner algorithm of Wodicka.
 
-   .. var:: gsl_interp_akima_periodic
+   .. var:: gsl_interp_type * gsl_interp_akima_periodic
 
       Non-rounded Akima spline with periodic boundary conditions.  This method
       uses the non-rounded corner algorithm of Wodicka.
 
-   .. var:: gsl_interp_steffen
+   .. var:: gsl_interp_type * gsl_interp_steffen
 
       Steffen's method guarantees the monotonicity of the interpolating function
       between the given data points. Therefore, minima and maxima can only occur
@@ -419,14 +419,14 @@ internal ordering.
 
    .. index:: bilinear interpolation
 
-   .. var:: gsl_interp2d_bilinear
+   .. var:: gsl_interp2d_type * gsl_interp2d_bilinear
 
       Bilinear interpolation.  This interpolation method does not require any
       additional memory.
 
    .. index:: bicubic interpolation
 
-   .. var:: gsl_interp2d_bicubic
+   .. var:: gsl_interp2d_type * gsl_interp2d_bicubic
 
       Bicubic interpolation.
 

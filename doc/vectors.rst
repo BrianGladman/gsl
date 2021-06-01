@@ -283,7 +283,7 @@ functions.
    With GCC this is selected automatically when compiling in C99 mode
    (:code:`-std=c99`).
 
-.. var:: gsl_check_range
+.. var:: int gsl_check_range
 
    If inline functions are not used, calls to the functions
    :func:`gsl_vector_get` and :func:`gsl_vector_set` will link to the
@@ -411,7 +411,7 @@ vector.
    :data:`v`.  The start of the new vector is offset by :data:`offset` elements
    from the start of the original vector.  The new vector has :data:`n`
    elements.  Mathematically, the :data:`i`-th element of the new vector
-   :data:`v'` is given by::
+   :code:`v'` is given by::
 
       v'(i) = v->data[(offset + i)*v->stride]
 
@@ -441,7 +441,7 @@ vector.
    the same way as for :func:`gsl_vector_subvector` but the new vector has
    :data:`n` elements with a step-size of :data:`stride` from one element to
    the next in the original vector.  Mathematically, the :data:`i`-th element
-   of the new vector :data:`v'` is given by::
+   of the new vector :code:`v'` is given by::
 
       v'(i) = v->data[(offset + i*stride)*v->stride]
 
@@ -493,7 +493,7 @@ vector.
 
    These functions return a vector view of an array.  The start of the new
    vector is given by :data:`base` and has :data:`n` elements.  Mathematically,
-   the :data:`i`-th element of the new vector :data:`v'` is given by::
+   the :data:`i`-th element of the new vector :code:`v'` is given by::
 
       v'(i) = base[i]
 
@@ -517,7 +517,7 @@ vector.
    for :func:`gsl_vector_view_array` but the new vector has :data:`n` elements
    with a step-size of :data:`stride` from one element to the next in the
    original array.  Mathematically, the :data:`i`-th element of the new
-   vector :data:`v'` is given by::
+   vector :code:`v'` is given by::
 
       v'(i) = base[i*stride]
 
