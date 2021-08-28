@@ -6,6 +6,7 @@ The GSL hacker needs some stuff that the end users don't:
    Automake >= 1.10
    Libtool  >= 1.5.24
    Texinfo  >= 4.0
+   Sphinx   >= 3.4.1
 
 Once you have this stuff, you can get the repository and start
 working from your own machine.  
@@ -149,6 +150,9 @@ for HAVE_INLINE use in installed headers.
 
 * If intel compilers are available,
 > make clean && ./configure CC=icc && make && make check
+NOTE: it may be necessary to use icc -fp-model precise to
+make all the checks pass:
+> make clean && ./configure CC=icc CFLAGS="-g -O2 -Wall -fp-model precise" && make && make check
 
 * Test example programs compilation and output
 > make check && sh scripts/test_examples.sh

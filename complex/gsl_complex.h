@@ -73,12 +73,17 @@ typedef const long double *  gsl_const_complex_packed_long_double_ptr ;
  * macros require C11 functionality also (_Generic)
  */
 
-#if !defined(GSL_COMPLEX_LEGACY) && \
-     defined(_Complex_I) &&         \
-     defined(complex) &&            \
-     defined(I) &&                  \
-     defined(__STDC_VERSION__) &&   \
-     (__STDC_VERSION__ >= 201112L) /* C11 */
+/* older gcc compilers claim to be C11 compliant but do not support _Generic */
+#if defined(__GNUC__) && (__GNUC__ < 7)
+#  define GSL_COMPLEX_LEGACY 1
+#endif
+
+#if !defined(GSL_COMPLEX_LEGACY) &&          \
+     defined(_Complex_I) &&                  \
+     defined(complex) &&                     \
+     defined(I) &&                           \
+     defined(__STDC__) && (__STDC__ == 1) && \
+     defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L) /* C11 */
 
 #  define GSL_COMPLEX_DEFINE(R, C) typedef R _Complex C ;
 

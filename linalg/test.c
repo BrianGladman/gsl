@@ -3262,7 +3262,7 @@ main(void)
   gsl_test(test_QR_solve(),              "QR Solve");
   gsl_test(test_QRc_decomp(r),           "Complex QR Decomposition");
   gsl_test(test_QRc_solve(r),            "Complex QR Solve");
-  gsl_test(test_QRc_lssolve(r),          "Complex QR LS Solve");
+  gsl_test(test_QRc_lssolve(),           "Complex QR LS Solve");
   gsl_test(test_LQ_solve(),              "LQ Solve");
   gsl_test(test_PTLQ_solve(),            "PTLQ Solve");
 
@@ -3273,7 +3273,7 @@ main(void)
 
   gsl_test(test_QRc_decomp_r(r),         "Complex QR Decomposition (recursive)");
   gsl_test(test_QRc_solve_r(r),          "Complex QR Solve (recursive)");
-  gsl_test(test_QRc_lssolve_r(r),        "Complex QR LS Solve (recursive)");
+  gsl_test(test_QRc_lssolve_r(),         "Complex QR LS Solve (recursive)");
 
   gsl_test(test_LU_band_decomp(r),       "Banded LU Decomposition");
   gsl_test(test_LU_band_solve(r),        "Banded LU Solve");
