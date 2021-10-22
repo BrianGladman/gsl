@@ -3270,10 +3270,12 @@ main(void)
   gsl_test(test_QR_QTmat_r(r),           "QR QTmat (recursive)");
   gsl_test(test_QR_solve_r(r),           "QR Solve (recursive)");
   gsl_test(test_QR_lssolve_r(r),         "QR LS Solve (recursive)");
+  gsl_test(test_QR_lssolvem_r(r),        "QR LS SolveM (recursive)");
 
   gsl_test(test_QRc_decomp_r(r),         "Complex QR Decomposition (recursive)");
   gsl_test(test_QRc_solve_r(r),          "Complex QR Solve (recursive)");
   gsl_test(test_QRc_lssolve_r(),         "Complex QR LS Solve (recursive)");
+  gsl_test(test_QRc_lssolvem_r(),        "Complex QR LS SolveM (recursive)");
 
   gsl_test(test_LU_band_decomp(r),       "Banded LU Decomposition");
   gsl_test(test_LU_band_solve(r),        "Banded LU Solve");
@@ -3285,6 +3287,7 @@ main(void)
   gsl_test(test_QR_UU_decomp(r),         "QR_UU Decomposition");
   gsl_test(test_QR_UD_decomp(r),         "QR_UD Decomposition");
 
+  gsl_test(test_QR_UR_lssolve(r),        "QR_UR LS Solve");
   gsl_test(test_QR_UU_lssolve(r),        "QR_UU LS Solve");
   gsl_test(test_QR_UD_lssolve(r),        "QR_UD LS Solve");
 

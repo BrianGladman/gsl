@@ -841,6 +841,30 @@ FUNCTION (test, ops) (const size_t P, const size_t Q)
   }
 
   {
+    FUNCTION (gsl_matrix, memcpy) (m, a);
+    FUNCTION (gsl_matrix, conjugate) (m);
+
+    k = 0;
+    status = 0;
+
+    for (i = 0; i < P; i++)
+      {
+        for (j = 0; j < Q; j++)
+          {
+            ATOMIC real = (ATOMIC) ((ATOMIC)k);
+            ATOMIC imag = (ATOMIC) (-((ATOMIC)k + 10));
+            BASE z = FUNCTION (gsl_matrix, get) (m, i, j);
+            if (GSL_REAL (z) != real || GSL_IMAG (z) != imag)
+              {
+                status = 1;
+              }
+            k++;
+          }
+      }
+    gsl_test (status, NAME (gsl_matrix) "_conjugate");
+  }
+
+  {
     FUNCTION (gsl_matrix, swap) (a, b);
 
     k = 0;

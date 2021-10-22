@@ -158,6 +158,7 @@ int gsl_vector_complex_fprintf (FILE * stream,
                                       const char *format);
 
 int gsl_vector_complex_memcpy (gsl_vector_complex * dest, const gsl_vector_complex * src);
+int gsl_vector_complex_conj_memcpy (gsl_vector_complex * dest, const gsl_vector_complex * src);
 
 int gsl_vector_complex_reverse (gsl_vector_complex * v);
 

@@ -341,4 +341,3 @@ complex_cholesky_decomp_L3(gsl_matrix_complex * A)
       return GSL_SUCCESS;
     }
 }
-

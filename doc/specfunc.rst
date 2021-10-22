@@ -310,3 +310,6 @@ to compute the special functions,
   summation and the recursive computation of very high degree and order
   normalised associated Legendre functions, Journal of Geodesy, 76,
   pg. 279-299, 2002.
+
+* D. E. Winch, D. J. Ivers, J. P. R. Turner and R. J. Stening, Geomagnetism
+  and Schmidt quasi-normalization, Geophys. J. Int., 160, 487-504, 2005.

@@ -91,7 +91,7 @@ following normalizations are provided:
 * Schmidt semi-normalization
 
   Schmidt semi-normalized associated Legendre polynomials are often
-  used in the magnetics community and are defined as
+  used in the geophysical community and are defined as (Winch et al, 2005)
 
   .. only:: not texinfo
 
@@ -109,7 +109,27 @@ following normalizations are provided:
 
   The factor of :math:`(-1)^m` is called the Condon-Shortley phase
   factor and can be excluded if desired by setting the parameter
-  :code:`csphase = 1` in the functions below.
+  :code:`csphase = 1` in the functions below. These functions satisfy
+  the normalization condition,
+
+  .. only:: not texinfo
+
+     .. math::
+
+        \int_{-1}^1 S_k^m(x) S_l^m(x) dx =
+        \left\{
+          \begin{array}{ll}
+            \frac{2}{2l+1} \delta_{kl}, & m = 0 \\
+            \frac{4}{2l+1} \delta_{kl}, & m > 0
+          \end{array}
+        \right.
+
+  .. only:: texinfo
+
+     ::
+
+        \int_{-1}^1 S_k^m(x) S_l^m(x) dx = { 2/(2l+1) \delta_{kl}, m = 0
+                                           { 4/(2l+1) \delta_{kl}, m > 0
 
 * Spherical Harmonic Normalization
 
@@ -127,7 +147,23 @@ following normalizations are provided:
         Y_l^m(x) = (-1)^m \sqrt((2l + 1) * (l-m)! / (4 \pi) / (l+m)!) P_l^m(x)
 
   where again the phase factor :math:`(-1)^m` can be included or excluded
-  if desired.
+  if desired. These functions satisfy the normalization condition,
+
+  .. only:: not texinfo
+
+     .. math::
+
+        \int_{-1}^1 Y_k^m(x) Y_l^m(x) dx = \frac{\delta_{kl}}{2\pi}
+
+  .. only:: texinfo
+
+     ::
+
+        \int_{-1}^1 Y_k^m(x) Y_l^m(x) dx = \delta_{kl} / (2 \pi)
+
+  Note that these functions, when coupled with the factor
+  :math:`e^{i m \phi}` produce the orthonormalized complex spherical
+  harmonics.
 
 * Full Normalization
 
@@ -143,9 +179,9 @@ following normalizations are provided:
      
         N_l^m(x) = (-1)^m \sqrt((l + 1/2) (l-m)! / (l+m)!) P_l^m(x)
 
-  and have the property
+  and satisfy the normalization condition,
 
-  .. math:: \int_{-1}^1 N_l^m(x)^2 dx = 1
+  .. math:: \int_{-1}^1 N_k^m(x) N_l^m(x) dx = \delta_{kl}
 
 The normalized associated Legendre routines below use a recurrence
 relation which is stable up to a degree and order of about 2700.

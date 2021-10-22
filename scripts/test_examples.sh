@@ -51,7 +51,15 @@ function dotest
 }
 
 dotest blas blas.txt "" ""
-dotest bspline bspline.txt bspline.err ""
+dotest bspline_deriv bspline_deriv.txt "" ""
+dotest bspline_gram bspline_gram1.txt "" ""
+dotest bspline_gram bspline_gram2.txt "" "0 0.6"
+dotest bspline_interp bspline_interp.txt "" ""
+dotest bspline_lsbreak bspline_lsbreak.txt bspline_lsbreak.err ""
+dotest bspline_lsend bspline_lsend.txt bspline_lsend.err ""
+dotest bspline_lsorder bspline_lsorder.txt "" ""
+dotest bspline_per bspline_per.txt bspline_per.err ""
+dotest bspline_proj bspline_proj.txt "" ""
 dotest cblas cblas.txt "" ""
 dotest cdf cdf.txt "" ""
 dotest cheb cheb.txt "" ""

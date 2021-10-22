@@ -679,6 +679,23 @@ FUNCTION (test, ops) (size_t stride1, size_t stride2, size_t N)
     TEST2 (status, "_axpby second");
   }
 
+  {
+    FUNCTION (gsl_vector, conj_memcpy) (v, a);
+    int status = 0;
+
+    for (i = 0; i < N; i++)
+      {
+        BASE x = FUNCTION (gsl_vector, get) (a, i);
+        BASE y = FUNCTION (gsl_vector, get) (v, i);
+        if (GSL_REAL (x) != GSL_REAL (y) || GSL_IMAG (x) != -GSL_IMAG (y))
+          {
+            status = 1;
+          }
+      }
+
+    gsl_test (status, NAME (gsl_vector) "_conj_memcpy");
+  }
+
   FUNCTION(gsl_vector, free) (a);
   FUNCTION(gsl_vector, free) (b);
   FUNCTION(gsl_vector, free) (v);

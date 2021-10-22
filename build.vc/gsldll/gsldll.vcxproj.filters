@@ -2034,6 +2034,27 @@
     <ClCompile Include="..\..\linalg\qr_uz.c">
       <Filter>linalg</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\bspline\eval.c">
+      <Filter>bspline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bspline\gram.c">
+      <Filter>bspline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bspline\inline.c">
+      <Filter>bspline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bspline\integ.c">
+      <Filter>bspline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bspline\ls.c">
+      <Filter>bspline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bspline\old.c">
+      <Filter>bspline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\integration\lebedev.c">
+      <Filter>integration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\integration\qng.h">

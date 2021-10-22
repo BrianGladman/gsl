@@ -668,18 +668,37 @@ squares problem are as follows:
 
 .. function:: int gsl_multifit_linear_lcurvature (const gsl_vector * y, const gsl_vector * reg_param, const gsl_vector * rho, const gsl_vector * eta, gsl_vector * kappa, gsl_multifit_linear_workspace * work)
 
-   This function computes the curvature of the L-curve as a function of the
-   regularization parameter :math:`\lambda`, using the right hand side
-   vector :data:`y`, the vector of regularization parameters, :data:`reg_param`,
+   This function computes the curvature of the L-curve
+   :math:`(\log{\hat{\rho}(\lambda)}, \log{\hat{\eta}(\lambda)})`, where
+   :math:`\hat{\rho}(\lambda) = \log{||y - X c_{\lambda}||}` and
+   :math:`\hat{\eta}(\lambda) = \log{|| L c_{\lambda} ||}`.
+   This function uses the right hand side vector :data:`y`,
+   the vector of regularization parameters, :data:`reg_param`,
    vector of residual norms, :data:`rho`, and vector of solution norms, :data:`eta`.
    The arrays :data:`reg_param`, :data:`rho`, and :data:`eta` can be computed by
    :func:`gsl_multifit_linear_lcurve`.  The curvature is defined as
 
    .. math:: \kappa(\lambda) = \frac{\hat{\rho}' \hat{\eta}'' - \hat{\rho}'' \hat{\eta}'}{\left( (\hat{\rho}')^2 + (\hat{\eta}')^2 \right)^{\frac{3}{2}}}
 
-   where :math:`\hat{\rho}(\lambda) = \log{||y - X c_{\lambda}||}` and
-   :math:`\hat{\eta}(\lambda) = \log{|| L c_{\lambda} ||}`. The curvature
-   values are stored in :data:`kappa` on output.
+   The curvature values are stored in :data:`kappa` on output.
+
+.. function:: int gsl_multifit_linear_lcurvature_menger(const gsl_vector * rho, const gsl_vector * eta, gsl_vector * kappa)
+
+   This function computes the Menger curvature of the L-curve
+   :math:`(\log{\hat{\rho}(\lambda)}, \log{\hat{\eta}(\lambda)})`, where
+   :math:`\hat{\rho}(\lambda) = \log{||y - X c_{\lambda}||}` and
+   :math:`\hat{\eta}(\lambda) = \log{|| L c_{\lambda} ||}`.
+   The function computes the Menger curvature for each consecutive triplet of points,
+   :math:`\kappa_i = 1/R_i`, where :math:`R_i` is the radius of the unique
+   circle fitted to the points
+   :math:`(\hat{\rho}_{i-1}, \hat{\eta}_{i-1}), (\hat{\rho}_i, \hat{\eta}_i), (\hat{\rho}_{i+1}, \hat{\eta}_{i+1})`.
+
+   The vector of residual norms :math:`|| y - X c_{\lambda} ||` is provided in :data:`rho`,
+   the vector of solution norms :math:`|| L c_{\lambda} ||` is provided in :data:`eta`.
+   These arrays can be calculated by calling :func:`gsl_multifit_linear_lcurve`.
+   The Menger curvature output is stored in :data:`kappa`. The Menger curvature is
+   an approximation to the curvature calculated by :func:`gsl_multifit_linear_lcurvature` but
+   may be faster to calculate.
 
 .. function:: int gsl_multifit_linear_lcorner (const gsl_vector * rho, const gsl_vector * eta, size_t * idx)
 

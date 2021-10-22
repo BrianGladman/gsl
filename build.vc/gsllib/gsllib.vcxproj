@@ -140,7 +140,13 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\bspline\eval.c" />
+    <ClCompile Include="..\..\bspline\gram.c" />
     <ClCompile Include="..\..\bspline\greville.c" />
+    <ClCompile Include="..\..\bspline\inline.c" />
+    <ClCompile Include="..\..\bspline\integ.c" />
+    <ClCompile Include="..\..\bspline\ls.c" />
+    <ClCompile Include="..\..\bspline\old.c" />
     <ClCompile Include="..\..\bst\avl.c" />
     <ClCompile Include="..\..\bst\bst.c" />
     <ClCompile Include="..\..\bst\rb.c" />
@@ -161,6 +167,7 @@
     <ClCompile Include="..\..\integration\hermite.c" />
     <ClCompile Include="..\..\integration\jacobi.c" />
     <ClCompile Include="..\..\integration\laguerre.c" />
+    <ClCompile Include="..\..\integration\lebedev.c" />
     <ClCompile Include="..\..\integration\legendre.c" />
     <ClCompile Include="..\..\integration\rational.c" />
     <ClCompile Include="..\..\integration\romberg.c" />
