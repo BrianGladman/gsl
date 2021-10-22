@@ -758,7 +758,7 @@ test_QR_UR_lssolve(gsl_rng * r)
 
           create_random_matrix(&b.matrix, r);
 
-          s += test_QR_UR_lssolve_eps(&a.matrix, &b.matrix, &rhsv.vector, 1.0e5 * GSL_MAX(N,M) * GSL_DBL_EPSILON,
+          s += test_QR_UR_lssolve_eps(&a.matrix, &b.matrix, &rhsv.vector, 2.0e5 * GSL_MAX(N,M) * GSL_DBL_EPSILON,
                                       "QR_UR_lssolve random");
         }
     }
