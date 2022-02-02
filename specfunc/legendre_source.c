@@ -54,30 +54,12 @@
 
 #endif
 
+#ifndef GSL_DISABLE_DEPRECATED
+
 static int FUNCTION (legendre, array_schmidt_e)
 (const size_t lmax, const double x, const double csphase, OUTPUT_ARG);
 static int FUNCTION(legendre, array_none_e)
 (const size_t lmax, const double x, const double csphase, OUTPUT_ARG);
-
-/*
-gsl_sf_legendre_array()
-
-Inputs: norm                - normlization type
-        lmax                - maximum degree
-        x                   - input argument
-        result_array        - (output) normalized P_{lm}
-        result_deriv_array  - (output) normalized P'_{lm}
-        result_deriv2_array - (output) normalized P''_{lm}
-*/
-
-int
-FUNCTION (gsl_sf_legendre, array)
-(const gsl_sf_legendre_t norm, const size_t lmax, const double x,
- OUTPUT_ARG)
-{
-  int s = FUNCTION (gsl_sf_legendre, array_e)(norm, lmax, x, 1.0, OUTPUT);
-  return s;
-}
 
 /*
 gsl_sf_legendre_array_e()
@@ -588,6 +570,8 @@ FUNCTION(legendre, array_none_e)
       return GSL_SUCCESS;
     }
 } /* legendre_array_none_e() */
+
+#endif /* !GSL_DISABLE_DEPRECATED */
 
 #undef FUNCTION
 #undef CONCAT2x

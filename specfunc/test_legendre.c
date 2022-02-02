@@ -237,6 +237,9 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
 
   /* test array routines */
   dx = test_legendre_dx(lmax);
+
+#ifndef GSL_DISABLE_DEPRECATED
+
   for (x = -1.0; x <= 1.0; x += dx)
     {
       s += gsl_sf_legendre_array_e(norm, lmax, x, csphase, p);
@@ -250,6 +253,8 @@ test_legendre_schmidt(const size_t lmax, const double csphase, const char *desc)
                        "%s l=%zu, x=%f, sum=%.12e", desc, l, x, sum);
         }
     }
+
+#endif
 
   /* test deriv array routines */
   for (x = -1.0 + dx; x < 1.0 - dx; x += dx)
@@ -369,6 +374,8 @@ test_legendre_norm(const gsl_sf_legendre_t norm_type, const size_t lmax,
    * normalized functions
    */
 
+#ifndef GSL_DISABLE_DEPRECATED
+
   dx = test_legendre_dx(lmax);
   for (x = -1.0; x <= 1.0; x += dx)
     {
@@ -396,6 +403,8 @@ test_legendre_norm(const gsl_sf_legendre_t norm_type, const size_t lmax,
       test_legendre_compare(lmax, d2p_schmidt, d2p, factor, desc, "deriv2 d2p");
     }
 
+#endif
+
   free(p);
   free(dp);
   free(d2p);
@@ -404,7 +413,7 @@ test_legendre_norm(const gsl_sf_legendre_t norm_type, const size_t lmax,
   free(d2p_schmidt);
 
   return s;
-} /* test_legendre_norm() */
+}
 
 /*
 test_legendre_unnorm()

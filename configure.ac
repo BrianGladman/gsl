@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([gsl],[2.7+])
+AC_INIT([gsl],[2.7.1+])
 AC_CONFIG_SRCDIR(gsl_math.h)
 
 AM_INIT_AUTOMAKE([gnu])
@@ -36,7 +36,8 @@ dnl gsl-2.3    libgsl 22:0:3   libgslcblas 0:0:0
 dnl gsl-2.4    libgsl 23:0:0   libgslcblas 0:0:0 
 dnl gsl-2.5    libgsl 24:0:1   libgslcblas 0:0:0 
 dnl gsl-2.6    libgsl 25:0:0   libgslcblas 0:0:0 
-dnl gsl-2.7    libgsl 26:0:1   libgslcblas 0:0:0 
+dnl gsl-2.7    libgsl 26:0:1   libgslcblas 0:0:0 (***)
+dnl gsl-2.7.1  libgsl 27:0:0   libgslcblas 0:0:0
 dnl 
 dnl (*) There was an error on this release.  Firstly, the versioning
 dnl numbers were not updated.  Secondly, 2 functions were removed, but
@@ -46,6 +47,9 @@ dnl will assume 11:0:11.
 dnl
 dnl (**) There was an error on this release. Age should have been
 dnl reset to 18:0:0
+dnl
+dnl (***) There was an error on this release. Age should have been
+dnl reset to 26:0:0
 dnl
 dnl How to update library version number
 dnl ====================================
@@ -63,9 +67,9 @@ dnl See https://www.gnu.org/software/libtool/manual/html_node/Updating-version-i
 dnl for more detailed info
 
 dnl
-GSL_CURRENT=26
+GSL_CURRENT=27
 GSL_REVISION=0
-GSL_AGE=1
+GSL_AGE=0
 dnl
 CBLAS_CURRENT=0
 CBLAS_REVISION=0
