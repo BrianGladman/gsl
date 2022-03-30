@@ -11,4 +11,4 @@ TESTS = $(check_PROGRAMS)
 check_PROGRAMS = test
 
 test_SOURCES = test.c tests.c tests.h
-test_LDADD = libgslintegration.la ../ieee-utils/libgslieeeutils.la ../specfunc/libgslspecfunc.la ../complex/libgslcomplex.la ../poly/libgslpoly.la ../cblas/libgslcblas.la ../vector/libgslvector.la ../blas/libgslblas.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la
+test_LDADD = libgslintegration.la ../ieee-utils/libgslieeeutils.la ../specfunc/libgslspecfunc.la ../complex/libgslcomplex.la ../poly/libgslpoly.la ../vector/libgslvector.la ../blas/libgslblas.la ../cblas/libgslcblas.la ../err/libgslerr.la ../test/libgsltest.la ../sys/libgslsys.la ../utils/libutils.la

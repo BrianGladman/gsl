@@ -338,6 +338,7 @@ indexing schemes which can be used.
    :code:`gsl_sf_legendre_array_index(l, m)`.
 
    The function :func:`gsl_sf_legendre_precompute` must be called first
+   using the same :data:`norm` and :data:`lmax` inputs
    to initialize :data:`result_array` with the multiplicative factors
    used in the recurrence relations.
 
@@ -352,6 +353,7 @@ indexing schemes which can be used.
    :data:`result_deriv_array` respectively.
 
    The function :func:`gsl_sf_legendre_precompute` must be called first
+   using the same :data:`norm` and :data:`lmax` inputs
    to initialize :data:`result_array` with the multiplicative factors
    used in the recurrence relations.
 
@@ -370,6 +372,7 @@ indexing schemes which can be used.
    accepts interior points as input, :math:`x \in (-1,1)`.
 
    The function :func:`gsl_sf_legendre_precompute` must be called first
+   using the same :data:`norm` and :data:`lmax` inputs
    to initialize :data:`result_array` with the multiplicative factors
    used in the recurrence relations.
 
@@ -384,6 +387,7 @@ indexing schemes which can be used.
    :data:`result_deriv_array`, and :data:`result_deriv2_array` respectively.
 
    The function :func:`gsl_sf_legendre_precompute` must be called first
+   using the same :data:`norm` and :data:`lmax` inputs
    to initialize :data:`result_array` with the multiplicative factors
    used in the recurrence relations.
 
@@ -404,6 +408,7 @@ indexing schemes which can be used.
    accepts interior points as input, :math:`x \in (-1,1)`.
 
    The function :func:`gsl_sf_legendre_precompute` must be called first
+   using the same :data:`norm` and :data:`lmax` inputs
    to initialize :data:`result_array` with the multiplicative factors
    used in the recurrence relations.
 
