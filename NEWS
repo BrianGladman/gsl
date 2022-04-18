@@ -1,5 +1,7 @@
 * What is new in gsl-2.8:
 
+** fix for bug #59624
+
 ** fix for bug #59781 (M. Dunlap)
 
 ** optimized cspline and cspline_periodic interpolation
