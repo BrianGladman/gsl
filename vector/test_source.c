@@ -743,7 +743,7 @@ FUNCTION (test, ops) (size_t stride1, size_t stride2, size_t N)
         BASE x = FUNCTION(gsl_vector,get) (a,i);
         BASE y = FUNCTION(gsl_vector,get) (b,i);
         BASE z = x / y;
-        if (fabs((double) (r - z)) > 2 * GSL_FLT_EPSILON * fabs((double) z))
+        if (ABS(r - z) > 2 * GSL_FLT_EPSILON * ABS(z))
           status = 1;
       }
     TEST2 (status, "_div division");
@@ -755,12 +755,12 @@ FUNCTION (test, ops) (size_t stride1, size_t stride2, size_t N)
     BASE sum_b = FUNCTION(gsl_vector, sum) (b);
 
     status = 0;
-    if (fabs((double) (sum_a - exact_sum_a)) > GSL_FLT_EPSILON)
+    if (ABS(sum_a - exact_sum_a) > GSL_FLT_EPSILON)
       status = 1;
     gsl_test (status, NAME (gsl_vector) "_sum a");
 
     status = 0;
-    if (fabs((double) (sum_b - exact_sum_b)) > GSL_FLT_EPSILON)
+    if (ABS(sum_b - exact_sum_b) > GSL_FLT_EPSILON)
       status = 1;
     gsl_test (status, NAME (gsl_vector) "_sum b");
   }

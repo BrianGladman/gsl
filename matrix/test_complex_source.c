@@ -630,8 +630,8 @@ FUNCTION (test, ops) (const size_t P, const size_t Q)
             ATOMIC real = -(ATOMIC) (25 * k + 200);
             ATOMIC imag = (ATOMIC) (2 * k * k + 35 * k + 50);
             BASE z = FUNCTION (gsl_matrix, get) (m, i, j);
-            if (fabs (GSL_REAL (z) - real) > 100 * BASE_EPSILON ||
-                fabs (GSL_IMAG (z) - imag) > 100 * BASE_EPSILON)
+            if (ABS (GSL_REAL (z) - real) > 100 * BASE_EPSILON ||
+                ABS (GSL_IMAG (z) - imag) > 100 * BASE_EPSILON)
               {
                 status = 1;
 #ifdef DEBUG
@@ -666,8 +666,8 @@ FUNCTION (test, ops) (const size_t P, const size_t Q)
             ATOMIC real = (ATOMIC) (2 * k * k + 35 * k + 200) / denom;
             ATOMIC imag = ((ATOMIC) (50) - (ATOMIC) (5 * k)) / denom;
             BASE z = FUNCTION (gsl_matrix, get) (m, i, j);
-            if (fabs (GSL_REAL (z) - real) > 100 * BASE_EPSILON ||
-                fabs (GSL_IMAG (z) - imag) > 100 * BASE_EPSILON)
+            if (ABS (GSL_REAL (z) - real) > 100 * BASE_EPSILON ||
+                ABS (GSL_IMAG (z) - imag) > 100 * BASE_EPSILON)
               {
 #ifdef DEBUG
                 printf (OUT_FORMAT "\t",

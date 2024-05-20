@@ -90,6 +90,7 @@
 #undef STRING
 #undef EXPAND
 #undef UNSIGNED
+#undef ABS
 
 #ifdef FP
 #undef FP

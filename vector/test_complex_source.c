@@ -28,8 +28,6 @@ REAL_TYPE (gsl_vector) * FUNCTION(create_real, vector) (const size_t stride, con
 #define TEST(expr,desc) gsl_test((expr), NAME(gsl_vector) desc " stride=%d, N=%d", stride, N)
 #define TEST2(expr,desc) gsl_test((expr), NAME(gsl_vector) desc " stride1=%d, stride2=%d, N=%d", stride1, stride2, N)
 
-#define TEST_ABS(x)  ( (x) < 0 ? -(x) : (x) )
-
 TYPE (gsl_vector) *
 FUNCTION(create, vector) (size_t stride, size_t N)
 {
@@ -611,8 +609,8 @@ FUNCTION (test, ops) (size_t stride1, size_t stride2, size_t N)
         BASE r = FUNCTION(gsl_vector,get) (v,i);
         ATOMIC real = (-35*(ATOMIC)i-275);
         ATOMIC imag = (173+((ATOMIC)i)*(63+4*(ATOMIC)i));
-        if (TEST_ABS(GSL_REAL(r) - real) > 100 * BASE_EPSILON ||
-            TEST_ABS(GSL_IMAG(r) - imag) > 100 * BASE_EPSILON)
+        if (ABS(GSL_REAL(r) - real) > 100 * BASE_EPSILON ||
+            ABS(GSL_IMAG(r) - imag) > 100 * BASE_EPSILON)
           status = 1;
       }
 
@@ -631,9 +629,9 @@ FUNCTION (test, ops) (size_t stride1, size_t stride2, size_t N)
         ATOMIC denom = 593 + ((ATOMIC)i)*(124+((ATOMIC)i)*8);
         ATOMIC real = (323+((ATOMIC)i)*(63+4*((ATOMIC)i))) / denom;
         ATOMIC imag = (35 +((ATOMIC)i)*5) / denom;
-        if (TEST_ABS(GSL_REAL(r) - real) > 100 * BASE_EPSILON)
+        if (ABS(GSL_REAL(r) - real) > 100 * BASE_EPSILON)
           status = 1;
-        if (TEST_ABS(GSL_IMAG(r) - imag) > 100 * BASE_EPSILON)
+        if (ABS(GSL_IMAG(r) - imag) > 100 * BASE_EPSILON)
           status = 1;
       }
     TEST2 (status, "_div division");
@@ -651,9 +649,9 @@ FUNCTION (test, ops) (size_t stride1, size_t stride2, size_t N)
         ATOMIC denom = 8 + 2*((ATOMIC)i);
         ATOMIC real = (3+(ATOMIC)i) / denom;
         ATOMIC imag = (13 +(ATOMIC)i) / denom;
-        if (TEST_ABS(GSL_REAL(r) - real) > 100 * BASE_EPSILON)
+        if (ABS(GSL_REAL(r) - real) > 100 * BASE_EPSILON)
           status = 1;
-        if (TEST_ABS(GSL_IMAG(r) - imag) > 100 * BASE_EPSILON)
+        if (ABS(GSL_IMAG(r) - imag) > 100 * BASE_EPSILON)
           status = 1;
       }
     TEST2 (status, "_div_real division");
@@ -678,8 +676,8 @@ FUNCTION (test, ops) (size_t stride1, size_t stride2, size_t N)
         BASE r = FUNCTION(gsl_vector,get) (v, i);
         ATOMIC real = (-3*(ATOMIC)i-81);
         ATOMIC imag = (90+13*(ATOMIC)i);
-        if (TEST_ABS(GSL_REAL(r) - real) > 100 * BASE_EPSILON ||
-            TEST_ABS(GSL_IMAG(r) - imag) > 100 * BASE_EPSILON)
+        if (ABS(GSL_REAL(r) - real) > 100 * BASE_EPSILON ||
+            ABS(GSL_IMAG(r) - imag) > 100 * BASE_EPSILON)
           status = 1;
       }
 
@@ -705,8 +703,8 @@ FUNCTION (test, ops) (size_t stride1, size_t stride2, size_t N)
         BASE r = FUNCTION(gsl_vector,get) (v, i);
         ATOMIC real = (-2*(ATOMIC)i-38);
         ATOMIC imag = (39+6*(ATOMIC)i);
-        if (TEST_ABS(GSL_REAL(r) - real) > 100 * BASE_EPSILON ||
-            TEST_ABS(GSL_IMAG(r) - imag) > 100 * BASE_EPSILON)
+        if (ABS(GSL_REAL(r) - real) > 100 * BASE_EPSILON ||
+            ABS(GSL_IMAG(r) - imag) > 100 * BASE_EPSILON)
           status = 1;
       }
 
