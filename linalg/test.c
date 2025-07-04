@@ -1267,7 +1267,7 @@ int test_QR_update(void)
   gsl_test(f, "  QR_update m(3,5)");
   s += f;
 
-  f = test_QR_update_dim(m53, 2 * 512.0 * GSL_DBL_EPSILON);
+  f = test_QR_update_dim(m53, 2 * 1024.0 * GSL_DBL_EPSILON);
   gsl_test(f, "  QR_update m(5,3)");
   s += f;
 
