@@ -1,6 +1,7 @@
 noinst_LTLIBRARIES = libgslcomplex.la 
 
-pkginclude_HEADERS = gsl_complex.h gsl_complex_math.h test_source.c
+pkginclude_HEADERS = gsl_complex.h gsl_complex_math.h
+noinst_HEADERS = test_source.c
 
 AM_CPPFLAGS = -I$(top_srcdir)
 

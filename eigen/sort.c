@@ -36,19 +36,20 @@ complex_less(gsl_complex a, gsl_complex b)
 }
 
 /* The eigen_sort below is not very good, but it is simple and
- * self-contained. We can always implement an improved sort later.  */
+ * self-contained. We can always implement an improved sort later. 
+ *
+ * eval must match the number of columns of evec, but evec does not
+ * need to be square, in case the user wants to sort a subset of the
+ * total eigenvectors
+ */
 
 int
 gsl_eigen_symmv_sort (gsl_vector * eval, gsl_matrix * evec, 
                       gsl_eigen_sort_t sort_type)
 {
-  if (evec->size1 != evec->size2)
+  if (eval->size != evec->size2)
     {
-      GSL_ERROR ("eigenvector matrix must be square", GSL_ENOTSQR);
-    }
-  else if (eval->size != evec->size1)
-    {
-      GSL_ERROR ("eigenvalues must match eigenvector matrix", GSL_EBADLEN);
+      GSL_ERROR ("eigenvalues must match columns of eigenvector matrix", GSL_EBADLEN);
     }
   else
     {
